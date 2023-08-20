@@ -10,6 +10,9 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      backgroundImage: {
+        'banner': "url('banner.png')",
+      },
       colors: {
         primary: {
           DEFAULT: '#311d72',

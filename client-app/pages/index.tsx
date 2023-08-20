@@ -1,9 +1,34 @@
 import { NextPage } from 'next'
 import React from 'react'
-
+import ClientLayout from '@/components/layouts/clientView'
 const Index: NextPage = () => {
   return (
-    <div>Págian principal</div>
+    <ClientLayout>
+      <div>Págian principal</div>
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br /><br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br />
+      <br /><br />
+      <br />
+      <br />
+      <br />
+    </ClientLayout>
+
   )
 }
 
