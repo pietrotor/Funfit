@@ -1,4 +1,4 @@
-export function UsersFooter() {
+export function UsersFooter () {
   return (
     <footer className="bg-gradient-to-r from-primary to-tertiary ">
       <div className="container mx-auto px-6 py-4">
@@ -12,5 +12,5 @@ export function UsersFooter() {
         </div>
       </div>
     </footer>
-  );
+  )
 }

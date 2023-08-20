@@ -1,38 +1,38 @@
-import React from "react";
-import Image from "next/image";
+import React from 'react'
+import Image from 'next/image'
 import {
   Navbar,
   NavbarBrand,
   NavbarContent,
   NavbarItem,
   Link,
-  Button,
-} from "@nextui-org/react";
+  Button
+} from '@nextui-org/react'
 
-import IconSelector from "@/components/molecules/IconSelector";
+import IconSelector from '@/components/molecules/IconSelector'
 
 export type TNavBarStructure = {
   text: string;
   link: string;
-  
+
 }[];
 type TProps = {
   menu: TNavBarStructure;
 };
 
-export function NavBar({ menu }: TProps) {
+export function NavBar ({ menu }: TProps) {
   return (
     <Navbar
       shouldHideOnScroll
-      className=" bg-gradient-to-r from-primary to-tertiary  h-36  "
+      className="bg-white py-4 shadow-2xl"
     >
       <NavbarBrand>
-        <Image src="/logo.png" height="110" width="110" alt="logo" />
+        <Image src="/common/logo.png" height="110" width="110" alt="logo" />
       </NavbarBrand>
       <NavbarContent className="hidden sm:flex gap-4" justify="center">
         {menu.map((menuItem, idx) => (
-          <NavbarItem>
-            <Link color="foreground" className="text-white text-xl" href="#">
+          <NavbarItem key={idx}>
+            <Link color="foreground" className="text-primary text-xl" href="#">
               {menuItem.text}
             </Link>
           </NavbarItem>
@@ -40,7 +40,7 @@ export function NavBar({ menu }: TProps) {
       </NavbarContent>
       <NavbarContent justify="end">
         <NavbarItem className="hidden lg:flex">
-          <Link href="#" className="text-white text-xl">
+          <Link href="#" className="text-secondary text-xl">
             Ingresar
           </Link>
         </NavbarItem>
@@ -49,7 +49,7 @@ export function NavBar({ menu }: TProps) {
             as={Link}
             color="primary"
             href="#"
-            className="text-xl text-white"
+            className="text-xl text-secondary"
             variant="flat"
           >
             <IconSelector name="user" />
@@ -58,5 +58,5 @@ export function NavBar({ menu }: TProps) {
         </NavbarItem>
       </NavbarContent>
     </Navbar>
-  );
+  )
 }
