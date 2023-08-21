@@ -25,7 +25,7 @@ const LoginPage: NextPage = () => {
               control={control}
               rules={{ required: true }}
               render={({ field, formState: { errors } }) => (
-                <Input {...field} validationState={`${errors.email ? 'invalid' : 'valid'}`} errorMessage={errors.email?.message}  type="email" variant={'bordered'} label="Email" placeholder="Ingresa tu email" />
+                <Input {...field} validationState={`${errors.email ? 'invalid' : 'valid'}`} errorMessage={errors.email?.message} type="email" variant={'bordered'} label="Email" placeholder="Ingresa tu email" />
               )}
             />
             <Controller
