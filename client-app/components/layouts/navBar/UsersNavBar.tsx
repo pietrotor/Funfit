@@ -1,8 +1,8 @@
-import React from "react";
-import Image from "next/image";
+import React from 'react'
+import Image from 'next/image'
 
-import IconSelector from "@/components/molecules/IconSelector";
-import { Button } from "@nextui-org/react";
+import IconSelector from '@/components/molecules/IconSelector'
+import { Button } from '@nextui-org/react'
 
 export type TNavBarStructure = {
   text: string;
@@ -12,7 +12,7 @@ type TProps = {
   menu: TNavBarStructure;
 };
 
-export function NavBar({ menu }: TProps) {
+export function NavBar ({ menu }: TProps) {
   return (
     <header className="bg-white py-4 shadow-2xl">
       <div className="container mx-auto flex items-center justify-between px-36 space-x-4">
@@ -47,5 +47,5 @@ export function NavBar({ menu }: TProps) {
         </nav>
       </div>
     </header>
-  );
+  )
 }

@@ -32,7 +32,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({ children }
         <title>Page Title</title>
       </Head>
       <main className={`md:flex flex-row max-h-screen h-screen ${sidebarOpen ? 'overflow-hidden' : ''}`}>
-        <Sidebar user={{name: 'pietro'}} menu={menu} isSidebarOpen={sidebarOpen} setSidebar={setsidebarOpen}/>
+        <Sidebar user={{ name: 'pietro' }} menu={menu} isSidebarOpen={sidebarOpen} setSidebar={setsidebarOpen}/>
         <div className='transition-all transition- duration-500'>
           {children}
         </div>

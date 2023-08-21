@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 
 const Portada = () => {
   return (
@@ -9,7 +9,7 @@ const Portada = () => {
         className="w-20 h-auto"
       />
     </div>
-  );
-};
+  )
+}
 
-export default Portada;
+export default Portada
