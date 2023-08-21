@@ -1,34 +1,30 @@
-import React from 'react'
-import { NavBar } from './navBar/UsersNavBar'
-import { UsersFooter } from './footer/UsersFooter'
-import { TNavBarStructure } from '@/components/layouts/navBar/UsersNavBar'
+import React from "react";
+import { NavBar } from "./navBar/UsersNavBar";
+import { UsersFooter } from "./footer/UsersFooter";
+import { TNavBarStructure } from "@/components/layouts/navBar/UsersNavBar";
+import { UserContainer } from "./container/UserContainer";
 
 export type TClientLayoutProps = {
   children: React.ReactNode;
 };
-function ClientLayout ({ children }: TClientLayoutProps) {
+function ClientLayout({ children }: TClientLayoutProps) {
   const menu: TNavBarStructure = [
     {
-      text: 'Productos',
-      link: '/'
+      text: "Inicio",
+      link: "/",
     },
     {
-      text: 'Saludable',
-      link: '/'
+      text: "Contacto",
+      link: "/",
     },
-    {
-      text: 'Promociones',
-      link: '/contacto'
-    }
-
-  ]
+  ];
   return (
     <>
       <NavBar menu={menu} />
-      {children}
+      <UserContainer>{children}</UserContainer>
       <UsersFooter />
     </>
-  )
+  );
 }
 
-export default ClientLayout
+export default ClientLayout;
