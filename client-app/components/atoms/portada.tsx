@@ -3,7 +3,7 @@ import Image from 'next/image'
 
 const Portada = () => {
   return (
-    <div className='h-96 relative overflow-hidden'>
+    <div className='h-96 relative overflow-hidden '>
       <Image
         src="/devImages/banner.jpg"
         alt="Banner de la empresa"

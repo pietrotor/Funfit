@@ -20,53 +20,20 @@ export function UsersFooter () {
             minus dolorum atque sunt culpa! Eveniet sed aut ipsam iste
             exercitationem eaque aliquid inventore?
           </p>
-          <div className="flex text-gray-200 justify-around items-center  mt-5 space-x-12">
-            <a
-              href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwa.me%2Fmessage%2F672UKAAXOLFKP1%3Ffbclid%3DIwAR1zm2nLyBFXcwqhDI0SsW4syYMS8tiw-gYwgGSABitTn0TIZRevBXfq--U&h=AT34fWpqRUYRDB5oZAk2K7IzKIHsGiKgmNiWJcOtQqc9DfX9bfxc2WSqRmvwnyYHmTJEnGdMEuIdAc4YeC38IFjLjljNwmwl3mbXKnW-2VzXfqgQMboonxLo_8RaZDtXTQ4MbRWiAOPtGJ-jBji3pQ"
-              target="_blank" rel="noreferrer"
-            >
-              <IconSelector
-                name="whatsapp"
-                width="w-12"
-                height="h-12"
-                color="text-white"
-              />
-            </a>
-            <a
-              href="https://www.facebook.com/FunfitbyFuncake?locale=es_LA"
-              target="_blank" rel="noreferrer"
-            >
-              <IconSelector
-                name="facebook"
-                width="w-10"
-                height="h-10"
-                color="text-white"
-              />
-            </a>
-            <a href="https://www.instagram.com/funfitbo/" target="_blank" rel="noreferrer">
-              {' '}
-              <IconSelector
-                name="instagram"
-                width="w-12"
-                height="h-12"
-                color="text-white"
-              />{' '}
-            </a>
-          </div>
         </section>
         <section className="w-1/3  flex flex-col my-6 items-center text-white">
           <h2>Menu</h2>
           <ul className="flex flex-col ms-5 mt-5 space-y-2">
             <li>
               <Link href={'/'}>
-                <h3 className="text-white hover:text-gray-200 transition duration-150">
+                <h3 className="text-white hover:text-secondary/90 transition duration-150">
                   Inicio
                 </h3>
               </Link>
             </li>
             <li>
               <Link href={'/'}>
-                <h3 className="text-white hover:text-gray-200 transition duration-150">
+                <h3 className="text-white hover:text-secondary/90 transition duration-150">
                   Contacto
                 </h3>
               </Link>
@@ -89,6 +56,43 @@ export function UsersFooter () {
           </div>
         </section>
       </div>
+      <hr className='mx-32 border-t-1'/>
+      <div className="flex text-gray-200 justify-end me-60 pb-10 items-center  mt-5 space-x-12">
+            <a
+              href="https://l.facebook.com/l.php?u=https%3A%2F%2Fwa.me%2Fmessage%2F672UKAAXOLFKP1%3Ffbclid%3DIwAR1zm2nLyBFXcwqhDI0SsW4syYMS8tiw-gYwgGSABitTn0TIZRevBXfq--U&h=AT34fWpqRUYRDB5oZAk2K7IzKIHsGiKgmNiWJcOtQqc9DfX9bfxc2WSqRmvwnyYHmTJEnGdMEuIdAc4YeC38IFjLjljNwmwl3mbXKnW-2VzXfqgQMboonxLo_8RaZDtXTQ4MbRWiAOPtGJ-jBji3pQ"
+              target="_blank" rel="noreferrer"
+            >
+              <IconSelector
+                className='hover:fill-secondary transition-all duration-400'
+                name="whatsapp"
+                width="w-12"
+                height="h-12"
+                color="text-white"
+              />
+            </a>
+            <a
+              href="https://www.facebook.com/FunfitbyFuncake?locale=es_LA"
+              target="_blank" rel="noreferrer"
+            >
+              <IconSelector
+                className='hover:fill-secondary transition-all duration-400'
+                name="facebook"
+                width="w-10"
+                height="h-10"
+                color="text-white"
+              />
+            </a>
+            <a href="https://www.instagram.com/funfitbo/" target="_blank" rel="noreferrer">
+              {' '}
+              <IconSelector
+               className='hover:fill-secondary transition-all duration-400'
+                name="instagram"
+                width="w-12"
+                height="h-12"
+                color="text-white"
+              />{' '}
+            </a>
+          </div>
     </footer>
   )
 }

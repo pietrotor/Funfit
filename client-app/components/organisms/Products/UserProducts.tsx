@@ -45,7 +45,7 @@ export function UserProducts () {
   ]
 
   return <div>
-            <div className="grid grid-cols-3 gap-4 my-8 w-4/5 mx-auto">
+            <div className="grid grid-cols-3 gap-4 gap-y-5 py-8 w-4/5 mx-auto">
                 {products.map((product) => (
                     <UserCard key={product.id} name={product.name} description={product.description} price={product.price} image={product.image} />
                 ))}

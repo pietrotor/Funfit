@@ -17,7 +17,7 @@ export function NavBar ({ menu }: TProps) {
     <header className="bg-white py-4 shadow-2xl">
       <div className="container mx-auto flex items-center justify-between px-36 space-x-4">
         <div className="flex items-center">
-          <img src="/common/logo.png" alt="logo" className="h-28 w-28" />
+          <Image src="/common/logo.png" alt="logo" className="h-28 w-28" height={100} width={100} />
         </div>
         <nav className="flex gap-4 justify-center ">
           {menu.map((menuItem, idx) => (
@@ -38,7 +38,7 @@ export function NavBar ({ menu }: TProps) {
           >
             Ingresar
           </a>
-          <Button href="#" className="text-xl text-primary flex items-center">
+          <Button href="#" className="text-xl text-primary flex items-center hover:bg-secondary/40">
             <span>
               <IconSelector name="user" />
             </span>
