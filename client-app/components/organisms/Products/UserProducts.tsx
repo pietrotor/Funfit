@@ -44,12 +44,13 @@ export function UserProducts () {
   }
   ]
 
-  return <div>
-            <div className="grid grid-cols-3 gap-4 gap-y-5 py-8 w-4/5 mx-auto">
-                {products.map((product) => (
-                    <UserCard key={product.id} name={product.name} description={product.description} price={product.price} image={product.image} />
-                ))}
-        </div>
-
-  </div>
+  return (
+    <div>
+      <div className="grid grid-cols-3 gap-4 gap-y-5 py-8 w-full">
+        {products.map((product) => (
+            <UserCard key={product.id} name={product.name} description={product.description} price={product.price} image={product.image} />
+        ))}
+      </div>
+    </div>
+  )
 }
