@@ -1,19 +1,22 @@
-import { Card, CardFooter, Image, Button } from '@nextui-org/react'
+import { Card, CardFooter, Image, Button, useDisclosure } from '@nextui-org/react'
 import IconSelector from '@/components/molecules/IconSelector'
+import ProductModal from '@/components/atoms/modals/ProductModal'
 
 type TUserCardProps = {
   name: string;
   description: string;
   price: number;
   image: string;
+  images: string[];
 };
 
-export default function UserCard ({ name, description, price, image }: TUserCardProps) {
+export default function UserCard ({ name, description, price, image, images }: TUserCardProps) {
+  const { isOpen, onOpen, onClose } = useDisclosure()
   return (
   <div className='h-80 '>
     <Card isFooterBlurred radius="lg" className="border-none h-full">
   <Image
-    alt="Woman listing to music"
+    alt="Product image"
     className="object-cover h-full hover:scale-105 transition-all duration-500"
     removeWrapper
     src={image}
@@ -29,9 +32,20 @@ export default function UserCard ({ name, description, price, image }: TUserCard
       <h4 className='text-white py-1'>
         {price} Bs
       </h4>
-      <Button className="col-start-3 text-tiny text-white bg-primary/80 " variant="flat" color="default" radius="lg" fullWidth={true} size="sm">
+      <Button className="col-start-3 text-tiny text-white bg-primary/80 "
+        variant="flat" color="default" radius="lg" fullWidth={true} size="sm"
+        onClick={ () => { onOpen() } }>
         <IconSelector name="cart" width="w-10" height="h-10" color="text-white" />
       </Button>
+      <ProductModal
+      isOpen={isOpen}
+      onClose={onClose}
+      onOpen={onOpen}
+      title={name}
+      description={description}
+      price={price}
+      images={images}
+      />
     </div>
   </CardFooter>
 </Card>
