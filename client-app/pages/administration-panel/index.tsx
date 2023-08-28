@@ -1,5 +1,5 @@
 import { Inter } from 'next/font/google'
-import AdministrationLayout from '@/components/layouts'
+import AdministrationLayout from '@/components/templates/layouts'
 
 const inter = Inter({ subsets: ['latin'] })
 
