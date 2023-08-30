@@ -11,18 +11,18 @@ type TProps = {
 
 export function UserNavBar ({ menu }: TProps) {
   const [toggle, setToggle] = useState<boolean>(false)
-  const baseClasses = 'flex flex-col md:flex-row md:space-x-5 md:items-center'
+  const baseClasses = 'flex flex-col md:flex-row md:space-x-5 md:items-center absolute'
   const toggleClasses = toggle
-    ? 'z-[1] mx-4 md:z-auto md:static'
-    : 'z-[-1] absolute mx-4 md:mx-0 md:ml-auto md:z-auto md:static md:mx-0 md:ml-auto'
+    ? 'z-[11]   bg-white w-full inset-y-20 left-0 w-16 px-4 h-[25%] md:z-auto md:static'
+    : 'z-[-1]    mx-4 md:mx-0 md:ml-auto md:z-auto md:static md:mx-0 md:ml-auto'
   const navClasses = `${baseClasses} ${toggleClasses}`
 
   return (
-    <header className="bg-white md:py-4 shadow-2xl">
+    <header className="bg-white py-4 shadow-2xl">
       <div className="flex flex-col md:w-full md:max-w-7xl md:m-auto md:flex-row md:items-center">
-        <div className="flex items-center justify-around">
-          <Image src="/common/logo.png" alt="logo" className="h-28 w-28" height={100} width={100} />
-          <span className='w-10 h-10 mt-6' onClick={() => setToggle(!toggle)}>
+        <div className="flex items-center justify-around ">
+          <Image src="/common/logo.png" alt="logo" className="w-28" height={100} width={100} />
+          <span className='w-10 h-10 ' onClick={() => setToggle(!toggle)}>
             <IconSelector width="w-full" height='h-full' name={toggle ? 'close' : 'menu'} className="md:hidden" color="text-secondary" />
           </span>
         </div>
@@ -31,7 +31,7 @@ export function UserNavBar ({ menu }: TProps) {
             <div key={idx}>
               <a
                 href="#"
-                className="text-primary  hover:text-orange-300 transition duration-150 ease-out text-xl"
+                className="text-primary hover:text-orange-300 transition duration-150 ease-out text-xl"
               >
                 {menuItem.text}
               </a>

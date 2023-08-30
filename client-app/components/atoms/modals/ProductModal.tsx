@@ -53,12 +53,6 @@ const ProductModal: React.FC<TProps> = ({ onOpen, onClose, isOpen, title, descri
                   </div>
                 </section>
                 <hr className='' />
-                <section className=''>
-                  <h3>
-                    Notas para este producto:
-                  </h3>
-                <textarea maxLength={125} className='resize-none border-2 rounded-lg w-full outline-none p-2' />
-                </section>
               </ModalBody>
               <ModalFooter className='mx-auto'>
                 <Button color="primary" onPress={onClose} className='w-64 h-14 text-lg font-bold hover:bg-primary/80 hover:shadow-lg ' >
