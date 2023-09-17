@@ -16,7 +16,7 @@ const LoginPage: NextPage = () => {
   return (
     <div className='h-screen bg-gray-300 flex items-center justify-center'>
       <div className='p-8 rounded-2xl shadow-2xl bg-white w-full mx-3 md:w-fit md:min-w-[400px]'>
-        <img className='w-32 m-auto mb-8' src='https://upload.wikimedia.org/wikipedia/commons/0/08/Logo_azul_INSCHOLAR_PLATAFORMA.png'/>
+        {/* <img className='w-32 m-auto mb-8' src='https://upload.wikimedia.org/wikipedia/commons/0/08/Logo_azul_INSCHOLAR_PLATAFORMA.png'/> */}
         <h1 className='mb-7 capitalize'>Iniciar Sesión</h1>
         <form onSubmit={handleSubmit(onHandleLogin)}>
           <div className='flex flex-col gap-5 mb-8'>

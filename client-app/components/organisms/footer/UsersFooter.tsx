@@ -10,14 +10,14 @@ type TProps = {
 export function UsersFooter ({ menu }: TProps) {
   return (
     <footer className="bg-primary ">
-      <div className="md:w-4/5 mx-auto flex md:justify-around flex-col md:flex-row ps-10  py-2">
+      <div className="md:w-4/5  mx-auto flex md:justify-around flex-col md:flex-row ps-10 py-2">
         <section className="md:w-1/3 pe-10 flex flex-col items-center justify-center ">
-          <Link href={'/'} className='bg-white pb-1 rounded-lg h-20 w-28 flex items-center justify-center'>
+          <Link href={'/'} className=' pb-1 rounded-lg h-20 w-28 flex items-center justify-center'>
             <Image
-              src="/common/logo.png"
-              className=" rounded-xl bg-white"
-              height="80"
-              width="80"
+              src="/common/logoFooter.png"
+              className=" rounded-xl"
+              height="120"
+              width="120"
               alt="logo"
             />
           </Link>

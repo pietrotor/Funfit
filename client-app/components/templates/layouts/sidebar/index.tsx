@@ -1,9 +1,10 @@
-import Link from 'next/link'
+// import Link from 'next/link'
 import React from 'react'
 import MenuLink from './MenuLink'
 import SubMenu from './SubMenu'
 import IconSelector, { TSvgNames } from '@/components/atoms/IconSelector'
 import { ICurrentUser } from '@/interfaces/currentUser.interface'
+import Image from 'next/image'
 
 export type TMenuStructure = {
   text: string
@@ -37,7 +38,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
         {/* Simple sidebar */}
         <div className={`w-16 min-w-[64px] h-full flex flex-col justify-between bg-primary ${!isSidebarOpen ? 'rounded-tr-2xl rounded-br-2xl' : ''}`}>
           <div>
-            <img src='https://www.pinclipart.com/picdir/big/344-3445395_generic-company-logo-clipart-best-generic-computer-logo.png' className='mt-10 mb-4 h-40 px-1 object-contain m-auto'/>
+            <Image alt='100' src='https://www.pinclipart.com/picdir/big/344-3445395_generic-company-logo-clipart-best-generic-computer-logo.png' className='mt-10 mb-4 h-40 px-1 object-contain m-auto'/>
             <div>
               {menu.map((menuItem, idx) => {
                 return (!menuItem.subMenu
@@ -61,7 +62,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
           </button>
           <div>
             <div className='mt-10 mb-4 h-32 md:h-40 flex items-center'>
-              <img src='https://www.pinclipart.com/picdir/big/344-3445395_generic-company-logo-clipart-best-generic-computer-logo.png' className='h-[80%] object-contain m-auto'/>
+              <Image alt='s' src='https://www.pinclipart.com/picdir/big/344-3445395_generic-company-logo-clipart-best-generic-computer-logo.png' className='h-[80%] object-contain m-auto'/>
             </div>
             <div>
               {menu.map((menuItem, idx) => {
