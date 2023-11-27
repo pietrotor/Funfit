@@ -1,7 +1,10 @@
-import React, { useState } from 'react'
+'use client'
+import React, { useState, useRef } from 'react'
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@nextui-org/react'
 import Slide from '../../molecules/Slide/slide'
-
+import { useAppDispatch } from '@/components/redux/hooks'
+import { addToCart, TCartItem } from '@/components/redux/features/cartSlice'
+import { showSuccessToast } from '../Toast/toasts'
 type TProps = {
   onOpen: () => void;
   onClose: () => void;
@@ -13,10 +16,18 @@ type TProps = {
 }
 
 const ProductModal: React.FC<TProps> = ({ onOpen, onClose, isOpen, title, description, price, images }) => {
+  const dispatch = useAppDispatch()
   const [count, setCount] = useState(1)
+  const data = useRef<TCartItem>({ productName: title, quantity: count, price: price * count, pictureUrl: '' })
   const close = () => {
     onClose()
     setCount(1)
+  }
+  const addProduct = (units:number) => {
+    showSuccessToast('Producto añadido exitosamente', 'success')
+    data.current = { productName: title, quantity: units, price: price * units, pictureUrl: images[0] }
+    dispatch(addToCart(data.current))
+    close()
   }
   return (
     <>
@@ -53,15 +64,9 @@ const ProductModal: React.FC<TProps> = ({ onOpen, onClose, isOpen, title, descri
                   </div>
                 </section>
                 <hr className='' />
-                <section className=''>
-                  <h3>
-                    Notas para este producto:
-                  </h3>
-                <textarea maxLength={125} className='resize-none border-2 rounded-lg w-full outline-none p-2' />
-                </section>
               </ModalBody>
               <ModalFooter className='mx-auto'>
-                <Button color="primary" onPress={onClose} className='w-64 h-14 text-lg font-bold hover:bg-primary/80 hover:shadow-lg ' >
+                <Button color="primary" onPress={() => { addProduct(count) }} className='w-64 h-14 text-lg font-bold hover:bg-primary/80 hover:shadow-lg ' >
                   Añadir al carrito
                   <div>{`${price * count} Bs`}</div>
                 </Button>

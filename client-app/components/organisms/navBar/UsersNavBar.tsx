@@ -1,59 +1,68 @@
-import React, { useState } from 'react'
-import Image from 'next/image'
-
 import IconSelector from '@/components/atoms/IconSelector'
-import { Button } from '@nextui-org/react'
+import { useRouter } from 'next/router'
+import React, { useState } from 'react'
+import Accordion from '@/components/molecules/Accordion'
 import { TSections } from '@/interfaces/Sections'
+import Images from '@/components/atoms/Image/Image'
+import Nav from '@/components/organisms/navBar/Nav'
+import { Badge, useDisclosure } from '@nextui-org/react'
+import CartModal from '@/components/atoms/modals/CartsModal'
+import { useAppSelector } from '@/components/redux/hooks'
+import ToastComponent from '@/components/atoms/Toast/toasts'
 
-type TProps = {
-  menu: TSections;
-};
+type TSubMenuLinkProps = {
+  menu: TSections
+}
 
-export function UserNavBar ({ menu }: TProps) {
-  const [toggle, setToggle] = useState<boolean>(false)
-  const baseClasses = 'flex flex-col md:flex-row md:space-x-5 md:items-center'
-  const toggleClasses = toggle
-    ? 'z-[1] mx-4 md:z-auto md:static'
-    : 'z-[-1] absolute mx-4 md:mx-0 md:ml-auto md:z-auto md:static md:mx-0 md:ml-auto'
-  const navClasses = `${baseClasses} ${toggleClasses}`
+const UsersNavBar: React.FC<TSubMenuLinkProps> = ({ menu }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+  const router = useRouter()
+  const [isNavOpen, setIsNavOpen] = useState(menu.map(sub => sub.link).includes(router.asPath))
+  const cartItems = useAppSelector((state) => state.cartReducer.initialState.cartItems)
 
   return (
-    <header className="bg-white md:py-4 shadow-2xl">
-      <div className="flex flex-col md:w-full md:max-w-7xl md:m-auto md:flex-row md:items-center">
-        <div className="flex items-center justify-around">
-          <Image src="/common/logo.png" alt="logo" className="h-28 w-28" height={100} width={100} />
-          <span className='w-10 h-10 mt-6' onClick={() => setToggle(!toggle)}>
-            <IconSelector width="w-full" height='h-full' name={toggle ? 'close' : 'menu'} className="md:hidden" color="text-secondary" />
+    <header className={`${isNavOpen ? 'relative h-16' : 'h-16'}`}>
+      <ToastComponent/>
+      <div className='fixed z-[20] bg-white w-full md:flex md:justify-between px-6 py-4 shadow-md'>
+        <div className='flex justify-between items-center'>
+          <span className='cursor-pointer' onClick={() => router.push('/')}>
+          <Images src="/common/logo.png" alt="logo" className="w-28" />
           </span>
-        </div>
-        <nav className={navClasses}>
-          {menu.map((menuItem, idx) => (
-            <div key={idx}>
-              <a
-                href="#"
-                className="text-primary  hover:text-orange-300 transition duration-150 ease-out text-xl"
-              >
-                {menuItem.text}
-              </a>
-            </div>
-          ))}
-          <hr />
-          <div className=' flex justify-between mt-2 md:space-x-2 p-2'>
-            <Button className="text-xl  w-36  text-primary flex items-center hover:bg-secondary/40 md:w-44">
-              <span>
-                <IconSelector name="login" />
-              </span>
-              Ingresar
-            </Button>
-            <Button href="#" className="text-xl w-36 text-primary flex items-center hover:bg-secondary/40 md:w-44">
-              <span>
-                <IconSelector name="user" />
-              </span>
-              Registrarse
-            </Button>
+          <div className='flex items-center justify-between  w-20 md:hidden'>
+          <span className='md:hidden' onClick={() => setIsNavOpen(!isNavOpen)}>
+            <IconSelector name='menu' className='w-8 h-8' color='text-secondary' />
+          </span>
+          <span className='cursor-pointer' onClick={() => { onOpen() }}>
+            <Badge className='text-white h-6 w-6' content={ cartItems.length } color='primary'>
+              <IconSelector name='cart' width='w-10' height='h-10' color='text-primary' />
+            </Badge>
+          </span>
           </div>
-        </nav>
+        </div>
+
+        <div className='flex items-center'>
+          <div className='md:hidden'>
+            <Accordion isOpen={isNavOpen} setIsOpen={setIsNavOpen} >
+              <Nav menu={menu} />
+            </Accordion>
+          </div>
+          <div className='hidden md:block'>
+            <Nav menu={menu} />
+          </div>
+          <span className='cursor-pointer hidden md:block' onClick={() => { onOpen() }}>
+            <Badge className='text-white h-6 w-6' content={ cartItems.length } color='primary'>
+              <IconSelector name='cart' width='w-10' height='h-10' color='text-primary' />
+            </Badge>
+          </span>
+          <CartModal
+            isOpen={isOpen}
+            onClose={onClose}
+            onOpen={onOpen}
+            title='Tu Pedido' />
+        </div>
       </div>
     </header>
   )
 }
+
+export default UsersNavBar

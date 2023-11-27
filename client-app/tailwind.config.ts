@@ -25,7 +25,7 @@ const config: Config = {
           darken: '#e50b36'
         },
         tertiary: {
-          DEFAULT: '#5252db'
+          DEFAULT: '#000000'
         }
       }
     }

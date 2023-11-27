@@ -1,7 +1,7 @@
-import { Inter } from 'next/font/google'
+// import { Inter } from 'next/font/google'
 import AdministrationLayout from '@/components/templates/layouts'
 
-const inter = Inter({ subsets: ['latin'] })
+// const inter = Inter({ subsets: ['latin'] })
 
 export default function Home () {
   return (

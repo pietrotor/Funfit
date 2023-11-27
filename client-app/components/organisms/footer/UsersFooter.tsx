@@ -10,23 +10,23 @@ type TProps = {
 export function UsersFooter ({ menu }: TProps) {
   return (
     <footer className="bg-primary ">
-      <div className="md:w-4/5 mx-auto flex justify-around py-2">
-        <section className="md:w-1/3 md:flex md:flex-col md:items-center md:justify-center hidden">
-          <Link href={'/'}>
+      <div className="md:w-4/5  mx-auto flex md:justify-around flex-col md:flex-row ps-10 py-2">
+        <section className="md:w-1/3 pe-10 flex flex-col items-center justify-center ">
+          <Link href={'/'} className=' pb-1 rounded-lg h-20 w-28 flex items-center justify-center'>
             <Image
-              src="/common/logo.png"
-              className=" rounded-xl bg-white"
-              height="80"
-              width="80"
+              src="/common/logoFooter.png"
+              className=" rounded-xl"
+              height="120"
+              width="120"
               alt="logo"
             />
           </Link>
-          <p className="lg:max-w-96 lg:mt-6 lg:text-white lg:flex  md:hidden">
+          <p className="lg:max-w-96 mt-6 text-white lg:flex  md:hidden">
             Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque eius
             minus dolorum atque sunt culpa!
           </p>
         </section>
-        <section className="w-1/3  flex flex-col my-6 md:items-center  text-white">
+        <section className="md:w-1/3 flex flex-col my-6 md:items-center  text-white">
           <h3>Menu</h3>
           <ul className="flex flex-col  md:ms-5  mt-5 space-y-2">
             {menu.map((menuItem, idx) => (
@@ -40,7 +40,7 @@ export function UsersFooter ({ menu }: TProps) {
             ))}
           </ul>
         </section>
-        <section className="w-1/3  my-6 text-white flex flex-col items-center">
+        <section className="md:w-1/3 my-6 text-white flex flex-col md:items-center">
           <h3 className="">Contáctanos</h3>
           <ul className="flex flex-col mt-5 space-y-4 ">
             <li className="cursor-pointer flex space-x-2">
@@ -64,7 +64,7 @@ export function UsersFooter ({ menu }: TProps) {
             className='hover:fill-secondary transition-all duration-400'
             name="whatsapp"
             width="w-10"
-            height="h-10"
+            height="md:h-10 h-8"
             color="text-white"
           />
         </a>
@@ -76,7 +76,7 @@ export function UsersFooter ({ menu }: TProps) {
             className='hover:fill-secondary transition-all duration-400'
             name="facebook"
             width="w-8"
-            height="h-8"
+            height="md:h-8 h-6"
             color="text-white"
           />
         </a>
@@ -86,7 +86,7 @@ export function UsersFooter ({ menu }: TProps) {
             className='hover:fill-secondary transition-all duration-400'
             name="instagram"
             width="w-10"
-            height="h-10"
+            height="md:h-10 h-8 "
             color="text-white"
           />{' '}
         </a>
