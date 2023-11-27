@@ -7,11 +7,11 @@ enum StatusEnum {
 }
 
 type Query {
-  login(loginInput: LoginInput!): LoginResponse 
+  login(loginInput: LoginInput!): LoginResponse
   currentUser: UserResponse
   getRoles(paginationInput: PaginationInput!): RolesResponse  
   getUsers(paginationInput: PaginationInput!): UsersResponse
-  getUserById(id: ObjectId!, businessId: ObjectId!): UserResponse
+  getUserById(id: ObjectId!): UserResponse
 }
 type Mutation {  
   createUser(userInput: UserInput!): Response
@@ -96,8 +96,7 @@ input UserInput {
   lastName: String!
   email: String!
   password: String!
-  phone: String!
-  businessId: ObjectId!
+  phone: String!  
   roleId: ObjectId
 }
 input UpdateUserInput {
@@ -107,7 +106,6 @@ input UpdateUserInput {
   email: String  
   password: String
   phone: String
-  businessId: ObjectId!
   roleId: ObjectId
   status: Boolean
 }

@@ -78,7 +78,6 @@ export type QueryGetRolesArgs = {
 
 
 export type QueryGetUserByIdArgs = {
-  businessId: Scalars['ObjectId']['input'];
   id: Scalars['ObjectId']['input'];
 };
 
@@ -127,7 +126,6 @@ export enum StatusEnum {
 }
 
 export type UpdateUserInput = {
-  businessId: Scalars['ObjectId']['input'];
   email?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ObjectId']['input'];
   lastName?: InputMaybe<Scalars['String']['input']>;
@@ -153,7 +151,6 @@ export type User = {
 };
 
 export type UserInput = {
-  businessId: Scalars['ObjectId']['input'];
   email: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
   name: Scalars['String']['input'];
@@ -336,7 +333,7 @@ export interface ObjectIdScalarConfig extends GraphQLScalarTypeConfig<ResolversT
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   currentUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType>;
   getRoles?: Resolver<Maybe<ResolversTypes['RolesResponse']>, ParentType, ContextType, RequireFields<QueryGetRolesArgs, 'paginationInput'>>;
-  getUserById?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<QueryGetUserByIdArgs, 'businessId' | 'id'>>;
+  getUserById?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<QueryGetUserByIdArgs, 'id'>>;
   getUsers?: Resolver<Maybe<ResolversTypes['UsersResponse']>, ParentType, ContextType, RequireFields<QueryGetUsersArgs, 'paginationInput'>>;
   login?: Resolver<Maybe<ResolversTypes['LoginResponse']>, ParentType, ContextType, RequireFields<QueryLoginArgs, 'loginInput'>>;
 };
