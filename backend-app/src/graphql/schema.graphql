@@ -1,0 +1,113 @@
+scalar Date
+scalar Time
+scalar ObjectId
+enum StatusEnum {
+  OK
+  ERROR
+}
+
+type Query {
+  login(loginInput: LoginInput!): LoginResponse 
+  currentUser: UserResponse
+  getRoles(paginationInput: PaginationInput!): RolesResponse  
+  getUsers(paginationInput: PaginationInput!): UsersResponse
+  getUserById(id: ObjectId!, businessId: ObjectId!): UserResponse
+}
+type Mutation {  
+  createUser(userInput: UserInput!): Response
+  updateUser(updateUserInput: UpdateUserInput!, deleteInput: Boolean = false): Response
+}
+# TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
+type Role {
+  id: ObjectId!
+  name: String!
+  code: String!
+  status: Boolean!
+}
+type User {
+  id: ObjectId!
+  name: String!
+  lastName: String!
+  email: String!
+  phone: String!
+  lastLogin: Date
+  status: Boolean!
+  createdBy: ObjectId
+  roleId: ObjectId!
+  # resolvers
+  roleInfo: Role
+}
+# RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
+interface ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+}
+type ErrorInput {
+  message: String!
+  field: String
+}
+type Response implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+}
+
+type LoginResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  token: String
+}
+type RolesResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Role]
+}
+type UsersResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [User!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type UserResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: User
+}
+# INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
+input LoginInput {
+  email: String!
+  password: String!
+}
+input PaginationInput {
+  rows: Int
+  page: Int
+  filter: String
+}
+input UserInput {
+  name: String!
+  lastName: String!
+  email: String!
+  password: String!
+  phone: String!
+  businessId: ObjectId!
+  roleId: ObjectId
+}
+input UpdateUserInput {
+  id: ObjectId!
+  name: String
+  lastName: String
+  email: String  
+  password: String
+  phone: String
+  businessId: ObjectId!
+  roleId: ObjectId
+  status: Boolean
+}
