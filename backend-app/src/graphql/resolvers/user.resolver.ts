@@ -4,7 +4,7 @@ import { BadRequestError, errorHandler } from '@/lib/graphqlerrors'
 import User, { IModelUser, IUser } from '@/models/user.model'
 import { getInstanceById, getInstancesPagination } from '@/services/generic.service'
 import { getRoleByIdInstance } from '@/services/role.service'
-import { createUserInstance, deleteUser, getUserByIdInstance, searchUserByEmail, updateUserInstance, validatePassowrdAndGenerateJWT } from '@/services/user.service'
+import { createUserInstance, getUserByIdInstance, searchUserByEmail, updateUserInstance, validatePassowrdAndGenerateJWT } from '@/services/user.service'
 
 // Querys
 const login = async (parent: any, args: { loginInput: LoginInput }, context: ContextGraphQl): Promise<LoginResponse> => {
@@ -90,7 +90,6 @@ const updateUser = async (parent: any, args: { updateUserInput: UpdateUserInput,
   try {
     const { updateUserInput, deleteInput } = args
     if (deleteInput) {
-      await deleteUser(updateUserInput.id, updateUserInput.businessId)
       return {
         status: StatusEnum.OK,
         message: 'Usuario eliminado correctamente'

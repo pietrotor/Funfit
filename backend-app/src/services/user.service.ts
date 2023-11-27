@@ -40,8 +40,7 @@ export const validatePassowrdAndGenerateJWT = async (password: string, user: IUs
   const userJwt = jwt.sign({
     id: user._id,
     email: user.email,
-    name: user.name + ' ' + user.lastName,
-    businessId: user.businessId
+    name: user.name + ' ' + user.lastName
   }, process.env.JWT_KEY!)
   console.log('jwt', userJwt)
   console.log('------------------------------------------------------')
