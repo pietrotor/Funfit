@@ -36,7 +36,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
       <div onClick={() => setSidebar(false)} className={`fixed inset-0 bg-primary bg-opacity-50 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} aria-hidden="true"></div>
       <div className={`fixed max-h-screen z-50 flex left-0 top-0 h-screen text-white transition-all duration-700 ${isSidebarOpen ? 'w-80 -translate-x-20' : 'w-16 xl:w-[70px] -translate-x-20 md:-translate-x-0'}`}>
         {/* Simple sidebar */}
-        <div className={`w-28 min-w-[64px] h-full flex flex-col justify-between bg-primary  ${!isSidebarOpen ? 'rounded-tr-2xl rounded-br-2xl' : ''}`}>
+        <div className={`w-28 min-w-[64px] h-full flex flex-col justify-between bg-white shadow-2xl  ${!isSidebarOpen ? 'rounded-tr-2xl rounded-br-2xl' : ''}`}>
           <div>
             <Image alt='100' width={50} height={20} src='/../../common/logo (1).png' className='mt-20 mb-4 h-16 w-16   px-1 bg-white rounded-full object-contain m-auto'/>
             <div>
@@ -52,11 +52,11 @@ const Sidebar: React.FC<TSidebarProps> = ({
           </div>
         </div>
         {/* Detail sidebar */}
-        <div className={`h-full overflow-hidden flex flex-col justify-between bg-primary transition-all duration-300 ${isSidebarOpen ? 'w-80' : 'w-0'}`}>
+        <div className={`h-full overflow-hidden flex flex-col justify-between bg-secondary/40 shadow-2xl transition-all duration-300 ${isSidebarOpen ? 'w-80' : 'w-0'}`}>
           <button
             onClick={() => setSidebar(!isSidebarOpen)}
             type='button'
-            className={`absolute ${isSidebarOpen ? 'top-10 -right-3' : '-right-16 top-10 md:-right-3'} top-10 -right-3 aspect-square bg-secondary rounded-full p-1`}
+            className={`absolute ${isSidebarOpen ? 'top-10 -right-3' : '-right-16 top-10 md:-right-3'} top-10 -right-3 aspect-square bg-primary rounded-full p-1`}
           >
             <IconSelector name='menu' stroke={3}/>
           </button>
@@ -72,7 +72,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
               })}
             </div>
           </div>
-          <div className='py-5 px-10 bg-secondary overflow-hidden flex items-center gap-3 w-full text-white'>
+          <div className='py-5 px-10 bg-secondary overflow-hidden flex items-center gap-3 w-full text-tertiary'>
             <IconSelector name='user' width='w-8' height='h-8' />
             <p className='font-semibold capitalize'>{user.name}</p>
           </div>
