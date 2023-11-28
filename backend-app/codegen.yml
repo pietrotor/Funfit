@@ -1,0 +1,14 @@
+overwrite: true
+schema: 'src/graphql/schema.graphql'
+documents: null
+generates:
+  src/graphql/graphql_types.ts:
+    config:
+      namingConvention: {
+        enumValues: 'keep'
+      }
+      scalars:
+        ObjectId: ./scalars/objectid.scalar#ObjectId
+    plugins:
+      - "typescript"
+      - "typescript-resolvers"
