@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import { Button, Accordion, AccordionItem, Image } from '@nextui-org/react'
-import { showSuccessToast } from '@/components/atoms/Toast/toasts'
-import { useRouter } from 'next/router'
 
 type Props = {
   goToStep: (e: number) => void;
@@ -10,7 +8,6 @@ type Props = {
 
 function PaymentMethod ({ goToStep, currentStepIndex }: Props) {
   const [selectedKeys, setSelectedKeys] = useState(false)
-  const router = useRouter()
 
   const download = (filename: string, content: any) => {
     try {
@@ -32,11 +29,6 @@ function PaymentMethod ({ goToStep, currentStepIndex }: Props) {
     } catch (error) {
       console.error(error)
     }
-  }
-
-  const orderRequest = () => {
-    showSuccessToast('Pedido realizado exitosamente', 'success')
-    router.push('/')
   }
 
   return (
@@ -89,9 +81,9 @@ function PaymentMethod ({ goToStep, currentStepIndex }: Props) {
         >
           Atrás
         </Button>
-        <Button onClick={orderRequest} color='primary' className='w-1/4'>
-          Siguiente
-        </Button>
+          <a href='/gratitudePage' className='w-1/4 bg-primary py-2 rounded-xl text-white'>
+            Finalizar
+          </a>
       </div>
     </div>
   )

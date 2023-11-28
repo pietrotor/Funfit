@@ -21,7 +21,7 @@ const config: Config = {
         },
         secondary: {
           DEFAULT: '#CCE266',
-          transparent: 'rgba(245, 46, 85, 0.62)',
+          transparent: 'rgba(204,226,102, 0.62)',
           darken: '#e50b36'
         },
         tertiary: {

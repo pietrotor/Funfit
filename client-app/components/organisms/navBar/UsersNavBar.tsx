@@ -17,7 +17,7 @@ type TSubMenuLinkProps = {
 const UsersNavBar: React.FC<TSubMenuLinkProps> = ({ menu }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
-  const [isNavOpen, setIsNavOpen] = useState(menu.map(sub => sub.link).includes(router.asPath))
+  const [isNavOpen, setIsNavOpen] = useState(false)
   const cartItems = useAppSelector((state) => state.cartReducer.initialState.cartItems)
 
   return (

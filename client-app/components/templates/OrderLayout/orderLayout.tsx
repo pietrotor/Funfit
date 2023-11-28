@@ -47,7 +47,7 @@ function OrderLayout () {
         <div className='h-24 bg-white shadow-lg border rounded-md'>
           <Stepper steps={currentStep} />
         </div>
-        <div className='bg-white h-96 shadow-lg border rounded-md'>
+        <div className='bg-white md:h-96 shadow-lg border rounded-md'>
           {currentStep[0].isActive === 'active' ? <RegisterForm goToStep={ goToStep } currentStepIndex={currentStepIndex} /> : currentStep[1].isActive === 'active' ? <SendOrder goToStep={ goToStep } currentStepIndex={currentStepIndex}/> : <PaymentMethod goToStep={ goToStep } currentStepIndex={currentStepIndex}/>}
         </div>
 

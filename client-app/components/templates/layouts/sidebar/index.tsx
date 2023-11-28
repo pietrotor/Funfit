@@ -36,9 +36,9 @@ const Sidebar: React.FC<TSidebarProps> = ({
       <div onClick={() => setSidebar(false)} className={`fixed inset-0 bg-primary bg-opacity-50 z-40 lg:hidden lg:z-auto transition-opacity duration-200 ${isSidebarOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} aria-hidden="true"></div>
       <div className={`fixed max-h-screen z-50 flex left-0 top-0 h-screen text-white transition-all duration-700 ${isSidebarOpen ? 'w-80 -translate-x-20' : 'w-16 xl:w-[70px] -translate-x-20 md:-translate-x-0'}`}>
         {/* Simple sidebar */}
-        <div className={`w-16 min-w-[64px] h-full flex flex-col justify-between bg-primary ${!isSidebarOpen ? 'rounded-tr-2xl rounded-br-2xl' : ''}`}>
+        <div className={`w-28 min-w-[64px] h-full flex flex-col justify-between bg-primary  ${!isSidebarOpen ? 'rounded-tr-2xl rounded-br-2xl' : ''}`}>
           <div>
-            <Image alt='100' src='https://www.pinclipart.com/picdir/big/344-3445395_generic-company-logo-clipart-best-generic-computer-logo.png' className='mt-10 mb-4 h-40 px-1 object-contain m-auto'/>
+            <Image alt='100' width={50} height={20} src='/../../common/logo (1).png' className='mt-20 mb-4 h-16 w-16   px-1 bg-white rounded-full object-contain m-auto'/>
             <div>
               {menu.map((menuItem, idx) => {
                 return (!menuItem.subMenu
@@ -47,7 +47,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
               })}
             </div>
           </div>
-          <div className='w-full py-5 bg-primary-darken flex justify-center text-white'>
+          <div className='w-full py-5 bg-secondary flex justify-center text-white'>
             <IconSelector name='user' width='w-8' height='h-8' />
           </div>
         </div>
@@ -61,8 +61,8 @@ const Sidebar: React.FC<TSidebarProps> = ({
             <IconSelector name='menu' stroke={3}/>
           </button>
           <div>
-            <div className='mt-10 mb-4 h-32 md:h-40 flex items-center'>
-              <Image alt='s' src='https://www.pinclipart.com/picdir/big/344-3445395_generic-company-logo-clipart-best-generic-computer-logo.png' className='h-[80%] object-contain m-auto'/>
+            <div className='mt-10 mb-4 ms-auto me-auto h-32 md:h-20 md:w-36 flex rounded-xl items-center bg-white'>
+              <Image alt='s' width={100} height={100} src='/../../common/logo.png' className='h-[80%] object-contain m-auto'/>
             </div>
             <div>
               {menu.map((menuItem, idx) => {
@@ -72,7 +72,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
               })}
             </div>
           </div>
-          <div className='py-5 px-10 bg-primary-darken overflow-hidden flex items-center gap-3 w-full text-white'>
+          <div className='py-5 px-10 bg-secondary overflow-hidden flex items-center gap-3 w-full text-white'>
             <IconSelector name='user' width='w-8' height='h-8' />
             <p className='font-semibold capitalize'>{user.name}</p>
           </div>
