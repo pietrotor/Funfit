@@ -12,7 +12,7 @@ type InformationCardProps = {
 }
 export default function InformationCard ({ title, showButton = false, description, buttonText, buttonDestination, children, className }: InformationCardProps) {
   const router = useRouter()
-  return <div className={`bg-white ${className} max-w-xl md:max-w-6xl p-8 self-center rounded-lg shadow-xl border-2 text-gray-500`}>
+  return <div className={`bg-white ${className} max-w-xl md:max-w-4xl p-8 self-center rounded-lg shadow-xl border-2 text-gray-500`}>
     <h1 className="text-4xl font-extrabold text-center mb-4">
       {title}
     </h1>
