@@ -14,7 +14,7 @@ export const AddUserModal = ({ isOpen, onClose }: ModalProps) => {
     console.log(watch())
   }
   return (
-    <Modal isOpen={isOpen} backdrop='blur' onClose={onClose} className='w-full' size='4xl'>
+    <Modal isOpen={isOpen} onClose={onClose} className='w-full' size='4xl'>
       <ModalContent>
         {close => (
           <>
