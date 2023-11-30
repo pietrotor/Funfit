@@ -6,10 +6,13 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "codegen": "graphql-codegen --config codegen.js"
   },
   "dependencies": {
     "@apollo/client": "^3.8.0",
+    "@graphql-codegen/typescript-mongodb": "^2.4.6",
+    "@graphql-codegen/typescript-react-apollo": "^3.3.3",
     "@nextui-org/react": "^2.0.7",
     "@react-google-maps/api": "^2.19.2",
     "@reduxjs/toolkit": "^1.9.5",
@@ -21,6 +24,7 @@
     "eslint-config-standard": "^17.0.0",
     "eslint-plugin-node": "^11.1.0",
     "framer-motion": "^10.15.1",
+    "graphql": "^16.8.1",
     "next": "13.4.13",
     "postcss": "8.4.27",
     "react": "18.2.0",
@@ -33,6 +37,10 @@
     "universal-cookie": "^4.0.4"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.11.6",
+    "@graphql-codegen/introspection": "^2.2.1",
+    "@graphql-codegen/typescript": "^2.7.3",
+    "@graphql-codegen/typescript-operations": "^2.5.3",
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "eslint": "^8.47.0",
     "eslint-config-standard-with-typescript": "^38.0.0",

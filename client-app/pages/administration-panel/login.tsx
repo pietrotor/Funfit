@@ -1,3 +1,4 @@
+import { useLoginLazyQuery, useLoginQuery } from '@/graphql/graphql-types'
 import { Button, Input } from '@nextui-org/react'
 import { NextPage } from 'next'
 import React from 'react'
@@ -9,9 +10,21 @@ type TLoginInput = {
 }
 
 const LoginPage: NextPage = () => {
+  const [loginQuery, { data, loading, refetch }] = useLoginLazyQuery()
+
   const { control, handleSubmit } = useForm<TLoginInput>()
   const onHandleLogin = (form: TLoginInput) => {
     console.log(form)
+    loginQuery({
+      variables:
+       {
+         loginInput:
+         { email: form.email, password: form.password }
+       },
+      onCompleted (data) {
+        console.log(data)
+      }
+    })
   }
   return (
     <div className='h-screen bg-gray-300 flex items-center justify-center'>
@@ -37,7 +50,7 @@ const LoginPage: NextPage = () => {
               )}
             />
           </div>
-          <Button type='submit' fullWidth color='primary' className='py-7'>
+          <Button isLoading={ loading } type='submit' fullWidth color='primary' className='py-7'>
             <p className='text-lg font-semibold'>Ingresar</p>
           </Button>
         </form>
