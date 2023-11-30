@@ -22,6 +22,31 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({ children }
           icon: 'home',
           text: 'Sub inicio',
           link: '/home'
+        },
+        {
+          icon: 'home',
+          text: 'Sub inicio',
+          link: '/home'
+        },
+        {
+          icon: 'home',
+          text: 'Sub inicio',
+          link: '/home'
+        },
+        {
+          icon: 'home',
+          text: 'Sub inicio',
+          link: '/home'
+        },
+        {
+          icon: 'home',
+          text: 'Sub inicio',
+          link: '/home'
+        },
+        {
+          icon: 'home',
+          text: 'Sub inicio',
+          link: '/home'
         }
       ]
     }
@@ -31,7 +56,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({ children }
       <Head>
         <title>Page Title</title>
       </Head>
-      <main className={`md:flex flex-row max-h-screen  ${sidebarOpen ? 'overflow-hidden' : ''}`}>
+      <main className={`md:flex bg-white flex-row max-h-screen h-screen ${sidebarOpen ? 'overflow-hidden' : ''}`}>
         <Sidebar user={{ name: 'pietro' }} menu={menu} isSidebarOpen={sidebarOpen} setSidebar={setsidebarOpen}/>
         <div className='transition-all w-full transition-duration-500'>
           {children}
