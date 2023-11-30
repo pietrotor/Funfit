@@ -1,9 +1,10 @@
-import { useLoginLazyQuery } from '@/graphql/graphql-types'
+import { StatusEnum, useLoginLazyQuery } from '@/graphql/graphql-types'
 import { Button, Input } from '@nextui-org/react'
 import { NextPage } from 'next'
 import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
+import ToastComponent, { showSuccessToast } from '@/components/atoms/Toast/toasts'
 
 type TLoginInput = {
   email: string
@@ -15,7 +16,6 @@ const LoginPage: NextPage = () => {
   const [error, setError] = useState('')
   const router = useRouter()
   const { control, handleSubmit } = useForm<TLoginInput>()
-  console.log(data)
   const onHandleLogin = (form: TLoginInput) => {
     console.log(form)
     loginQuery({
@@ -23,12 +23,13 @@ const LoginPage: NextPage = () => {
         loginInput: { email: form.email, password: form.password }
       },
       onCompleted (data) {
-        if (data.login?.status === 'OK') {
+        if (data.login?.status === StatusEnum.OK) {
           localStorage.setItem('token', data.login.token?.toString()!)
+          showSuccessToast('Bienvenido', 'success')
           router.push('/administration-panel')
           return
         }
-
+        showSuccessToast(`se ha producido un error: ${data.login?.message}`, 'error')
         console.log(data)
         setError(data.login?.message?.toString()!)
       }
@@ -88,6 +89,7 @@ const LoginPage: NextPage = () => {
           )}
         </form>
       </div>
+      <ToastComponent/>
     </div>
   )
 }

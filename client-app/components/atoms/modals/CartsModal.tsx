@@ -33,7 +33,7 @@ const CartModal: React.FC<TProps> = ({ onOpen, onClose, isOpen, title, descripti
   }
   return (
     <>
-      <Modal backdrop={'blur'} isOpen={isOpen} onClose={onClose} size='xl'>
+      <Modal isOpen={isOpen} onClose={onClose} size='xl'>
         <ModalContent >
           {(close) => (
             <>
