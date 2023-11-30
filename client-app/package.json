@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.8.0",
+    "@hookform/error-message": "^2.0.1",
     "@nextui-org/react": "^2.0.7",
     "@react-google-maps/api": "^2.19.2",
     "@reduxjs/toolkit": "^1.9.5",
