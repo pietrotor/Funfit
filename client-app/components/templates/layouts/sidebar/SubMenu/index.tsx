@@ -26,7 +26,7 @@ const SubMenu: React.FC<TSubMenuLinkProps> = ({ isSidebarOpen, text, icon, detai
     <>
       <MenuLink onClick={() => setIsOpen(!isOpen)} subMenuIsOpen={isOpen} isSidebarOpen={isSidebarOpen} text={text} icon={icon} detailView={detailView}/>
       <Accordion isOpen={isOpen} setIsOpen={setIsOpen} >
-        <div className='ml-4 bg-primary-darken'>
+        <div className='ml-4 bg-secondary'>
           {subMenu.map((item, idx) => (
             <MenuLink key={idx} isSidebarOpen={isSidebarOpen} text={item.text} icon={item.icon} detailView={item.detailView} link={item.link}/>
           ))}
