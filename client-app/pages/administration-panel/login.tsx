@@ -1,8 +1,9 @@
-import { useLoginLazyQuery, useLoginQuery } from '@/graphql/graphql-types'
+import { useLoginLazyQuery } from '@/graphql/graphql-types'
 import { Button, Input } from '@nextui-org/react'
 import { NextPage } from 'next'
-import React from 'react'
+import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useRouter } from 'next/router'
 
 type TLoginInput = {
   email: string
@@ -11,18 +12,25 @@ type TLoginInput = {
 
 const LoginPage: NextPage = () => {
   const [loginQuery, { data, loading, refetch }] = useLoginLazyQuery()
-
+  const [error, setError] = useState('')
+  const router = useRouter()
   const { control, handleSubmit } = useForm<TLoginInput>()
+  console.log(data)
   const onHandleLogin = (form: TLoginInput) => {
     console.log(form)
     loginQuery({
-      variables:
-       {
-         loginInput:
-         { email: form.email, password: form.password }
-       },
+      variables: {
+        loginInput: { email: form.email, password: form.password }
+      },
       onCompleted (data) {
+        if (data.login?.status === 'OK') {
+          localStorage.setItem('token', data.login.token?.toString()!)
+          router.push('/administration-panel')
+          return
+        }
+
         console.log(data)
+        setError(data.login?.message?.toString()!)
       }
     })
   }
@@ -38,7 +46,15 @@ const LoginPage: NextPage = () => {
               control={control}
               rules={{ required: true }}
               render={({ field, formState: { errors } }) => (
-                <Input {...field} validationState={`${errors.email ? 'invalid' : 'valid'}`} errorMessage={errors.email?.message} type="email" variant={'bordered'} label="Email" placeholder="Ingresa tu email" />
+                <Input
+                  {...field}
+                  validationState={`${errors.email ? 'invalid' : 'valid'}`}
+                  errorMessage={errors.email?.message}
+                  type='email'
+                  variant={'bordered'}
+                  label='Email'
+                  placeholder='Ingresa tu email'
+                />
               )}
             />
             <Controller
@@ -46,13 +62,30 @@ const LoginPage: NextPage = () => {
               control={control}
               rules={{ required: true }}
               render={({ field, formState: { errors } }) => (
-                <Input {...field} validationState={`${errors.password ? 'invalid' : 'valid'}`} errorMessage={errors.email?.message} type="password" variant={'bordered'} label="Contraseña" placeholder="********" />
+                <Input
+                  {...field}
+                  validationState={`${errors.password ? 'invalid' : 'valid'}`}
+                  errorMessage={errors.email?.message}
+                  type='password'
+                  variant={'bordered'}
+                  label='Contraseña'
+                  placeholder='********'
+                />
               )}
             />
           </div>
-          <Button isLoading={ loading } type='submit' fullWidth color='primary' className='py-7'>
+          <Button
+            isLoading={loading}
+            type='submit'
+            fullWidth
+            color='primary'
+            className='py-7'
+          >
             <p className='text-lg font-semibold'>Ingresar</p>
           </Button>
+          {error && (
+            <span className='text-red-500 flex justify-center'>{error}</span>
+          )}
         </form>
       </div>
     </div>
