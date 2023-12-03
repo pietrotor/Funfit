@@ -12,6 +12,7 @@ module.exports = {
     ecmaVersion: 12,
     sourceType: 'module'
   },
+  ignorePatterns: ['graphql-types.ts', '**/graphql/*.js'],
   plugins: ['react'],
   rules: {
     'react/react-in-jsx-scope': 'off',
