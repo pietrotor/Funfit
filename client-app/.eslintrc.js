@@ -14,6 +14,25 @@ module.exports = {
   },
   plugins: ['react'],
   rules: {
-    'react/react-in-jsx-scope': 'off'
+    'react/react-in-jsx-scope': 'off',
+    'space-before-function-paren': ['error', 'never'],
+    'multiline-ternary': ['warn', 'never'],
+    'sort-imports': [
+      'error',
+      { ignoreCase: true, ignoreDeclarationSort: true }
+    ],
+    'import/order': [
+      1,
+      {
+        groups: [
+          'external',
+          'builtin',
+          'internal',
+          'sibling',
+          'parent',
+          'index'
+        ]
+      }
+    ]
   }
 }
