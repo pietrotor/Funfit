@@ -12,3 +12,31 @@ export const LOGIN = gql`
     token
   }
 }`
+
+export const GET_USERS = gql`
+  query GetUsers($paginationInput: PaginationInput!) {
+  getUsers(paginationInput: $paginationInput) {
+    errorInput {
+      field
+      message
+    }
+    status
+    message
+    data {
+      id
+      name
+      lastName
+      email
+      phone
+      lastLogin
+      status
+      createdBy
+      roleId
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+`
