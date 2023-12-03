@@ -9,13 +9,16 @@ enum StatusEnum {
 type Query {
   login(loginInput: LoginInput!): LoginResponse
   currentUser: UserResponse
-  getRoles(paginationInput: PaginationInput!): RolesResponse  
+  getRoles(paginationInput: PaginationInput!): RolesResponse
   getUsers(paginationInput: PaginationInput!): UsersResponse
   getUserById(id: ObjectId!): UserResponse
 }
-type Mutation {  
-  createUser(userInput: UserInput!): Response
-  updateUser(updateUserInput: UpdateUserInput!, deleteInput: Boolean = false): Response
+type Mutation {
+  createUser(userInput: UserInput!): UserResponse
+  updateUser(
+    updateUserInput: UpdateUserInput!
+    deleteInput: Boolean = false
+  ): UserResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type Role {
@@ -96,14 +99,14 @@ input UserInput {
   lastName: String!
   email: String!
   password: String!
-  phone: String!  
+  phone: String!
   roleId: ObjectId!
 }
 input UpdateUserInput {
   id: ObjectId!
   name: String
   lastName: String
-  email: String  
+  email: String
   password: String
   phone: String
   roleId: ObjectId
