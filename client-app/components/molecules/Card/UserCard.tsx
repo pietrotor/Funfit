@@ -17,6 +17,7 @@ export default function UserCard ({ name, description, price, image, images }: T
   <div className='h-80 '>
     <Card isFooterBlurred radius="lg" className="border-none h-full">
   <Images
+
     alt="Product image"
     className="object-cover h-full hover:scale-105 transition-all duration-500"
     removeWrapper

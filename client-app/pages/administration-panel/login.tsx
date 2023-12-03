@@ -1,7 +1,10 @@
+import { StatusEnum, useLoginLazyQuery } from '@/graphql/graphql-types'
 import { Button, Input } from '@nextui-org/react'
 import { NextPage } from 'next'
-import React from 'react'
+import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
+import { useRouter } from 'next/router'
+import ToastComponent, { showSuccessToast } from '@/components/atoms/Toast/toasts'
 
 type TLoginInput = {
   email: string
@@ -9,9 +12,29 @@ type TLoginInput = {
 }
 
 const LoginPage: NextPage = () => {
+  const [loginQuery, { data, loading }] = useLoginLazyQuery()
+  const [error, setError] = useState('')
+  const router = useRouter()
   const { control, handleSubmit } = useForm<TLoginInput>()
   const onHandleLogin = (form: TLoginInput) => {
     console.log(form)
+    console.log(data)
+    loginQuery({
+      variables: {
+        loginInput: { email: form.email, password: form.password }
+      },
+      onCompleted (data) {
+        if (data.login?.status === StatusEnum.OK) {
+          localStorage.setItem('token', data.login.token?.toString()!)
+          showSuccessToast('Bienvenido', 'success')
+          router.push('/administration-panel')
+          return
+        }
+        showSuccessToast(`se ha producido un error: ${data.login?.message}`, 'error')
+        console.log(data)
+        setError(data.login?.message?.toString()!)
+      }
+    })
   }
   return (
     <div className='h-screen bg-gray-300 flex items-center justify-center'>
@@ -25,7 +48,15 @@ const LoginPage: NextPage = () => {
               control={control}
               rules={{ required: true }}
               render={({ field, formState: { errors } }) => (
-                <Input {...field} validationState={`${errors.email ? 'invalid' : 'valid'}`} errorMessage={errors.email?.message} type="email" variant={'bordered'} label="Email" placeholder="Ingresa tu email" />
+                <Input
+                  {...field}
+                  validationState={`${errors.email ? 'invalid' : 'valid'}`}
+                  errorMessage={errors.email?.message}
+                  type='email'
+                  variant={'bordered'}
+                  label='Email'
+                  placeholder='Ingresa tu email'
+                />
               )}
             />
             <Controller
@@ -33,15 +64,33 @@ const LoginPage: NextPage = () => {
               control={control}
               rules={{ required: true }}
               render={({ field, formState: { errors } }) => (
-                <Input {...field} validationState={`${errors.password ? 'invalid' : 'valid'}`} errorMessage={errors.email?.message} type="password" variant={'bordered'} label="Contraseña" placeholder="********" />
+                <Input
+                  {...field}
+                  validationState={`${errors.password ? 'invalid' : 'valid'}`}
+                  errorMessage={errors.email?.message}
+                  type='password'
+                  variant={'bordered'}
+                  label='Contraseña'
+                  placeholder='********'
+                />
               )}
             />
           </div>
-          <Button type='submit' fullWidth color='primary' className='py-7'>
+          <Button
+            isLoading={loading}
+            type='submit'
+            fullWidth
+            color='primary'
+            className='py-7'
+          >
             <p className='text-lg font-semibold'>Ingresar</p>
           </Button>
+          {error && (
+            <span className='text-red-500 flex justify-center'>{error}</span>
+          )}
         </form>
       </div>
+      <ToastComponent/>
     </div>
   )
 }
