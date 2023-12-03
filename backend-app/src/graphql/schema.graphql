@@ -97,7 +97,7 @@ input UserInput {
   email: String!
   password: String!
   phone: String!  
-  roleId: ObjectId
+  roleId: ObjectId!
 }
 input UpdateUserInput {
   id: ObjectId!

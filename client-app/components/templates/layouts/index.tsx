@@ -70,7 +70,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           isSidebarOpen={sidebarOpen}
           setSidebar={setsidebarOpen}
         />
-        <div className="transition- transition-all duration-500">
+        <div className="transition-duration-500 w-full transition-all">
           {children}
           <ToastComponent />
         </div>
