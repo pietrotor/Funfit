@@ -1,19 +1,22 @@
 import { Input as InputNextUi, InputProps, Textarea } from '@nextui-org/react'
 import React from 'react'
-import { Control, Controller } from 'react-hook-form'
+import { Control, Controller, FieldValues, FieldPath } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
 
 type TInputProps = InputProps & {
-  name: string
-  control?: Control<any>
-  type?: 'text' | 'number' | 'date' | 'textArea' | 'email' | 'password'
-  valueAs?: 'number' | 'date' | 'string'
-  required?: boolean
-  placeholder?: string
-  label?: string
-  value?: any
-  refComponent?: any
-}
+  name: FieldPath<FieldValues>;
+  control?: Control<any>;
+  type?: 'text' | 'number' | 'date' | 'textArea' | 'email' | 'password';
+  valueAs?: 'number' | 'date' | 'string';
+  required?: boolean;
+  placeholder?: string;
+  label?: string;
+  value?: any;
+  refComponent?: any;
+  rules?: {
+    [key: string]: any;
+  };
+};
 
 const Input: React.FC<TInputProps> = ({
   control,
@@ -25,6 +28,7 @@ const Input: React.FC<TInputProps> = ({
   placeholder = '',
   value,
   refComponent,
+  rules = {}, // Nuevo prop para reglas personalizadas
   ...props
 }) => {
   function getTypeOfValue (event: React.ChangeEvent<HTMLInputElement>) {
@@ -37,17 +41,45 @@ const Input: React.FC<TInputProps> = ({
         return event.target.value
     }
   }
+
   if (control) {
     return (
       <Controller
         name={name}
         control={control}
-        rules={{ required }}
+        rules={{ ...rules, required }} // Incluimos las reglas personalizadas junto con 'required'
         render={({ field, formState: { errors } }) => (
           <div className='w-full'>
             {type !== 'textArea'
-              ? <>
-                  <InputNextUi
+              ? (
+              <>
+                <InputNextUi
+                  {...field}
+                  ref={refComponent}
+                  onChange={(event) => field.onChange(getTypeOfValue(event))}
+                  validationState={`${errors[`${name}`] ? 'invalid' : 'valid'}`}
+                  type={type}
+                  label={label}
+                  placeholder={placeholder}
+                  variant={'bordered'}
+                  size='lg'
+                  defaultValue={value}
+                  {...props}
+                />
+                <ErrorMessage
+                  errors={errors}
+                  name={name}
+                  render={({ message }) => (
+                    <p className='text-red-500 text-sm font-semibold ml-2'>
+                      {message ? rules.validate : 'Este campo es obligatorio'}
+                    </p>
+                  )}
+                />
+              </>
+                )
+              : (
+              <>
+                <Textarea
                   {...field}
                   ref={refComponent}
                   onChange={(event) => field.onChange(getTypeOfValue(event))}
@@ -59,30 +91,19 @@ const Input: React.FC<TInputProps> = ({
                   size='lg'
                   {...props}
                 />
-                <ErrorMessage errors={errors} name={name} render={({ message }) =>
-                  <p className='text-red-500 text-sm font-semibold ml-2'>{message ? name : 'Este campo es obligatorio'}</p>}
+                <ErrorMessage
+                  errors={errors}
+                  name={name}
+                  render={({ message }) => (
+                    <p className='text-red-500 text-sm font-semibold ml-2'>
+                      {message ? name : 'Este campo es obligatorio'}
+                    </p>
+                  )}
                 />
               </>
-              : <>
-                <Textarea
-                {...field}
-                ref={refComponent}
-                onChange={(event) => field.onChange(getTypeOfValue(event))}
-                validationState={`${errors[`${name}`] ? 'invalid' : 'valid'}`}
-                type={type}
-                label={label}
-                placeholder={placeholder}
-                variant={'bordered'}
-                size='lg'
-                {...props}
-              />
-              <ErrorMessage errors={errors} name={name} render={({ message }) =>
-                <p className='text-red-500 text-sm font-semibold ml-2'>{message ? name : 'Este campo es obligatorio'}</p>}
-              />
-            </>
-            }
-          </div>)
-        }
+                )}
+          </div>
+        )}
       />
     )
   }

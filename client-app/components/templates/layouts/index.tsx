@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React, { useState } from 'react'
 import Sidebar, { TMenuStructure } from './sidebar'
+import ToastComponent from '@/components/atoms/Toast/toasts'
 
 type TAdministrationLayoutProps = {
   children: React.ReactNode
@@ -60,6 +61,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({ children }
         <Sidebar user={{ name: 'pietro' }} menu={menu} isSidebarOpen={sidebarOpen} setSidebar={setsidebarOpen}/>
         <div className='transition-all w-full transition-duration-500'>
           {children}
+          <ToastComponent/>
         </div>
       </main>
     </>

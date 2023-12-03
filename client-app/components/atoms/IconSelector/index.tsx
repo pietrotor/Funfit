@@ -25,6 +25,7 @@ export type TSvgNames =
   | 'eye'
   | 'checked'
   | 'users'
+  | 'addUser'
 
 type TIconSelectorProps = {
   name: TSvgNames
@@ -368,6 +369,24 @@ const IconSelector: React.FC<TIconSelectorProps> = ({
           viewBox='0 0 448 512'
         >
           <path d='M135.2 17.7L128 32H32C14.3 32 0 46.3 0 64S14.3 96 32 96H416c17.7 0 32-14.3 32-32s-14.3-32-32-32H320l-7.2-14.3C307.4 6.8 296.3 0 284.2 0H163.8c-12.1 0-23.2 6.8-28.6 17.7zM416 128H32L53.2 467c1.6 25.3 22.6 45 47.9 45H346.9c25.3 0 46.3-19.7 47.9-45L416 128z' />
+        </svg>
+      )
+    case 'addUser':
+      return (
+        <svg
+          xmlns='http://www.w3.org/2000/svg'
+          fill='none'
+          viewBox='0 0 24 24'
+          className={`${width} ${height} ${color} ${className} ${fill} `}
+          stroke-width='1.5'
+          stroke='currentColor'
+          class='w-6 h-6'
+        >
+          <path
+            stroke-linecap='round'
+            stroke-linejoin='round'
+            d='M19 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zM4 19.235v-.11a6.375 6.375 0 0112.75 0v.109A12.318 12.318 0 0110.374 21c-2.331 0-4.512-.645-6.374-1.766z'
+          />
         </svg>
       )
 

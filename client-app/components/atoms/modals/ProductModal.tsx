@@ -31,7 +31,7 @@ const ProductModal: React.FC<TProps> = ({ onOpen, onClose, isOpen, title, descri
   }
   return (
     <>
-      <Modal backdrop={'blur'} isOpen={isOpen} onClose={close} size='lg'>
+      <Modal isOpen={isOpen} onClose={close} size='lg'>
         <ModalContent >
           {(close) => (
             <>

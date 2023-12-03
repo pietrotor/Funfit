@@ -18,6 +18,7 @@ interface TableProps extends PaginationInterfaceProps {
     isLoading?: boolean;
     loadingLoadingColumns?: number;
     enablePagination?: boolean;
+    isInput?: String;
 }
 const Table = ({
   color = 'light',
@@ -32,7 +33,8 @@ const Table = ({
   totalPages,
   onChangeRow,
   onChangePage,
-  enablePagination = true
+  enablePagination = true,
+  isInput
 }: TableProps) => {
   return (
     <>
@@ -61,7 +63,7 @@ const Table = ({
               )
             }
         <div className="block w-full overflow-x-auto">
-          <table className="items-center w-full bg-secondary/10 border-collapse">
+          <table className="items-center w-full bg-gray-500/10 border-collapse">
             <thead>
               <tr className='bg-primary text-white'>
                 {
@@ -86,7 +88,7 @@ const Table = ({
                         <tr key={index} className={'transition-all ' + (color === 'light' ? 'hover:bg-gray-200' : 'hover:bg-tertiary-light')}>
                             {
                                 item.content.map((content, i) => (
-                                    <td key={i} className="text-center border-t-0 px-6 align-middle border-l-0 border-r-0 text-xs  p-4 max-w-sm">
+                                   <td key={i} className="px-6 py-4 whitespace-nowrap">
                                         {content}
                                     </td>
                                 ))
