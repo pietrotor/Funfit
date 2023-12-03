@@ -19,16 +19,38 @@ type TSubMenuLinkProps = {
   }[]
 }
 
-const SubMenu: React.FC<TSubMenuLinkProps> = ({ isSidebarOpen, text, icon, detailView, subMenu }) => {
+const SubMenu: React.FC<TSubMenuLinkProps> = ({
+  isSidebarOpen,
+  text,
+  icon,
+  detailView,
+  subMenu
+}) => {
   const router = useRouter()
-  const [isOpen, setIsOpen] = useState(subMenu.map(sub => sub.link).includes(router.asPath))
+  const [isOpen, setIsOpen] = useState(
+    subMenu.map(sub => sub.link).includes(router.asPath)
+  )
   return (
     <>
-      <MenuLink onClick={() => setIsOpen(!isOpen)} subMenuIsOpen={isOpen} isSidebarOpen={isSidebarOpen} text={text} icon={icon} detailView={detailView}/>
-      <Accordion isOpen={isOpen} setIsOpen={setIsOpen} >
-        <div className='ml-4 bg-secondary'>
+      <MenuLink
+        onClick={() => setIsOpen(!isOpen)}
+        subMenuIsOpen={isOpen}
+        isSidebarOpen={isSidebarOpen}
+        text={text}
+        icon={icon}
+        detailView={detailView}
+      />
+      <Accordion isOpen={isOpen} setIsOpen={setIsOpen}>
+        <div className="ml-4 bg-secondary">
           {subMenu.map((item, idx) => (
-            <MenuLink key={idx} isSidebarOpen={isSidebarOpen} text={item.text} icon={item.icon} detailView={item.detailView} link={item.link}/>
+            <MenuLink
+              key={idx}
+              isSidebarOpen={isSidebarOpen}
+              text={item.text}
+              icon={item.icon}
+              detailView={item.detailView}
+              link={item.link}
+            />
           ))}
         </div>
       </Accordion>

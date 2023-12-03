@@ -21,14 +21,14 @@ export type TSvgNames =
   | 'edit'
 
 type TIconSelectorProps = {
-  name: TSvgNames;
-  color?: string;
-  width?: string;
-  height?: string;
-  stroke?: number;
-  fill?: string;
-  className?: React.ComponentProps<'div'>['className'];
-};
+  name: TSvgNames
+  color?: string
+  width?: string
+  height?: string
+  stroke?: number
+  fill?: string
+  className?: React.ComponentProps<'div'>['className']
+}
 
 const IconSelector: React.FC<TIconSelectorProps> = ({
   name,
@@ -227,51 +227,56 @@ const IconSelector: React.FC<TIconSelectorProps> = ({
           <path d="M20 3h-9c-1.103 0-2 .897-2 2v4h2V5h9v14h-9v-4H9v4c0 1.103.897 2 2 2h9c1.103 0 2-.897 2-2V5c0-1.103-.897-2-2-2z"></path>
         </svg>
       )
-    case 'check' :
+    case 'check':
       return (
         <svg
-         xmlns="http://www.w3.org/2000/svg"
-         className={`${width} ${height} ${color} ${className} ${fill} `}
-         width="24"
-         height="24"
-         viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          className={`${width} ${height} ${color} ${className} ${fill} `}
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
         >
           <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm-1.999 14.413-3.713-3.705L7.7 11.292l2.299 2.295 5.294-5.294 1.414 1.414-6.706 6.706z"></path>
         </svg>
       )
-    case 'error' :
-      return (
-          <svg
-           xmlns="http://www.w3.org/2000/svg"
-           className={`${width} ${height} ${color} ${className} ${fill} `}
-           width="24"
-           height="24"
-           viewBox="0 0 24 24"
-          >
-            <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm-.001 14.413l-3.713-3.705 1.414-1.414 2.299 2.295 5.294-5.294 1.414 1.414-6.707 6.704z"></path>
-          </svg>
-      )
-    case 'trash' :
+    case 'error':
       return (
         <svg
-         xmlns="http://www.w3.org/2000/svg"
-         className={`${width} ${height} ${color} ${className} ${fill} `}
-         width="24"
-         height="24"
-         viewBox="0 0 24 24"
+          xmlns="http://www.w3.org/2000/svg"
+          className={`${width} ${height} ${color} ${className} ${fill} `}
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
         >
-          <path d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"></path><path d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
+          <path d="M12 2C6.486 2 2 6.486 2 12s4.486 10 10 10 10-4.486 10-10S17.514 2 12 2zm-.001 14.413l-3.713-3.705 1.414-1.414 2.299 2.295 5.294-5.294 1.414 1.414-6.707 6.704z"></path>
         </svg>
       )
-    case 'edit' :
+    case 'trash':
       return (
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          className={`${width} ${height} ${color} ${className} ${fill} `}
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
+          <path d="M5 20a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8h2V6h-4V4a2 2 0 0 0-2-2H9a2 2 0 0 0-2 2v2H3v2h2zM9 4h6v2H9zM8 8h9v12H7V8z"></path>
+          <path d="M9 10h2v8H9zm4 0h2v8h-2z"></path>
+        </svg>
+      )
+    case 'edit':
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+        >
           <path d="m16 2.012 3 3L16.713 7.3l-3-3zM4 14v3h3l8.299-8.287-3-3zm0 6h16v2H4z"></path>
         </svg>
       )
 
     default:
-
       return <></>
   }
 }

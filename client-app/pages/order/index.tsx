@@ -4,26 +4,29 @@ import { useAppSelector } from '@/components/redux/hooks'
 
 import InformationCard from '@/components/molecules/Card/InformationCard'
 
-function Order () {
-  const cartItems = useAppSelector((state) => state.cartReducer.initialState.cartItems)
+function Order() {
+  const cartItems = useAppSelector(
+    state => state.cartReducer.initialState.cartItems
+  )
   if (cartItems.length === 0) {
     return (
       <div className="h-full">
-          <ClientLayout>
-            <InformationCard
-            title='¡No tienes productos en tu carrito!'
-            description='Agrega productos a tu carrito para poder realizar tu compra.'
-            buttonText='Regresar a la tienda'
-            buttonDestination='/' />
-          </ClientLayout>
+        <ClientLayout>
+          <InformationCard
+            title="¡No tienes productos en tu carrito!"
+            description="Agrega productos a tu carrito para poder realizar tu compra."
+            buttonText="Regresar a la tienda"
+            buttonDestination="/"
+          />
+        </ClientLayout>
       </div>
     )
   } else {
     return (
       <div className="h-full">
-          <ClientLayout>
-            <OrderLayout />
-          </ClientLayout>
+        <ClientLayout>
+          <OrderLayout />
+        </ClientLayout>
       </div>
     )
   }

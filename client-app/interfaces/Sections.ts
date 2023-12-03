@@ -1,4 +1,4 @@
 export type TSections = {
-    text: string;
-    link: string;
+  text: string
+  link: string
 }[]

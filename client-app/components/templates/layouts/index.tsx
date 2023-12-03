@@ -7,7 +7,9 @@ type TAdministrationLayoutProps = {
   children: React.ReactNode
 }
 
-const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({ children }) => {
+const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
+  children
+}) => {
   const [sidebarOpen, setsidebarOpen] = useState(true)
   const menu: TMenuStructure = [
     {
@@ -57,11 +59,20 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({ children }
       <Head>
         <title>Page Title</title>
       </Head>
-      <main className={`md:flex bg-white flex-row max-h-screen h-screen ${sidebarOpen ? 'overflow-hidden' : ''}`}>
-        <Sidebar user={{ name: 'pietro' }} menu={menu} isSidebarOpen={sidebarOpen} setSidebar={setsidebarOpen}/>
-        <div className='transition-all transition- duration-500'>
+      <main
+        className={`h-screen max-h-screen flex-row bg-white md:flex ${
+          sidebarOpen ? 'overflow-hidden' : ''
+        }`}
+      >
+        <Sidebar
+          user={{ name: 'pietro' }}
+          menu={menu}
+          isSidebarOpen={sidebarOpen}
+          setSidebar={setsidebarOpen}
+        />
+        <div className="transition- transition-all duration-500">
           {children}
-          <ToastComponent/>
+          <ToastComponent />
         </div>
       </main>
     </>

@@ -11,11 +11,11 @@ const Index: NextPage = () => {
   return (
     <Providers>
       <ClientLayout>
-      <HeroShot />
-      <Container>
-        <UserProducts />
-      </Container>
-    </ClientLayout>
+        <HeroShot />
+        <Container>
+          <UserProducts />
+        </Container>
+      </ClientLayout>
     </Providers>
   )
 }

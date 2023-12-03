@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from 'react'
 
 const useScreenSize = () => {
   const MOBILE_SIZE = 640
@@ -25,7 +25,8 @@ const useScreenSize = () => {
 
   return {
     isMobile: screenSize.width <= MOBILE_SIZE,
-    isTablet: screenSize.width > MOBILE_SIZE && screenSize.width <= DESKTOP_SIZE,
+    isTablet:
+      screenSize.width > MOBILE_SIZE && screenSize.width <= DESKTOP_SIZE,
     isDesktop: screenSize.width >= DESKTOP_SIZE
   }
 }

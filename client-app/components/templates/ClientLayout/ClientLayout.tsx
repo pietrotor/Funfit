@@ -1,12 +1,12 @@
 import React from 'react'
 // import { UserNavBar } from '@/components/organisms/navBar/UsersNavBar'
+import { UserContainer } from '../layouts/container/UserContainer'
 import { UsersFooter } from '@/components/organisms/footer/UsersFooter'
 import { TSections } from '@/interfaces/Sections'
-import { UserContainer } from '../layouts/container/UserContainer'
 import UsersNavBar from '@/components/organisms/navBar/UsersNavBar'
 export type TClientLayoutProps = {
-  children: React.ReactNode;
-};
+  children: React.ReactNode
+}
 const menu: TSections = [
   {
     text: 'Inicio',
@@ -18,23 +18,20 @@ const menu: TSections = [
   }
 ]
 
-function ClientLayout ({ children }: TClientLayoutProps) {
+function ClientLayout({ children }: TClientLayoutProps) {
   return (
     <>
-      <div className='min-h-screen flex flex-col'>
-        <div className=''>
-        <UsersNavBar menu={menu} />
+      <div className="flex min-h-screen flex-col">
+        <div className="">
+          <UsersNavBar menu={menu} />
         </div>
-        <div className='flex-grow '>
-        <UserContainer>
-        {children}
-      </UserContainer>
+        <div className="flex-grow ">
+          <UserContainer>{children}</UserContainer>
         </div>
-        <div className=''>
-        <UsersFooter menu={menu} />
+        <div className="">
+          <UsersFooter menu={menu} />
         </div>
       </div>
-
     </>
   )
 }

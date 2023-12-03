@@ -5,7 +5,7 @@ import SendOrder from '@/components/molecules/SendOreder/sendOrder'
 import PaymentMethod from '@/components/molecules/PaymentMethod/paymentMethod'
 import SideCart from '@/components/molecules/SideCart/sideCart'
 
-function OrderLayout () {
+function OrderLayout() {
   const steps: Step[] = [
     {
       label: 'Datos de contacto',
@@ -42,24 +42,38 @@ function OrderLayout () {
   }
 
   return (
-    <div className='flex items-center min-h-screen space-x-4 mx-6 md:px-7 justify-between'>
-      <div className='lg:w-2/3 w-full flex flex-col'>
-        <div className='h-24 bg-white shadow-lg border rounded-md'>
+    <div className="mx-6 flex min-h-screen items-center justify-between space-x-4 md:px-7">
+      <div className="flex w-full flex-col lg:w-2/3">
+        <div className="h-24 rounded-md border bg-white shadow-lg">
           <Stepper steps={currentStep} />
         </div>
-        <div className='bg-white md:h-96 shadow-lg border rounded-md'>
-          {currentStep[0].isActive === 'active' ? <RegisterForm goToStep={ goToStep } currentStepIndex={currentStepIndex} /> : currentStep[1].isActive === 'active' ? <SendOrder goToStep={ goToStep } currentStepIndex={currentStepIndex}/> : <PaymentMethod goToStep={ goToStep } currentStepIndex={currentStepIndex}/>}
+        <div className="rounded-md border bg-white shadow-lg md:h-96">
+          {currentStep[0].isActive === 'active' ? (
+            <RegisterForm
+              goToStep={goToStep}
+              currentStepIndex={currentStepIndex}
+            />
+          ) : currentStep[1].isActive === 'active' ? (
+            <SendOrder
+              goToStep={goToStep}
+              currentStepIndex={currentStepIndex}
+            />
+          ) : (
+            <PaymentMethod
+              goToStep={goToStep}
+              currentStepIndex={currentStepIndex}
+            />
+          )}
         </div>
-
       </div>
-     <div className='lg:flex flex-col md:w-1/3 hidden'>
-     <div className='h-24 bg-white flex items-center justify-center border-b-2 shadow-md '>
-        <h3 className='text-gray-500'>Tus compras</h3>
-      </div>
-      <div className='h-96  overflow-y-auto '>
+      <div className="hidden flex-col md:w-1/3 lg:flex">
+        <div className="flex h-24 items-center justify-center border-b-2 bg-white shadow-md ">
+          <h3 className="text-gray-500">Tus compras</h3>
+        </div>
+        <div className="h-96  overflow-y-auto ">
           <SideCart />
+        </div>
       </div>
-     </div>
     </div>
   )
 }

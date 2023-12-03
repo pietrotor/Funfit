@@ -1,16 +1,25 @@
-import React, { useState, useRef, useEffect } from 'react'
-import { Button, Accordion, AccordionItem, RadioGroup, Radio } from '@nextui-org/react'
-import { GoogleMap, useJsApiLoader, Marker } from '@react-google-maps/api'
+import React, { useEffect, useRef, useState } from 'react'
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  Radio,
+  RadioGroup
+} from '@nextui-org/react'
+import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 
 type Props = {
-  goToStep: (e: number) => void;
-  currentStepIndex: number;
-};
+  goToStep: (e: number) => void
+  currentStepIndex: number
+}
 
-function SendOrder ({ goToStep, currentStepIndex }: Props) {
+function SendOrder({ goToStep, currentStepIndex }: Props) {
   const [selectedKeys, setSelectedKeys] = useState(new Set(['0']))
   const [showAlert, setShowAlert] = useState(false)
-  const [activeDirection, setActiveDirection] = useState({ lat: -17.414, lng: -66.1653 })
+  const [activeDirection, setActiveDirection] = useState({
+    lat: -17.414,
+    lng: -66.1653
+  })
   const send = useRef({
     type: '',
     address: ''
@@ -51,25 +60,41 @@ function SendOrder ({ goToStep, currentStepIndex }: Props) {
 
   const handlePlace = (e: any) => {
     send.current = {
-      type: e.target.name === 'Entrega a domicilio' ? 'Entrega a domicilio' : 'Recoger de la sucursal',
+      type:
+        e.target.name === 'Entrega a domicilio'
+          ? 'Entrega a domicilio'
+          : 'Recoger de la sucursal',
       address: e.target.value
     }
   }
 
   return (
-    <div className='h-full w-full p-5 flex flex-col justify-between text-center space-y-5 '>
-      <div className='px-8 overflow-y-auto'>
-        <h2 className='text-gray-500 md:pb-6'>Datos de ubicación</h2>
-        <Accordion selectedKeys={selectedKeys} onSelectionChange={setSelectedKeys as any}>
-          <AccordionItem key='1' aria-label='Recoger de la sucursal' title='Recoger de la sucursal'>
-            <RadioGroup onChange={(e) => handlePlace(e)} color='secondary'>
-              <Radio value='Sucursal América'>Sucursal América</Radio>
-              <Radio value='Sucursal Circunvalación'>Sucursal Circunvalación</Radio>
-              <Radio value='Sucursal laguna'>Sucursal laguna</Radio>
+    <div className="flex h-full w-full flex-col justify-between space-y-5 p-5 text-center ">
+      <div className="overflow-y-auto px-8">
+        <h2 className="text-gray-500 md:pb-6">Datos de ubicación</h2>
+        <Accordion
+          selectedKeys={selectedKeys}
+          onSelectionChange={setSelectedKeys as any}
+        >
+          <AccordionItem
+            key="1"
+            aria-label="Recoger de la sucursal"
+            title="Recoger de la sucursal"
+          >
+            <RadioGroup onChange={e => handlePlace(e)} color="secondary">
+              <Radio value="Sucursal América">Sucursal América</Radio>
+              <Radio value="Sucursal Circunvalación">
+                Sucursal Circunvalación
+              </Radio>
+              <Radio value="Sucursal laguna">Sucursal laguna</Radio>
             </RadioGroup>
           </AccordionItem>
-          <AccordionItem key='2' aria-label='Entrega a domicilio' title='Entrega a domicilio'>
-            <div className='w-full h-96'>
+          <AccordionItem
+            key="2"
+            aria-label="Entrega a domicilio"
+            title="Entrega a domicilio"
+          >
+            <div className="h-96 w-full">
               {isLoaded && (
                 <GoogleMap
                   onClick={onSetDirection}
@@ -85,15 +110,23 @@ function SendOrder ({ goToStep, currentStepIndex }: Props) {
         </Accordion>
       </div>
       {showAlert && (
-        <div className='flex justify-center items-center flex-col'>
-          <p className='text-red-500'>Por favor, seleccione una opción</p>
+        <div className="flex flex-col items-center justify-center">
+          <p className="text-red-500">Por favor, seleccione una opción</p>
         </div>
       )}
-      <div className='flex justify-between px-6  items-center '>
-        <Button onClick={() => goToStep(currentStepIndex - 1)} color='primary' className='w-1/4'>
+      <div className="flex items-center justify-between  px-6 ">
+        <Button
+          onClick={() => goToStep(currentStepIndex - 1)}
+          color="primary"
+          className="w-1/4"
+        >
           Atrás
         </Button>
-        <Button onClick={(e) => handleSubmit(e)} color='primary' className='w-1/4'>
+        <Button
+          onClick={e => handleSubmit(e)}
+          color="primary"
+          className="w-1/4"
+        >
           Siguiente
         </Button>
       </div>

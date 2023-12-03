@@ -1,8 +1,8 @@
 import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 
 type TAccordionProps = {
-  children: React.ReactNode,
-  isOpen: boolean,
+  children: React.ReactNode
+  isOpen: boolean
   setIsOpen: (open: boolean) => void
   showInput?: boolean
 }
@@ -23,13 +23,18 @@ const Accordion: React.FC<TAccordionProps> = ({
   return (
     <div>
       <div
-        className="w-full transition-all duration-300 overflow-hidden "
+        className="w-full overflow-hidden transition-all duration-300 "
         onClick={() => setIsOpen(!isOpen)}
         style={{ height: accordionHeight }}
       >
         <div ref={ref}>
-        {showInput && <input onChange={(event: ChangeEvent<HTMLInputElement>) => console.log(event.target.value)}/>
-        }
+          {showInput && (
+            <input
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                console.log(event.target.value)
+              }
+            />
+          )}
           {children}
         </div>
       </div>
