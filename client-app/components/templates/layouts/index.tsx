@@ -10,7 +10,7 @@ type TAdministrationLayoutProps = {
 const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   children
 }) => {
-  const [sidebarOpen, setsidebarOpen] = useState(true)
+  const [sidebarOpen, setsidebarOpen] = useState(false)
   const menu: TMenuStructure = [
     {
       icon: 'home',
@@ -60,7 +60,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         <title>Page Title</title>
       </Head>
       <main
-        className={`h-screen max-h-screen flex-row bg-white md:flex ${
+        className={` min-h-screen flex-row bg-secondary/20 md:flex ${
           sidebarOpen ? 'overflow-hidden' : ''
         }`}
       >
