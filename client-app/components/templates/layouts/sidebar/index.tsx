@@ -49,7 +49,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
       >
         {/* Simple sidebar */}
         <div
-          className={`flex h-full w-28 min-w-[64px] flex-col justify-between bg-white shadow-2xl  ${
+          className={`flex h-full w-24 min-w-[64px] flex-col justify-between bg-white shadow-2xl  ${
             !isSidebarOpen ? 'rounded-br-2xl rounded-tr-2xl' : ''
           }`}
         >
@@ -59,7 +59,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
               width={50}
               height={20}
               src="/../../common/logo (1).png"
-              className="m-auto mb-4 mt-20 h-16   w-16 rounded-full bg-white object-contain px-1"
+              className="m-auto mb-4 mt-20 h-16 w-16 rounded-full object-contain px-1 transform transition-transform duration-300 hover:scale-110 cursor-pointer"
             />
             <div>
               {menu.map((menuItem, idx) => {
@@ -83,13 +83,13 @@ const Sidebar: React.FC<TSidebarProps> = ({
               })}
             </div>
           </div>
-          <div className="flex w-full justify-center bg-secondary py-5 text-white">
+          <div className="flex w-full justify-center bg-secondary py-5  text-white">
             <IconSelector name="user" width="w-8" height="h-8" />
           </div>
         </div>
         {/* Detail sidebar */}
         <div
-          className={`flex h-full flex-col justify-between overflow-hidden bg-secondary/40 shadow-2xl transition-all duration-300 ${
+          className={`flex h-full flex-col justify-between overflow-hidden bg-orange-50 shadow-2xl transition-all duration-300 ${
             isSidebarOpen ? 'w-80' : 'w-0'
           }`}
         >
@@ -103,7 +103,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
             <IconSelector name="menu" stroke={3} />
           </button>
           <div>
-            <div className="mb-4 me-auto ms-auto mt-10 flex h-32 items-center rounded-xl bg-white md:h-20 md:w-36">
+            <div className="mb-4 me-auto ms-auto mt-10 flex h-32 items-center rounded-xl md:h-20 md:w-36 transform transition-transform duration-300 hover:scale-110 cursor-pointer">
               <Image
                 alt="s"
                 width={100}
@@ -132,7 +132,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
               })}
             </div>
           </div>
-          <div className="flex w-full items-center gap-3 overflow-hidden bg-secondary px-10 py-5 text-tertiary">
+          <div className="flex w-full items-center gap-3 overflow-hidden bg-primary px-10 py-5 text-tertiary">
             <IconSelector name="user" width="w-8" height="h-8" />
             <p className="font-semibold capitalize">{user.name}</p>
           </div>

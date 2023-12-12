@@ -1,21 +1,36 @@
-import { Input as InputNextUi, InputProps, Textarea } from '@nextui-org/react'
-import React from 'react'
-import { Control, Controller, FieldPath, FieldValues } from 'react-hook-form'
 import { ErrorMessage } from '@hookform/error-message'
+import React from 'react'
+import { Control, Controller, RegisterOptions } from 'react-hook-form'
 
-type TInputProps = InputProps & {
-  name: FieldPath<FieldValues>
+type TLabelProps = {
+  label?: string
+  children: React.ReactNode
+  required?: boolean
+}
+
+const Label = ({ label, children, required }: TLabelProps) => {
+  if (!label) {
+    return (<>{children}</>)
+  }
+  return (
+    <label className='w-full'>
+      <p className='mb-2 font-bold'>{label} {required ? '*' : ''}</p>
+      {children}
+    </label>
+  )
+}
+
+type TInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+  name: string
   control?: Control<any>
   type?: 'text' | 'number' | 'date' | 'textArea' | 'email' | 'password'
   valueAs?: 'number' | 'date' | 'string'
-  required?: boolean
   placeholder?: string
   label?: string
+  onChange?: () => void
   value?: any
-  refComponent?: any
-  rules?: {
-    [key: string]: any
-  }
+  rules?: Omit<RegisterOptions<any, string>, 'valueAsNumber' | 'valueAsDat' | 'setValueAs' | 'disabled'> | undefined
+  customeClassName?: string
 }
 
 const Input: React.FC<TInputProps> = ({
@@ -26,9 +41,10 @@ const Input: React.FC<TInputProps> = ({
   name,
   label = '',
   placeholder = '',
+  onChange,
   value,
-  refComponent,
-  rules = {}, // Nuevo prop para reglas personalizadas
+  rules,
+  customeClassName,
   ...props
 }) => {
   function getTypeOfValue(event: React.ChangeEvent<HTMLInputElement>) {
@@ -41,81 +57,57 @@ const Input: React.FC<TInputProps> = ({
         return event.target.value
     }
   }
-
   if (control) {
     return (
       <Controller
         name={name}
         control={control}
-        rules={{ ...rules, required }} // Incluimos las reglas personalizadas junto con 'required'
+        rules={rules}
         render={({ field, formState: { errors } }) => (
-          <div className="w-full">
-            {type !== 'textArea' ? (
-              <>
-                <InputNextUi
-                  {...field}
-                  ref={refComponent}
-                  onChange={event => field.onChange(getTypeOfValue(event))}
-                  validationState={`${errors[`${name}`] ? 'invalid' : 'valid'}`}
-                  type={type}
-                  label={label}
-                  placeholder={placeholder}
-                  variant={'bordered'}
-                  size="lg"
-                  defaultValue={value}
-                  {...props}
+          <div className='w-full'>
+            {type !== 'textArea' ? <>
+                <Label required={!!rules?.required || false} label={label}>
+                  <input
+                    {...field}
+                    type={type}
+                    onChange={(event) => field.onChange(getTypeOfValue(event))}
+                    className={`p-2 appearance-none border border-gray-300 outline-none w-full rounded-md focus:bg-gray-200 focus:shadow-xl transition-all text-black disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+                    placeholder={placeholder}
+                    {...props}
+                  />
+                </Label>
+                <ErrorMessage errors={errors} name={name} render={({ message }) =>
+                  <p className='text-red-500 text-sm font-semibold ml-2'>{message || 'Este campo es obligatorio'}</p>}
                 />
-                <ErrorMessage
-                  errors={errors}
-                  name={name}
-                  render={({ message }) => (
-                    <p className="ml-2 text-sm font-semibold text-red-500">
-                      {message ? rules.validate : 'Este campo es obligatorio'}
-                    </p>
-                  )}
-                />
-              </>
-            ) : (
-              <>
-                <Textarea
-                  {...field}
-                  ref={refComponent}
-                  onChange={event => field.onChange(getTypeOfValue(event))}
-                  validationState={`${errors[`${name}`] ? 'invalid' : 'valid'}`}
-                  type={type}
-                  label={label}
-                  placeholder={placeholder}
-                  variant={'bordered'}
-                  size="lg"
-                  {...props}
-                />
-                <ErrorMessage
-                  errors={errors}
-                  name={name}
-                  render={({ message }) => (
-                    <p className="ml-2 text-sm font-semibold text-red-500">
-                      {message ? name : 'Este campo es obligatorio'}
-                    </p>
-                  )}
-                />
-              </>
-            )}
-          </div>
-        )}
+              </> : <>
+                <Label required={required} label={label}>
+                  <input
+                    {...field}
+                    type={type}
+                    onChange={(event) => field.onChange(getTypeOfValue(event))}
+                    className={`p-2 appearance-none border border-gray-300 outline-none w-full rounded-md focus:bg-gray-200 focus:shadow-xl transition-all text-black disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+                    {...props}
+                  />
+                </Label>
+              <ErrorMessage errors={errors} name={name} render={({ message }) =>
+                <p className='text-red-500 text-sm font-semibold ml-2'>{message || 'Este campo es obligatorio'}</p>}
+              />
+            </>
+            }
+          </div>)
+        }
       />
     )
   }
   return (
-    <InputNextUi
-      type={type}
-      label={label}
-      value={value}
-      ref={refComponent}
-      placeholder={placeholder}
-      variant={'bordered'}
-      size="lg"
-      {...props}
-    />
+    <Label required={required} label={label}>
+      <input
+        type={type}
+        value={value}
+        className={`p-2 appearance-none border border-gray-300 outline-none w-full rounded-md focus:bg-gray-200 focus:shadow-xl transition-all text-black disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+        {...props}
+      />
+    </Label>
   )
 }
 

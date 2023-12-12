@@ -3,6 +3,13 @@ export interface PaginationInterfaceProps {
   totalItems?: number
   currentPage?: number
   totalPages?: number
-  onChangeRow?: (row: string) => void
-  onChangePage?: (page: string) => void
+  onChangeRow?: (row: number) => void
+  onChangePage?: (page: number) => void
+}
+export interface PaginationInterfaceState {
+  totalPages?: number
+  rows? : number
+  filter?: string
+  currentPage?: number
+  totalRecords?: number
 }
