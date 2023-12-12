@@ -162,6 +162,7 @@ input UpdateUserInput {
 }
 input CreateProductInput {
   name: String!
+  code: String!
   # TODO: Change to pricelist
   price: Float!
   units: String!
@@ -173,6 +174,7 @@ input CreateProductInput {
 input UpdateProductInput {
   id: ObjectId!
   name: String
+  code: String
   # TODO: Change to pricelist
   price: Float
   units: String

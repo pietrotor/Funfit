@@ -75,6 +75,7 @@ export class UserService extends UserRepository<objectId> {
       const filterArgs = {
         $or: [
           { name: { $regex: filter, $options: "i" } },
+          { lastName: { $regex: filter, $options: "i" } },
           { code: { $regex: filter, $options: "i" } },
         ],
       };

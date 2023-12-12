@@ -1,5 +1,4 @@
 import { WarehouseRepository } from "@/repositories/index";
-import { Types } from "mongoose";
 import { IWarehouse } from "../models";
 import Warehouse, { IModelWarehouse } from "@/models/warehouse.model";
 import { BadRequestError } from "@/lib/graphqlerrors";

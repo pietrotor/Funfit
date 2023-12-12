@@ -21,6 +21,7 @@ export type Scalars = {
 };
 
 export type CreateProductInput = {
+  code: Scalars['String']['input'];
   cost?: InputMaybe<Scalars['Float']['input']>;
   description: Scalars['String']['input'];
   image?: InputMaybe<Scalars['String']['input']>;
@@ -205,6 +206,7 @@ export enum StatusEnum {
 }
 
 export type UpdateProductInput = {
+  code?: InputMaybe<Scalars['String']['input']>;
   cost?: InputMaybe<Scalars['Float']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ObjectId']['input'];
