@@ -35,7 +35,7 @@ function CreateUserForm() {
       paginationInput: {
         page: variables?.currentPage,
         rows: variables?.rows,
-        filter: variables?.filter
+        filter: filtroDebounced
       }
     },
     fetchPolicy: 'network-only',
@@ -184,7 +184,7 @@ function CreateUserForm() {
       <AddUserModal
         onAddUser={refetch}
         isOpen={handleAddUser.isOpen}
-        onClose={handleConfirmDeleteUser }/>
+        onClose={handleAddUser.onClose }/>
     </AdministrationLayout>
   )
 }

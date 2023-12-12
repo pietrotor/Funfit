@@ -41,3 +41,30 @@ export const GET_USERS = gql`
     }
   }
 `
+export const GET_PRODUCTS = gql`
+query GetProducts($paginationInput: PaginationInput!) {
+  getProducts(paginationInput: $paginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      price
+      code
+      units
+      description
+      cost
+      image
+      warehouses
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+`

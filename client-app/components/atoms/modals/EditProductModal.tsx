@@ -4,12 +4,14 @@ import { MyModal } from './MyModal'
 import Input from '../Input'
 import { DropZone } from '@/components/molecules/DropZone'
 export type TValueProductData = {
-  id?: number
+  id?: string
   name?: string
   description?: string
   cost?: number
-  units?: number
+  price?: number
+  units?: string
   image?: string
+  code?: string
 }
   interface EditProductModalProps {
     isOpen: boolean,
