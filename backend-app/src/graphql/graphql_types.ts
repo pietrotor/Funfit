@@ -26,9 +26,7 @@ export type CreateProductInput = {
   description: Scalars['String']['input'];
   image?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
-  price: Scalars['Float']['input'];
-  units: Scalars['String']['input'];
-  warehouses: Array<Scalars['ObjectId']['input']>;
+  suggetedPrice: Scalars['Float']['input'];
 };
 
 export type ErrorInput = {
@@ -212,9 +210,7 @@ export type UpdateProductInput = {
   id: Scalars['ObjectId']['input'];
   image?: InputMaybe<Scalars['String']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
-  price?: InputMaybe<Scalars['Float']['input']>;
-  units?: InputMaybe<Scalars['String']['input']>;
-  warehouses?: InputMaybe<Array<Scalars['ObjectId']['input']>>;
+  suggetedPrice?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type UpdateUserInput = {
