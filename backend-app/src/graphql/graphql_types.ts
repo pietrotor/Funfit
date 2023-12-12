@@ -41,8 +41,8 @@ export type LoginResponse = ResponseBase & {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  createUser?: Maybe<Response>;
-  updateUser?: Maybe<Response>;
+  createUser?: Maybe<UserResponse>;
+  updateUser?: Maybe<UserResponse>;
 };
 
 
@@ -156,7 +156,7 @@ export type UserInput = {
   name: Scalars['String']['input'];
   password: Scalars['String']['input'];
   phone: Scalars['String']['input'];
-  roleId?: InputMaybe<Scalars['ObjectId']['input']>;
+  roleId: Scalars['ObjectId']['input'];
 };
 
 export type UserResponse = ResponseBase & {
@@ -322,8 +322,8 @@ export type LoginResponseResolvers<ContextType = any, ParentType extends Resolve
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  createUser?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'userInput'>>;
-  updateUser?: Resolver<Maybe<ResolversTypes['Response']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'deleteInput' | 'updateUserInput'>>;
+  createUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'userInput'>>;
+  updateUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'deleteInput' | 'updateUserInput'>>;
 };
 
 export interface ObjectIdScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ObjectId'], any> {
