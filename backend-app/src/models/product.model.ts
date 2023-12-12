@@ -1,12 +1,11 @@
-import { Document, Types, Model, Schema, model } from "mongoose";
-import IGeneric from "@/interfaces/generic.interface";
+import { Document, Model, Schema, model } from 'mongoose'
+import IGeneric from '@/interfaces/generic.interface'
 
 export interface IProduct extends Document, IGeneric {
   id: objectId;
   name: string;
-  price: number;
+  suggetedPrice: number;
   code: string;
-  units: string;
   description: string;
   cost: number | null;
   image?: string;
@@ -17,61 +16,56 @@ const productSchema = new Schema<IProduct>(
   {
     name: {
       type: String,
-      required: [true, "nombre es obligatorio"],
-      trim: true,
+      required: [true, 'nombre es obligatorio'],
+      trim: true
     },
-    price: {
+    suggetedPrice: {
       type: Number,
-      required: [true, "precio es obligatorio"],
+      required: [true, 'precio sugerido es obligatorio']
     },
     code: {
       type: String,
-      required: [true, "código es obligatorio"],
-      trim: true,
-    },
-    units: {
-      type: String,
-      required: [true, "las unidades son necesarias"],
-      default: "Unidades",
+      required: [true, 'código es obligatorio'],
+      trim: true
     },
     cost: {
       type: Number,
-      default: null,
+      default: null
     },
     description: {
       type: String,
-      required: [true, "descripción es obligatorio"],
+      required: [true, 'descripción es obligatorio']
     },
     image: {
-      type: String,
+      type: String
     },
     warehouses: [
       {
         type: Schema.Types.ObjectId,
         default: [],
-        ref: "Warehouse",
-      },
+        ref: 'Warehouse'
+      }
     ],
     // Generic Types
     status: { type: Boolean, default: true },
     createdBy: {
       type: Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User'
     },
     deleted: { type: Boolean, default: false },
     deletedAt: { type: Date, default: null },
     deletedBy: {
       type: Schema.Types.ObjectId,
-      ref: "User",
-    },
+      ref: 'User'
+    }
   },
   { timestamps: true }
-);
+)
 
 const Product = model<IProduct, IModelProduct>(
-  "Product",
+  'Product',
   productSchema,
-  "product"
-);
+  'product'
+)
 
-export default Product;
+export default Product

@@ -50,9 +50,8 @@ type Product {
   id: ObjectId!
   name: String!
   # TODO: Change to pricelist
-  price: Float!
+  suggetedPrice: Float!
   code: String!
-  units: String!
   description: String!
   cost: Float
   image: String
@@ -164,22 +163,18 @@ input CreateProductInput {
   name: String!
   code: String!
   # TODO: Change to pricelist
-  price: Float!
-  units: String!
+  suggetedPrice: Float!
   description: String!
   cost: Float
   image: String
-  warehouses: [ObjectId!]!
 }
 input UpdateProductInput {
   id: ObjectId!
   name: String
   code: String
-  # TODO: Change to pricelist
-  price: Float
-  units: String
+  # TODO: Change to PriceList
+  suggetedPrice: Float
   description: String
   cost: Float
   image: String
-  warehouses: [ObjectId!]
 }
