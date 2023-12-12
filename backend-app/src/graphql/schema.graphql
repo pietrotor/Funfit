@@ -12,6 +12,9 @@ type Query {
   getRoles(paginationInput: PaginationInput!): RolesResponse
   getUsers(paginationInput: PaginationInput!): UsersResponse
   getUserById(id: ObjectId!): UserResponse
+  getProducts(paginationInput: PaginationInput!): ProductsResponse
+  getProductById(id: ObjectId!): ProductResponse
+  getWarehouses(paginationInput: PaginationInput!): WarehousesResponse
 }
 type Mutation {
   createUser(userInput: UserInput!): UserResponse
@@ -19,6 +22,9 @@ type Mutation {
     updateUserInput: UpdateUserInput!
     deleteInput: Boolean = false
   ): UserResponse
+  createProduct(createProductInput: CreateProductInput!): ProductResponse
+  updateProduct(updateProductInput: UpdateProductInput!): ProductResponse
+  deleteProduct(id: ObjectId!): ProductResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type Role {
@@ -39,6 +45,22 @@ type User {
   roleId: ObjectId!
   # resolvers
   roleInfo: Role
+}
+type Product {
+  id: ObjectId!
+  name: String!
+  # TODO: Change to pricelist
+  price: Float!
+  code: String!
+  units: String!
+  description: String!
+  cost: Float
+  image: String
+  warehouses: [ObjectId!]!
+}
+type Warehouse {
+  id: ObjectId!
+  name: String!
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -84,6 +106,32 @@ type UserResponse implements ResponseBase {
   message: String
   data: User
 }
+type ProductsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Product!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type ProductResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Product
+}
+type WarehousesResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Warehouse!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input LoginInput {
   email: String!
@@ -111,4 +159,25 @@ input UpdateUserInput {
   phone: String
   roleId: ObjectId
   status: Boolean
+}
+input CreateProductInput {
+  name: String!
+  # TODO: Change to pricelist
+  price: Float!
+  units: String!
+  description: String!
+  cost: Float
+  image: String
+  warehouses: [ObjectId!]!
+}
+input UpdateProductInput {
+  id: ObjectId!
+  name: String
+  # TODO: Change to pricelist
+  price: Float
+  units: String
+  description: String
+  cost: Float
+  image: String
+  warehouses: [ObjectId!]
 }

@@ -16,7 +16,7 @@ import User from "@/models/user.model";
 import { userCore } from "@/services/index";
 import { getRoleByIdInstance } from "@/services/role.service";
 
-// Querys
+// ========================================== Mutations ====================================================
 const login = async (
   _: any,
   args: { loginInput: LoginInput },
@@ -104,7 +104,7 @@ const getUserById = async (
     return errorHandler(error);
   }
 };
-// Mutations
+// ========================================== Mutations ====================================================
 const createUser = async (
   _: any,
   args: { userInput: UserInput },
