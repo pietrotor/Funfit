@@ -44,14 +44,7 @@ const Productos = () => {
 
   const handleUpdateProduct = (productId: number) => {
     console.log(productId)
-    setEditProduct({
-      id: productId,
-      name: 'Pastel de crema de cacahuate',
-      units: 10,
-      description: 'Pastel de crema de cacahuate con chocolate y nuez',
-      cost: 150,
-      image: 'https://www.onfitnesscenter.com/inscripcion-gimnasio/modules//smartblog/images/189-single-default.jpg'
-    })
+    setFilter('asd')
     handleEditProduct.onOpen()
   }
 
