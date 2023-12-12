@@ -60,8 +60,8 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         <title>Page Title</title>
       </Head>
       <main
-        className={` min-h-screen flex-row bg-secondary/20 md:flex ${
-          sidebarOpen ? 'overflow-hidden' : ''
+        className={` min-h-screen flex-row  md:flex transition-colors duration-200 ${
+          sidebarOpen ? 'overflow-hidden bg-white' : 'bg-secondary/5 '
         }`}
       >
         <Sidebar

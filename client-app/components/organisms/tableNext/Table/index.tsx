@@ -42,7 +42,7 @@ const Table = ({
     <>
     <div
       className={
-        'relative flex flex-col border-none min-w-0 break-words w-full mb-3 shadow-lg rounded-xl bg-white' +
+        'relative flex flex-col border-none min-w-0 break-words w-full mb-3 shadow-xl rounded-xl bg-white' +
         (color === 'light' ? '' : 'bg-primary-darken text-white')
       }
     >

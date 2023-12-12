@@ -12,14 +12,15 @@ mutation CreateUser($userInput: UserInput!) {
 }   
 `
 export const UPDATE_USER = gql`
-mutation UpdateUser($updateUserInput: UpdateUserInput!) {
-  updateUser(updateUserInput: $updateUserInput) {
+mutation UpdateUser($updateUserInput: UpdateUserInput!, $deleteInput: Boolean) {
+  updateUser(updateUserInput: $updateUserInput, deleteInput: $deleteInput) {
     errorInput {
       field
       message
     }
     message
     status
-  }
+  },
+  
 }
 `

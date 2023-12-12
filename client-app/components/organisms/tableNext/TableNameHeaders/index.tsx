@@ -20,7 +20,7 @@ const TableNameHeaders = ({ title, color = 'light', onUpClick, onDownClick, isUp
             : 'bg-primary-darken text-blue-white border-blue-500')
         }
       >
-        <div className="flex justify-center gap-1 md:gap-2 items-center">
+        <div className="flex justify-center font-bold gap-1 md:gap-2 items-center">
           {title}
           <div className={`flex items-center gap-4 ${onUpClick || onDownClick ? 'visible' : 'hidden'}`}>
             <Dropdown placement="bottom-end">
