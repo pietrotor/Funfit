@@ -1,30 +1,50 @@
 import { Button, Modal, ModalContent } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import Input from '../Input'
+import { showSuccessToast } from '../Toast/toasts'
 import InformationCard from '@/components/molecules/Card/InformationCard'
 import { useCreateUserMutation } from '@/graphql/graphql-types'
 type ModalProps = {
   isOpen: boolean
   onClose: () => void
+  onAddUser: () => void
 }
 
-export const AddUserModal = ({ isOpen, onClose }: ModalProps) => {
+export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
   const [createUser] = useCreateUserMutation()
-  const { handleSubmit, watch, control } = useForm()
-  const onSubmit = () => {
-    createUser({
-      variables: {
-        userInput: {
-          name: watch('name'),
-          lastName: watch('lastName'),
-          email: watch('email'),
-          password: watch('password'),
-          phone: watch('phone'),
-          roleId: '5f9aee5b0d11b13b443b91d2'
+  const { handleSubmit, watch, control, reset } = useForm()
+  const onSubmit = async () => {
+    try {
+      await createUser({
+        variables: {
+          userInput: {
+            name: watch('name'),
+            lastName: watch('lastName'),
+            email: watch('email'),
+            password: watch('password'),
+            phone: watch('phone'),
+            roleId: '5f9aee5b0d11b13b443b91d2'
+          }
+        },
+        onCompleted: data => {
+          if (data.createUser?.status.toString() === 'ERROR') {
+            showSuccessToast(data.createUser.message || 'Error al crear un usuario', 'error')
+            return
+          }
+          showSuccessToast(data.createUser?.message || 'Usuario creado correctamente', 'success')
+          console.log(data, 'data')
+          onAddUser()
+          onClose()
+          reset()
         }
-      }
-    })
+      })
+    } catch (error) {
+    }
     console.log(watch())
+  }
+  const handleCancel = () => {
+    reset()
+    onClose()
   }
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="w-full" size="4xl">
@@ -47,15 +67,32 @@ export const AddUserModal = ({ isOpen, onClose }: ModalProps) => {
                       type="text"
                       label="Nombre"
                       placeholder="Nombre"
-                      required
-                    />
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'Este campo es obligatorio'
+                        },
+                        pattern: {
+                          value: /^[a-zA-Z\s]+$/i,
+                          message: 'Solo se permiten letras'
+                        }
+                      }
+                    }
+                      />
                     <Input
                       control={control}
                       name="lastName"
                       type="text"
                       label="Apellido"
                       placeholder="Apellido"
-                      required
+                      rules={{
+                        required:
+                          { value: true, message: 'Este campo es obligatorio' },
+                        pattern: {
+                          value: /^[a-zA-Z\s]+$/i,
+                          message: 'Solo se permiten letras'
+                        }
+                      }}
                     />
                     <Input
                       control={control}
@@ -63,27 +100,14 @@ export const AddUserModal = ({ isOpen, onClose }: ModalProps) => {
                       type="email"
                       label="Email"
                       placeholder="email"
-                      required
-                    />
-                    <Input
-                      control={control}
-                      name="password"
-                      type="password"
-                      label="Contraseña"
-                      placeholder="Contraseña"
-                      required
-                    />
-                    <Input
-                      control={control}
-                      name="confirmPassword"
-                      type="password"
-                      label="Confirma la contraseña"
-                      placeholder="Confirma la contraseña"
-                      required
                       rules={{
-                        minLength: {
-                          value: 3,
-                          message: 'El nombre debe tener al menos 3 caracteres'
+                        required: {
+                          value: true,
+                          message: 'Este campo es obligatorio'
+                        },
+                        pattern: {
+                          value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
+                          message: 'Email invalido'
                         }
                       }}
                     />
@@ -93,12 +117,53 @@ export const AddUserModal = ({ isOpen, onClose }: ModalProps) => {
                       type="number"
                       label="Telefono"
                       placeholder="Telefono"
-                      required
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'Este campo es obligatorio'
+                        },
+                        pattern: {
+                          value: /^[0-9]+$/i,
+                          message: 'Solo se permiten numeros'
+                        }
+                      }}
+                    />
+                    <Input
+                      control={control}
+                      name="password"
+                      type="password"
+                      label="Contraseña"
+                      placeholder="Contraseña"
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'Este campo es obligatorio'
+                        }
+                      }}
+                    />
+                    <Input
+                      control={control}
+                      name="confirmPassword"
+                      type="password"
+                      label="Confirma la contraseña"
+                      placeholder="Confirma la contraseña"
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'Este campo es obligatorio'
+                        },
+                        validate: value => value === watch('password') || 'Las contraseñas no coinciden'
+                      }}
                     />
                   </div>
-                  <Button type="submit" color="primary" className="w-1/7 mt-3">
-                    Agregar
-                  </Button>
+                  <div className='flex space-x-6 mt-6'>
+                    <Button type="submit" color="secondary" className="w-1/7">
+                      Agregar
+                    </Button>
+                    <Button color='primary' className="w-1/7" onClick={ handleCancel }>
+                      Cancelar
+                    </Button>
+                  </div>
                 </form>
               </article>
             </InformationCard>

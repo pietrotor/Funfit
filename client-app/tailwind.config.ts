@@ -20,7 +20,7 @@ const config: Config = {
           darken: '#251655'
         },
         secondary: {
-          DEFAULT: '#CCE266',
+          DEFAULT: '#A8C428',
           transparent: 'rgba(204,226,102, 0.62)',
           darken: '#e50b36'
         },
