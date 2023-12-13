@@ -53,9 +53,8 @@ query GetProducts($paginationInput: PaginationInput!) {
     data {
       id
       name
-      price
+      suggetedPrice
       code
-      units
       description
       cost
       image

@@ -6,7 +6,7 @@ import IconSelector from '@/components/atoms/IconSelector'
 import { AddProductModal } from '@/components/atoms/modals/AddProductModal'
 import { EditProductModal, TValueProductData } from '@/components/atoms/modals/EditProductModal'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
-import { StatusEnum, useDeleteProductMutation, useGetProductsQuery } from '@/graphql/graphql-types'
+import { StatusEnum, useDeleteProductMutation, useGetProductsQuery, useUpdateProductMutation } from '@/graphql/graphql-types'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
@@ -16,17 +16,18 @@ const Productos = () => {
   const [variables, setVariables] = useState<PaginationInterfaceState>({})
   const [filter, setFilter] = useState <string>('')
   const [DeleteteProductMutation] = useDeleteProductMutation()
+  const [UpdateUserMutationVariables] = useUpdateProductMutation()
   const handleAddProduct = useDisclosure()
   const handleEditProduct = useDisclosure()
   const handleConfirmDeleteProduct = useDisclosure()
-  const filterProductDebounced = UseDebouncedValue(filter, 2000)
+  const filterProductDebounced = UseDebouncedValue(filter, 800)
 
   const { loading, data, refetch } = useGetProductsQuery({
     variables: {
       paginationInput: {
         page: variables?.currentPage,
         rows: variables?.rows,
-        filter: variables?.filter
+        filter: filterProductDebounced
       }
     },
     fetchPolicy: 'network-only',
@@ -43,20 +44,40 @@ const Productos = () => {
   console.log(data?.getProducts?.data)
 
   const handleUpdateProduct = (productId: number) => {
-    console.log(productId)
-    setFilter('asd')
+    const product = data?.getProducts?.data?.find(product => product.id === productId)
+    setEditProduct(product as TValueProductData)
     handleEditProduct.onOpen()
   }
 
   const handleSendUpdateUser = async (values: TValueProductData) => {
-    try {
-      console.log(values)
-    } catch (error) {
-      console.log(error)
-    }
+    UpdateUserMutationVariables({
+      variables: {
+        updateProductInput: {
+          id: editProduct.id,
+          name: values.name,
+          suggetedPrice: values.suggetedPrice,
+          code: values.code,
+          cost: values.cost,
+          description: values.description,
+          image: values.image
+        }
+      },
+      onCompleted: data => {
+        if (data.updateProduct?.status === StatusEnum.ERROR) {
+          showSuccessToast(data.updateProduct.message || 'Ocurrio un error', 'error')
+          return
+        }
+        showSuccessToast(data.updateProduct?.message || 'Usuario actualizado correctamente', 'success')
+        refetch()
+        handleEditProduct.onClose()
+      }
+    })
+  }
+  const handleChangeRow = (row:number) => {
+    setVariables({ ...variables, rows: row, currentPage: 1 })
   }
 
-  const handleDeleteUser = (productId: string) => {
+  const handleDeleteProduct = (productId: string) => {
     console.log(productId)
     const product = data?.getProducts?.data?.find(product => product.id === productId)
     setEditProduct(product as TValueProductData)
@@ -93,6 +114,15 @@ const Productos = () => {
       <Table
       tableName='Productos'
       isLoading={loading}
+      currentPage={variables.currentPage}
+      totalItems={variables.totalRecords}
+      totalPages={variables.totalPages}
+      itemsPerPage={variables.rows}
+      enablePagination={true}
+      onSearch={ value => setFilter(value) }
+      onChangeRow={row => handleChangeRow(row)}
+      onChangePage={page => setVariables({ ...variables, currentPage: page }) }
+
       titles={
         [
           { name: '#' },
@@ -102,7 +132,6 @@ const Productos = () => {
           { name: 'Costo' },
           { name: 'Codigo' },
           { name: 'Descripción' },
-          { name: 'Unidades' },
           { name: 'Acciones' }
         ]
       }
@@ -110,11 +139,10 @@ const Productos = () => {
         content: [idx + 1,
         <Image alt='image' src={ product.image || 'asd'} key={idx}/>,
         <div key={idx} className='text-sm text-left'>{product.name}</div>,
-        product.price + ' Bs.',
+        product.suggetedPrice + ' Bs.',
         product.cost + ' Bs.',
         <div key={idx} className='text-sm text-left'>{product.code}</div>,
         <div key={idx} className='text-sm text-left'>{product.description}</div>,
-        product.units + ' Unidades',
       <div key={idx} className="flex space-x-3">
         <Button
           onClick={() => handleUpdateProduct(product.id)}
@@ -123,7 +151,7 @@ const Productos = () => {
         >
           Editar
         </Button>
-        <Button onClick={() => handleDeleteUser(product.id)} color="danger" className="w-1/2">
+        <Button onClick={() => handleDeleteProduct(product.id)} color="danger" className="w-1/2">
           Eliminar
         </Button>
       </div>

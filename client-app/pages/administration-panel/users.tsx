@@ -163,7 +163,7 @@ function CreateUserForm() {
           isLoading ={loading}
           enablePagination={true}
           onSearch={ value => setFilter(value) }
-           totalItems={variables?.totalRecords }
+          totalItems={variables?.totalRecords }
         />
       </div>
 

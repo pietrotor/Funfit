@@ -26,9 +26,7 @@ export const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps
           description: watch('description'),
           image: watch('image'),
           name: watch('name'),
-          price: parseFloat(watch('price')),
-          units: watch('units'),
-          warehouses: ['65783b570062575573f82cba']
+          suggetedPrice: parseFloat(watch('suggetedPrice'))
         }
       },
       onCompleted: data => {
@@ -43,99 +41,91 @@ export const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps
       }
     })
   }
+
+  const handleCancel = () => {
+    reset()
+    onClose()
+  }
+
   return <MyModal isOpen = { isOpen } onClose={onClose}>
     <section>
     <h1 className="mt-5 text-center text-2xl font-bold">
       Agregar Producto
     </h1>
-    <form action="" onSubmit={handleSubmit(onSubmit)} className='p-4 md:p-8'>
+    <form action="" onSubmit={handleSubmit(onSubmit)} className='p-4 md:p-8 '>
+      <div className='grid grid-cols-2 gap-3'>
+        <Input
+        control={control}
+        name='name'
+        label='Nombre'
+        placeholder='Nombre'
+        type='text'
+        rules={{
+          required: {
+            value: true,
+            message: 'Este campo es obligatorio'
+          },
+          pattern: {
+            value: /^[a-zA-Z\s]+$/i,
+            message: 'Solo se permiten letras'
+          }
+        }}
+        />
+        <Input
+        control={control}
+        name='suggetedPrice'
+        label='Precio sugerido'
+        placeholder='Precio sugerido'
+        type='text'
+        rules={{
+          required: {
+            value: true,
+            message: 'Este campo es obligatorio'
+          },
+          pattern: {
+            value: /^[0-9]+$/i,
+            message: 'Solo se permiten números'
+          }
+        }}
+        />
+        <Input
+        control={control}
+        name='cost'
+        label='Costo'
+        placeholder='Costo'
+        type='text'
+        rules={{
+          required: {
+            value: true,
+            message: 'Este campo es obligatorio'
+          },
+          pattern: {
+            value: /^[0-9]+$/i,
+            message: 'Solo se permiten números'
+          }
+        }}
+        />
+        <Input
+        name='code'
+        control={control}
+        label='Código'
+        placeholder='Código'
+        type='text'
+        rules={{
+          required: {
+            value: true,
+            message: 'Este campo es obligatorio'
+          }
+        }}
+        />
+      </div>
       <Input
-      control={control}
-      name='name'
-      label='Nombre'
-      placeholder='Nombre'
-      type='text'
-      rules={{
-        required: {
-          value: true,
-          message: 'Este campo es obligatorio'
-        },
-        pattern: {
-          value: /^[a-zA-Z\s]+$/i,
-          message: 'Solo se permiten letras'
-        }
-      }}
-      />
-      <Input
-      control={control}
-      name='price'
-      label='Precio'
-      placeholder='Precio'
-      type='text'
-      rules={{
-        required: {
-          value: true,
-          message: 'Este campo es obligatorio'
-        },
-        pattern: {
-          value: /^[0-9]+$/i,
-          message: 'Solo se permiten números'
-        }
-      }}
-      />
-      <Input
-      control={control}
-      name='cost'
-      label='Costo'
-      placeholder='Costo'
-      type='text'
-      rules={{
-        required: {
-          value: true,
-          message: 'Este campo es obligatorio'
-        },
-        pattern: {
-          value: /^[0-9]+$/i,
-          message: 'Solo se permiten números'
-        }
-      }}
-      />
-      <Input
-      control={control}
-      name='units'
-      label='Unidades'
-      placeholder='Unidades'
-      type='text'
-      rules={{
-        required: {
-          value: true,
-          message: 'Este campo es obligatorio'
-        },
-        pattern: {
-          value: /^[0-9]+$/i,
-          message: 'Solo se permiten números'
-        }
-      }}
-      />
-      <Input
-      name='code'
-      control={control}
-      label='Código'
-      placeholder='Código'
-      type='text'
-      rules={{
-        required: {
-          value: true,
-          message: 'Este campo es obligatorio'
-        }
-      }}
-      />
-      <Input
+      customeClassName='h-20 '
       control={control}
       name='description'
       label='Descripción'
       placeholder='Descripción'
-      type='text'
+      type='textArea'
       rules={{
         required: {
           value: true,
@@ -152,7 +142,7 @@ export const AddProductModal = ({ isOpen, onClose, onAdd }: AddProductModalProps
         <Button type="submit" color="secondary" className="w-1/7">
           Agregar
         </Button>
-        <Button color='primary' className="w-1/7" >
+        <Button color='primary' className="w-1/7" onClick={ handleCancel } >
           Cancelar
         </Button>
       </div>

@@ -8,8 +8,7 @@ export type TValueProductData = {
   name?: string
   description?: string
   cost?: number
-  price?: number
-  units?: string
+  suggetedPrice?: number
   image?: string
   code?: string
 }
@@ -33,8 +32,10 @@ export const EditProductModal = (
       id: values.id,
       name: watch('name'),
       description: watch('description'),
-      cost: watch('cost'),
-      units: watch('units')
+      cost: parseFloat(watch('cost')),
+      code: watch('code'),
+      image: watch('image'),
+      suggetedPrice: parseFloat(watch('suggetedPrice'))
     })
   }
   console.log(values)
@@ -45,68 +46,78 @@ export const EditProductModal = (
       <form
         className=" m-auto flex w-5/6 flex-col items-center space-y-4 pb-9"
         onSubmit={handleSubmit(onSubmit)}>
-
-        <Input
+        <div className='grid grid-cols-2 w-full gap-3 '>
+          <Input
           control={control}
-          name="name"
+          name='name'
+          label='Nombre'
+          placeholder='Nombre'
           type='text'
-          placeholder="Nombre"
-          label={'Nombre'}
-          required={false}
+          defaultValue={values.name}
           rules={{
             pattern: {
-              value: /^[a-zA-ZÀ-ÿ\s]{1,40}$/,
-              message: 'El nombre solo puede contener letras y espacios'
+              value: /^[a-zA-Z\s]+$/i,
+              message: 'Solo se permiten letras'
             }
           }}
-          defaultValue={values.name}/>
-
-        <Input
+          />
+          <Input
           control={control}
-          name="cost"
+          name='suggetedPrice'
+          label='Precio sugerido'
+          defaultValue={values.suggetedPrice}
+          placeholder='Precio sugerido'
           type='text'
-          placeholder="Precio (Bs)"
-          label={'Precio (Bs)'}
+          rules={{
+
+            pattern: {
+              value: /^[0-9]+$/i,
+              message: 'Solo se permiten números'
+            }
+          }}
+          />
+          <Input
+          control={control}
           defaultValue={values.cost}
-          required={false}
+          name='cost'
+          label='Costo'
+          placeholder='Costo'
+          type='text'
           rules={{
             pattern: {
               value: /^[0-9]+$/i,
               message: 'Solo se permiten números'
             }
-          }}/>
-
-        <Input
+          }}
+          />
+          <Input
+          defaultValue={values.code}
+          name='code'
           control={control}
-          name="description"
-          placeholder="Descripcion"
-          label={'Descripcion'}
-          defaultValue={values.description}
-          required={false}
-          rules={{
-            pattern: {
-              value: /^[a-zA-ZÀ-ÿ\s]{1,40}$/,
-              message: 'La descripcion solo puede contener letras y espacios'
-            }
-          }}/>
-
-        <Input
-          control={control}
-          name="units"
+          label='Código'
+          placeholder='Código'
           type='text'
-          placeholder="Unidades"
-          label={'Unidades'}
-          defaultValue={values.units}
-          required={false}
-          rules={
-            {
-              pattern: {
-                value: /^[0-9]+$/i,
-                message: 'Solo se permiten números'
-              }
-            }
-          }
-        />
+          rules={{
+
+          }}
+          />
+        </div>
+
+      <Input
+      defaultValue={values.description}
+      control={control}
+      name='description'
+      label='Descripción'
+      placeholder='Descripción'
+      type='textArea'
+      customeClassName='h-20'
+      rules={{
+        pattern: {
+          value: /^[a-zA-Z\s]+$/i,
+          message: 'Solo se permiten letras'
+        }
+      }}
+      />
 
         <DropZone/>
 

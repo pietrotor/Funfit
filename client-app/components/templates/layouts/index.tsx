@@ -18,18 +18,18 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       link: '/'
     },
     {
-      icon: 'home',
-      text: 'Productos',
+      icon: 'Admin',
+      text: 'Administración',
       subMenu: [
         {
-          icon: 'home',
-          text: 'Sub inicio',
-          link: '/home'
+          icon: 'users',
+          text: 'Usuarios',
+          link: '/administration-panel/users'
         },
         {
-          icon: 'home',
-          text: 'Sub inicio',
-          link: '/home'
+          icon: 'Box',
+          text: 'Productos',
+          link: '/administration-panel/products'
         },
         {
           icon: 'home',

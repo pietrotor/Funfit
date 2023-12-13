@@ -36,9 +36,8 @@ mutation CreateProduct($createProductInput: CreateProductInput!) {
     data {
       id
       name
-      price
+      suggetedPrice
       code
-      units
       description
       cost
       image
@@ -53,9 +52,8 @@ mutation UpdateProduct($updateProductInput: UpdateProductInput!) {
     data {
       id
       name
-      price
+      suggetedPrice
       code
-      units
       description
       cost
       image
@@ -77,9 +75,8 @@ mutation DeleteProduct($deleteProductId: ObjectId!) {
     data {
       id
       name
-      price
+      suggetedPrice
       code
-      units
       description
       cost
       image
