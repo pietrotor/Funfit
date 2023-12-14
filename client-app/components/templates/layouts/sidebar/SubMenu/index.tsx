@@ -42,7 +42,7 @@ const SubMenu: React.FC<TSubMenuLinkProps> = ({
       />
       <Accordion isOpen={isOpen} setIsOpen={setIsOpen}>
         <div className="ml-1 bg-secondary/30">
-          {subMenu.map((item, idx) => (
+          {isSidebarOpen && subMenu.map((item, idx) => (
             <MenuLink
               key={idx}
               isSidebarOpen={isSidebarOpen}

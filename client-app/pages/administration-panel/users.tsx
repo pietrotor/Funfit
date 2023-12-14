@@ -17,6 +17,7 @@ import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import Table from '@/components/organisms/tableNext/Table'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
+import { userValidation } from '@/services/UserValidation'
 
 function CreateUserForm() {
   const handleAddUser = useDisclosure()
@@ -35,7 +36,7 @@ function CreateUserForm() {
       paginationInput: {
         page: variables?.currentPage,
         rows: variables?.rows,
-        filter: variables?.filter
+        filter: filtroDebounced
       }
     },
     fetchPolicy: 'network-only',
@@ -163,7 +164,7 @@ function CreateUserForm() {
           isLoading ={loading}
           enablePagination={true}
           onSearch={ value => setFilter(value) }
-           totalItems={variables?.totalRecords }
+          totalItems={variables?.totalRecords }
         />
       </div>
 
@@ -184,8 +185,12 @@ function CreateUserForm() {
       <AddUserModal
         onAddUser={refetch}
         isOpen={handleAddUser.isOpen}
-        onClose={handleConfirmDeleteUser }/>
+        onClose={handleAddUser.onClose }/>
     </AdministrationLayout>
   )
 }
 export default CreateUserForm
+
+export const getServerSideProps = async (ctx: any) => {
+  return await userValidation(ctx)
+}

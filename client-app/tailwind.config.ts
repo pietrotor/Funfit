@@ -26,6 +26,9 @@ const config: Config = {
         },
         tertiary: {
           DEFAULT: '#353838'
+        },
+        success: {
+          DEFAULT: '#6aa84f'
         }
       }
     }

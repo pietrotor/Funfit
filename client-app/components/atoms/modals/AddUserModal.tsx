@@ -3,7 +3,7 @@ import { useForm } from 'react-hook-form'
 import Input from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
 import InformationCard from '@/components/molecules/Card/InformationCard'
-import { useCreateUserMutation } from '@/graphql/graphql-types'
+import { StatusEnum, useCreateUserMutation } from '@/graphql/graphql-types'
 type ModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -27,7 +27,7 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
           }
         },
         onCompleted: data => {
-          if (data.createUser?.status.toString() === 'ERROR') {
+          if (data.createUser?.status === StatusEnum.ERROR) {
             showSuccessToast(data.createUser.message || 'Error al crear un usuario', 'error')
             return
           }
