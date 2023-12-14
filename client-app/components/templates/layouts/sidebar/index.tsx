@@ -89,7 +89,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
         </div>
         {/* Detail sidebar */}
         <div
-          className={`flex h-full flex-col justify-between overflow-hidden bg-orange-50 shadow-2xl transition-all duration-300 ${
+          className={`flex h-full flex-col justify-between overflow-hidden bg-secondary/20 shadow-2xl transition-all duration-300 ${
             isSidebarOpen ? 'w-80' : 'w-0'
           }`}
         >
@@ -132,9 +132,9 @@ const Sidebar: React.FC<TSidebarProps> = ({
               })}
             </div>
           </div>
-          <div className="flex w-full items-center gap-3 overflow-hidden bg-primary px-10 py-5 text-tertiary">
-            <IconSelector name="user" width="w-8" height="h-8" />
-            <p className="font-semibold capitalize">{user.name}</p>
+          <div className="flex w-full items-center gap-3 overflow-hidden bg-secondary px-10 py-5 text-tertiary">
+            <IconSelector name="user" width="w-8" height="h-8" className='text-white' />
+            <p className="font-semibold text-white capitalize">{user.name}</p>
           </div>
         </div>
       </div>

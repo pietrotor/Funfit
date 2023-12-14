@@ -10,6 +10,7 @@ import { StatusEnum, useDeleteProductMutation, useGetProductsQuery, useUpdatePro
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
+import { userValidation } from '@/services/UserValidation'
 
 const Productos = () => {
   const [editProduct, setEditProduct] = useState <TValueProductData>({})
@@ -78,7 +79,6 @@ const Productos = () => {
   }
 
   const handleDeleteProduct = (productId: string) => {
-    console.log(productId)
     const product = data?.getProducts?.data?.find(product => product.id === productId)
     setEditProduct(product as TValueProductData)
     handleConfirmDeleteProduct.onOpen()
@@ -185,3 +185,7 @@ const Productos = () => {
 }
 
 export default Productos
+
+export const getServerSideProps = async (ctx: any) => {
+  return await userValidation(ctx)
+}

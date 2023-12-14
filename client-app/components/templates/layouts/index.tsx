@@ -19,7 +19,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     },
     {
       icon: 'Admin',
-      text: 'Administración',
+      text: 'Administrar',
       subMenu: [
         {
           icon: 'users',
@@ -32,24 +32,9 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           link: '/administration-panel/products'
         },
         {
-          icon: 'home',
-          text: 'Sub inicio',
-          link: '/home'
-        },
-        {
-          icon: 'home',
-          text: 'Sub inicio',
-          link: '/home'
-        },
-        {
-          icon: 'home',
-          text: 'Sub inicio',
-          link: '/home'
-        },
-        {
-          icon: 'home',
-          text: 'Sub inicio',
-          link: '/home'
+          icon: 'Bussines',
+          text: 'Almacenes',
+          link: '/administration-panel/warehouses'
         }
       ]
     }

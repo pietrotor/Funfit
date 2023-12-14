@@ -30,7 +30,7 @@ export const EditProductModal = (
   const onSubmit = () => {
     handleSendUpdateUser({
       id: values.id,
-      name: watch('name'),
+      name: watch('name') === values.name ? undefined : watch('name'),
       description: watch('description'),
       cost: parseFloat(watch('cost')),
       code: watch('code'),
@@ -97,9 +97,6 @@ export const EditProductModal = (
           label='Código'
           placeholder='Código'
           type='text'
-          rules={{
-
-          }}
           />
         </div>
 

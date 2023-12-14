@@ -17,6 +17,7 @@ import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import Table from '@/components/organisms/tableNext/Table'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
+import { userValidation } from '@/services/UserValidation'
 
 function CreateUserForm() {
   const handleAddUser = useDisclosure()
@@ -189,3 +190,7 @@ function CreateUserForm() {
   )
 }
 export default CreateUserForm
+
+export const getServerSideProps = async (ctx: any) => {
+  return await userValidation(ctx)
+}

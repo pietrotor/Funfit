@@ -1,4 +1,5 @@
 import { Button, Input } from '@nextui-org/react'
+import Cookies from 'js-cookie'
 import { NextPage } from 'next'
 import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
@@ -27,9 +28,10 @@ const LoginPage: NextPage = () => {
       },
       onCompleted(data) {
         if (data.login?.status === StatusEnum.OK) {
-          localStorage.setItem('token', data.login.token?.toString()!)
-          showSuccessToast('Bienvenido', 'success')
-          router.push('/administration-panel')
+          // localStorage.setItem('token', data.login.token?.toString()!)
+          Cookies.set('sao-sess', data.login.token?.toString()!, { expires: 7 })
+          showSuccessToast(data.login.message || 'Bienvenido', 'success')
+          router.push('/administration-panel/users')
           return
         }
         showSuccessToast(

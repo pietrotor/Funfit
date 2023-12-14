@@ -13,6 +13,35 @@ export const LOGIN = gql`
     }
   }
 `
+export const CURRENT_USER = gql`
+  query CurrentUser {
+  currentUser {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      lastName
+      email
+      phone
+      lastLogin
+      status
+      createdBy
+      roleId
+      roleInfo {
+        id
+        name
+        code
+        status
+      }
+    }
+  }
+}
+`
 
 export const GET_USERS = gql`
   query GetUsers($paginationInput: PaginationInput!) {
