@@ -1,16 +1,16 @@
-import dateTimeScalar from "../scalars/date.scalar";
-import ObjectIdScalar from "../scalars/objectid.scalar";
-import { GraphQLTime } from "graphql-scalars";
-import { Resolvers } from "../graphql_types";
-import { ContextGraphQl } from "../../interfaces/context.interface";
-import { userMutation, userQuery, userType } from "./user.resolver";
-import { roleQuery } from "./role.resolver";
-import { productMutation, productQuery, productType } from "./product.resolver";
+import dateTimeScalar from '../scalars/date.scalar'
+import ObjectIdScalar from '../scalars/objectid.scalar'
+import { GraphQLTime } from 'graphql-scalars'
+import { Resolvers } from '../graphql_types'
+import { ContextGraphQl } from '../../interfaces/context.interface'
+import { userMutation, userQuery, userType } from './user.resolver'
+import { roleQuery } from './role.resolver'
+import { productMutation, productQuery, productType } from './product.resolver'
 import {
   warehouseMutation,
   warehouseQuery,
-  warehouseType,
-} from "./warehose.resolver";
+  warehouseType
+} from './warehose.resolver'
 
 const resolvers: Resolvers<ContextGraphQl> = {
   Date: dateTimeScalar,
@@ -23,13 +23,13 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...userQuery,
     ...roleQuery,
     ...productQuery,
-    ...warehouseQuery,
+    ...warehouseQuery
   },
   Mutation: {
     ...userMutation,
     ...productMutation,
-    ...warehouseMutation,
-  },
-};
+    ...warehouseMutation
+  }
+}
 
-export default resolvers;
+export default resolvers

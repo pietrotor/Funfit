@@ -14,17 +14,23 @@ type Query {
   getUserById(id: ObjectId!): UserResponse
   getProducts(paginationInput: PaginationInput!): ProductsResponse
   getProductById(id: ObjectId!): ProductResponse
+  getWarehouseById(id: ObjectId!): WarehouseResponse
   getWarehouses(paginationInput: PaginationInput!): WarehousesResponse
 }
 type Mutation {
+  # ================= USERS ==========================
   createUser(userInput: UserInput!): UserResponse
   updateUser(
     updateUserInput: UpdateUserInput!
     deleteInput: Boolean = false
   ): UserResponse
+  # ================= PRODUCT ==========================
   createProduct(createProductInput: CreateProductInput!): ProductResponse
   updateProduct(updateProductInput: UpdateProductInput!): ProductResponse
   deleteProduct(id: ObjectId!): ProductResponse
+  # ================= WAREHOUSES ==========================
+  createWarehouse(createWarehouseInput: CreateWarehouseInput!): WarehouseResponse
+  updateWarehouse(updateWarehouseInput: UpdateWarehouseInput!): WarehouseResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type Role {
@@ -60,6 +66,8 @@ type Product {
 type Warehouse {
   id: ObjectId!
   name: String!
+  description: String!
+  address: String!
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -121,6 +129,12 @@ type ProductResponse implements ResponseBase {
   message: String
   data: Product
 }
+type WarehouseResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Warehouse
+}
 type WarehousesResponse implements ResponseBase {
   errorInput: [ErrorInput!]
   status: StatusEnum!
@@ -177,4 +191,15 @@ input UpdateProductInput {
   description: String
   cost: Float
   image: String
+}
+input CreateWarehouseInput {
+  name: String!
+  description: String!
+  address: String!
+}
+input UpdateWarehouseInput {
+  id: ObjectId!
+  name: String
+  description: String
+  address: String
 }
