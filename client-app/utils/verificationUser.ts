@@ -1,10 +1,15 @@
 // import { CURRENT_USER } from '@/utils/querys'
 import cookie from 'cookie'
+
+import { GetServerSidePropsContext, PreviewData } from 'next'
+import { ParsedUrlQuery } from 'querystring'
 import { CURRENT_USER } from './queries'
 import apolloClientSSR from '@/graphql/apollo-ssr'
+import { CurrentUserQuery, StatusEnum } from '@/graphql/graphql-types'
+
 // import client from '@/graphql/apollo-client'
 
-export const authUserHeader = async (ctx: any) => {
+export const authUserHeader = async (ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>) => {
   try {
     if (!ctx.req.headers.cookie) {
       return {
@@ -17,7 +22,7 @@ export const authUserHeader = async (ctx: any) => {
     const cookiesParsed = cookie.parse(ctx.req.headers.cookie)
     let authToken
     if (cookiesParsed['sao-sess']) {
-      authToken = cookiesParsed['sao-sess']
+      authToken = cookiesParsed['sao-sess'].trim()
     } else {
       return {
         redirect: {
@@ -26,20 +31,21 @@ export const authUserHeader = async (ctx: any) => {
         }
       }
     }
-    console.log(authToken, 'cookiesParsed')
 
     // Get the user's session based on the request
-    const result = await apolloClientSSR.query({
+    const result = await apolloClientSSR.query <CurrentUserQuery>({
       query: CURRENT_USER,
+      fetchPolicy: 'network-only',
       context: {
         headers: {
           Authorization: authToken
         }
       }
     })
+
     console.log(result, 'result------------')
     const data = result.data
-    if (data.currentUser.status === 'error') {
+    if (data.currentUser?.status === StatusEnum.ERROR || !data.currentUser?.data) {
       return {
         redirect: {
           permanent: false,
@@ -48,7 +54,7 @@ export const authUserHeader = async (ctx: any) => {
       }
     }
     // If there is a user, return the current session
-    return { props: { user: data.currentUser.user } }
+    return { props: { user: data.currentUser.data } }
   } catch (error) {
     console.log(error)
     return {
