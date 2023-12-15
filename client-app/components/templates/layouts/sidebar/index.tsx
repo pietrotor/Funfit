@@ -42,9 +42,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
       ></div>
       <div
         className={`fixed left-0 top-0 z-50 flex h-screen max-h-screen text-white transition-all duration-700 ${
-          isSidebarOpen
-            ? 'w-80 -translate-x-20'
-            : 'w-16 -translate-x-20 md:-translate-x-0 xl:w-[70px]'
+          isSidebarOpen ? 'w-80 -translate-x-20' : 'w-16 -translate-x-20 md:-translate-x-0 xl:w-[70px]'
         }`}
       >
         {/* Simple sidebar */}
@@ -53,7 +51,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
             !isSidebarOpen ? 'rounded-br-2xl rounded-tr-2xl' : ''
           }`}
         >
-          <div>
+          <div >
             <Image
               alt="100"
               width={50}
@@ -61,27 +59,30 @@ const Sidebar: React.FC<TSidebarProps> = ({
               src="/../../common/logo (1).png"
               className="m-auto mb-4 mt-20 h-16 w-16 rounded-full object-contain px-1 transform transition-transform duration-300 hover:scale-110 cursor-pointer"
             />
-            <div>
-              {menu.map((menuItem, idx) => {
-                return !menuItem.subMenu ? (
-                  <MenuLink
-                    detailView={false}
-                    isSidebarOpen={isSidebarOpen}
-                    text={menuItem.text}
-                    icon={menuItem.icon}
-                    link={menuItem.link}
-                  />
-                ) : (
-                  <SubMenu
-                    detailView={false}
-                    isSidebarOpen={isSidebarOpen}
-                    text={menuItem.text}
-                    icon={menuItem.icon}
-                    subMenu={menuItem.subMenu}
-                  />
-                )
-              })}
-            </div>
+              <div >
+                {menu.map((menuItem, idx) => {
+                  return !menuItem.subMenu ? (
+                    <MenuLink
+                      detailView={false}
+                      isSidebarOpen={isSidebarOpen}
+                      text={menuItem.text}
+                      icon={menuItem.icon}
+                      link={menuItem.link}
+                    />
+                  ) : (
+                    <div onClick={() => setSidebar(true)}>
+                      <SubMenu
+                      detailView={false}
+                      isSidebarOpen={isSidebarOpen}
+                      text={menuItem.text}
+                      icon={menuItem.icon}
+                      subMenu={menuItem.subMenu}
+
+                    />
+                    </div>
+                  )
+                })}
+              </div>
           </div>
           <div className="flex w-full justify-center bg-secondary py-5  text-white">
             <IconSelector name="user" width="w-8" height="h-8" />

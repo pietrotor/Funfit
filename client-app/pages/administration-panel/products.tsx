@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Button, Image, useDisclosure } from '@nextui-org/react'
+import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
 import Table from '@/components/organisms/tableNext/Table'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -10,7 +11,7 @@ import { StatusEnum, useDeleteProductMutation, useGetProductsQuery, useUpdatePro
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
-import { userValidation } from '@/services/UserValidation'
+import { authUserHeader } from '@/utils/verificationUser'
 
 const Productos = () => {
   const [editProduct, setEditProduct] = useState <TValueProductData>({})
@@ -108,9 +109,9 @@ const Productos = () => {
     <div className="m-auto w-5/6 mt-16 ">
     <h2 className='text-center font-extrabold text-2xl text-gray-500 '>Administración de productos</h2>
     <Button onClick={handleAddProduct.onOpen} color="secondary" className="float-right my-4 text-white font-extrabold">
+      <IconSelector name="Box" />
           Agregar nuevo producto
-          <IconSelector name="addUser" />
-        </Button>
+    </Button>
       <Table
       tableName='Productos'
       isLoading={loading}
@@ -146,12 +147,14 @@ const Productos = () => {
       <div key={idx} className="flex space-x-3">
         <Button
           onClick={() => handleUpdateProduct(product.id)}
-          color="secondary"
+          color="default"
           className="w-1/2"
         >
+        <IconSelector name='edit'/>
           Editar
         </Button>
         <Button onClick={() => handleDeleteProduct(product.id)} color="danger" className="w-1/2">
+        <IconSelector name='trash'/>
           Eliminar
         </Button>
       </div>
@@ -186,6 +189,4 @@ const Productos = () => {
 
 export default Productos
 
-export const getServerSideProps = async (ctx: any) => {
-  return await userValidation(ctx)
-}
+export const getServerSideProps: GetServerSideProps = async (ctx) => await authUserHeader(ctx)

@@ -1,5 +1,5 @@
+import { GetServerSideProps } from 'next'
 import { useState } from 'react'
-
 import { Button, useDisclosure } from '@nextui-org/react'
 
 import AdministrationLayout from '@/components/templates/layouts'
@@ -17,7 +17,7 @@ import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import Table from '@/components/organisms/tableNext/Table'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
-import { userValidation } from '@/services/UserValidation'
+import { authUserHeader } from '@/utils/verificationUser'
 
 function CreateUserForm() {
   const handleAddUser = useDisclosure()
@@ -125,8 +125,8 @@ function CreateUserForm() {
       <div className="m-auto w-5/6 mt-16 ">
       <h3 className='text-center font-extrabold text-2xl text-gray-500 '>Administración de usuarios</h3>
         <Button onClick={handleAddUser.onOpen} color="secondary" className="float-right text-white font-extrabold my-4">
-          Agregar nuevo usuario
           <IconSelector name="addUser" />
+          Agregar nuevo usuario
         </Button>
         <Table
           titles={[
@@ -144,12 +144,14 @@ function CreateUserForm() {
             <div key={idx} className="flex space-x-3">
           <Button
             onClick={() => handleUpdateUser(user.id)}
-            color="secondary"
+            color="default"
             className="w-1/2"
           >
+            <IconSelector name='edit'/>
             Editar
           </Button>
           <Button onClick={() => handleDeleteUser(user.id)} color="danger" className="w-1/2">
+            <IconSelector name='trash'/>
             Eliminar
           </Button>
         </div>
@@ -191,6 +193,4 @@ function CreateUserForm() {
 }
 export default CreateUserForm
 
-export const getServerSideProps = async (ctx: any) => {
-  return await userValidation(ctx)
-}
+export const getServerSideProps: GetServerSideProps = async (ctx) => await authUserHeader(ctx)

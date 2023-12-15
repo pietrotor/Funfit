@@ -24,11 +24,7 @@ const MenuLink: React.FC<TMenuLinkProps> = ({
 }) => {
   const router = useRouter()
   const [isCurrent] = useState(
-    link
-      ? link === '/'
-        ? link === router.asPath
-        : router.asPath.includes(link)
-      : false
+    link ? link === '/' ? link === router.asPath : router.asPath.includes(link) : false
   )
   if (!link) {
     return (

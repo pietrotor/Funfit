@@ -1,5 +1,6 @@
 import { Button, useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
+import { GetServerSideProps } from 'next'
 
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
@@ -8,6 +9,7 @@ import { EditWarehouseModal, TValuesWarehouses } from '@/components/atoms/modals
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { AddWarehouseModal } from '@/components/atoms/modals/AddWarehouseModal'
+import { authUserHeader } from '@/utils/verificationUser'
 
 function Warehouses() {
   const [edit, setEdit] = useState <TValuesWarehouses>({})
@@ -144,9 +146,9 @@ function Warehouses() {
   return <AdministrationLayout>
       <div className="m-auto w-5/6 mt-16 ">
       <h3 className='text-center font-extrabold text-2xl text-gray-500 '>Administración de Almacénes</h3>
-        <Button onClick={handleAddWarehouse.onOpen} color="success" className="float-right text-white font-extrabold my-4">
+        <Button onClick={handleAddWarehouse.onOpen} color="secondary" className="float-right text-white font-extrabold my-4">
+          <IconSelector name="Bussines"/>
           Agregar nuevo Almacén
-          <IconSelector name="Bussines" />
         </Button>
         <Table
           tableName={'Almacenes'}
@@ -203,3 +205,5 @@ function Warehouses() {
   </AdministrationLayout>
 }
 export default Warehouses
+
+export const getServerSideProps: GetServerSideProps = async (ctx) => await authUserHeader(ctx)
