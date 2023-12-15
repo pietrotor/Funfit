@@ -54,4 +54,12 @@ export class WarehouseService extends WarehouseRepository<objectId> {
     updateGenericInstance(warehouseInstance, updateWarehouseInput, [])
     return await warehouseInstance.save()
   }
+
+  async deleteWarehouse(id: objectId, deletedBy?: objectId) {
+    const warehouseInstance = await this.getWarehouseById(id)
+    warehouseInstance.deleted = true
+    warehouseInstance.deletedBy = deletedBy
+    warehouseInstance.deletedAt = new Date()
+    return await warehouseInstance.save()
+  }
 }

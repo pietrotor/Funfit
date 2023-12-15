@@ -31,6 +31,7 @@ type Mutation {
   # ================= WAREHOUSES ==========================
   createWarehouse(createWarehouseInput: CreateWarehouseInput!): WarehouseResponse
   updateWarehouse(updateWarehouseInput: UpdateWarehouseInput!): WarehouseResponse
+  deleteWarehouse(id: ObjectId!): WarehouseResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type Role {

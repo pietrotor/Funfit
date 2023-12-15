@@ -1,4 +1,5 @@
 import { CreateWarehouseInput, PaginationInput, StatusEnum, UpdateWarehouseInput, WarehouseResponse, WarehousesResponse } from '@/graphql/graphql_types'
+import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
 import { warehouseCore } from '@/services/index'
 
@@ -68,13 +69,32 @@ const updateWarehouse = async (
     return errorHandler(error)
   }
 }
+const deleteWarehouse = async (
+  _: any,
+  args: { id: objectId },
+  context: ContextGraphQl
+): Promise<WarehouseResponse> => {
+  try {
+    const { id } = args
+    const warehouseInstance = await warehouseCore.deleteWarehouse(id, context.req.currentUser?.id)
+    return {
+      status: StatusEnum.OK,
+      message: 'Almacen eliminado correctamente',
+      data: warehouseInstance
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
 export const warehouseQuery = {
   getWarehouses,
   getWarehouseById
 }
 export const warehouseMutation = {
   createWarehouse,
-  updateWarehouse
+  updateWarehouse,
+  deleteWarehouse
 }
 
 export const warehouseType = {}

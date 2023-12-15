@@ -17,4 +17,8 @@ export abstract class WarehouseRepository<T> {
   abstract updateWarehouse(
     createWarehouseInput: UpdateWarehouseInput
   ): Promise<IWarehouse | OutErrorResponse>;
+
+  abstract deleteWarehouse(
+    id: objectId, deletedBy?: objectId
+  ): Promise<IWarehouse | OutErrorResponse>;
 }
