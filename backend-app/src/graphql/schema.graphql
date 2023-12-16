@@ -16,24 +16,49 @@ type Query {
   getProductById(id: ObjectId!): ProductResponse
   getWarehouseById(id: ObjectId!): WarehouseResponse
   getWarehouses(paginationInput: PaginationInput!): WarehousesResponse
+  getConfiguration: ConfigurationResponse
 }
 type Mutation {
-  # ================= USERS ==========================
+  # ================= CONFIGURATION ====================================
+  updateConfiguration(
+    updateConfigurationInput: UpdateConfigurationInput!
+  ): ConfigurationResponse
+  # ================= USERS ============================================
   createUser(userInput: UserInput!): UserResponse
   updateUser(
     updateUserInput: UpdateUserInput!
     deleteInput: Boolean = false
   ): UserResponse
-  # ================= PRODUCT ==========================
+  # ================= PRODUCT ==========================================
   createProduct(createProductInput: CreateProductInput!): ProductResponse
   updateProduct(updateProductInput: UpdateProductInput!): ProductResponse
   deleteProduct(id: ObjectId!): ProductResponse
-  # ================= WAREHOUSES ==========================
-  createWarehouse(createWarehouseInput: CreateWarehouseInput!): WarehouseResponse
-  updateWarehouse(updateWarehouseInput: UpdateWarehouseInput!): WarehouseResponse
+  # ================= WAREHOUSES =======================================
+  createWarehouse(
+    createWarehouseInput: CreateWarehouseInput!
+  ): WarehouseResponse
+  updateWarehouse(
+    updateWarehouseInput: UpdateWarehouseInput!
+  ): WarehouseResponse
   deleteWarehouse(id: ObjectId!): WarehouseResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
+type MeasurementUnits {
+  name: String!
+  shortName: String!
+}
+type Configuration {
+  id: ObjectId!
+  businessName: String!
+  nit: String
+  phone: String!
+  email: String!
+  web: String
+  address: String!
+  direction: String!
+  s3BucketUrl: String
+  measurementUnits: [MeasurementUnits!]!
+}
 type Role {
   id: ObjectId!
   name: String!
@@ -85,7 +110,12 @@ type Response implements ResponseBase {
   status: StatusEnum!
   message: String
 }
-
+type ConfigurationResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Configuration
+}
 type LoginResponse implements ResponseBase {
   errorInput: [ErrorInput!]
   status: StatusEnum!
@@ -147,6 +177,22 @@ type WarehousesResponse implements ResponseBase {
   currentPage: Int
 }
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
+input UpdateMeasurementUnitsInput {
+  name: String!
+  shortName: String!
+}
+input UpdateConfigurationInput {
+  id: ObjectId!
+  businessName: String
+  nit: String
+  phone: String
+  email: String
+  web: String
+  address: String
+  direction: String
+  s3BucketUrl: String
+  measurementUnits: [UpdateMeasurementUnitsInput!]
+}
 input LoginInput {
   email: String!
   password: String!

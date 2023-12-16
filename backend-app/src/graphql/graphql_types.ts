@@ -20,6 +20,28 @@ export type Scalars = {
   Time: { input: any; output: any; }
 };
 
+export type Configuration = {
+  __typename?: 'Configuration';
+  address: Scalars['String']['output'];
+  businessName: Scalars['String']['output'];
+  direction: Scalars['String']['output'];
+  email: Scalars['String']['output'];
+  id: Scalars['ObjectId']['output'];
+  measurementUnits: Array<MeasurementUnits>;
+  nit?: Maybe<Scalars['String']['output']>;
+  phone: Scalars['String']['output'];
+  s3BucketUrl?: Maybe<Scalars['String']['output']>;
+  web?: Maybe<Scalars['String']['output']>;
+};
+
+export type ConfigurationResponse = ResponseBase & {
+  __typename?: 'ConfigurationResponse';
+  data?: Maybe<Configuration>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']['output']>;
+  status: StatusEnum;
+};
+
 export type CreateProductInput = {
   code: Scalars['String']['input'];
   cost?: InputMaybe<Scalars['Float']['input']>;
@@ -54,12 +76,20 @@ export type LoginResponse = ResponseBase & {
   token?: Maybe<Scalars['String']['output']>;
 };
 
+export type MeasurementUnits = {
+  __typename?: 'MeasurementUnits';
+  name: Scalars['String']['output'];
+  shortName: Scalars['String']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
   createProduct?: Maybe<ProductResponse>;
   createUser?: Maybe<UserResponse>;
   createWarehouse?: Maybe<WarehouseResponse>;
   deleteProduct?: Maybe<ProductResponse>;
+  deleteWarehouse?: Maybe<WarehouseResponse>;
+  updateConfiguration?: Maybe<ConfigurationResponse>;
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
@@ -83,6 +113,16 @@ export type MutationCreateWarehouseArgs = {
 
 export type MutationDeleteProductArgs = {
   id: Scalars['ObjectId']['input'];
+};
+
+
+export type MutationDeleteWarehouseArgs = {
+  id: Scalars['ObjectId']['input'];
+};
+
+
+export type MutationUpdateConfigurationArgs = {
+  updateConfigurationInput: UpdateConfigurationInput;
 };
 
 
@@ -142,6 +182,7 @@ export type ProductsResponse = ResponseBase & {
 export type Query = {
   __typename?: 'Query';
   currentUser?: Maybe<UserResponse>;
+  getConfiguration?: Maybe<ConfigurationResponse>;
   getProductById?: Maybe<ProductResponse>;
   getProducts?: Maybe<ProductsResponse>;
   getRoles?: Maybe<RolesResponse>;
@@ -225,6 +266,24 @@ export enum StatusEnum {
   ERROR = 'ERROR',
   OK = 'OK'
 }
+
+export type UpdateConfigurationInput = {
+  address?: InputMaybe<Scalars['String']['input']>;
+  businessName?: InputMaybe<Scalars['String']['input']>;
+  direction?: InputMaybe<Scalars['String']['input']>;
+  email?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ObjectId']['input'];
+  measurementUnits?: InputMaybe<Array<UpdateMeasurementUnitsInput>>;
+  nit?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
+  s3BucketUrl?: InputMaybe<Scalars['String']['input']>;
+  web?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateMeasurementUnitsInput = {
+  name: Scalars['String']['input'];
+  shortName: Scalars['String']['input'];
+};
 
 export type UpdateProductInput = {
   code?: InputMaybe<Scalars['String']['input']>;
@@ -395,12 +454,14 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  ResponseBase: ( LoginResponse ) | ( ProductResponse ) | ( ProductsResponse ) | ( Response ) | ( RolesResponse ) | ( UserResponse ) | ( UsersResponse ) | ( WarehouseResponse ) | ( WarehousesResponse );
+  ResponseBase: ( ConfigurationResponse ) | ( LoginResponse ) | ( ProductResponse ) | ( ProductsResponse ) | ( Response ) | ( RolesResponse ) | ( UserResponse ) | ( UsersResponse ) | ( WarehouseResponse ) | ( WarehousesResponse );
 };
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  Configuration: ResolverTypeWrapper<Configuration>;
+  ConfigurationResponse: ResolverTypeWrapper<ConfigurationResponse>;
   CreateProductInput: CreateProductInput;
   CreateWarehouseInput: CreateWarehouseInput;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
@@ -409,6 +470,7 @@ export type ResolversTypes = {
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   LoginInput: LoginInput;
   LoginResponse: ResolverTypeWrapper<LoginResponse>;
+  MeasurementUnits: ResolverTypeWrapper<MeasurementUnits>;
   Mutation: ResolverTypeWrapper<{}>;
   ObjectId: ResolverTypeWrapper<Scalars['ObjectId']['output']>;
   PaginationInput: PaginationInput;
@@ -423,6 +485,8 @@ export type ResolversTypes = {
   StatusEnum: StatusEnum;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Time: ResolverTypeWrapper<Scalars['Time']['output']>;
+  UpdateConfigurationInput: UpdateConfigurationInput;
+  UpdateMeasurementUnitsInput: UpdateMeasurementUnitsInput;
   UpdateProductInput: UpdateProductInput;
   UpdateUserInput: UpdateUserInput;
   UpdateWarehouseInput: UpdateWarehouseInput;
@@ -438,6 +502,8 @@ export type ResolversTypes = {
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
+  Configuration: Configuration;
+  ConfigurationResponse: ConfigurationResponse;
   CreateProductInput: CreateProductInput;
   CreateWarehouseInput: CreateWarehouseInput;
   Date: Scalars['Date']['output'];
@@ -446,6 +512,7 @@ export type ResolversParentTypes = {
   Int: Scalars['Int']['output'];
   LoginInput: LoginInput;
   LoginResponse: LoginResponse;
+  MeasurementUnits: MeasurementUnits;
   Mutation: {};
   ObjectId: Scalars['ObjectId']['output'];
   PaginationInput: PaginationInput;
@@ -459,6 +526,8 @@ export type ResolversParentTypes = {
   RolesResponse: RolesResponse;
   String: Scalars['String']['output'];
   Time: Scalars['Time']['output'];
+  UpdateConfigurationInput: UpdateConfigurationInput;
+  UpdateMeasurementUnitsInput: UpdateMeasurementUnitsInput;
   UpdateProductInput: UpdateProductInput;
   UpdateUserInput: UpdateUserInput;
   UpdateWarehouseInput: UpdateWarehouseInput;
@@ -469,6 +538,28 @@ export type ResolversParentTypes = {
   Warehouse: Warehouse;
   WarehouseResponse: WarehouseResponse;
   WarehousesResponse: WarehousesResponse;
+};
+
+export type ConfigurationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Configuration'] = ResolversParentTypes['Configuration']> = {
+  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  businessName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  direction?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  measurementUnits?: Resolver<Array<ResolversTypes['MeasurementUnits']>, ParentType, ContextType>;
+  nit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  phone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  s3BucketUrl?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  web?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type ConfigurationResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ConfigurationResponse'] = ResolversParentTypes['ConfigurationResponse']> = {
+  data?: Resolver<Maybe<ResolversTypes['Configuration']>, ParentType, ContextType>;
+  errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
 export interface DateScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Date'], any> {
@@ -489,11 +580,19 @@ export type LoginResponseResolvers<ContextType = any, ParentType extends Resolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type MeasurementUnitsResolvers<ContextType = any, ParentType extends ResolversParentTypes['MeasurementUnits'] = ResolversParentTypes['MeasurementUnits']> = {
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  shortName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
   createProduct?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationCreateProductArgs, 'createProductInput'>>;
   createUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'userInput'>>;
   createWarehouse?: Resolver<Maybe<ResolversTypes['WarehouseResponse']>, ParentType, ContextType, RequireFields<MutationCreateWarehouseArgs, 'createWarehouseInput'>>;
   deleteProduct?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationDeleteProductArgs, 'id'>>;
+  deleteWarehouse?: Resolver<Maybe<ResolversTypes['WarehouseResponse']>, ParentType, ContextType, RequireFields<MutationDeleteWarehouseArgs, 'id'>>;
+  updateConfiguration?: Resolver<Maybe<ResolversTypes['ConfigurationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateConfigurationArgs, 'updateConfigurationInput'>>;
   updateProduct?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationUpdateProductArgs, 'updateProductInput'>>;
   updateUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'deleteInput' | 'updateUserInput'>>;
   updateWarehouse?: Resolver<Maybe<ResolversTypes['WarehouseResponse']>, ParentType, ContextType, RequireFields<MutationUpdateWarehouseArgs, 'updateWarehouseInput'>>;
@@ -537,6 +636,7 @@ export type ProductsResponseResolvers<ContextType = any, ParentType extends Reso
 
 export type QueryResolvers<ContextType = any, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = {
   currentUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType>;
+  getConfiguration?: Resolver<Maybe<ResolversTypes['ConfigurationResponse']>, ParentType, ContextType>;
   getProductById?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<QueryGetProductByIdArgs, 'id'>>;
   getProducts?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsArgs, 'paginationInput'>>;
   getRoles?: Resolver<Maybe<ResolversTypes['RolesResponse']>, ParentType, ContextType, RequireFields<QueryGetRolesArgs, 'paginationInput'>>;
@@ -555,7 +655,7 @@ export type ResponseResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type ResponseBaseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResponseBase'] = ResolversParentTypes['ResponseBase']> = {
-  __resolveType: TypeResolveFn<'LoginResponse' | 'ProductResponse' | 'ProductsResponse' | 'Response' | 'RolesResponse' | 'UserResponse' | 'UsersResponse' | 'WarehouseResponse' | 'WarehousesResponse', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'ConfigurationResponse' | 'LoginResponse' | 'ProductResponse' | 'ProductsResponse' | 'Response' | 'RolesResponse' | 'UserResponse' | 'UsersResponse' | 'WarehouseResponse' | 'WarehousesResponse', ParentType, ContextType>;
   errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
@@ -644,9 +744,12 @@ export type WarehousesResponseResolvers<ContextType = any, ParentType extends Re
 };
 
 export type Resolvers<ContextType = any> = {
+  Configuration?: ConfigurationResolvers<ContextType>;
+  ConfigurationResponse?: ConfigurationResponseResolvers<ContextType>;
   Date?: GraphQLScalarType;
   ErrorInput?: ErrorInputResolvers<ContextType>;
   LoginResponse?: LoginResponseResolvers<ContextType>;
+  MeasurementUnits?: MeasurementUnitsResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   ObjectId?: GraphQLScalarType;
   Product?: ProductResolvers<ContextType>;

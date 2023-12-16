@@ -2,7 +2,9 @@ import { UserService } from "./user.service";
 import { RoleService } from "./role.service";
 import { WarehouseService } from "./warehouse.service";
 import { ProductService } from "./product.service";
+import { ConfigurationService } from "./configuration.service";
 
+export const configurationCore = new ConfigurationService();
 export const userCore = new UserService();
 export const roleCore = new RoleService();
 export const productCore = new ProductService();
