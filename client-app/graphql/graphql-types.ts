@@ -27,6 +27,12 @@ export type CreateProductInput = {
   suggetedPrice: Scalars['Float'];
 };
 
+export type CreateWarehouseInput = {
+  address: Scalars['String'];
+  description: Scalars['String'];
+  name: Scalars['String'];
+};
+
 export type ErrorInput = {
   __typename?: 'ErrorInput';
   field?: Maybe<Scalars['String']>;
@@ -50,9 +56,12 @@ export type Mutation = {
   __typename?: 'Mutation';
   createProduct?: Maybe<ProductResponse>;
   createUser?: Maybe<UserResponse>;
+  createWarehouse?: Maybe<WarehouseResponse>;
   deleteProduct?: Maybe<ProductResponse>;
+  deleteWarehouse?: Maybe<WarehouseResponse>;
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
+  updateWarehouse?: Maybe<WarehouseResponse>;
 };
 
 
@@ -66,7 +75,17 @@ export type MutationCreateUserArgs = {
 };
 
 
+export type MutationCreateWarehouseArgs = {
+  createWarehouseInput: CreateWarehouseInput;
+};
+
+
 export type MutationDeleteProductArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type MutationDeleteWarehouseArgs = {
   id: Scalars['ObjectId'];
 };
 
@@ -79,6 +98,11 @@ export type MutationUpdateProductArgs = {
 export type MutationUpdateUserArgs = {
   deleteInput?: InputMaybe<Scalars['Boolean']>;
   updateUserInput: UpdateUserInput;
+};
+
+
+export type MutationUpdateWarehouseArgs = {
+  updateWarehouseInput: UpdateWarehouseInput;
 };
 
 export type PaginationInput = {
@@ -127,6 +151,7 @@ export type Query = {
   getRoles?: Maybe<RolesResponse>;
   getUserById?: Maybe<UserResponse>;
   getUsers?: Maybe<UsersResponse>;
+  getWarehouseById?: Maybe<WarehouseResponse>;
   getWarehouses?: Maybe<WarehousesResponse>;
   login?: Maybe<LoginResponse>;
 };
@@ -154,6 +179,11 @@ export type QueryGetUserByIdArgs = {
 
 export type QueryGetUsersArgs = {
   paginationInput: PaginationInput;
+};
+
+
+export type QueryGetWarehouseByIdArgs = {
+  id: Scalars['ObjectId'];
 };
 
 
@@ -221,6 +251,13 @@ export type UpdateUserInput = {
   status?: InputMaybe<Scalars['Boolean']>;
 };
 
+export type UpdateWarehouseInput = {
+  address?: InputMaybe<Scalars['String']>;
+  description?: InputMaybe<Scalars['String']>;
+  id: Scalars['ObjectId'];
+  name?: InputMaybe<Scalars['String']>;
+};
+
 export type User = {
   __typename?: 'User';
   createdBy?: Maybe<Scalars['ObjectId']>;
@@ -266,8 +303,18 @@ export type UsersResponse = ResponseBase & {
 
 export type Warehouse = {
   __typename?: 'Warehouse';
+  address: Scalars['String'];
+  description: Scalars['String'];
   id: Scalars['ObjectId'];
   name: Scalars['String'];
+};
+
+export type WarehouseResponse = ResponseBase & {
+  __typename?: 'WarehouseResponse';
+  data?: Maybe<Warehouse>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
 };
 
 export type WarehousesResponse = ResponseBase & {
@@ -343,6 +390,34 @@ export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typename?: 'UserResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null };
+
+export type GetWarehousesQueryVariables = Exact<{
+  paginationInput: PaginationInput;
+}>;
+
+
+export type GetWarehousesQuery = { __typename?: 'Query', getWarehouses?: { __typename?: 'WarehousesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Warehouse', id: any, name: string, description: string, address: string }> | null } | null };
+
+export type CreateWarehouseMutationVariables = Exact<{
+  createWarehouseInput: CreateWarehouseInput;
+}>;
+
+
+export type CreateWarehouseMutation = { __typename?: 'Mutation', createWarehouse?: { __typename?: 'WarehouseResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null };
+
+export type UpdateWarehouseMutationVariables = Exact<{
+  updateWarehouseInput: UpdateWarehouseInput;
+}>;
+
+
+export type UpdateWarehouseMutation = { __typename?: 'Mutation', updateWarehouse?: { __typename?: 'WarehouseResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null };
+
+export type DeleteWarehouseMutationVariables = Exact<{
+  deleteWarehouseId: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteWarehouseMutation = { __typename?: 'Mutation', deleteWarehouse?: { __typename?: 'WarehouseResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -772,3 +847,185 @@ export function useCurrentUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type CurrentUserQueryHookResult = ReturnType<typeof useCurrentUserQuery>;
 export type CurrentUserLazyQueryHookResult = ReturnType<typeof useCurrentUserLazyQuery>;
 export type CurrentUserQueryResult = Apollo.QueryResult<CurrentUserQuery, CurrentUserQueryVariables>;
+export const GetWarehousesDocument = gql`
+    query GetWarehouses($paginationInput: PaginationInput!) {
+  getWarehouses(paginationInput: $paginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      description
+      address
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetWarehousesQuery__
+ *
+ * To run a query within a React component, call `useGetWarehousesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWarehousesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWarehousesQuery({
+ *   variables: {
+ *      paginationInput: // value for 'paginationInput'
+ *   },
+ * });
+ */
+export function useGetWarehousesQuery(baseOptions: Apollo.QueryHookOptions<GetWarehousesQuery, GetWarehousesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWarehousesQuery, GetWarehousesQueryVariables>(GetWarehousesDocument, options);
+      }
+export function useGetWarehousesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWarehousesQuery, GetWarehousesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWarehousesQuery, GetWarehousesQueryVariables>(GetWarehousesDocument, options);
+        }
+export type GetWarehousesQueryHookResult = ReturnType<typeof useGetWarehousesQuery>;
+export type GetWarehousesLazyQueryHookResult = ReturnType<typeof useGetWarehousesLazyQuery>;
+export type GetWarehousesQueryResult = Apollo.QueryResult<GetWarehousesQuery, GetWarehousesQueryVariables>;
+export const CreateWarehouseDocument = gql`
+    mutation CreateWarehouse($createWarehouseInput: CreateWarehouseInput!) {
+  createWarehouse(createWarehouseInput: $createWarehouseInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      description
+      address
+    }
+  }
+}
+    `;
+export type CreateWarehouseMutationFn = Apollo.MutationFunction<CreateWarehouseMutation, CreateWarehouseMutationVariables>;
+
+/**
+ * __useCreateWarehouseMutation__
+ *
+ * To run a mutation, you first call `useCreateWarehouseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateWarehouseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createWarehouseMutation, { data, loading, error }] = useCreateWarehouseMutation({
+ *   variables: {
+ *      createWarehouseInput: // value for 'createWarehouseInput'
+ *   },
+ * });
+ */
+export function useCreateWarehouseMutation(baseOptions?: Apollo.MutationHookOptions<CreateWarehouseMutation, CreateWarehouseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateWarehouseMutation, CreateWarehouseMutationVariables>(CreateWarehouseDocument, options);
+      }
+export type CreateWarehouseMutationHookResult = ReturnType<typeof useCreateWarehouseMutation>;
+export type CreateWarehouseMutationResult = Apollo.MutationResult<CreateWarehouseMutation>;
+export type CreateWarehouseMutationOptions = Apollo.BaseMutationOptions<CreateWarehouseMutation, CreateWarehouseMutationVariables>;
+export const UpdateWarehouseDocument = gql`
+    mutation UpdateWarehouse($updateWarehouseInput: UpdateWarehouseInput!) {
+  updateWarehouse(updateWarehouseInput: $updateWarehouseInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      description
+      address
+    }
+  }
+}
+    `;
+export type UpdateWarehouseMutationFn = Apollo.MutationFunction<UpdateWarehouseMutation, UpdateWarehouseMutationVariables>;
+
+/**
+ * __useUpdateWarehouseMutation__
+ *
+ * To run a mutation, you first call `useUpdateWarehouseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateWarehouseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateWarehouseMutation, { data, loading, error }] = useUpdateWarehouseMutation({
+ *   variables: {
+ *      updateWarehouseInput: // value for 'updateWarehouseInput'
+ *   },
+ * });
+ */
+export function useUpdateWarehouseMutation(baseOptions?: Apollo.MutationHookOptions<UpdateWarehouseMutation, UpdateWarehouseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateWarehouseMutation, UpdateWarehouseMutationVariables>(UpdateWarehouseDocument, options);
+      }
+export type UpdateWarehouseMutationHookResult = ReturnType<typeof useUpdateWarehouseMutation>;
+export type UpdateWarehouseMutationResult = Apollo.MutationResult<UpdateWarehouseMutation>;
+export type UpdateWarehouseMutationOptions = Apollo.BaseMutationOptions<UpdateWarehouseMutation, UpdateWarehouseMutationVariables>;
+export const DeleteWarehouseDocument = gql`
+    mutation DeleteWarehouse($deleteWarehouseId: ObjectId!) {
+  deleteWarehouse(id: $deleteWarehouseId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      description
+      address
+    }
+  }
+}
+    `;
+export type DeleteWarehouseMutationFn = Apollo.MutationFunction<DeleteWarehouseMutation, DeleteWarehouseMutationVariables>;
+
+/**
+ * __useDeleteWarehouseMutation__
+ *
+ * To run a mutation, you first call `useDeleteWarehouseMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteWarehouseMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteWarehouseMutation, { data, loading, error }] = useDeleteWarehouseMutation({
+ *   variables: {
+ *      deleteWarehouseId: // value for 'deleteWarehouseId'
+ *   },
+ * });
+ */
+export function useDeleteWarehouseMutation(baseOptions?: Apollo.MutationHookOptions<DeleteWarehouseMutation, DeleteWarehouseMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteWarehouseMutation, DeleteWarehouseMutationVariables>(DeleteWarehouseDocument, options);
+      }
+export type DeleteWarehouseMutationHookResult = ReturnType<typeof useDeleteWarehouseMutation>;
+export type DeleteWarehouseMutationResult = Apollo.MutationResult<DeleteWarehouseMutation>;
+export type DeleteWarehouseMutationOptions = Apollo.BaseMutationOptions<DeleteWarehouseMutation, DeleteWarehouseMutationVariables>;

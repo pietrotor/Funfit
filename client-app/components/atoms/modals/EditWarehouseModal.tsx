@@ -6,7 +6,7 @@ export type TValuesWarehouses = {
     id?: number
     name?: string
     description?: string
-    street?: string
+    address?: string
   }
 
   interface EditWarehouseModalProps {
@@ -29,7 +29,7 @@ export const EditWarehouseModal = (
       id: values.id,
       name: watch('name'),
       description: watch('description'),
-      street: watch('street')
+      address: watch('address')
     })
   }
   return <MyModal isOpen={isOpen} onClose={onClose}>
@@ -55,9 +55,9 @@ export const EditWarehouseModal = (
           />
 
       <Input
-        defaultValue={values.description}
+        defaultValue={values.address}
         control={control}
-        name='street'
+        name='address'
         label='Calle'
         placeholder='Calle'
         type='text'

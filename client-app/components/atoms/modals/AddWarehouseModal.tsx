@@ -1,8 +1,11 @@
 import { Button } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
-import Input from '../Input'
-
 import { MyModal } from './MyModal'
+
+import { showSuccessToast } from '../Toast/toasts'
+import Input from '../Input'
+import { StatusEnum, useCreateWarehouseMutation } from '@/graphql/graphql-types'
+
 type ModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -10,29 +13,29 @@ type ModalProps = {
 }
 
 export const AddWarehouseModal = ({ isOpen, onClose, onAddWarehouse }: ModalProps) => {
-  // const [createWarehouse] = useCreateWarehouseMutation()
-  const { handleSubmit, control, reset } = useForm()
+  const [createWarehouse] = useCreateWarehouseMutation()
+  const { handleSubmit, control, watch, reset } = useForm()
   const onSubmit = () => {
-    // createWarehouse({
-    //   variables: {
-    //     WarehouseInput: {
-    //       name: watch('name'),
-    //       description: watch('description'),
-    //       street: watch('street')
-    //     }
-    //   },
-    //   onCompleted: data => {
-    //     if (data.createWarehouse?.status === StatusEnum.ERROR) {
-    //       showSuccessToast(data.createWarehouse.message || 'Error al crear un usuario', 'error')
-    //       return
-    //     }
-    //     showSuccessToast(data.createWarehouse?.message || 'Usuario creado correctamente', 'success')
-    //     console.log(data, 'data')
-    //     onAddWarehouse()
-    //     onClose()
-    //     reset()
-    //   }
-    // })
+    createWarehouse({
+      variables: {
+        createWarehouseInput: {
+          name: watch('name'),
+          description: watch('description'),
+          address: watch('address')
+        }
+      },
+      onCompleted: data => {
+        if (data.createWarehouse?.status === StatusEnum.ERROR) {
+          showSuccessToast(data.createWarehouse.message || 'Error al crear un usuario', 'error')
+          return
+        }
+        showSuccessToast(data.createWarehouse?.message || 'Usuario creado correctamente', 'success')
+        console.log(data, 'data')
+        onAddWarehouse()
+        onClose()
+        reset()
+      }
+    })
 
     // console.log(watch())
   }
@@ -70,7 +73,7 @@ export const AddWarehouseModal = ({ isOpen, onClose, onAddWarehouse }: ModalProp
                       />
                       <Input
                       control={control}
-                      name="street"
+                      name="address"
                       type="text"
                       label="Calle"
                       placeholder="Calle"
