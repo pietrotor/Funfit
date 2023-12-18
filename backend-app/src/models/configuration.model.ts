@@ -9,7 +9,6 @@ export interface IConfiguration extends Document, IGeneric {
   email: string;
   web?: string;
   address: string;
-  direction: string;
   s3BucketUrl?: string;
   measurementUnits: {
     name: string;
@@ -36,7 +35,7 @@ const configurationSchema = new Schema<IConfiguration>(
       required: [true, "email es obligatorio"],
     },
     web: { type: String },
-    direction: {
+    address: {
       type: String,
       required: [true, "dirección es obligatorio"],
     },

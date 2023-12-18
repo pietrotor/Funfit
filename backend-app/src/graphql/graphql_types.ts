@@ -24,7 +24,6 @@ export type Configuration = {
   __typename?: 'Configuration';
   address: Scalars['String']['output'];
   businessName: Scalars['String']['output'];
-  direction: Scalars['String']['output'];
   email: Scalars['String']['output'];
   id: Scalars['ObjectId']['output'];
   measurementUnits: Array<MeasurementUnits>;
@@ -650,7 +649,6 @@ export type ResolversParentTypes = {
 export type ConfigurationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Configuration'] = ResolversParentTypes['Configuration']> = {
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   businessName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  direction?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   measurementUnits?: Resolver<Array<ResolversTypes['MeasurementUnits']>, ParentType, ContextType>;

@@ -76,7 +76,6 @@ type Configuration {
   email: String!
   web: String
   address: String!
-  direction: String!
   s3BucketUrl: String
   measurementUnits: [MeasurementUnits!]!
 }
