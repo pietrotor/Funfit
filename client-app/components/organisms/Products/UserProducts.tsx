@@ -87,6 +87,7 @@ export function UserProducts() {
       <div className="grid w-full gap-4 gap-y-5 py-8 md:grid-cols-2 xl:grid-cols-3">
         {products.map(product => (
           <UserCard
+            id={product.id}
             key={product.id}
             name={product.name}
             description={product.description}

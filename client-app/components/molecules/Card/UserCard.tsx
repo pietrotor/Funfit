@@ -1,9 +1,11 @@
 import { Button, Card, CardFooter, useDisclosure } from '@nextui-org/react'
+import Link from 'next/link'
 import IconSelector from '@/components/atoms/IconSelector'
 import ProductModal from '@/components/atoms/modals/ProductModal'
 import Images from '@/components/atoms/Image/Image'
 
 type TUserCardProps = {
+  id: number
   name: string
   description: string
   price: number
@@ -12,6 +14,7 @@ type TUserCardProps = {
 }
 
 export default function UserCard({
+  id,
   name,
   description,
   price,
@@ -22,12 +25,14 @@ export default function UserCard({
   return (
     <div className="h-80 ">
       <Card isFooterBlurred radius="lg" className="h-full border-none">
-        <Images
-          alt="Product image"
-          className="h-full object-cover transition-all duration-500 hover:scale-105"
-          removeWrapper
-          src={image}
-        />
+      <Link href={ `/producto?id=${id}`} className='h-full '>
+          <Images
+            alt="Product image"
+            className="h-full object-cover transition-all duration-500 hover:scale-105"
+            removeWrapper
+            src={image}
+          />
+        </Link>
         <CardFooter className="group absolute bottom-1  z-10 ml-1 grid min-h-[6rem] w-[calc(100%_-_8px)] grid-cols-3 gap-2 overflow-hidden rounded-large border-1 border-white/20 bg-gray-500/60 py-1 shadow-small before:rounded-xl">
           <div className="col-start-1 col-end-3 flex flex-col">
             <h4 className="text-white drop-shadow-2xl">{name}</h4>
