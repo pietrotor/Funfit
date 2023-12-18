@@ -8,7 +8,7 @@ type TProps = {
   infiniteLoop?:boolean
   showArrows?:boolean
   showStatus?:boolean
-  showThumbs?:boolean 
+  showThumbs?:boolean
   radius?: 'none' | 'sm' | 'md' | 'lg' | 'full'
 }
 
