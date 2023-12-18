@@ -18,6 +18,27 @@ export type Scalars = {
   Time: any;
 };
 
+export type Configuration = {
+  __typename?: 'Configuration';
+  address: Scalars['String'];
+  businessName: Scalars['String'];
+  email: Scalars['String'];
+  id: Scalars['ObjectId'];
+  measurementUnits: Array<MeasurementUnits>;
+  nit?: Maybe<Scalars['String']>;
+  phone: Scalars['String'];
+  s3BucketUrl?: Maybe<Scalars['String']>;
+  web?: Maybe<Scalars['String']>;
+};
+
+export type ConfigurationResponse = ResponseBase & {
+  __typename?: 'ConfigurationResponse';
+  data?: Maybe<Configuration>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
 export type CreateProductInput = {
   code: Scalars['String'];
   cost?: InputMaybe<Scalars['Float']>;
@@ -25,6 +46,23 @@ export type CreateProductInput = {
   image?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   suggetedPrice: Scalars['Float'];
+};
+
+export type CreateStockInput = {
+  lastStockEntry: Scalars['Int'];
+  productId: Scalars['ObjectId'];
+  quantity: Scalars['Int'];
+  securityStock?: InputMaybe<Scalars['Int']>;
+  units: Scalars['String'];
+  warehouseId: Scalars['ObjectId'];
+};
+
+export type CreateStockMovementInput = {
+  date: Scalars['Date'];
+  detail?: InputMaybe<Scalars['String']>;
+  quantity: Scalars['Int'];
+  stockId: Scalars['ObjectId'];
+  type: StockMovementTypeEnum;
 };
 
 export type CreateWarehouseInput = {
@@ -52,21 +90,40 @@ export type LoginResponse = ResponseBase & {
   token?: Maybe<Scalars['String']>;
 };
 
+export type MeasurementUnits = {
+  __typename?: 'MeasurementUnits';
+  name: Scalars['String'];
+  shortName: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  creatStockMovement?: Maybe<StockResponse>;
   createProduct?: Maybe<ProductResponse>;
+  createStock?: Maybe<StockResponse>;
   createUser?: Maybe<UserResponse>;
   createWarehouse?: Maybe<WarehouseResponse>;
   deleteProduct?: Maybe<ProductResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
+  updateConfiguration?: Maybe<ConfigurationResponse>;
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
 };
 
 
+export type MutationCreatStockMovementArgs = {
+  createStockMovementInput: CreateStockMovementInput;
+};
+
+
 export type MutationCreateProductArgs = {
   createProductInput: CreateProductInput;
+};
+
+
+export type MutationCreateStockArgs = {
+  createStockInput: CreateStockInput;
 };
 
 
@@ -87,6 +144,11 @@ export type MutationDeleteProductArgs = {
 
 export type MutationDeleteWarehouseArgs = {
   id: Scalars['ObjectId'];
+};
+
+
+export type MutationUpdateConfigurationArgs = {
+  updateConfigurationInput: UpdateConfigurationInput;
 };
 
 
@@ -146,9 +208,13 @@ export type ProductsResponse = ResponseBase & {
 export type Query = {
   __typename?: 'Query';
   currentUser?: Maybe<UserResponse>;
+  getConfiguration?: Maybe<ConfigurationResponse>;
   getProductById?: Maybe<ProductResponse>;
+  getProductStock?: Maybe<StocksResponse>;
   getProducts?: Maybe<ProductsResponse>;
   getRoles?: Maybe<RolesResponse>;
+  getStockById?: Maybe<StockResponse>;
+  getStocksPaginated?: Maybe<StocksResponse>;
   getUserById?: Maybe<UserResponse>;
   getUsers?: Maybe<UsersResponse>;
   getWarehouseById?: Maybe<WarehouseResponse>;
@@ -162,12 +228,28 @@ export type QueryGetProductByIdArgs = {
 };
 
 
+export type QueryGetProductStockArgs = {
+  paginationInput: PaginationInput;
+  productId: Scalars['ObjectId'];
+};
+
+
 export type QueryGetProductsArgs = {
   paginationInput: PaginationInput;
 };
 
 
 export type QueryGetRolesArgs = {
+  paginationInput: PaginationInput;
+};
+
+
+export type QueryGetStockByIdArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetStocksPaginatedArgs = {
   paginationInput: PaginationInput;
 };
 
@@ -229,6 +311,63 @@ export enum StatusEnum {
   ERROR = 'ERROR',
   OK = 'OK'
 }
+
+export type Stock = {
+  __typename?: 'Stock';
+  id: Scalars['ObjectId'];
+  lastStockEntry: Scalars['Int'];
+  product?: Maybe<Product>;
+  productId: Scalars['ObjectId'];
+  quantity: Scalars['Int'];
+  securityStock?: Maybe<Scalars['Int']>;
+  units: Scalars['String'];
+  warehouse?: Maybe<Warehouse>;
+  warehouseId: Scalars['ObjectId'];
+};
+
+export enum StockMovementTypeEnum {
+  DISPOSE = 'DISPOSE',
+  INWARD = 'INWARD',
+  OUTWARD = 'OUTWARD'
+}
+
+export type StockResponse = ResponseBase & {
+  __typename?: 'StockResponse';
+  data?: Maybe<Stock>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type StocksResponse = ResponseBase & {
+  __typename?: 'StocksResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Stock>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
+};
+
+export type UpdateConfigurationInput = {
+  address?: InputMaybe<Scalars['String']>;
+  businessName?: InputMaybe<Scalars['String']>;
+  direction?: InputMaybe<Scalars['String']>;
+  email?: InputMaybe<Scalars['String']>;
+  id: Scalars['ObjectId'];
+  measurementUnits?: InputMaybe<Array<UpdateMeasurementUnitsInput>>;
+  nit?: InputMaybe<Scalars['String']>;
+  phone?: InputMaybe<Scalars['String']>;
+  s3BucketUrl?: InputMaybe<Scalars['String']>;
+  web?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateMeasurementUnitsInput = {
+  name: Scalars['String'];
+  shortName: Scalars['String'];
+};
 
 export type UpdateProductInput = {
   code?: InputMaybe<Scalars['String']>;
@@ -315,6 +454,13 @@ export type WarehouseResponse = ResponseBase & {
   errorInput?: Maybe<Array<ErrorInput>>;
   message?: Maybe<Scalars['String']>;
   status: StatusEnum;
+};
+
+export type WarehouseStockPaginationInput = {
+  filter?: InputMaybe<Scalars['String']>;
+  page?: InputMaybe<Scalars['Int']>;
+  rows?: InputMaybe<Scalars['Int']>;
+  warehouses: Array<Scalars['ObjectId']>;
 };
 
 export type WarehousesResponse = ResponseBase & {
@@ -418,6 +564,11 @@ export type DeleteWarehouseMutationVariables = Exact<{
 
 
 export type DeleteWarehouseMutation = { __typename?: 'Mutation', deleteWarehouse?: { __typename?: 'WarehouseResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null };
+
+export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetConfigurationQuery = { __typename?: 'Query', getConfiguration?: { __typename?: 'ConfigurationResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'Configuration', id: any, businessName: string, nit?: string | null, phone: string, email: string, web?: string | null, address: string, s3BucketUrl?: string | null, measurementUnits: Array<{ __typename?: 'MeasurementUnits', name: string, shortName: string }> } | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -1029,3 +1180,56 @@ export function useDeleteWarehouseMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeleteWarehouseMutationHookResult = ReturnType<typeof useDeleteWarehouseMutation>;
 export type DeleteWarehouseMutationResult = Apollo.MutationResult<DeleteWarehouseMutation>;
 export type DeleteWarehouseMutationOptions = Apollo.BaseMutationOptions<DeleteWarehouseMutation, DeleteWarehouseMutationVariables>;
+export const GetConfigurationDocument = gql`
+    query GetConfiguration {
+  getConfiguration {
+    errorInput {
+      field
+      message
+    }
+    status
+    message
+    data {
+      id
+      businessName
+      nit
+      phone
+      email
+      web
+      address
+      s3BucketUrl
+      measurementUnits {
+        name
+        shortName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetConfigurationQuery__
+ *
+ * To run a query within a React component, call `useGetConfigurationQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetConfigurationQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetConfigurationQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetConfigurationQuery(baseOptions?: Apollo.QueryHookOptions<GetConfigurationQuery, GetConfigurationQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetConfigurationQuery, GetConfigurationQueryVariables>(GetConfigurationDocument, options);
+      }
+export function useGetConfigurationLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetConfigurationQuery, GetConfigurationQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetConfigurationQuery, GetConfigurationQueryVariables>(GetConfigurationDocument, options);
+        }
+export type GetConfigurationQueryHookResult = ReturnType<typeof useGetConfigurationQuery>;
+export type GetConfigurationLazyQueryHookResult = ReturnType<typeof useGetConfigurationLazyQuery>;
+export type GetConfigurationQueryResult = Apollo.QueryResult<GetConfigurationQuery, GetConfigurationQueryVariables>;

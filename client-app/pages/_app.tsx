@@ -2,16 +2,17 @@ import '@/styles/globals.css'
 import { NextUIProvider } from '@nextui-org/react'
 import type { AppProps } from 'next/app'
 import { ApolloProvider } from '@apollo/client'
-import Providers from '@/components/redux/providers'
+import { Provider } from 'react-redux'
+import store from '../store'
 import client from '@/graphql/apollo-client'
 export default function App({ Component, pageProps }: AppProps) {
   return (
-    <ApolloProvider client={client}>
-      <NextUIProvider>
-        <Providers>
+    <Provider store={store}>
+      <ApolloProvider client={client}>
+        <NextUIProvider>
           <Component {...pageProps} />
-        </Providers>
-      </NextUIProvider>
-    </ApolloProvider>
+        </NextUIProvider>
+      </ApolloProvider>
+    </Provider>
   )
 }

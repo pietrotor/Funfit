@@ -15,7 +15,9 @@ type TLoginInput = {
 }
 
 const LoginPage: NextPage = () => {
-  const [loginQuery, { data, loading }] = useLoginLazyQuery()
+  const [loginQuery, { data, loading }] = useLoginLazyQuery({
+    fetchPolicy: 'network-only'
+  })
   const [error, setError] = useState('')
   const router = useRouter()
   const { control, handleSubmit } = useForm<TLoginInput>()

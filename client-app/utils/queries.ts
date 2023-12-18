@@ -1,5 +1,31 @@
 import { gql } from '@apollo/client'
 
+export const GET_CONFIGURATION = gql`
+  query GetConfiguration {
+    getConfiguration {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data {
+        id
+        businessName
+        nit
+        phone
+        email
+        web
+        address
+        s3BucketUrl
+        measurementUnits {
+          name
+          shortName
+        }
+      }
+    }
+  }
+`
 export const LOGIN = gql`
   query Login($loginInput: LoginInput!) {
     login(loginInput: $loginInput) {
@@ -15,32 +41,32 @@ export const LOGIN = gql`
 `
 export const CURRENT_USER = gql`
   query CurrentUser {
-  currentUser {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-      id
-      name
-      lastName
-      email
-      phone
-      lastLogin
+    currentUser {
+      errorInput {
+        message
+        field
+      }
       status
-      createdBy
-      roleId
-      roleInfo {
+      message
+      data {
         id
         name
-        code
+        lastName
+        email
+        phone
+        lastLogin
         status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
       }
     }
   }
-}
 `
 
 export const GET_USERS = gql`
@@ -71,104 +97,104 @@ export const GET_USERS = gql`
   }
 `
 export const GET_PRODUCTS = gql`
-query GetProducts($paginationInput: PaginationInput!) {
-  getProducts(paginationInput: $paginationInput) {
-    errorInput {
+  query GetProducts($paginationInput: PaginationInput!) {
+    getProducts(paginationInput: $paginationInput) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
+      data {
+        id
+        name
+        suggetedPrice
+        code
+        description
+        cost
+        image
+        warehouses
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
     }
-    status
-    message
-    data {
-      id
-      name
-      suggetedPrice
-      code
-      description
-      cost
-      image
-      warehouses
-    }
-    totalRecords
-    totalPages
-    rows
-    currentPage
   }
-}
 `
 export const GET_WAREHOUSES = gql`
-query GetWarehouses($paginationInput: PaginationInput!) {
-  getWarehouses(paginationInput: $paginationInput) {
-    errorInput {
+  query GetWarehouses($paginationInput: PaginationInput!) {
+    getWarehouses(paginationInput: $paginationInput) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
+      data {
+        id
+        name
+        description
+        address
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
     }
-    status
-    message
-    data {
-      id
-      name
-      description
-      address
-    }
-    totalRecords
-    totalPages
-    rows
-    currentPage
   }
-}
 `
 export const CREATE_WAREHOUSE = gql`
-mutation CreateWarehouse($createWarehouseInput: CreateWarehouseInput!) {
-  createWarehouse(createWarehouseInput: $createWarehouseInput) {
-    errorInput {
+  mutation CreateWarehouse($createWarehouseInput: CreateWarehouseInput!) {
+    createWarehouse(createWarehouseInput: $createWarehouseInput) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
-    }
-    status
-    message
-    data {
-      id
-      name
-      description
-      address
+      data {
+        id
+        name
+        description
+        address
+      }
     }
   }
-}
 `
 export const UPDATE_WAREHOUSE = gql`
-mutation UpdateWarehouse($updateWarehouseInput: UpdateWarehouseInput!) {
-  updateWarehouse(updateWarehouseInput: $updateWarehouseInput) {
-    errorInput {
+  mutation UpdateWarehouse($updateWarehouseInput: UpdateWarehouseInput!) {
+    updateWarehouse(updateWarehouseInput: $updateWarehouseInput) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
-    }
-    status
-    message
-    data {
-      id
-      name
-      description
-      address
+      data {
+        id
+        name
+        description
+        address
+      }
     }
   }
-}
 `
 export const DELETE_WAREHOUSE = gql`
-mutation DeleteWarehouse($deleteWarehouseId: ObjectId!) {
-  deleteWarehouse(id: $deleteWarehouseId) {
-    errorInput {
+  mutation DeleteWarehouse($deleteWarehouseId: ObjectId!) {
+    deleteWarehouse(id: $deleteWarehouseId) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
-    }
-    status
-    message
-    data {
-      id
-      name
-      description
-      address
+      data {
+        id
+        name
+        description
+        address
+      }
     }
   }
-}
 `
