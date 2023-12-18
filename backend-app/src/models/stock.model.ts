@@ -3,6 +3,8 @@ import IGeneric from "@/interfaces/generic.interface";
 
 export interface IStock extends Document, IGeneric {
   id: objectId;
+  productId: objectId;
+  warehouseId: objectId;
   quantity: number;
   securityStock: number;
   lastStockEntry: number;
@@ -11,6 +13,14 @@ export interface IStock extends Document, IGeneric {
 export interface IModelStock extends Model<IStock> {}
 const stockSchema = new Schema<IStock>(
   {
+    productId: {
+      type: Schema.Types.ObjectId,
+      ref: "Product",
+    },
+    warehouseId: {
+      type: Schema.Types.ObjectId,
+      ref: "Warehouse",
+    },
     quantity: {
       type: Number,
       required: [true, "cantidad es obligatorio"],

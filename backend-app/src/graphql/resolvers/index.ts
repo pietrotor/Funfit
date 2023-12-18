@@ -16,6 +16,7 @@ import {
   warehouseQuery,
   warehouseType,
 } from "./warehose.resolver";
+import { stockMutation, stockQuery, stockType } from "./stock.resolver";
 
 const resolvers: Resolvers<ContextGraphQl> = {
   Date: dateTimeScalar,
@@ -25,18 +26,21 @@ const resolvers: Resolvers<ContextGraphQl> = {
   ...productType,
   ...warehouseType,
   ...configurationType,
+  ...stockType,
   Query: {
     ...userQuery,
     ...roleQuery,
     ...productQuery,
     ...warehouseQuery,
     ...configurationQuery,
+    ...stockQuery,
   },
   Mutation: {
     ...userMutation,
     ...productMutation,
     ...warehouseMutation,
     ...configurationMutation,
+    ...stockMutation,
   },
 };
 

@@ -5,35 +5,51 @@ enum StatusEnum {
   OK
   ERROR
 }
+enum StockMovementTypeEnum {
+  INWARD
+  OUTWARD
+  DISPOSE
+}
 
 type Query {
+  # CONFIGURATION ====================================
+  getConfiguration: ConfigurationResponse
+  # USERS ============================================
   login(loginInput: LoginInput!): LoginResponse
   currentUser: UserResponse
   getRoles(paginationInput: PaginationInput!): RolesResponse
   getUsers(paginationInput: PaginationInput!): UsersResponse
   getUserById(id: ObjectId!): UserResponse
+  # PRODUCTS ==========================================
   getProducts(paginationInput: PaginationInput!): ProductsResponse
   getProductById(id: ObjectId!): ProductResponse
-  getWarehouseById(id: ObjectId!): WarehouseResponse
+  # WAREHOUSES =======================================
   getWarehouses(paginationInput: PaginationInput!): WarehousesResponse
-  getConfiguration: ConfigurationResponse
+  getWarehouseById(id: ObjectId!): WarehouseResponse
+  # STOCKS =======================================
+  getStocksPaginated(paginationInput: PaginationInput!): StocksResponse
+  getStockById(id: ObjectId!): StockResponse
+  getProductStock(
+    paginationInput: PaginationInput!
+    productId: ObjectId!
+  ): StocksResponse
 }
 type Mutation {
-  # ================= CONFIGURATION ====================================
+  # CONFIGURATION ====================================
   updateConfiguration(
     updateConfigurationInput: UpdateConfigurationInput!
   ): ConfigurationResponse
-  # ================= USERS ============================================
+  # USERS ============================================
   createUser(userInput: UserInput!): UserResponse
   updateUser(
     updateUserInput: UpdateUserInput!
     deleteInput: Boolean = false
   ): UserResponse
-  # ================= PRODUCT ==========================================
+  # PRODUCTS ==========================================
   createProduct(createProductInput: CreateProductInput!): ProductResponse
   updateProduct(updateProductInput: UpdateProductInput!): ProductResponse
   deleteProduct(id: ObjectId!): ProductResponse
-  # ================= WAREHOUSES =======================================
+  # WAREHOUSES =======================================
   createWarehouse(
     createWarehouseInput: CreateWarehouseInput!
   ): WarehouseResponse
@@ -41,6 +57,11 @@ type Mutation {
     updateWarehouseInput: UpdateWarehouseInput!
   ): WarehouseResponse
   deleteWarehouse(id: ObjectId!): WarehouseResponse
+  # STOCK =======================================
+  createStock(createStockInput: CreateStockInput!): StockResponse
+  creatStockMovement(
+    createStockMovementInput: CreateStockMovementInput!
+  ): StockResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type MeasurementUnits {
@@ -94,6 +115,18 @@ type Warehouse {
   name: String!
   description: String!
   address: String!
+}
+type Stock {
+  id: ObjectId!
+  productId: ObjectId!
+  warehouseId: ObjectId!
+  quantity: Int!
+  securityStock: Int
+  lastStockEntry: Int!
+  units: String!
+  # Fields Resolvers
+  product: Product
+  warehouse: Warehouse
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -176,6 +209,22 @@ type WarehousesResponse implements ResponseBase {
   rows: Int
   currentPage: Int
 }
+type StockResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Stock
+}
+type StocksResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Stock!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
   name: String!
@@ -249,4 +298,25 @@ input UpdateWarehouseInput {
   name: String
   description: String
   address: String
+}
+input WarehouseStockPaginationInput {
+  rows: Int
+  page: Int
+  filter: String
+  warehouses: [ObjectId!]!
+}
+input CreateStockInput {
+  productId: ObjectId!
+  warehouseId: ObjectId!
+  quantity: Int!
+  securityStock: Int
+  lastStockEntry: Int!
+  units: String!
+}
+input CreateStockMovementInput {
+  stockId: ObjectId!
+  quantity: Int!
+  type: StockMovementTypeEnum!
+  detail: String
+  date: Date!
 }
