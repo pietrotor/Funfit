@@ -96,3 +96,79 @@ query GetProducts($paginationInput: PaginationInput!) {
   }
 }
 `
+export const GET_WAREHOUSES = gql`
+query GetWarehouses($paginationInput: PaginationInput!) {
+  getWarehouses(paginationInput: $paginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      description
+      address
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+`
+export const CREATE_WAREHOUSE = gql`
+mutation CreateWarehouse($createWarehouseInput: CreateWarehouseInput!) {
+  createWarehouse(createWarehouseInput: $createWarehouseInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      description
+      address
+    }
+  }
+}
+`
+export const UPDATE_WAREHOUSE = gql`
+mutation UpdateWarehouse($updateWarehouseInput: UpdateWarehouseInput!) {
+  updateWarehouse(updateWarehouseInput: $updateWarehouseInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      description
+      address
+    }
+  }
+}
+`
+export const DELETE_WAREHOUSE = gql`
+mutation DeleteWarehouse($deleteWarehouseId: ObjectId!) {
+  deleteWarehouse(id: $deleteWarehouseId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      description
+      address
+    }
+  }
+}
+`

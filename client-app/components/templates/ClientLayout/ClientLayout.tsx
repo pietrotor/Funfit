@@ -21,7 +21,7 @@ const menu: TSections = [
 function ClientLayout({ children }: TClientLayoutProps) {
   return (
     <>
-      <div className="flex min-h-screen flex-col">
+      <div className="flex min-h-screen  flex-col">
         <div className="">
           <UsersNavBar menu={menu} />
         </div>
