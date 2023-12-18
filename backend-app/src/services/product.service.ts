@@ -32,6 +32,7 @@ export class ProductService extends ProductRepository<objectId> {
       paginationInput
     );
   }
+
   async getProductById(id: objectId) {
     const productInstance = await Product.findOne({
       _id: id,
@@ -40,6 +41,13 @@ export class ProductService extends ProductRepository<objectId> {
     if (!productInstance)
       throw new BadRequestError("No se encontro el Producto");
     return productInstance;
+  }
+
+  async getProductByIdInstance(id: objectId) {
+    return await Product.findOne({
+      _id: id,
+      deleted: false,
+    });
   }
   async createProducto(
     createProductInput: CreateProductInput,
@@ -68,7 +76,7 @@ export class ProductService extends ProductRepository<objectId> {
     return await productInstance.save();
   }
   async updateProduct(updateProductInput: UpdateProductInput) {
-    const { id, warehouses, ...product } = updateProductInput;
+    const { id, ...product } = updateProductInput;
     const productInstance = await Product.findOne({
       _id: id,
       deleted: false,
@@ -93,11 +101,6 @@ export class ProductService extends ProductRepository<objectId> {
         `El producto "${duplicatedProductCode.name}" ya esta registrado con este código`
       );
     updateGenericInstance(productInstance, product);
-    await Promise.all(
-      (warehouses || []).map(async (warehouse) => {
-        await warehouseCore.getWarehouseById(warehouse);
-      })
-    );
     return await productInstance.save();
   }
   async deleteProduct(id: objectId, deletedBy?: objectId | null) {
