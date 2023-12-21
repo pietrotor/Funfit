@@ -40,6 +40,23 @@ const getProductById = async (
     return errorHandler(error);
   }
 };
+const getProductsOutOfWarehouse = async (
+  _: any,
+  args: { warehouseId: objectId }
+): Promise<ProductsResponse> => {
+  try {
+    const { warehouseId } = args;
+    const products = await productCore.getProductsOutWarehouse(warehouseId);
+    return {
+      status: StatusEnum.OK,
+      message: "Producto encontrado",
+      data: products,
+    };
+  } catch (error) {
+    console.log(error);
+    return errorHandler(error);
+  }
+};
 // ========================================== Mutations ====================================================
 const createProduct = async (
   _: any,
@@ -104,6 +121,7 @@ const deleteProduct = async (
 export const productQuery = {
   getProducts,
   getProductById,
+  getProductsOutOfWarehouse,
 };
 export const productMutation = {
   createProduct,

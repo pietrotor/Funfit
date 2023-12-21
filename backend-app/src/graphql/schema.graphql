@@ -23,6 +23,7 @@ type Query {
   # PRODUCTS ==========================================
   getProducts(paginationInput: PaginationInput!): ProductsResponse
   getProductById(id: ObjectId!): ProductResponse
+  getProductsOutOfWarehouse(warehouseId: ObjectId!): ProductsResponse
   # WAREHOUSES =======================================
   getWarehouses(paginationInput: PaginationInput!): WarehousesResponse
   getWarehouseById(id: ObjectId!): WarehouseResponse
@@ -32,6 +33,10 @@ type Query {
   getProductStock(
     paginationInput: PaginationInput!
     productId: ObjectId!
+  ): StocksResponse
+  getWarehouseStock(
+    paginationInput: PaginationInput!
+    warehouseId: ObjectId!
   ): StocksResponse
 }
 type Mutation {

@@ -8,6 +8,7 @@ import {
   Stock,
   Product,
   Warehouse,
+  WarehouseStockPaginationInput,
 } from "@/graphql/graphql_types";
 import { ContextGraphQl } from "@/interfaces/context.interface";
 import { errorHandler } from "@/lib/graphqlerrors";
@@ -50,6 +51,20 @@ const getProductStock = async (
   try {
     const { paginationInput, productId } = args;
     return await stockCore.getStocksByProductId(paginationInput, productId);
+  } catch (error) {
+    console.log(error);
+    return errorHandler(error);
+  }
+};
+const getWarehouseStock = async (
+  _: any,
+  args: { warehouseStockPaginationInput: WarehouseStockPaginationInput }
+): Promise<StocksResponse> => {
+  try {
+    const { warehouseStockPaginationInput } = args;
+    return await stockCore.getStocksByWarehouseId(
+      warehouseStockPaginationInput
+    );
   } catch (error) {
     console.log(error);
     return errorHandler(error);
@@ -103,6 +118,7 @@ export const stockQuery = {
   getStocksPaginated,
   getStockById,
   getProductStock,
+  getWarehouseStock,
 };
 export const stockMutation = {
   createStock,

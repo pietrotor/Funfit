@@ -13,6 +13,8 @@ import { getInstancesPagination } from "./generic.service";
 import { IModelStock, IStock } from "../models";
 import Stock from "@/models/stock.model";
 import { stockUseCase } from "useCase";
+import Product from "@/models/product.model";
+import mongoose from "mongoose";
 
 export class StocksService extends StockRepository<objectId> {
   async getStocksPaginated(paginationInput: PaginationInput) {
