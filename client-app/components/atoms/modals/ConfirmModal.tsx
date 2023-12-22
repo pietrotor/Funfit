@@ -25,13 +25,13 @@ export const ConfirmModal = ({
 }: ConfirmModalProps) => {
   return (
       <MyModal isOpen={isOpen} size="lg" onClose={onClose}>
-      <h1 className="mb-10 mt-10 text-center text-3xl font-bold">{title}</h1>
-      <p className="text-center text-lg px-6">{message}</p>
+      <h1 className="mb-10 mt-10 text-center text-3xl font-bold text-gray-500">{title}</h1>
+      <p className="text-center text-lg px-6 text-gray-500">{message}</p>
       <div className="flex justify-center space-x-4 my-10">
-          <Button color="danger" onClick={onConfirm}>
+          <Button color="secondary" onClick={onConfirm}>
           {confirmButtonText}
           </Button>
-          <Button color="secondary" onClick={onCancel}>
+          <Button color="warning" onClick={onCancel}>
           {cancelButtonText}
           </Button>
       </div>

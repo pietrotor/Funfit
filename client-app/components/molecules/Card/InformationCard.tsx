@@ -24,7 +24,7 @@ export default function InformationCard({
     <div
       className={`bg-white ${className} max-w-xl self-center rounded-lg border-2 p-8 text-gray-500 shadow-xl md:max-w-4xl`}
     >
-      <h1 className="mb-4 text-center text-4xl font-extrabold">{title}</h1>
+      <h1 className="mb-4 text-center text-3xl font-extrabold">{title}</h1>
       <h2 className="text-center text-2xl font-semibold">{description}</h2>
       <div className="mt-6">{children}</div>
       <div className="mt-6 flex justify-center">
