@@ -24,7 +24,7 @@ function CreateUserForm() {
   const handleEditModal = useDisclosure()
   const handleDeleteModal = useDisclosure()
   const [filter, setFilter] = useState<string>('')
-  const [variables, setVariables] = useState<PaginationInterfaceState>({ totalPages: 1, rows: 5, filter: '', currentPage: 1, totalRecords: 1 })
+  const [variables, setVariables] = useState<PaginationInterfaceState>({ rows: 5, filter: '', currentPage: 1 })
   const filtroDebounced = UseDebouncedValue(filter, 2000)
 
   const [edit, setEdit] = useState<TValueUserData>({})
