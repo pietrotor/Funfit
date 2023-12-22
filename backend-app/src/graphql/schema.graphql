@@ -35,11 +35,16 @@ type Query {
     productId: ObjectId!
   ): StocksResponse
   getWarehouseStock(
+    warehouseStockPaginationInput: WarehouseStockPaginationInput!
+  ): StocksResponse
+  getStockHistory(
+    paginationInput: PaginationInput!
+    stockId: ObjectId!
+  ): StocksHistoryResponse
+  getWarehouseHistory(
     paginationInput: PaginationInput!
     warehouseId: ObjectId!
-  ): StocksResponse
-  getStockHistory(paginationInput: PaginationInput!, stockId: ObjectId!): StocksHistoryResponse
-  getWarehouseHistory(paginationInput: PaginationInput!, warehouseId: ObjectId!): WarehouseHistoryResponse
+  ): WarehouseHistoryResponse
 }
 type Mutation {
   # CONFIGURATION ====================================
