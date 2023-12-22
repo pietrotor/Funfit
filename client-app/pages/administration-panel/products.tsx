@@ -23,9 +23,9 @@ import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 
 const Productos = () => {
-  const [editProduct, setEditProduct] = useState<TValueProductData>({})
-  const [variables, setVariables] = useState<PaginationInterfaceState>({})
-  const [filter, setFilter] = useState<string>('')
+  const [editProduct, setEditProduct] = useState <TValueProductData>({})
+  const [variables, setVariables] = useState<PaginationInterfaceState>({ rows: 5, filter: '', currentPage: 1 })
+  const [filter, setFilter] = useState <string>('')
   const [DeleteteProductMutation] = useDeleteProductMutation()
   const [UpdateUserMutationVariables] = useUpdateProductMutation()
   const handleAddProduct = useDisclosure()

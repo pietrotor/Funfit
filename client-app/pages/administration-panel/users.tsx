@@ -25,7 +25,7 @@ function CreateUserForm() {
   const handleEditModal = useDisclosure()
   const handleDeleteModal = useDisclosure()
   const [filter, setFilter] = useState<string>('')
-  const [variables, setVariables] = useState<PaginationInterfaceState>({})
+  const [variables, setVariables] = useState<PaginationInterfaceState>({ rows: 5, filter: '', currentPage: 1 })
   const filtroDebounced = UseDebouncedValue(filter, 2000)
 
   const [edit, setEdit] = useState<TValueUserData>({})
@@ -70,13 +70,13 @@ function CreateUserForm() {
           handleEditModal.onClose()
         },
         onError: error => {
-          showSuccessToast('ocurrio un error', 'error')
+          showSuccessToast('ocurrió un error', 'error')
           console.log(error)
         }
       })
     } catch (error) {
       console.log(error)
-      showSuccessToast('ocurrio un error', 'error')
+      showSuccessToast('ocurrió un error', 'error')
     }
   }
 
