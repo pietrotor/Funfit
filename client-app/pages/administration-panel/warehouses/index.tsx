@@ -143,7 +143,7 @@ function Warehouses() {
             className=" my-4 font-extrabold text-white"
           >
             <IconSelector name="Boxes" />
-            Historial de stock
+            Historial del stock
           </Button>
           <Button
             onClick={handleAddWarehouse.onOpen}
