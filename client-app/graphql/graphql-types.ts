@@ -212,12 +212,14 @@ export type Query = {
   getProductById?: Maybe<ProductResponse>;
   getProductStock?: Maybe<StocksResponse>;
   getProducts?: Maybe<ProductsResponse>;
+  getProductsOutOfWarehouse?: Maybe<ProductsResponse>;
   getRoles?: Maybe<RolesResponse>;
   getStockById?: Maybe<StockResponse>;
   getStocksPaginated?: Maybe<StocksResponse>;
   getUserById?: Maybe<UserResponse>;
   getUsers?: Maybe<UsersResponse>;
   getWarehouseById?: Maybe<WarehouseResponse>;
+  getWarehouseStock?: Maybe<StocksResponse>;
   getWarehouses?: Maybe<WarehousesResponse>;
   login?: Maybe<LoginResponse>;
 };
@@ -236,6 +238,11 @@ export type QueryGetProductStockArgs = {
 
 export type QueryGetProductsArgs = {
   paginationInput: PaginationInput;
+};
+
+
+export type QueryGetProductsOutOfWarehouseArgs = {
+  warehouseId: Scalars['ObjectId'];
 };
 
 
@@ -266,6 +273,12 @@ export type QueryGetUsersArgs = {
 
 export type QueryGetWarehouseByIdArgs = {
   id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetWarehouseStockArgs = {
+  paginationInput: PaginationInput;
+  warehouseId: Scalars['ObjectId'];
 };
 
 
@@ -597,6 +610,13 @@ export type GetStockByIdQueryVariables = Exact<{
 
 
 export type GetStockByIdQuery = { __typename?: 'Query', getStockById?: { __typename?: 'StockResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null } | null };
+
+export type GetWarehouseByIdQueryVariables = Exact<{
+  getWarehouseByIdId: Scalars['ObjectId'];
+}>;
+
+
+export type GetWarehouseByIdQuery = { __typename?: 'Query', getWarehouseById?: { __typename?: 'WarehouseResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -1521,3 +1541,49 @@ export function useGetStockByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetStockByIdQueryHookResult = ReturnType<typeof useGetStockByIdQuery>;
 export type GetStockByIdLazyQueryHookResult = ReturnType<typeof useGetStockByIdLazyQuery>;
 export type GetStockByIdQueryResult = Apollo.QueryResult<GetStockByIdQuery, GetStockByIdQueryVariables>;
+export const GetWarehouseByIdDocument = gql`
+    query GetWarehouseById($getWarehouseByIdId: ObjectId!) {
+  getWarehouseById(id: $getWarehouseByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      description
+      address
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetWarehouseByIdQuery__
+ *
+ * To run a query within a React component, call `useGetWarehouseByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWarehouseByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWarehouseByIdQuery({
+ *   variables: {
+ *      getWarehouseByIdId: // value for 'getWarehouseByIdId'
+ *   },
+ * });
+ */
+export function useGetWarehouseByIdQuery(baseOptions: Apollo.QueryHookOptions<GetWarehouseByIdQuery, GetWarehouseByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWarehouseByIdQuery, GetWarehouseByIdQueryVariables>(GetWarehouseByIdDocument, options);
+      }
+export function useGetWarehouseByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWarehouseByIdQuery, GetWarehouseByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWarehouseByIdQuery, GetWarehouseByIdQueryVariables>(GetWarehouseByIdDocument, options);
+        }
+export type GetWarehouseByIdQueryHookResult = ReturnType<typeof useGetWarehouseByIdQuery>;
+export type GetWarehouseByIdLazyQueryHookResult = ReturnType<typeof useGetWarehouseByIdLazyQuery>;
+export type GetWarehouseByIdQueryResult = Apollo.QueryResult<GetWarehouseByIdQuery, GetWarehouseByIdQueryVariables>;

@@ -275,3 +275,21 @@ query GetStockById($getStockByIdId: ObjectId!) {
   }
 }
 `
+export const GET_WAREHOUSES_BY_ID = gql`
+query GetWarehouseById($getWarehouseByIdId: ObjectId!) {
+  getWarehouseById(id: $getWarehouseByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      description
+      address
+    }
+  }
+}
+`

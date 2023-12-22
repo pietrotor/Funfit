@@ -1,8 +1,8 @@
-import { Button, Modal, ModalContent } from '@nextui-org/react'
+import { Button } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
+import { MyModal } from './MyModal'
 import Input from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
-import InformationCard from '@/components/molecules/Card/InformationCard'
 import { StatusEnum, useCreateUserMutation } from '@/graphql/graphql-types'
 type ModalProps = {
   isOpen: boolean
@@ -28,18 +28,23 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
         },
         onCompleted: data => {
           if (data.createUser?.status === StatusEnum.ERROR) {
-            showSuccessToast(data.createUser.message || 'Error al crear un usuario', 'error')
+            showSuccessToast(
+              data.createUser.message || 'Error al crear un usuario',
+              'error'
+            )
             return
           }
-          showSuccessToast(data.createUser?.message || 'Usuario creado correctamente', 'success')
+          showSuccessToast(
+            data.createUser?.message || 'Usuario creado correctamente',
+            'success'
+          )
           console.log(data, 'data')
           onAddUser()
           onClose()
           reset()
         }
       })
-    } catch (error) {
-    }
+    } catch (error) {}
     console.log(watch())
   }
   const handleCancel = () => {
@@ -47,129 +52,123 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
     onClose()
   }
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="w-full" size="4xl">
-      <ModalContent>
-        {close => (
-          <>
-            <InformationCard
-              title="Agregue un nuevo usuario"
-              className="w-full"
-            >
-              <article className="mt-9 flex min-w-full items-center justify-center">
-                <form
-                  className="flex w-full flex-col items-center"
-                  onSubmit={handleSubmit(onSubmit)}
-                >
-                  <div className="flex w-full flex-col md:grid md:grid-cols-2 md:gap-5">
-                    <Input
-                      control={control}
-                      name="name"
-                      type="text"
-                      label="Nombre"
-                      placeholder="Nombre"
-                      rules={{
-                        required: {
-                          value: true,
-                          message: 'Este campo es obligatorio'
-                        },
-                        pattern: {
-                          value: /^[a-zA-Z\s]+$/i,
-                          message: 'Solo se permiten letras'
-                        }
-                      }
-                    }
-                      />
-                    <Input
-                      control={control}
-                      name="lastName"
-                      type="text"
-                      label="Apellido"
-                      placeholder="Apellido"
-                      rules={{
-                        required:
-                          { value: true, message: 'Este campo es obligatorio' },
-                        pattern: {
-                          value: /^[a-zA-Z\s]+$/i,
-                          message: 'Solo se permiten letras'
-                        }
-                      }}
-                    />
-                    <Input
-                      control={control}
-                      name="email"
-                      type="email"
-                      label="Email"
-                      placeholder="email"
-                      rules={{
-                        required: {
-                          value: true,
-                          message: 'Este campo es obligatorio'
-                        },
-                        pattern: {
-                          value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
-                          message: 'Email invalido'
-                        }
-                      }}
-                    />
-                    <Input
-                      control={control}
-                      name="phone"
-                      type="number"
-                      label="Telefono"
-                      placeholder="Telefono"
-                      rules={{
-                        required: {
-                          value: true,
-                          message: 'Este campo es obligatorio'
-                        },
-                        pattern: {
-                          value: /^[0-9]+$/i,
-                          message: 'Solo se permiten numeros'
-                        }
-                      }}
-                    />
-                    <Input
-                      control={control}
-                      name="password"
-                      type="password"
-                      label="Contraseña"
-                      placeholder="Contraseña"
-                      rules={{
-                        required: {
-                          value: true,
-                          message: 'Este campo es obligatorio'
-                        }
-                      }}
-                    />
-                    <Input
-                      control={control}
-                      name="confirmPassword"
-                      type="password"
-                      label="Confirma la contraseña"
-                      placeholder="Confirma la contraseña"
-                      rules={{
-                        required: {
-                          value: true,
-                          message: 'Este campo es obligatorio'
-                        },
-                        validate: value => value === watch('password') || 'Las contraseñas no coinciden'
-                      }}
-                    />
-                  </div>
-                  <div className='flex space-x-6 mt-6'>
-                    <Button type="submit" color="secondary" className="w-1/7">
-                      Agregar
-                    </Button>
-                    <Button color='primary' className="w-1/7" onClick={ handleCancel }>
-                      Cancelar
-                    </Button>
-                  </div>
-                </form>
-              </article>
-            </InformationCard>
-          </>
-        )}
-      </ModalContent>
-    </Modal>
+    <MyModal
+      isOpen={isOpen}
+      size="4xl"
+      onClose={onClose}
+      hideCloseButton={false}
+    >
+      <h1 className="mb-4 mt-10 text-center text-3xl font-bold text-gray-500">
+        Agregar un nuevo usuario
+      </h1>
+      <form
+        className="flex w-full flex-col items-center p-9 text-gray-500"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <div className="flex w-full flex-col md:grid md:grid-cols-2 md:gap-5">
+          <Input
+            control={control}
+            name="name"
+            type="text"
+            label="Nombre"
+            placeholder="Nombre"
+            rules={{
+              required: {
+                value: true,
+                message: 'Este campo es obligatorio'
+              },
+              pattern: {
+                value: /^[a-zA-Z\s]+$/i,
+                message: 'Solo se permiten letras'
+              }
+            }}
+          />
+          <Input
+            control={control}
+            name="lastName"
+            type="text"
+            label="Apellido"
+            placeholder="Apellido"
+            rules={{
+              required: { value: true, message: 'Este campo es obligatorio' },
+              pattern: {
+                value: /^[a-zA-Z\s]+$/i,
+                message: 'Solo se permiten letras'
+              }
+            }}
+          />
+          <Input
+            control={control}
+            name="email"
+            type="email"
+            label="Email"
+            placeholder="email"
+            rules={{
+              required: {
+                value: true,
+                message: 'Este campo es obligatorio'
+              },
+              pattern: {
+                value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
+                message: 'Email inválido'
+              }
+            }}
+          />
+          <Input
+            control={control}
+            name="phone"
+            type="number"
+            label="Teléfono"
+            placeholder="Teléfono"
+            rules={{
+              required: {
+                value: true,
+                message: 'Este campo es obligatorio'
+              },
+              pattern: {
+                value: /^[0-9]+$/i,
+                message: 'Solo se permiten números'
+              }
+            }}
+          />
+          <Input
+            control={control}
+            name="password"
+            type="password"
+            label="Contraseña"
+            placeholder="Contraseña"
+            rules={{
+              required: {
+                value: true,
+                message: 'Este campo es obligatorio'
+              }
+            }}
+          />
+          <Input
+            control={control}
+            name="confirmPassword"
+            type="password"
+            label="Confirma la contraseña"
+            placeholder="Confirma la contraseña"
+            rules={{
+              required: {
+                value: true,
+                message: 'Este campo es obligatorio'
+              },
+              validate: value =>
+                value === watch('password') || 'Las contraseñas no coinciden'
+            }}
+          />
+        </div>
+        <div className="mt-6 flex space-x-6">
+          <Button type="submit" color="secondary" className="w-1/7">
+            Agregar
+          </Button>
+          <Button color="primary" className="w-1/7" onClick={handleCancel}>
+            Cancelar
+          </Button>
+        </div>
+      </form>
+    </MyModal>
   )
 }

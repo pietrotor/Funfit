@@ -278,6 +278,7 @@ const IconSelector: React.FC<TIconSelectorProps> = ({
       return (
         <svg
           xmlns="http://www.w3.org/2000/svg"
+          className={`${width} ${height} ${color} ${className} ${fill} `}
           width="24"
           height="24"
           viewBox="0 0 24 24"

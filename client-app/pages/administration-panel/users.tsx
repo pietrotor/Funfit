@@ -18,6 +18,7 @@ import Table from '@/components/organisms/tableNext/Table'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import { authUserHeader } from '@/utils/verificationUser'
+import ButtonComponent from '@/components/atoms/Button'
 
 function CreateUserForm() {
   const handleAddUser = useDisclosure()
@@ -105,10 +106,16 @@ function CreateUserForm() {
       },
       onCompleted: data => {
         if (data?.updateUser?.status === StatusEnum.ERROR) {
-          showSuccessToast(data.updateUser.message || 'Error al eliminar el usuario', 'error')
+          showSuccessToast(
+            data.updateUser.message || 'Error al eliminar el usuario',
+            'error'
+          )
           handleDeleteModal.onClose()
         } else {
-          showSuccessToast(data.updateUser?.message || 'Usuario eliminado correctamente', 'success')
+          showSuccessToast(
+            data.updateUser?.message || 'Usuario eliminado correctamente',
+            'success'
+          )
           refetch()
           handleDeleteModal.onClose()
         }
@@ -122,9 +129,15 @@ function CreateUserForm() {
 
   return (
     <AdministrationLayout>
-      <div className="m-auto w-5/6 mt-16 ">
-      <h3 className='text-center font-extrabold text-2xl text-gray-500 '>Administración de usuarios</h3>
-        <Button onClick={handleAddUser.onOpen} color="secondary" className="float-right text-white font-extrabold my-4">
+      <div className="m-auto mt-16 w-5/6 ">
+        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
+          Administración de usuarios
+        </h3>
+        <Button
+          onClick={handleAddUser.onOpen}
+          color="secondary"
+          className="float-right my-4 font-extrabold text-white"
+        >
           <IconSelector name="addUser" />
           Agregar nuevo usuario
         </Button>
@@ -133,40 +146,56 @@ function CreateUserForm() {
             { name: '#' },
             { name: 'Usuario' },
             { name: 'Email' },
-            { name: 'Telefono' },
+            { name: 'Teléfono' },
             { name: 'Acciones' }
           ]}
-          items={ (data?.getUsers?.data || []).map((user, idx) => ({
-            content: [<h3 key={idx} className='text-sm'> {(idx + 1)}</h3>,
-            <div key={idx} className='text-sm text-left'>{user.name + ' ' + user.lastName}</div>,
-            <div key={idx} className='text-sm text-left'>{user.email}</div>,
-            <div key={idx} className='text-sm'>{user.phone}</div>,
-            <div key={idx} className="flex space-x-3">
-          <Button
-            onClick={() => handleUpdateUser(user.id)}
-            color="default"
-            className="w-1/2"
-          >
-            <IconSelector name='edit'/>
-            Editar
-          </Button>
-          <Button onClick={() => handleDeleteUser(user.id)} color="danger" className="w-1/2">
-            <IconSelector name='trash'/>
-            Eliminar
-          </Button>
-        </div>
+          items={(data?.getUsers?.data || []).map((user, idx) => ({
+            content: [
+              <h3 key={idx} className="text-sm">
+                {' '}
+                {idx + 1}
+              </h3>,
+              <div key={idx} className="text-left text-sm">
+                {user.name + ' ' + user.lastName}
+              </div>,
+              <div key={idx} className="text-left text-sm">
+                {user.email}
+              </div>,
+              <div key={idx} className="text-sm">
+                {user.phone}
+              </div>,
+              <div key={idx} className="flex justify-center space-x-1">
+                <ButtonComponent
+                  onClick={() => handleUpdateUser(user.id)}
+                  type="edit"
+                  showTooltip
+                  tooltipText="Editar"
+                >
+                  <IconSelector name="edit" color="text-primary" width="w-8" />
+                </ButtonComponent>
+                <ButtonComponent
+                  onClick={() => handleDeleteUser(user.id)}
+                  type="delete"
+                  showTooltip
+                  tooltipText="Eliminar"
+                >
+                  <IconSelector name="trash" color="text-danger" width="w-8" />
+                </ButtonComponent>
+              </div>
             ]
-          })) }
+          }))}
           onChangeRow={row => handleChangeRow(row)}
-          tableName='Usuarios'
-          onChangePage={page => setVariables({ ...variables, currentPage: page }) }
-          itemsPerPage={variables?.rows }
-          currentPage={variables?.currentPage }
-          totalPages={ variables?.totalPages }
-          isLoading ={loading}
+          tableName="USUARIOS"
+          onChangePage={page =>
+            setVariables({ ...variables, currentPage: page })
+          }
+          itemsPerPage={variables?.rows}
+          currentPage={variables?.currentPage}
+          totalPages={variables?.totalPages}
+          isLoading={loading}
           enablePagination={true}
-          onSearch={ value => setFilter(value) }
-          totalItems={variables?.totalRecords }
+          onSearch={value => setFilter(value)}
+          totalItems={variables?.totalRecords}
         />
       </div>
 
@@ -174,23 +203,27 @@ function CreateUserForm() {
         isOpen={handleEditModal.isOpen}
         onClose={handleEditModal.onClose}
         values={edit}
-        handleSendUpdateUser={handleSendUpdateUser}/>
+        handleSendUpdateUser={handleSendUpdateUser}
+      />
 
       <ConfirmModal
         onClose={handleDeleteModal.onClose}
-        onConfirm={ handleConfirmDeleteUser}
+        onConfirm={handleConfirmDeleteUser}
         isOpen={handleDeleteModal.isOpen}
-        title={'Mensaje de confirmacion'}
-        message={`Seguro que quiere eliminar a ${edit.name} ?`}
-        onCancel={ handleDeleteModal.onClose }/>
+        title={'Mensaje de confirmación'}
+        message={`¿Esta seguro de eliminar a ${edit.name} ?`}
+        onCancel={handleDeleteModal.onClose}
+      />
 
       <AddUserModal
         onAddUser={refetch}
         isOpen={handleAddUser.isOpen}
-        onClose={handleAddUser.onClose }/>
+        onClose={handleAddUser.onClose}
+      />
     </AdministrationLayout>
   )
 }
 export default CreateUserForm
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => await authUserHeader(ctx)
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)

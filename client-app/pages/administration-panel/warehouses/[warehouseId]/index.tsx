@@ -1,11 +1,10 @@
 import { Button, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-
-import Table from '@/components/organisms/tableNext/Table'
+// import Table from '@/components/organisms/tableNext/Table'
 
 import AdministrationLayout from '@/components/templates/layouts'
-import { useGetStocksPaginatedQuery } from '@/graphql/graphql-types'
+import { useGetWarehouseByIdQuery } from '@/graphql/graphql-types'
 import IconSelector from '@/components/atoms/IconSelector'
 import { ShowStocksModal } from '@/components/atoms/modals/ShowStocksModal'
 
@@ -13,17 +12,13 @@ function Warehouse() {
   const router = useRouter()
   const handleShowStocksModal = useDisclosure()
   const { warehouseId } = router.query
-  const { data } = useGetStocksPaginatedQuery({
+  const { data } = useGetWarehouseByIdQuery({
     variables: {
-      paginationInput: {
-        page: 1,
-        rows: 5,
-        filter: 'warehouseId'
-      }
+      getWarehouseByIdId: warehouseId
     },
     fetchPolicy: 'network-only'
   })
-
+  console.log(data, 'data')
   return (
   <AdministrationLayout>
       <div className="m-auto w-5/6 mt-16 ">
@@ -36,14 +31,14 @@ function Warehouse() {
           </Button>
         </Link>
         </div>
-           <Table
+           {/* <Table
           titles={[
             { name: '#' },
             { name: 'Producto' },
             { name: 'Stock' },
             { name: 'Acciones' }
           ]}
-          items={ (data?.getStocksPaginated?.data || []).map((user, idx) => ({
+          items={ ([ ] as TValueProductData ).map((user, idx) => ({
             content: [<h3 key={idx} className='text-sm'> {(idx + 1)}</h3>,
             <div key={idx} className='text-center'>{user?.product?.name}</div>,
             <div key={idx} className='text-sm'>{user.quantity}</div>,
@@ -66,7 +61,7 @@ function Warehouse() {
           // enablePagination={true}
           // onSearch={ value => setFilter(value) }
           // totalItems={variables?.totalRecords }
-        />
+        /> */}
     </div>
     <ShowStocksModal
         isOpen={handleShowStocksModal.isOpen}

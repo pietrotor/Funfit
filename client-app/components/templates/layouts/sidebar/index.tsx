@@ -47,7 +47,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
       >
         {/* Simple sidebar */}
         <div
-          className={`flex h-full w-24 min-w-[64px] flex-col justify-between bg-white shadow-2xl  ${
+          className={`flex h-full w-24 min-w-[64px] flex-col justify-between bg-secondary/20 shadow-2xl  ${
             !isSidebarOpen ? 'rounded-br-2xl rounded-tr-2xl' : ''
           }`}
         >
@@ -90,7 +90,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
         </div>
         {/* Detail sidebar */}
         <div
-          className={`flex h-full flex-col justify-between overflow-hidden bg-secondary/20 shadow-2xl transition-all duration-300 ${
+          className={`flex h-full flex-col justify-between overflow-hidden shadow-2xl transition-all duration-300 ${
             isSidebarOpen ? 'w-80' : 'w-0'
           }`}
         >

@@ -46,7 +46,7 @@ function CreateStock() {
           units: watch('units'),
           productId: productsData?.id,
           securityStock: parseInt(watch('securityStock')),
-          warehouseId: warehouseData?.id
+          warehouseId: '657e33b1f2348d91dde57d3b'
         }
       },
       onCompleted: data => {

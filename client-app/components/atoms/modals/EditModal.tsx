@@ -36,11 +36,11 @@ export const EditModal = ({
   console.log(values)
   return (
     <MyModal isOpen={isOpen} size="2xl" onClose={onClose} hideCloseButton = {false} >
-      <h1 className="mb-10 mt-10 text-center text-2xl font-bold">
+      <h1 className="mb-10 mt-10 text-center text-3xl font-bold text-gray-500">
         Editar Usuario
       </h1>
       <form
-        className=" m-auto flex w-5/6 flex-col items-center space-y-4 pb-9"
+        className=" m-auto flex w-5/6 flex-col items-center space-y-4 pb-9 text-gray-500"
         onSubmit={handleSubmit(onSubmit)}
       >
         <Input
