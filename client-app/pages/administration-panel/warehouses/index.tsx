@@ -1,7 +1,7 @@
 import { Button, useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
@@ -22,7 +22,7 @@ import {
 } from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
-import ButtonComponent from '@/components/atoms/Button'
+// import ButtonComponent from '@/components/atoms/Button'
 
 function Warehouses() {
   const [edit, setEdit] = useState<TValuesWarehouses>({})
@@ -32,7 +32,7 @@ function Warehouses() {
   const handleConfirmModal = useDisclosure()
   const handleEditModal = useDisclosure()
   const handleAddWarehouse = useDisclosure()
-  const router = useRouter()
+  // const router = useRouter()
 
   const [UpdateWarehousesMutationVariables] = useUpdateWarehouseMutation()
   const [DeleteteWarehouseMutation] = useDeleteWarehouseMutation()
