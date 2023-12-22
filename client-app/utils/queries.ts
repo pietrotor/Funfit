@@ -198,3 +198,80 @@ export const DELETE_WAREHOUSE = gql`
     }
   }
 `
+
+export const GET_STOCKS = gql`
+  query GetStocksPaginated($paginationInput: PaginationInput!) {
+  getStocksPaginated(paginationInput: $paginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      productId
+      warehouseId
+      quantity
+      securityStock
+      units
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        description
+        cost
+        image
+        warehouses
+      }
+      warehouse {
+        id
+        name
+        description
+        address
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+`
+export const GET_STOCKS_BY_WAREHOUSE = gql`
+query GetStockById($getStockByIdId: ObjectId!) {
+  getStockById(id: $getStockByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      productId
+      warehouseId
+      quantity
+      securityStock
+      units
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        description
+        cost
+        image
+        warehouses
+      }
+      warehouse {
+        id
+        name
+        description
+        address
+      }
+    }
+  }
+}
+`

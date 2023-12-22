@@ -91,3 +91,79 @@ mutation DeleteProduct($deleteProductId: ObjectId!) {
   }
 }
 `
+export const CREATE_STOCK = gql`
+mutation CreateStock($createStockInput: CreateStockInput!) {
+  createStock(createStockInput: $createStockInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      productId
+      warehouseId
+      quantity
+      securityStock
+      units
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        description
+        cost
+        image
+        warehouses
+      }
+      warehouse {
+        id
+        id
+        name
+        description
+        address
+        name
+        description
+        address
+      }
+    }
+  }
+}
+`
+export const CREATE_STOCK_MOVEMENT = gql`
+mutation CreatStockMovement($createStockMovementInput: CreateStockMovementInput!) {
+  creatStockMovement(createStockMovementInput: $createStockMovementInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      productId
+      warehouseId
+      quantity
+      securityStock
+        units
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        description
+        cost
+        image
+        warehouses
+      }
+      warehouse {
+        id
+        name
+        description
+        address
+      }
+    }
+  }
+}
+`

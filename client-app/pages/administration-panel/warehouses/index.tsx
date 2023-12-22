@@ -1,6 +1,7 @@
 import { Button, useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
+import Link from 'next/link'
 
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
@@ -13,6 +14,7 @@ import { authUserHeader } from '@/utils/verificationUser'
 import { StatusEnum, useDeleteWarehouseMutation, useGetWarehousesQuery, useUpdateWarehouseMutation } from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
+import { WarehouseRoute } from '@/utils/routes'
 
 function Warehouses() {
   const [edit, setEdit] = useState <TValuesWarehouses>({})
@@ -29,7 +31,6 @@ function Warehouses() {
   const { loading, data, refetch } = useGetWarehousesQuery({
     variables: {
       paginationInput: {
-        page: variables?.currentPage,
         rows: 5,
         filter: filtroDebounced
       }
@@ -68,6 +69,7 @@ function Warehouses() {
     })
     console.log(values)
   }
+
   const handleUpdateWarehouse = (idWarehouse: number) => {
     const warehouse = data?.getWarehouses?.data?.find(warehouse => warehouse.id === idWarehouse)
     setEdit(warehouse as TValuesWarehouses)
@@ -138,10 +140,19 @@ function Warehouses() {
             <div key={idx} className='text-sm'>{warehouse.name }</div>,
             <div key={idx} className='text-sm text-left'>{warehouse.description}</div>,
             <div key={idx} className='text-sm text-left'>{warehouse.address}</div>,
-            <div key={idx} className="flex space-x-3 w-3/4 ms-auto">
+            <div key={idx} className="flex space-x-3 ms-auto">
+          <Link href={ `${WarehouseRoute + warehouse.name}`}>
+            <Button
+              color="default"
+              className="w-1/2 "
+            >
+              <IconSelector name='Bussines' fill='white'/>
+              Stocks
+            </Button>
+          </Link>
           <Button
             onClick={() => handleUpdateWarehouse(warehouse.id)}
-            color="default"
+            color="secondary"
             className="w-1/2"
           >
             <IconSelector name='edit'/>
