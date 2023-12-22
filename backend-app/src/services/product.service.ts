@@ -10,6 +10,7 @@ import Product from "@/models/product.model";
 import { BadRequestError } from "@/lib/graphqlerrors";
 import { updateGenericInstance } from "@/lib/updateInstance";
 import { warehouseCore } from ".";
+import mongoose from "mongoose";
 
 export class ProductService extends ProductRepository<objectId> {
   async getProductsPaginated(paginationInput: PaginationInput) {
@@ -49,6 +50,33 @@ export class ProductService extends ProductRepository<objectId> {
       deleted: false,
     });
   }
+
+  async getProductsOutWarehouse(warehouseId: objectId) {
+    const productsWithoutStock = await Product.aggregate([
+      {
+        $lookup: {
+          from: "stocks",
+          let: { productId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ["$productId", "$$productId"] },
+                warehouseId: new mongoose.Types.ObjectId(warehouseId),
+              },
+            },
+          ],
+          as: "stock",
+        },
+      },
+      {
+        $match: {
+          stock: { $size: 0 }, // Filtrar productos sin stock
+        },
+      },
+    ]);
+    return productsWithoutStock;
+  }
+
   async createProducto(
     createProductInput: CreateProductInput,
     createdBy?: objectId | null
