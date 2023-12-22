@@ -38,6 +38,8 @@ type Query {
     paginationInput: PaginationInput!
     warehouseId: ObjectId!
   ): StocksResponse
+  getStockHistory(paginationInput: PaginationInput!, stockId: ObjectId!): StocksHistoryResponse
+  getWarehouseHistory(paginationInput: PaginationInput!, warehouseId: ObjectId!): WarehouseHistoryResponse
 }
 type Mutation {
   # CONFIGURATION ====================================
@@ -132,6 +134,21 @@ type Stock {
   product: Product
   warehouse: Warehouse
 }
+type StockHistory {
+  id: ObjectId!
+  stockId: ObjectId!
+  warehouseId: ObjectId!
+  quantity: Int!
+  type: StockMovementTypeEnum!
+  date: Date!
+  stockBefore: Int!
+  stockLater: Int!
+  createdBy: ObjectId
+  # Fields Resolvers
+  stock: Stock
+  warehouse: Warehouse
+  createdByInfo: User
+}
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
   errorInput: [ErrorInput!]
@@ -224,6 +241,26 @@ type StocksResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: [Stock!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type StocksHistoryResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [StockHistory!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type WarehouseHistoryResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [StockHistory!]
   totalRecords: Int
   totalPages: Int
   rows: Int

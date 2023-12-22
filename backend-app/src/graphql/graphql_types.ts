@@ -217,10 +217,12 @@ export type Query = {
   getProductsOutOfWarehouse?: Maybe<ProductsResponse>;
   getRoles?: Maybe<RolesResponse>;
   getStockById?: Maybe<StockResponse>;
+  getStockHistory?: Maybe<StocksHistoryResponse>;
   getStocksPaginated?: Maybe<StocksResponse>;
   getUserById?: Maybe<UserResponse>;
   getUsers?: Maybe<UsersResponse>;
   getWarehouseById?: Maybe<WarehouseResponse>;
+  getWarehouseHistory?: Maybe<WarehouseHistoryResponse>;
   getWarehouseStock?: Maybe<StocksResponse>;
   getWarehouses?: Maybe<WarehousesResponse>;
   login?: Maybe<LoginResponse>;
@@ -258,6 +260,12 @@ export type QueryGetStockByIdArgs = {
 };
 
 
+export type QueryGetStockHistoryArgs = {
+  paginationInput: PaginationInput;
+  stockId: Scalars['ObjectId']['input'];
+};
+
+
 export type QueryGetStocksPaginatedArgs = {
   paginationInput: PaginationInput;
 };
@@ -275,6 +283,12 @@ export type QueryGetUsersArgs = {
 
 export type QueryGetWarehouseByIdArgs = {
   id: Scalars['ObjectId']['input'];
+};
+
+
+export type QueryGetWarehouseHistoryArgs = {
+  paginationInput: PaginationInput;
+  warehouseId: Scalars['ObjectId']['input'];
 };
 
 
@@ -340,6 +354,22 @@ export type Stock = {
   warehouseId: Scalars['ObjectId']['output'];
 };
 
+export type StockHistory = {
+  __typename?: 'StockHistory';
+  createdBy?: Maybe<Scalars['ObjectId']['output']>;
+  createdByInfo?: Maybe<User>;
+  date: Scalars['Date']['output'];
+  id: Scalars['ObjectId']['output'];
+  quantity: Scalars['Int']['output'];
+  stock?: Maybe<Stock>;
+  stockBefore: Scalars['Int']['output'];
+  stockId: Scalars['ObjectId']['output'];
+  stockLater: Scalars['Int']['output'];
+  type: StockMovementTypeEnum;
+  warehouse?: Maybe<Warehouse>;
+  warehouseId: Scalars['ObjectId']['output'];
+};
+
 export enum StockMovementTypeEnum {
   DISPOSE = 'DISPOSE',
   INWARD = 'INWARD',
@@ -352,6 +382,18 @@ export type StockResponse = ResponseBase & {
   errorInput?: Maybe<Array<ErrorInput>>;
   message?: Maybe<Scalars['String']['output']>;
   status: StatusEnum;
+};
+
+export type StocksHistoryResponse = ResponseBase & {
+  __typename?: 'StocksHistoryResponse';
+  currentPage?: Maybe<Scalars['Int']['output']>;
+  data?: Maybe<Array<StockHistory>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']['output']>;
+  rows?: Maybe<Scalars['Int']['output']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+  totalRecords?: Maybe<Scalars['Int']['output']>;
 };
 
 export type StocksResponse = ResponseBase & {
@@ -463,6 +505,18 @@ export type Warehouse = {
   name: Scalars['String']['output'];
 };
 
+export type WarehouseHistoryResponse = ResponseBase & {
+  __typename?: 'WarehouseHistoryResponse';
+  currentPage?: Maybe<Scalars['Int']['output']>;
+  data?: Maybe<Array<StockHistory>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']['output']>;
+  rows?: Maybe<Scalars['Int']['output']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+  totalRecords?: Maybe<Scalars['Int']['output']>;
+};
+
 export type WarehouseResponse = ResponseBase & {
   __typename?: 'WarehouseResponse';
   data?: Maybe<Warehouse>;
@@ -560,7 +614,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  ResponseBase: ( ConfigurationResponse ) | ( LoginResponse ) | ( ProductResponse ) | ( ProductsResponse ) | ( Response ) | ( RolesResponse ) | ( StockResponse ) | ( StocksResponse ) | ( UserResponse ) | ( UsersResponse ) | ( WarehouseResponse ) | ( WarehousesResponse );
+  ResponseBase: ( ConfigurationResponse ) | ( LoginResponse ) | ( ProductResponse ) | ( ProductsResponse ) | ( Response ) | ( RolesResponse ) | ( StockResponse ) | ( StocksHistoryResponse ) | ( StocksResponse ) | ( UserResponse ) | ( UsersResponse ) | ( WarehouseHistoryResponse ) | ( WarehouseResponse ) | ( WarehousesResponse );
 };
 
 /** Mapping between all available schema types and the resolvers types */
@@ -592,8 +646,10 @@ export type ResolversTypes = {
   RolesResponse: ResolverTypeWrapper<RolesResponse>;
   StatusEnum: StatusEnum;
   Stock: ResolverTypeWrapper<Stock>;
+  StockHistory: ResolverTypeWrapper<StockHistory>;
   StockMovementTypeEnum: StockMovementTypeEnum;
   StockResponse: ResolverTypeWrapper<StockResponse>;
+  StocksHistoryResponse: ResolverTypeWrapper<StocksHistoryResponse>;
   StocksResponse: ResolverTypeWrapper<StocksResponse>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Time: ResolverTypeWrapper<Scalars['Time']['output']>;
@@ -607,6 +663,7 @@ export type ResolversTypes = {
   UserResponse: ResolverTypeWrapper<UserResponse>;
   UsersResponse: ResolverTypeWrapper<UsersResponse>;
   Warehouse: ResolverTypeWrapper<Warehouse>;
+  WarehouseHistoryResponse: ResolverTypeWrapper<WarehouseHistoryResponse>;
   WarehouseResponse: ResolverTypeWrapper<WarehouseResponse>;
   WarehouseStockPaginationInput: WarehouseStockPaginationInput;
   WarehousesResponse: ResolverTypeWrapper<WarehousesResponse>;
@@ -640,7 +697,9 @@ export type ResolversParentTypes = {
   Role: Role;
   RolesResponse: RolesResponse;
   Stock: Stock;
+  StockHistory: StockHistory;
   StockResponse: StockResponse;
+  StocksHistoryResponse: StocksHistoryResponse;
   StocksResponse: StocksResponse;
   String: Scalars['String']['output'];
   Time: Scalars['Time']['output'];
@@ -654,6 +713,7 @@ export type ResolversParentTypes = {
   UserResponse: UserResponse;
   UsersResponse: UsersResponse;
   Warehouse: Warehouse;
+  WarehouseHistoryResponse: WarehouseHistoryResponse;
   WarehouseResponse: WarehouseResponse;
   WarehouseStockPaginationInput: WarehouseStockPaginationInput;
   WarehousesResponse: WarehousesResponse;
@@ -763,10 +823,12 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getProductsOutOfWarehouse?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsOutOfWarehouseArgs, 'warehouseId'>>;
   getRoles?: Resolver<Maybe<ResolversTypes['RolesResponse']>, ParentType, ContextType, RequireFields<QueryGetRolesArgs, 'paginationInput'>>;
   getStockById?: Resolver<Maybe<ResolversTypes['StockResponse']>, ParentType, ContextType, RequireFields<QueryGetStockByIdArgs, 'id'>>;
+  getStockHistory?: Resolver<Maybe<ResolversTypes['StocksHistoryResponse']>, ParentType, ContextType, RequireFields<QueryGetStockHistoryArgs, 'paginationInput' | 'stockId'>>;
   getStocksPaginated?: Resolver<Maybe<ResolversTypes['StocksResponse']>, ParentType, ContextType, RequireFields<QueryGetStocksPaginatedArgs, 'paginationInput'>>;
   getUserById?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<QueryGetUserByIdArgs, 'id'>>;
   getUsers?: Resolver<Maybe<ResolversTypes['UsersResponse']>, ParentType, ContextType, RequireFields<QueryGetUsersArgs, 'paginationInput'>>;
   getWarehouseById?: Resolver<Maybe<ResolversTypes['WarehouseResponse']>, ParentType, ContextType, RequireFields<QueryGetWarehouseByIdArgs, 'id'>>;
+  getWarehouseHistory?: Resolver<Maybe<ResolversTypes['WarehouseHistoryResponse']>, ParentType, ContextType, RequireFields<QueryGetWarehouseHistoryArgs, 'paginationInput' | 'warehouseId'>>;
   getWarehouseStock?: Resolver<Maybe<ResolversTypes['StocksResponse']>, ParentType, ContextType, RequireFields<QueryGetWarehouseStockArgs, 'paginationInput' | 'warehouseId'>>;
   getWarehouses?: Resolver<Maybe<ResolversTypes['WarehousesResponse']>, ParentType, ContextType, RequireFields<QueryGetWarehousesArgs, 'paginationInput'>>;
   login?: Resolver<Maybe<ResolversTypes['LoginResponse']>, ParentType, ContextType, RequireFields<QueryLoginArgs, 'loginInput'>>;
@@ -780,7 +842,7 @@ export type ResponseResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type ResponseBaseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResponseBase'] = ResolversParentTypes['ResponseBase']> = {
-  __resolveType: TypeResolveFn<'ConfigurationResponse' | 'LoginResponse' | 'ProductResponse' | 'ProductsResponse' | 'Response' | 'RolesResponse' | 'StockResponse' | 'StocksResponse' | 'UserResponse' | 'UsersResponse' | 'WarehouseResponse' | 'WarehousesResponse', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'ConfigurationResponse' | 'LoginResponse' | 'ProductResponse' | 'ProductsResponse' | 'Response' | 'RolesResponse' | 'StockResponse' | 'StocksHistoryResponse' | 'StocksResponse' | 'UserResponse' | 'UsersResponse' | 'WarehouseHistoryResponse' | 'WarehouseResponse' | 'WarehousesResponse', ParentType, ContextType>;
   errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
@@ -815,11 +877,39 @@ export type StockResolvers<ContextType = any, ParentType extends ResolversParent
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type StockHistoryResolvers<ContextType = any, ParentType extends ResolversParentTypes['StockHistory'] = ResolversParentTypes['StockHistory']> = {
+  createdBy?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
+  createdByInfo?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  date?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  quantity?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  stock?: Resolver<Maybe<ResolversTypes['Stock']>, ParentType, ContextType>;
+  stockBefore?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  stockId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  stockLater?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['StockMovementTypeEnum'], ParentType, ContextType>;
+  warehouse?: Resolver<Maybe<ResolversTypes['Warehouse']>, ParentType, ContextType>;
+  warehouseId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type StockResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['StockResponse'] = ResolversParentTypes['StockResponse']> = {
   data?: Resolver<Maybe<ResolversTypes['Stock']>, ParentType, ContextType>;
   errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type StocksHistoryResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['StocksHistoryResponse'] = ResolversParentTypes['StocksHistoryResponse']> = {
+  currentPage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  data?: Resolver<Maybe<Array<ResolversTypes['StockHistory']>>, ParentType, ContextType>;
+  errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  rows?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
+  totalPages?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  totalRecords?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -881,6 +971,18 @@ export type WarehouseResolvers<ContextType = any, ParentType extends ResolversPa
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type WarehouseHistoryResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['WarehouseHistoryResponse'] = ResolversParentTypes['WarehouseHistoryResponse']> = {
+  currentPage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  data?: Resolver<Maybe<Array<ResolversTypes['StockHistory']>>, ParentType, ContextType>;
+  errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  rows?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
+  totalPages?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  totalRecords?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type WarehouseResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['WarehouseResponse'] = ResolversParentTypes['WarehouseResponse']> = {
   data?: Resolver<Maybe<ResolversTypes['Warehouse']>, ParentType, ContextType>;
   errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
@@ -919,13 +1021,16 @@ export type Resolvers<ContextType = any> = {
   Role?: RoleResolvers<ContextType>;
   RolesResponse?: RolesResponseResolvers<ContextType>;
   Stock?: StockResolvers<ContextType>;
+  StockHistory?: StockHistoryResolvers<ContextType>;
   StockResponse?: StockResponseResolvers<ContextType>;
+  StocksHistoryResponse?: StocksHistoryResponseResolvers<ContextType>;
   StocksResponse?: StocksResponseResolvers<ContextType>;
   Time?: GraphQLScalarType;
   User?: UserResolvers<ContextType>;
   UserResponse?: UserResponseResolvers<ContextType>;
   UsersResponse?: UsersResponseResolvers<ContextType>;
   Warehouse?: WarehouseResolvers<ContextType>;
+  WarehouseHistoryResponse?: WarehouseHistoryResponseResolvers<ContextType>;
   WarehouseResponse?: WarehouseResponseResolvers<ContextType>;
   WarehousesResponse?: WarehousesResponseResolvers<ContextType>;
 };
