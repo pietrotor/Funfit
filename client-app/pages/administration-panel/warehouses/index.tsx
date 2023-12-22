@@ -24,8 +24,8 @@ import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import ButtonComponent from '@/components/atoms/Button'
 
 function Warehouses() {
-  const [edit, setEdit] = useState<TValuesWarehouses>({})
-  const [variables, setVariables] = useState<PaginationInterfaceState>({})
+  const [edit, setEdit] = useState <TValuesWarehouses>({})
+  const [variables, setVariables] = useState<PaginationInterfaceState>({ rows: 5, filter: '', currentPage: 1 })
   const [filter, setFilter] = useState<string>('')
   const filtroDebounced = UseDebouncedValue(filter, 2000)
   const handleConfirmModal = useDisclosure()
