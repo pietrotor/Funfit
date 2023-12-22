@@ -13,7 +13,7 @@ interface ComboInputProps {
 const ComboInput: React.FC<ComboInputProps> = ({ label, options, value, onChange, onClick }) => {
   return (
     <div style={{ position: 'relative', display: 'inline-block' }}>
-      <label>{label}:</label>
+      <label className='mb-2 font-bold'>{label}</label>
       <input
         onClick={onClick}
         className="w-full bg-gray-100 border-b-3   transition-all border-b-gray-300 text-gray-900 focus:bg-gray-200 focus:!shadow-xl rounded-lg focus:ring-secondary focus:border-secondary block p-2.5 outline-none"
