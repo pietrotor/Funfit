@@ -5,14 +5,23 @@ import { GetServerSideProps } from 'next'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
-import { EditWarehouseModal, TValuesWarehouses } from '@/components/atoms/modals/EditWarehouseModal'
+import {
+  EditWarehouseModal,
+  TValuesWarehouses
+} from '@/components/atoms/modals/EditWarehouseModal'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { AddWarehouseModal } from '@/components/atoms/modals/AddWarehouseModal'
 import { authUserHeader } from '@/utils/verificationUser'
-import { StatusEnum, useDeleteWarehouseMutation, useGetWarehousesQuery, useUpdateWarehouseMutation } from '@/graphql/graphql-types'
+import {
+  StatusEnum,
+  useDeleteWarehouseMutation,
+  useGetWarehousesQuery,
+  useUpdateWarehouseMutation
+} from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
+import ButtonComponent from '@/components/atoms/Button'
 
 function Warehouses() {
   const [edit, setEdit] = useState <TValuesWarehouses>({})
@@ -69,7 +78,9 @@ function Warehouses() {
     console.log(values)
   }
   const handleUpdateWarehouse = (idWarehouse: number) => {
-    const warehouse = data?.getWarehouses?.data?.find(warehouse => warehouse.id === idWarehouse)
+    const warehouse = data?.getWarehouses?.data?.find(
+      warehouse => warehouse.id === idWarehouse
+    )
     setEdit(warehouse as TValuesWarehouses)
 
     handleEditModal.onOpen()
@@ -80,105 +91,141 @@ function Warehouses() {
   }
 
   const handleDeleteWarehouse = (WarehouseId: number) => {
-    const warehouse = data?.getWarehouses?.data?.find(warehouse => warehouse.id === WarehouseId)
+    const warehouse = data?.getWarehouses?.data?.find(
+      warehouse => warehouse.id === WarehouseId
+    )
     setEdit(warehouse as TValuesWarehouses)
 
     handleConfirmModal.onOpen()
   }
 
   const handleConfirmDelete = () => {
-    DeleteteWarehouseMutation(
-      {
-        variables: {
-          deleteWarehouseId: edit.id
-        },
-        onCompleted: data => {
-          if (data.deleteWarehouse?.status === StatusEnum.ERROR) {
-            showSuccessToast(data?.deleteWarehouse?.message || 'error al eliminar', 'error')
-            handleConfirmModal.onClose()
-          } else {
-            showSuccessToast(data.deleteWarehouse?.message || 'El Warehouse ha sido eliminado correctamente', 'success')
-            refetch()
-            handleConfirmModal.onClose()
-          }
+    DeleteteWarehouseMutation({
+      variables: {
+        deleteWarehouseId: edit.id
+      },
+      onCompleted: data => {
+        if (data.deleteWarehouse?.status === StatusEnum.ERROR) {
+          showSuccessToast(
+            data?.deleteWarehouse?.message || 'error al eliminar',
+            'error'
+          )
+          handleConfirmModal.onClose()
+        } else {
+          showSuccessToast(
+            data.deleteWarehouse?.message ||
+              'El Warehouse ha sido eliminado correctamente',
+            'success'
+          )
+          refetch()
+          handleConfirmModal.onClose()
         }
       }
-    )
+    })
 
     handleConfirmModal.onClose()
   }
 
-  return <AdministrationLayout>
-      <div className="m-auto w-5/6 mt-16 ">
-      <h3 className='text-center font-extrabold text-2xl text-gray-500 '>Administración de Almacénes</h3>
-        <Button onClick={handleAddWarehouse.onOpen} color="secondary" className="float-right text-white font-extrabold my-4">
-          <IconSelector name="Bussines"/>
+  return (
+    <AdministrationLayout>
+      <div className="m-auto mt-16 w-5/6 ">
+        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
+          Administración de Almacenes
+        </h3>
+        <Button
+          onClick={handleAddWarehouse.onOpen}
+          color="secondary"
+          className="float-right my-4 font-extrabold text-white"
+        >
+          <IconSelector name="Bussines" />
           Agregar nuevo Almacén
         </Button>
         <Table
-         onChangeRow={row => handleChangeRow(row)}
-         tableName='Almacenes'
-         onChangePage={page => setVariables({ ...variables, currentPage: page }) }
-         itemsPerPage={variables?.rows }
-         currentPage={variables?.currentPage }
-         totalPages={ variables?.totalPages }
-         isLoading ={loading}
-         enablePagination={true}
-         onSearch={ value => setFilter(value) }
-         totalItems={variables?.totalRecords }
+          onChangeRow={row => handleChangeRow(row)}
+          tableName="ALMACENES"
+          onChangePage={page =>
+            setVariables({ ...variables, currentPage: page })
+          }
+          itemsPerPage={variables?.rows}
+          currentPage={variables?.currentPage}
+          totalPages={variables?.totalPages}
+          isLoading={loading}
+          enablePagination={true}
+          onSearch={value => setFilter(value)}
+          totalItems={variables?.totalRecords}
           titles={[
             { name: '#' },
             { name: 'Nombre' },
-            { name: 'Descripcion' },
+            { name: 'Descripción' },
             { name: 'Calle' },
             { name: 'Acciones' }
           ]}
-          items={ (data?.getWarehouses?.data || []).map((warehouse, idx) => ({
-            content: [<h3 key={idx} className='text-sm'> {(idx + 1)}</h3>,
-            <div key={idx} className='text-sm'>{warehouse.name }</div>,
-            <div key={idx} className='text-sm text-left'>{warehouse.description}</div>,
-            <div key={idx} className='text-sm text-left'>{warehouse.address}</div>,
-            <div key={idx} className="flex space-x-3 w-3/4 ms-auto">
-          <Button
-            onClick={() => handleUpdateWarehouse(warehouse.id)}
-            color="default"
-            className="w-1/2"
-          >
-            <IconSelector name='edit'/>
-            Editar
-          </Button>
-          <Button onClick={() => handleDeleteWarehouse(warehouse.id)} color="danger" className="w-1/2">
-            <IconSelector name='trash'/>
-            Eliminar
-          </Button>
-        </div>
+          items={(data?.getWarehouses?.data || []).map((warehouse, idx) => ({
+            content: [
+              <h3 key={idx} className="text-sm">
+                {' '}
+                {idx + 1}
+              </h3>,
+              <div key={idx} className="text-sm">
+                {warehouse.name}
+              </div>,
+              <div key={idx} className="text-left text-sm">
+                {warehouse.description}
+              </div>,
+              <div key={idx} className="text-left text-sm">
+                {warehouse.address}
+              </div>,
+              <div
+                key={idx}
+                className="flex justify-center space-x-1"
+              >
+                <ButtonComponent
+                  onClick={() => handleUpdateWarehouse(warehouse.id)}
+                  type="edit"
+                  showTooltip
+                  tooltipText="Editar"
+                >
+                  <IconSelector name="edit" color="text-primary" width="w-8" />
+                </ButtonComponent>
+                <ButtonComponent
+                  onClick={() => handleDeleteWarehouse(warehouse.id)}
+                  type="delete"
+                  showTooltip
+                  tooltipText="Eliminar"
+                >
+                  <IconSelector name="trash" color="text-danger" width="w-8" />
+                </ButtonComponent>
+              </div>
             ]
-          })) }
-      />
-
-      <AddWarehouseModal
-      isOpen={handleAddWarehouse.isOpen}
-      onClose={handleAddWarehouse.onClose}
-      onAddWarehouse={refetch}
-      />
-
-      <EditWarehouseModal
-        isOpen={handleEditModal.isOpen}
-        onClose={handleEditModal.onClose}
-        values={edit}
-        handleSendUpdateWarehouse={handleSendUpdateWarehouse}
+          }))}
         />
 
-      <ConfirmModal
-        isOpen={handleConfirmModal.isOpen}
-        onClose={handleConfirmModal.onClose}
-        onCancel={handleConfirmModal.onClose}
-        title={`Seguro que quiere eliminar a ${edit?.name} ?`}
-        onConfirm={handleConfirmDelete}
-      />
-    </div>
-  </AdministrationLayout>
+        <AddWarehouseModal
+          isOpen={handleAddWarehouse.isOpen}
+          onClose={handleAddWarehouse.onClose}
+          onAddWarehouse={refetch}
+        />
+
+        <EditWarehouseModal
+          isOpen={handleEditModal.isOpen}
+          onClose={handleEditModal.onClose}
+          values={edit}
+          handleSendUpdateWarehouse={handleSendUpdateWarehouse}
+        />
+
+        <ConfirmModal
+          isOpen={handleConfirmModal.isOpen}
+          onClose={handleConfirmModal.onClose}
+          onCancel={handleConfirmModal.onClose}
+          title="Eliminar almacén"
+          message={`¿Esta seguro de eliminar a ${edit?.name}?`}
+          onConfirm={handleConfirmDelete}
+        />
+      </div>
+    </AdministrationLayout>
+  )
 }
 export default Warehouses
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => await authUserHeader(ctx)
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)

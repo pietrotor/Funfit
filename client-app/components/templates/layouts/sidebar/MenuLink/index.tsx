@@ -38,7 +38,7 @@ const MenuLink: React.FC<TMenuLinkProps> = ({
         }`}
       >
         <div className="flex items-center gap-2">
-          {icon && <IconSelector name={icon} className="" />}
+          {icon && <IconSelector name={icon} className="" width='w-4' />}
           {detailView && (
             <p className={'flex-1 text-left font-semibold leading-normal'}>
               {text}
@@ -68,7 +68,7 @@ const MenuLink: React.FC<TMenuLinkProps> = ({
       }`}
     >
       <div className={'flex gap-2 '}>
-        {icon && <IconSelector name={icon} />}
+        {icon && <IconSelector name={icon} className=''/>}
         {detailView && (
           <p className={'flex-1 text-left font-semibold'}>{text}</p>
         )}

@@ -18,6 +18,7 @@ import Table from '@/components/organisms/tableNext/Table'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import { authUserHeader } from '@/utils/verificationUser'
+import ButtonComponent from '@/components/atoms/Button'
 
 function CreateUserForm() {
   const handleAddUser = useDisclosure()
@@ -129,7 +130,7 @@ function CreateUserForm() {
   return (
     <AdministrationLayout>
       <div className="m-auto mt-16 w-5/6 ">
-        <h3 className="text-center text-2xl font-extrabold text-gray-500 ">
+        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de usuarios
         </h3>
         <Button
@@ -145,7 +146,7 @@ function CreateUserForm() {
             { name: '#' },
             { name: 'Usuario' },
             { name: 'Email' },
-            { name: 'Telefono' },
+            { name: 'Teléfono' },
             { name: 'Acciones' }
           ]}
           items={(data?.getUsers?.data || []).map((user, idx) => ({
@@ -163,28 +164,28 @@ function CreateUserForm() {
               <div key={idx} className="text-sm">
                 {user.phone}
               </div>,
-              <div key={idx} className="flex space-x-3">
-                <Button
+              <div key={idx} className="flex justify-center space-x-1">
+                <ButtonComponent
                   onClick={() => handleUpdateUser(user.id)}
-                  color="default"
-                  className="w-1/2"
+                  type="edit"
+                  showTooltip
+                  tooltipText="Editar"
                 >
-                  <IconSelector name="edit" />
-                  Editar
-                </Button>
-                <Button
+                  <IconSelector name="edit" color="text-primary" width="w-8" />
+                </ButtonComponent>
+                <ButtonComponent
                   onClick={() => handleDeleteUser(user.id)}
-                  color="danger"
-                  className="w-1/2"
+                  type="delete"
+                  showTooltip
+                  tooltipText="Eliminar"
                 >
-                  <IconSelector name="trash" />
-                  Eliminar
-                </Button>
+                  <IconSelector name="trash" color="text-danger" width="w-8" />
+                </ButtonComponent>
               </div>
             ]
           }))}
           onChangeRow={row => handleChangeRow(row)}
-          tableName="Usuarios"
+          tableName="USUARIOS"
           onChangePage={page =>
             setVariables({ ...variables, currentPage: page })
           }
@@ -210,7 +211,7 @@ function CreateUserForm() {
         onConfirm={handleConfirmDeleteUser}
         isOpen={handleDeleteModal.isOpen}
         title={'Mensaje de confirmación'}
-        message={`Seguro que quiere eliminar a ${edit.name} ?`}
+        message={`¿Esta seguro de eliminar a ${edit.name} ?`}
         onCancel={handleDeleteModal.onClose}
       />
 
