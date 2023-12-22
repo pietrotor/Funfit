@@ -68,13 +68,9 @@ function CreateStock() {
   , [dataWarehouses])
   return (
     <AdministrationLayout>
-      <div className='flex flex-col items-center'>
-        <div className='bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] transform scale-x-[-1]  absolute w-screen min-h-screen bg-cover bg-center'/>
-        <form onSubmit={handleSubmit(onSubmit)} className=' border p-8 w-1/2 ms-auto space-y-8 flex flex-col bg-slate-50/100 h-screen z-10'>
-          <h3 className=' text-center font-extrabold text-3xl text-gray-500 '>
-            Crear Stock
-          </h3>
-          <div className='grid grid-cols-2 gap-2 px-4'>
+      <div className='flex flex-col items-start ms-14 justify-center h-screen'>
+        <form onSubmit={handleSubmit(onSubmit)} className={` border p-8  flex bg-slate-50/100 relative  h-30 z-10 transition-all duration-700  ${productsData ? 'w-5/6' : ''}` }>
+          <div className='grid grid-cols-2 gap-2 px-4 pt-3'>
               <ComboInput
                 onClick={getProducts}
                 label='Producto'
@@ -172,8 +168,7 @@ function CreateStock() {
               />
             </div>
             <hr className='border border-gray-300' />
-            {(productsData && warehouseData) &&
-            <div className='px-4 grid grid-cols-2 gap-x-2 place-items-center transition-all duration-400'>
+            <div className={`px-4 grid grid-cols-2 gap-x-2 place-items-center transition-all duration-100 absolute ${!productsData ? ' left-0 invisible' : '  left-unit-8xl'}`}>
             <div className=''>
               <Input
                 required = {false}
@@ -193,28 +188,27 @@ function CreateStock() {
                 disabled= {true}
                 customeClassName='cursor-not-allowed mb-2'
               />
-                <div className='grid grid-cols-2 gap-2'>
-                  <Input
-                    required = {false}
-                    name='code'
-                    label='Código'
-                    value={productsData?.code }
-                    disabled= {true}
-                    customeClassName='cursor-not-allowed'
-                  />
-                  <Input
-                    required = {false}
-                    value={productsData?.suggetedPrice || ''}
-                    name='sudgestedPrice'
-                    label='precio sugerido (Bs)'
-                    disabled= {true}
-                    customeClassName='cursor-not-allowed'
-                  />
-
+              <div className='grid grid-cols-2 gap-2'>
+                <Input
+                  required = {false}
+                  name='code'
+                  label='Código'
+                  value={productsData?.code }
+                  disabled= {true}
+                  customeClassName='cursor-not-allowed'
+                />
+                <Input
+                  required = {false}
+                  value={productsData?.suggetedPrice || ''}
+                  name='sudgestedPrice'
+                  label='precio sugerido (Bs)'
+                  disabled= {true}
+                  customeClassName='cursor-not-allowed'
+                />
             </div>
         </div>
         <div className=''>
-        <Image
+          <Image
             className='border-2 mt-3 border-gray-300 rounded-md'
             src={ productsData?.image || 'https://st.depositphotos.com/2934765/53192/v/600/depositphotos_531920820-stock-illustration-photo-available-vector-icon-default.jpg'}
             alt='image product'
@@ -225,10 +219,10 @@ function CreateStock() {
             type='submit'
             onClick={() => { }}
           >
-             Completar
+            Completar
           </Button>
         </div>
-      </div>}
+      </div>
         </form>
       </div>
     </AdministrationLayout>
