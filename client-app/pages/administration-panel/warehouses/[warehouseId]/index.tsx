@@ -18,7 +18,7 @@ function Warehouse() {
       paginationInput: {
         page: 1,
         rows: 5,
-        filter: ''
+        filter: 'warehouseId'
       }
     },
     fetchPolicy: 'network-only'

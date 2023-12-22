@@ -44,9 +44,9 @@ function CreateStock() {
           lastStockEntry: parseInt(watch('lastStockEntry')),
           quantity: parseInt(watch('quantity')),
           units: watch('units'),
-          productId: watch('productId'),
+          productId: productsData?.id,
           securityStock: parseInt(watch('securityStock')),
-          warehouseId: watch('warehouseId')
+          warehouseId: warehouseData?.id
         }
       },
       onCompleted: data => {
@@ -173,7 +173,7 @@ function CreateStock() {
             </div>
             <hr className='border border-gray-300' />
             {(productsData && warehouseData) &&
-            <div className='px-4 grid grid-cols-2 gap-x-2 place-items-center '>
+            <div className='px-4 grid grid-cols-2 gap-x-2 place-items-center transition-all duration-400'>
             <div className=''>
               <Input
                 required = {false}
