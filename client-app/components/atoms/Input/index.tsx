@@ -6,15 +6,16 @@ type TLabelProps = {
   label?: string
   children: React.ReactNode
   required?: boolean
+  labelColor?: string
 }
 
-const Label = ({ label, children, required }: TLabelProps) => {
+const Label = ({ label, children, required, labelColor }: TLabelProps) => {
   if (!label) {
     return (<>{children}</>)
   }
   return (
     <label className='w-full'>
-      <p className='mb-2 font-bold'>{label} {required ? '*' : ''}</p>
+      <p className={`mb-2 font-bold ${labelColor}`}>{label} {required ? '*' : ''}</p>
       {children}
     </label>
   )
@@ -29,8 +30,10 @@ type TInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   label?: string
   onChange?: () => void
   value?: any
+  disabled?: boolean
   rules?: Omit<RegisterOptions<any, string>, 'valueAsNumber' | 'valueAsDat' | 'setValueAs' | 'disabled'> | undefined
   customeClassName?: string
+  labelColor?: string
 }
 
 const Input: React.FC<TInputProps> = ({
@@ -45,6 +48,8 @@ const Input: React.FC<TInputProps> = ({
   value,
   rules,
   customeClassName,
+  labelColor = 'text-black',
+  disabled = false,
   ...props
 }) => {
   function getTypeOfValue(event: React.ChangeEvent<HTMLInputElement>) {
@@ -66,12 +71,12 @@ const Input: React.FC<TInputProps> = ({
         render={({ field, formState: { errors } }) => (
           <div className='w-full'>
             {type !== 'textArea' ? <>
-                <Label required={!!rules?.required || false} label={label}>
+                <Label required={!!rules?.required || false} label={label} labelColor={labelColor}>
                   <input
                     {...field}
                     type={type}
                     onChange={(event) => field.onChange(getTypeOfValue(event))}
-                    className={`p-2 appearance-none border border-gray-300 outline-none w-full rounded-md focus:bg-gray-200 focus:shadow-xl transition-all text-black disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+                    className={`p-2 appearance-none bg-gray-300/30 placeholder-gray-700 border-b-3 border-gray-500 outline-none w-full rounded-md focus:bg-gray-200 focus:shadow-xl transition-all text-black disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
                     placeholder={placeholder}
                     {...props}
                   />
@@ -80,12 +85,12 @@ const Input: React.FC<TInputProps> = ({
                   <p className='text-red-500 text-sm font-semibold ml-2'>{message || 'Este campo es obligatorio'}</p>}
                 />
               </> : <>
-                <Label required={required} label={label}>
+                <Label required={required} label={label} labelColor={labelColor}>
                   <input
                     {...field}
                     type={type}
                     onChange={(event) => field.onChange(getTypeOfValue(event))}
-                    className={`p-2 appearance-none border border-gray-300 outline-none w-full rounded-md focus:bg-gray-200 focus:shadow-xl transition-all text-black disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+                    className={`p-2 appearance-none bg-gray-600/30 border-b-3 border-gray-500 outline-none w-full rounded-md focus:bg-gray-200 focus:shadow-xl transition-all text-black disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
                     {...props}
                   />
                 </Label>
@@ -102,9 +107,10 @@ const Input: React.FC<TInputProps> = ({
   return (
     <Label required={required} label={label}>
       <input
+        disabled = {disabled}
         type={type}
         value={value}
-        className={`p-2 appearance-none border border-gray-300 outline-none w-full rounded-md focus:bg-gray-200 focus:shadow-xl transition-all text-black disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+        className={`p-2 appearance-none border border-gray-300 border-b-3 outline-none w-full rounded-md focus:bg-gray-200 focus:shadow-xl transition-all text-black disabled:bg-gray-100 disabled:text-gray-600 ${customeClassName}`}
         {...props}
       />
     </Label>

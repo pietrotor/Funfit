@@ -1,9 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 // import { UserNavBar } from '@/components/organisms/navBar/UsersNavBar'
 import { UserContainer } from '../layouts/container/UserContainer'
 import { UsersFooter } from '@/components/organisms/footer/UsersFooter'
 import { TSections } from '@/interfaces/Sections'
 import UsersNavBar from '@/components/organisms/navBar/UsersNavBar'
+// import { useAppDispatch, useAppSelector } from '@/components/redux/hooks'
+// import { addToCart } from '@/components/redux/features/cartSlice'
 export type TClientLayoutProps = {
   children: React.ReactNode
 }
@@ -19,6 +21,8 @@ const menu: TSections = [
 ]
 
 function ClientLayout({ children }: TClientLayoutProps) {
+  useEffect(() => {
+  }, [])
   return (
     <>
       <div className="flex min-h-screen  flex-col">
