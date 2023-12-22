@@ -15,7 +15,7 @@ import { authUserHeader } from '@/utils/verificationUser'
 
 const Productos = () => {
   const [editProduct, setEditProduct] = useState <TValueProductData>({})
-  const [variables, setVariables] = useState<PaginationInterfaceState>({})
+  const [variables, setVariables] = useState<PaginationInterfaceState>({ totalPages: 1, rows: 5, filter: '', currentPage: 1, totalRecords: 1 })
   const [filter, setFilter] = useState <string>('')
   const [DeleteteProductMutation] = useDeleteProductMutation()
   const [UpdateUserMutationVariables] = useUpdateProductMutation()

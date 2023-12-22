@@ -24,7 +24,7 @@ function CreateUserForm() {
   const handleEditModal = useDisclosure()
   const handleDeleteModal = useDisclosure()
   const [filter, setFilter] = useState<string>('')
-  const [variables, setVariables] = useState<PaginationInterfaceState>({})
+  const [variables, setVariables] = useState<PaginationInterfaceState>({ totalPages: 1, rows: 5, filter: '', currentPage: 1, totalRecords: 1 })
   const filtroDebounced = UseDebouncedValue(filter, 2000)
 
   const [edit, setEdit] = useState<TValueUserData>({})
@@ -69,13 +69,13 @@ function CreateUserForm() {
           handleEditModal.onClose()
         },
         onError: error => {
-          showSuccessToast('ocurrio un error', 'error')
+          showSuccessToast('ocurrió un error', 'error')
           console.log(error)
         }
       })
     } catch (error) {
       console.log(error)
-      showSuccessToast('ocurrio un error', 'error')
+      showSuccessToast('ocurrió un error', 'error')
     }
   }
 
@@ -105,10 +105,16 @@ function CreateUserForm() {
       },
       onCompleted: data => {
         if (data?.updateUser?.status === StatusEnum.ERROR) {
-          showSuccessToast(data.updateUser.message || 'Error al eliminar el usuario', 'error')
+          showSuccessToast(
+            data.updateUser.message || 'Error al eliminar el usuario',
+            'error'
+          )
           handleDeleteModal.onClose()
         } else {
-          showSuccessToast(data.updateUser?.message || 'Usuario eliminado correctamente', 'success')
+          showSuccessToast(
+            data.updateUser?.message || 'Usuario eliminado correctamente',
+            'success'
+          )
           refetch()
           handleDeleteModal.onClose()
         }
@@ -122,9 +128,15 @@ function CreateUserForm() {
 
   return (
     <AdministrationLayout>
-      <div className="m-auto w-5/6 mt-16 ">
-      <h3 className='text-center font-extrabold text-2xl text-gray-500 '>Administración de usuarios</h3>
-        <Button onClick={handleAddUser.onOpen} color="secondary" className="float-right text-white font-extrabold my-4">
+      <div className="m-auto mt-16 w-5/6 ">
+        <h3 className="text-center text-2xl font-extrabold text-gray-500 ">
+          Administración de usuarios
+        </h3>
+        <Button
+          onClick={handleAddUser.onOpen}
+          color="secondary"
+          className="float-right my-4 font-extrabold text-white"
+        >
           <IconSelector name="addUser" />
           Agregar nuevo usuario
         </Button>
@@ -136,37 +148,53 @@ function CreateUserForm() {
             { name: 'Telefono' },
             { name: 'Acciones' }
           ]}
-          items={ (data?.getUsers?.data || []).map((user, idx) => ({
-            content: [<h3 key={idx} className='text-sm'> {(idx + 1)}</h3>,
-            <div key={idx} className='text-sm text-left'>{user.name + ' ' + user.lastName}</div>,
-            <div key={idx} className='text-sm text-left'>{user.email}</div>,
-            <div key={idx} className='text-sm'>{user.phone}</div>,
-            <div key={idx} className="flex space-x-3">
-          <Button
-            onClick={() => handleUpdateUser(user.id)}
-            color="default"
-            className="w-1/2"
-          >
-            <IconSelector name='edit'/>
-            Editar
-          </Button>
-          <Button onClick={() => handleDeleteUser(user.id)} color="danger" className="w-1/2">
-            <IconSelector name='trash'/>
-            Eliminar
-          </Button>
-        </div>
+          items={(data?.getUsers?.data || []).map((user, idx) => ({
+            content: [
+              <h3 key={idx} className="text-sm">
+                {' '}
+                {idx + 1}
+              </h3>,
+              <div key={idx} className="text-left text-sm">
+                {user.name + ' ' + user.lastName}
+              </div>,
+              <div key={idx} className="text-left text-sm">
+                {user.email}
+              </div>,
+              <div key={idx} className="text-sm">
+                {user.phone}
+              </div>,
+              <div key={idx} className="flex space-x-3">
+                <Button
+                  onClick={() => handleUpdateUser(user.id)}
+                  color="default"
+                  className="w-1/2"
+                >
+                  <IconSelector name="edit" />
+                  Editar
+                </Button>
+                <Button
+                  onClick={() => handleDeleteUser(user.id)}
+                  color="danger"
+                  className="w-1/2"
+                >
+                  <IconSelector name="trash" />
+                  Eliminar
+                </Button>
+              </div>
             ]
-          })) }
+          }))}
           onChangeRow={row => handleChangeRow(row)}
-          tableName='Usuarios'
-          onChangePage={page => setVariables({ ...variables, currentPage: page }) }
-          itemsPerPage={variables?.rows }
-          currentPage={variables?.currentPage }
-          totalPages={ variables?.totalPages }
-          isLoading ={loading}
+          tableName="Usuarios"
+          onChangePage={page =>
+            setVariables({ ...variables, currentPage: page })
+          }
+          itemsPerPage={variables?.rows}
+          currentPage={variables?.currentPage}
+          totalPages={variables?.totalPages}
+          isLoading={loading}
           enablePagination={true}
-          onSearch={ value => setFilter(value) }
-          totalItems={variables?.totalRecords }
+          onSearch={value => setFilter(value)}
+          totalItems={variables?.totalRecords}
         />
       </div>
 
@@ -174,23 +202,27 @@ function CreateUserForm() {
         isOpen={handleEditModal.isOpen}
         onClose={handleEditModal.onClose}
         values={edit}
-        handleSendUpdateUser={handleSendUpdateUser}/>
+        handleSendUpdateUser={handleSendUpdateUser}
+      />
 
       <ConfirmModal
         onClose={handleDeleteModal.onClose}
-        onConfirm={ handleConfirmDeleteUser}
+        onConfirm={handleConfirmDeleteUser}
         isOpen={handleDeleteModal.isOpen}
-        title={'Mensaje de confirmacion'}
+        title={'Mensaje de confirmación'}
         message={`Seguro que quiere eliminar a ${edit.name} ?`}
-        onCancel={ handleDeleteModal.onClose }/>
+        onCancel={handleDeleteModal.onClose}
+      />
 
       <AddUserModal
         onAddUser={refetch}
         isOpen={handleAddUser.isOpen}
-        onClose={handleAddUser.onClose }/>
+        onClose={handleAddUser.onClose}
+      />
     </AdministrationLayout>
   )
 }
 export default CreateUserForm
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => await authUserHeader(ctx)
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)
