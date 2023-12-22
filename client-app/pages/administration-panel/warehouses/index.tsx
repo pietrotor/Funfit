@@ -24,8 +24,12 @@ import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import ButtonComponent from '@/components/atoms/Button'
 
 function Warehouses() {
-  const [edit, setEdit] = useState <TValuesWarehouses>({})
-  const [variables, setVariables] = useState<PaginationInterfaceState>({ rows: 5, filter: '', currentPage: 1 })
+  const [edit, setEdit] = useState<TValuesWarehouses>({})
+  const [variables, setVariables] = useState<PaginationInterfaceState>({
+    rows: 5,
+    filter: '',
+    currentPage: 1
+  })
   const [filter, setFilter] = useState<string>('')
   const filtroDebounced = UseDebouncedValue(filter, 2000)
   const handleConfirmModal = useDisclosure()
@@ -132,14 +136,24 @@ function Warehouses() {
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de Almacenes
         </h3>
-        <Button
-          onClick={handleAddWarehouse.onOpen}
-          color="secondary"
-          className="float-right my-4 font-extrabold text-white"
-        >
-          <IconSelector name="Bussines" />
-          Agregar nuevo Almacén
-        </Button>
+        <div className="space-x-3 text-end">
+          <Button
+            onClick={handleAddWarehouse.onOpen}
+            color="primary"
+            className=" my-4 font-extrabold text-white"
+          >
+            <IconSelector name="Boxes" />
+            Historial de stock
+          </Button>
+          <Button
+            onClick={handleAddWarehouse.onOpen}
+            color="secondary"
+            className=" my-4 font-extrabold text-white"
+          >
+            <IconSelector name="Bussines" />
+            Agregar nuevo Almacén
+          </Button>
+        </div>
         <Table
           onChangeRow={row => handleChangeRow(row)}
           tableName="ALMACENES"
@@ -175,10 +189,19 @@ function Warehouses() {
               <div key={idx} className="text-left text-sm">
                 {warehouse.address}
               </div>,
-              <div
-                key={idx}
-                className="flex justify-center space-x-1"
-              >
+              <div key={idx} className="flex justify-center space-x-1">
+                <ButtonComponent
+                  onClick={() => handleDeleteWarehouse(warehouse.id)}
+                  type="history"
+                  showTooltip
+                  tooltipText="Historial de almacén"
+                >
+                  <IconSelector
+                    name="Warehouse"
+                    color="text-blue-500"
+                    width="w-6"
+                  />
+                </ButtonComponent>
                 <ButtonComponent
                   onClick={() => handleUpdateWarehouse(warehouse.id)}
                   type="edit"
