@@ -40,11 +40,11 @@ export const EditProductModal = (
   }
   console.log(values)
   return <MyModal isOpen={isOpen} onClose={onClose}>
-    <h1 className="mb-10 mt-10 text-center text-2xl font-bold">
+    <h1 className="mb-10 mt-10 text-center text-3xl font-bold text-gray-500">
         Editar Producto
       </h1>
       <form
-        className=" m-auto flex w-5/6 flex-col items-center space-y-4 pb-9"
+        className=" m-auto flex w-5/6 flex-col items-center space-y-4 pb-9 text-gray-500"
         onSubmit={handleSubmit(onSubmit)}>
         <div className='grid grid-cols-2 w-full gap-3 '>
           <Input
