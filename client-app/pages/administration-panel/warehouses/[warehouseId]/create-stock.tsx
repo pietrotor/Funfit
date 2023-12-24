@@ -12,13 +12,13 @@ import { TValuesWarehouses } from '@/components/atoms/modals/EditWarehouseModal'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 
 function CreateStock() {
-  const [filterProduct, setFilterProduct] = useState<string>('')
+  const [filterProduct/*, setFilterProduct */] = useState<string>('')
   const [filterWarehouse, setFilterWarehouse] = useState<string>('')
   const valueFilterWarehouse = UseDebouncedValue(filterWarehouse, 500)
   const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
   const [CreateStock] = useCreateStockMutation()
   const [productsData, setProductsData] = useState <TValueProductData>()
-  const [warehouseData, setWarehousesData] = useState <TValuesWarehouses>({})
+  const [warehouseData/* ,setWarehousesData */] = useState <TValuesWarehouses>({})
   const { control, handleSubmit, watch, reset } = useForm()
   const [getProducts, { data }] = useGetProductsLazyQuery({
     fetchPolicy: 'network-only',
@@ -28,7 +28,7 @@ function CreateStock() {
       }
     }
   })
-  const [getWarehouses, dataWarehouses] = useGetWarehousesLazyQuery({
+  const [/* getWarehouses, */dataWarehouses] = useGetWarehousesLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
       paginationInput: {
@@ -68,114 +68,105 @@ function CreateStock() {
   , [dataWarehouses])
   return (
     <AdministrationLayout>
-      <div className='flex flex-col items-center'>
-        <div className='bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] transform scale-x-[-1]  absolute w-screen min-h-screen bg-cover bg-center'/>
-        <form onSubmit={handleSubmit(onSubmit)} className=' border p-8 w-1/2 ms-auto space-y-8 flex flex-col bg-slate-50/100 h-screen z-10'>
-          <h3 className=' text-center font-extrabold text-3xl text-gray-500 '>
-            Crear Stock
-          </h3>
-          <div className='grid grid-cols-2 gap-2 px-4'>
-              <ComboInput
-                onClick={getProducts}
-                label='Producto'
-                onChange={(value) => {
-                  setFilterWarehouse(value)
-                  setProductsData(data?.getProducts?.data?.find((product) => product.name === value) as TValueProductData)
-                }
-                }
-                options = {
-                data?.getProducts?.data?.map((product) => ({
-                  label: product.name
-                })) || [
-                  { label: 'Cargando..' }
-                ]
-                }
-              />
-              <ComboInput
-                onClick={getWarehouses}
-                label='Almacén'
-                onChange={(value) => {
-                  console.log(value, 'value')
-                  setFilterProduct(value)
-                  setWarehousesData(dataWarehouses?.data?.getWarehouses?.data?.find((warehouse) => warehouse.name === value) as TValuesWarehouses)
-                  console.log(dataWarehouses, 'warehouseData')
-                }
-                }
-                options = {
-                  dataWarehouses?.data?.getWarehouses?.data?.map((warehouse) => ({
-                    label: warehouse.name
-                  })) || [
-                    { label: 'Cargando..' }
-                  ]
-                }
-              />
-              <Input
-                control={control}
-                name="lastStockEntry"
-                label='Última entrada'
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                  },
-                  pattern: {
-                    value: /^[0-9]*$/,
-                    message: 'Solo se permiten números'
-                  }
-                }}
+      <div className='flex flex-col items-start ms-10 justify-center h-[90%] bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] transform absolute w-[90%] mt-10 bg-cover bg-center'>
+        <div className={`${productsData ? 'bg-gray-700 opacity-60 w-[60%] h-full right-0 absolute' : ''}`}/>
+        <form onSubmit={handleSubmit(onSubmit)} className={` border px-16 py-9  flex flex-col justify-center items-center bg-slate-50/100 relative  h-full z-30 transition-all duration-700  ${productsData ? '' : ''}` }>
+                  <h3 className='mb-7'> Registrar producto </h3>
+                  <div className='max-w-5/6'>
+                    <ComboInput
+                      onClick={getProducts}
+                      label='Producto'
+                      onChange={(value) => {
+                        setFilterWarehouse(value)
+                        setProductsData(data?.getProducts?.data?.find((product) => product.name === value) as TValueProductData)
+                      }
+                      }
+                      options = {
+                      data?.getProducts?.data?.map((product) => ({
+                        label: product.name
+                      })) || [
+                        { label: 'Cargando..' }
+                      ]
+                      }
+                    />
+                  <div className='grid grid-cols-2 gap-2 px-4 pt-3'>
 
-              />
-              <Input
-                control={control}
-                name="quantity"
-                label='Cantidad'
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                  },
-                  pattern: {
-                    value: /^[0-9]*$/,
-                    message: 'Solo se permiten números'
-                  }
-                }}
-              />
-              <Input
-                control={control}
-                name="units"
-                label='Unidades'
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z\s]+$/i,
-                    message: 'Solo se permiten letras'
-                  }
-                }}
-              />
-              <Input
-                control={control}
-                name="securityStock"
-                label='Stock de seguridad'
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                  },
-                  pattern: {
-                    value: /^[0-9]*$/,
-                    message: 'Solo se permiten números'
-                  }
-                }}
-              />
-            </div>
-            <hr className='border border-gray-300' />
-            {(productsData && warehouseData) &&
-            <div className='px-4 grid grid-cols-2 gap-x-2 place-items-center transition-all duration-400'>
+                    <Input
+                      control={control}
+                      name="lastStockEntry"
+                      label='Última entrada'
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'Este campo es requerido'
+                        },
+                        pattern: {
+                          value: /^[0-9]*$/,
+                          message: 'Solo se permiten números'
+                        }
+                      }}
+
+                    />
+                    <Input
+                      control={control}
+                      name="quantity"
+                      label='Cantidad'
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'Este campo es requerido'
+                        },
+                        pattern: {
+                          value: /^[0-9]*$/,
+                          message: 'Solo se permiten números'
+                        }
+                      }}
+                    />
+                    <Input
+                      control={control}
+                      name="units"
+                      label='Unidades'
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'Este campo es requerido'
+                        },
+                        pattern: {
+                          value: /^[a-zA-Z\s]+$/i,
+                          message: 'Solo se permiten letras'
+                        }
+                      }}
+                    />
+                    <Input
+                      control={control}
+                      name="securityStock"
+                      label='Stock de seguridad'
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'Este campo es requerido'
+                        },
+                        pattern: {
+                          value: /^[0-9]*$/,
+                          message: 'Solo se permiten números'
+                        }
+                      }}
+                    />
+                  </div>
+
+                </div>
+                <Button
+            className='w-4/5  my-6 px-5 bg-secondary/80 text-xl h-12 text-white rounded-md hover:bg-secondary transition duration-300'
+            type='submit'
+            onClick={() => { }}
+          >
+            Completar
+          </Button>
+        </form>
+        <div className={`ps-4  py-6 grid grid-cols-2 gap-x-2 place-items-center transition-all duration-300 absolute ${!productsData ? 'left-1 invisible ' : 'left-unit-9xl '}`}>
             <div className=''>
               <Input
+                labelColor=' text-white '
                 required = {false}
                 value={warehouseData.address || ''}
                 type='textArea'
@@ -193,43 +184,34 @@ function CreateStock() {
                 disabled= {true}
                 customeClassName='cursor-not-allowed mb-2'
               />
-                <div className='grid grid-cols-2 gap-2'>
-                  <Input
-                    required = {false}
-                    name='code'
-                    label='Código'
-                    value={productsData?.code }
-                    disabled= {true}
-                    customeClassName='cursor-not-allowed'
-                  />
-                  <Input
-                    required = {false}
-                    value={productsData?.suggetedPrice || ''}
-                    name='sudgestedPrice'
-                    label='precio sugerido (Bs)'
-                    disabled= {true}
-                    customeClassName='cursor-not-allowed'
-                  />
-
+              <div className='grid grid-cols-2 gap-2'>
+                <Input
+                  required = {false}
+                  name='code'
+                  label='Código'
+                  value={productsData?.code }
+                  disabled= {true}
+                  customeClassName='cursor-not-allowed'
+                />
+                <Input
+                  required = {false}
+                  value={productsData?.suggetedPrice || ''}
+                  name='sudgestedPrice'
+                  label='precio sugerido (Bs)'
+                  disabled= {true}
+                  customeClassName='cursor-not-allowed'
+                />
             </div>
         </div>
         <div className=''>
-        <Image
+          <Image
             className='border-2 mt-3 border-gray-300 rounded-md'
             src={ productsData?.image || 'https://st.depositphotos.com/2934765/53192/v/600/depositphotos_531920820-stock-illustration-photo-available-vector-icon-default.jpg'}
             alt='image product'
             width={200}
           />
-          <Button
-            className='w-full my-6 px-5 bg-secondary/80 text-xl h-12 text-white rounded-md hover:bg-secondary transition duration-300'
-            type='submit'
-            onClick={() => { }}
-          >
-             Completar
-          </Button>
         </div>
-      </div>}
-        </form>
+      </div>
       </div>
     </AdministrationLayout>
   )
