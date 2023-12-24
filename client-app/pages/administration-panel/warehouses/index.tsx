@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import { Button, useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
@@ -22,7 +23,7 @@ import {
 } from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
-// import ButtonComponent from '@/components/atoms/Button'
+import ButtonComponent from '@/components/atoms/Button'
 
 function Warehouses() {
   const [edit, setEdit] = useState <TValuesWarehouses>({})
@@ -32,7 +33,7 @@ function Warehouses() {
   const handleConfirmModal = useDisclosure()
   const handleEditModal = useDisclosure()
   const handleAddWarehouse = useDisclosure()
-  // const router = useRouter()
+  const router = useRouter()
 
   const [UpdateWarehousesMutationVariables] = useUpdateWarehouseMutation()
   const [DeleteteWarehouseMutation] = useDeleteWarehouseMutation()
@@ -162,25 +163,51 @@ function Warehouses() {
             { name: 'Calle' },
             { name: 'Acciones' }
           ]}
-          items={ (data?.getWarehouses?.data || []).map((warehouse, idx) => ({
-            content: [<h3 key={idx} className='text-sm'> {(idx + 1)}</h3>,
-            <div key={idx} className='text-sm'>{warehouse.name }</div>,
-            <div key={idx} className='text-sm text-left'>{warehouse.description}</div>,
-            <div key={idx} className='text-sm text-left'>{warehouse.address}</div>,
-            <div key={idx} className="flex space-x-3 w-3/4 ms-auto">
-          <Button
-            onClick={() => handleUpdateWarehouse(warehouse.id)}
-            color="default"
-            className="w-1/2"
-          >
-            <IconSelector name='edit'/>
-            Editar
-          </Button>
-          <Button onClick={() => handleDeleteWarehouse(warehouse.id)} color="danger" className="w-1/2">
-            <IconSelector name='trash'/>
-            Eliminar
-          </Button>
-        </div>
+          items={(data?.getWarehouses?.data || []).map((warehouse, idx) => ({
+            content: [
+              <h3 key={idx} className="text-sm">
+                {' '}
+                {idx + 1}
+              </h3>,
+              <div key={idx} className="text-sm">
+                {warehouse.name}
+              </div>,
+              <div key={idx} className="text-left text-sm">
+                {warehouse.description}
+              </div>,
+              <div key={idx} className="text-left text-sm">
+                {warehouse.address}
+              </div>,
+              <div
+                key={idx}
+                className="flex justify-center space-x-1"
+              >
+                <ButtonComponent
+                  onClick={() => router.push(`/administration-panel/warehouses/${warehouse.id}`)}
+                  type="edit"
+                  showTooltip
+                  tooltipText="Editar"
+                  className='px-3'
+                >
+                  <IconSelector name="eye" color="text-primary" width="w-8" />
+                </ButtonComponent>
+                <ButtonComponent
+                  onClick={() => handleUpdateWarehouse(warehouse.id)}
+                  type="edit"
+                  showTooltip
+                  tooltipText="Editar"
+                >
+                  <IconSelector name="edit" color="text-primary" width="w-8" />
+                </ButtonComponent>
+                <ButtonComponent
+                  onClick={() => handleDeleteWarehouse(warehouse.id)}
+                  type="delete"
+                  showTooltip
+                  tooltipText="Eliminar"
+                >
+                  <IconSelector name="trash" color="text-danger" width="w-8" />
+                </ButtonComponent>
+              </div>
             ]
           }))}
         />
