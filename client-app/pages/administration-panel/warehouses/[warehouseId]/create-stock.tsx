@@ -68,109 +68,105 @@ function CreateStock() {
   , [dataWarehouses])
   return (
     <AdministrationLayout>
-      <div className='flex flex-col items-start ms-14 justify-center h-screen'>
-        <form onSubmit={handleSubmit(onSubmit)} className={` border p-8  flex bg-slate-50/100 relative  h-30 z-10 transition-all duration-700  ${productsData ? 'w-5/6' : ''}` }>
-          <div className='grid grid-cols-2 gap-2 px-4 pt-3'>
-              <ComboInput
-                onClick={getProducts}
-                label='Producto'
-                onChange={(value) => {
-                  setFilterWarehouse(value)
-                  setProductsData(data?.getProducts?.data?.find((product) => product.name === value) as TValueProductData)
-                }
-                }
-                options = {
-                data?.getProducts?.data?.map((product) => ({
-                  label: product.name
-                })) || [
-                  { label: 'Cargando..' }
-                ]
-                }
-              />
-              <ComboInput
-                onClick={getWarehouses}
-                label='Almacén'
-                onChange={(value) => {
-                  console.log(value, 'value')
-                  setFilterProduct(value)
-                  setWarehousesData(dataWarehouses?.data?.getWarehouses?.data?.find((warehouse) => warehouse.name === value) as TValuesWarehouses)
-                  console.log(dataWarehouses, 'warehouseData')
-                }
-                }
-                options = {
-                  dataWarehouses?.data?.getWarehouses?.data?.map((warehouse) => ({
-                    label: warehouse.name
-                  })) || [
-                    { label: 'Cargando..' }
-                  ]
-                }
-              />
-              <Input
-                control={control}
-                name="lastStockEntry"
-                label='Última entrada'
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                  },
-                  pattern: {
-                    value: /^[0-9]*$/,
-                    message: 'Solo se permiten números'
-                  }
-                }}
+      <div className='flex flex-col items-start ms-10 justify-center h-[90%] bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] transform absolute w-[90%] mt-10 bg-cover bg-center'>
+        <div className={`${productsData ? 'bg-gray-700 opacity-60 w-[60%] h-full right-0 absolute' : ''}`}/>
+        <form onSubmit={handleSubmit(onSubmit)} className={` border px-16 py-9  flex flex-col justify-center items-center bg-slate-50/100 relative  h-full z-30 transition-all duration-700  ${productsData ? '' : ''}` }>
+                  <h3 className='mb-7'> Registrar producto </h3>
+                  <div className='max-w-5/6'>
+                    <ComboInput
+                      onClick={getProducts}
+                      label='Producto'
+                      onChange={(value) => {
+                        setFilterWarehouse(value)
+                        setProductsData(data?.getProducts?.data?.find((product) => product.name === value) as TValueProductData)
+                      }
+                      }
+                      options = {
+                      data?.getProducts?.data?.map((product) => ({
+                        label: product.name
+                      })) || [
+                        { label: 'Cargando..' }
+                      ]
+                      }
+                    />
+                  <div className='grid grid-cols-2 gap-2 px-4 pt-3'>
 
-              />
-              <Input
-                control={control}
-                name="quantity"
-                label='Cantidad'
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                  },
-                  pattern: {
-                    value: /^[0-9]*$/,
-                    message: 'Solo se permiten números'
-                  }
-                }}
-              />
-              <Input
-                control={control}
-                name="units"
-                label='Unidades'
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z\s]+$/i,
-                    message: 'Solo se permiten letras'
-                  }
-                }}
-              />
-              <Input
-                control={control}
-                name="securityStock"
-                label='Stock de seguridad'
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                  },
-                  pattern: {
-                    value: /^[0-9]*$/,
-                    message: 'Solo se permiten números'
-                  }
-                }}
-              />
-            </div>
-            <hr className='border border-gray-300' />
-            <div className={`px-4 grid grid-cols-2 gap-x-2 place-items-center transition-all duration-100 absolute ${!productsData ? ' left-0 invisible' : '  left-unit-8xl'}`}>
+                    <Input
+                      control={control}
+                      name="lastStockEntry"
+                      label='Última entrada'
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'Este campo es requerido'
+                        },
+                        pattern: {
+                          value: /^[0-9]*$/,
+                          message: 'Solo se permiten números'
+                        }
+                      }}
+
+                    />
+                    <Input
+                      control={control}
+                      name="quantity"
+                      label='Cantidad'
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'Este campo es requerido'
+                        },
+                        pattern: {
+                          value: /^[0-9]*$/,
+                          message: 'Solo se permiten números'
+                        }
+                      }}
+                    />
+                    <Input
+                      control={control}
+                      name="units"
+                      label='Unidades'
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'Este campo es requerido'
+                        },
+                        pattern: {
+                          value: /^[a-zA-Z\s]+$/i,
+                          message: 'Solo se permiten letras'
+                        }
+                      }}
+                    />
+                    <Input
+                      control={control}
+                      name="securityStock"
+                      label='Stock de seguridad'
+                      rules={{
+                        required: {
+                          value: true,
+                          message: 'Este campo es requerido'
+                        },
+                        pattern: {
+                          value: /^[0-9]*$/,
+                          message: 'Solo se permiten números'
+                        }
+                      }}
+                    />
+                  </div>
+
+                </div>
+                <Button
+            className='w-4/5  my-6 px-5 bg-secondary/80 text-xl h-12 text-white rounded-md hover:bg-secondary transition duration-300'
+            type='submit'
+            onClick={() => { }}
+          >
+            Completar
+          </Button>
+        </form>
+        <div className={`ps-4  py-6 grid grid-cols-2 gap-x-2 place-items-center transition-all duration-300 absolute ${!productsData ? 'left-1 invisible ' : 'left-unit-9xl '}`}>
             <div className=''>
               <Input
+                labelColor=' text-white '
                 required = {false}
                 value={warehouseData.address || ''}
                 type='textArea'
@@ -214,16 +210,8 @@ function CreateStock() {
             alt='image product'
             width={200}
           />
-          <Button
-            className='w-full my-6 px-5 bg-secondary/80 text-xl h-12 text-white rounded-md hover:bg-secondary transition duration-300'
-            type='submit'
-            onClick={() => { }}
-          >
-            Completar
-          </Button>
         </div>
       </div>
-        </form>
       </div>
     </AdministrationLayout>
   )

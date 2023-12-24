@@ -12,7 +12,7 @@ interface ComboInputProps {
 
 const ComboInput: React.FC<ComboInputProps> = ({ label, options, value, onChange, onClick }) => {
   return (
-    <div style={{ position: 'relative', display: 'inline-block' }}>
+    <div className='px-4'>
       <label className='mb-2 font-bold'>{label}</label>
       <input
         onClick={onClick}
