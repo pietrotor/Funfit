@@ -12,13 +12,13 @@ import { TValuesWarehouses } from '@/components/atoms/modals/EditWarehouseModal'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 
 function CreateStock() {
-  const [filterProduct, setFilterProduct] = useState<string>('')
+  const [filterProduct/*, setFilterProduct */] = useState<string>('')
   const [filterWarehouse, setFilterWarehouse] = useState<string>('')
   const valueFilterWarehouse = UseDebouncedValue(filterWarehouse, 500)
   const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
   const [CreateStock] = useCreateStockMutation()
   const [productsData, setProductsData] = useState <TValueProductData>()
-  const [warehouseData, setWarehousesData] = useState <TValuesWarehouses>({})
+  const [warehouseData/* ,setWarehousesData */] = useState <TValuesWarehouses>({})
   const { control, handleSubmit, watch, reset } = useForm()
   const [getProducts, { data }] = useGetProductsLazyQuery({
     fetchPolicy: 'network-only',
@@ -28,7 +28,7 @@ function CreateStock() {
       }
     }
   })
-  const [getWarehouses, dataWarehouses] = useGetWarehousesLazyQuery({
+  const [/* getWarehouses, */dataWarehouses] = useGetWarehousesLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
       paginationInput: {
