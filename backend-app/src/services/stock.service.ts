@@ -15,6 +15,7 @@ import Stock from "@/models/stock.model";
 import { stockHistoryUseCase, stockUseCase } from "useCase";
 import Product from "@/models/product.model";
 import mongoose from "mongoose";
+import { productCore } from ".";
 
 export class StocksService extends StockRepository<objectId> {
   async getStocksPaginated(paginationInput: PaginationInput) {
@@ -41,9 +42,9 @@ export class StocksService extends StockRepository<objectId> {
   async getStockById(id: objectId) {
     const stockInstance = await Stock.findOne({
       _id: id,
-      delted: false,
+      deleted: false,
     });
-    if (!stockInstance) throw new BadRequestError("No se encontro el error");
+    if (!stockInstance) throw new BadRequestError("No se encontro el stock");
     return stockInstance;
   }
 
@@ -87,6 +88,9 @@ export class StocksService extends StockRepository<objectId> {
   }
 
   async createStock(createStockInput: CreateStockInput, createdBy?: objectId) {
+    const productInstance = await productCore.getProductById(
+      createStockInput.productId
+    );
     const productStock = await this.getStocksByProductIdInstance(
       createStockInput.productId
     );
@@ -101,6 +105,7 @@ export class StocksService extends StockRepository<objectId> {
       );
     }
     const stockInstance = new Stock({ ...createStockInput, createdBy });
+    productInstance.warehouses.push(createStockInput.warehouseId);
     return await stockInstance.save();
   }
 
