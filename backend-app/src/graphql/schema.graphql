@@ -23,7 +23,10 @@ type Query {
   # PRODUCTS ==========================================
   getProducts(paginationInput: PaginationInput!): ProductsResponse
   getProductById(id: ObjectId!): ProductResponse
-  getProductsOutOfWarehouse(warehouseId: ObjectId!): ProductsResponse
+  getProductsOutOfWarehouse(
+    paginationInput: PaginationInput!
+    warehouseId: ObjectId!
+  ): ProductsResponse
   # WAREHOUSES =======================================
   getWarehouses(paginationInput: PaginationInput!): WarehousesResponse
   getWarehouseById(id: ObjectId!): WarehouseResponse
@@ -44,7 +47,7 @@ type Query {
   getWarehouseHistory(
     paginationInput: PaginationInput!
     warehouseId: ObjectId!
-  ): WarehouseHistoryResponse
+  ): StocksHistoryResponse
 }
 type Mutation {
   # CONFIGURATION ====================================
@@ -261,16 +264,6 @@ type StocksHistoryResponse implements ResponseBase {
   rows: Int
   currentPage: Int
 }
-type WarehouseHistoryResponse implements ResponseBase {
-  errorInput: [ErrorInput!]
-  status: StatusEnum!
-  message: String
-  data: [StockHistory!]
-  totalRecords: Int
-  totalPages: Int
-  rows: Int
-  currentPage: Int
-}
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
   name: String!
@@ -356,7 +349,6 @@ input CreateStockInput {
   warehouseId: ObjectId!
   quantity: Int!
   securityStock: Int
-  lastStockEntry: Int!
   units: String!
 }
 input CreateStockMovementInput {

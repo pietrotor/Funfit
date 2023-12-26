@@ -42,16 +42,14 @@ const getProductById = async (
 };
 const getProductsOutOfWarehouse = async (
   _: any,
-  args: { warehouseId: objectId }
+  args: { paginationInput: PaginationInput; warehouseId: objectId }
 ): Promise<ProductsResponse> => {
   try {
-    const { warehouseId } = args;
-    const products = await productCore.getProductsOutWarehouse(warehouseId);
-    return {
-      status: StatusEnum.OK,
-      message: "Producto encontrado",
-      data: products,
-    };
+    const { paginationInput, warehouseId } = args;
+    return await productCore.getProductsOutWarehouse(
+      paginationInput,
+      warehouseId
+    );
   } catch (error) {
     console.log(error);
     return errorHandler(error);

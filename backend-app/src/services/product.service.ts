@@ -51,30 +51,20 @@ export class ProductService extends ProductRepository<objectId> {
     });
   }
 
-  async getProductsOutWarehouse(warehouseId: objectId) {
-    const productsWithoutStock = await Product.aggregate([
-      {
-        $lookup: {
-          from: "stocks",
-          let: { productId: "$_id" },
-          pipeline: [
-            {
-              $match: {
-                $expr: { $eq: ["$productId", "$$productId"] },
-                warehouseId: new mongoose.Types.ObjectId(warehouseId),
-              },
-            },
-          ],
-          as: "stock",
-        },
+  async getProductsOutWarehouse(
+    paginationInput: PaginationInput,
+    warehouseId: objectId
+  ) {
+    const filterArgs = {
+      warehouses: {
+        $nin: [warehouseId],
       },
-      {
-        $match: {
-          stock: { $size: 0 }, // Filtrar productos sin stock
-        },
-      },
-    ]);
-    return productsWithoutStock;
+    };
+    return await getInstancesPagination<IProduct, IModelProduct>(
+      Product,
+      paginationInput,
+      filterArgs
+    );
   }
 
   async createProducto(
