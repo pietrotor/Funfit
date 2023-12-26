@@ -2,6 +2,7 @@ import {
   CreateStockInput,
   CreateStockMovementInput,
   PaginationInput,
+  StockMovementTypeEnum,
   UpdateConfigurationInput,
   WarehouseStockPaginationInput,
 } from "@/graphql/graphql_types";
@@ -64,7 +65,7 @@ export class StocksService extends StockRepository<objectId> {
   async getStockByIdInstance(id: objectId) {
     return await Stock.findOne({
       _id: id,
-      delted: false,
+      deleted: false,
     });
   }
 
@@ -88,6 +89,7 @@ export class StocksService extends StockRepository<objectId> {
   }
 
   async createStock(createStockInput: CreateStockInput, createdBy?: objectId) {
+    const { quantity } = createStockInput;
     const productInstance = await productCore.getProductById(
       createStockInput.productId
     );
@@ -106,6 +108,13 @@ export class StocksService extends StockRepository<objectId> {
     }
     const stockInstance = new Stock({ ...createStockInput, createdBy });
     productInstance.warehouses.push(createStockInput.warehouseId);
+    await stockHistoryUseCase.createStockHistory(
+      stockInstance,
+      quantity,
+      StockMovementTypeEnum.INWARD,
+      createdBy
+    );
+    await productInstance.save();
     return await stockInstance.save();
   }
 
@@ -123,11 +132,11 @@ export class StocksService extends StockRepository<objectId> {
     }
     // Update stock according to movement type
     stockUseCase.stockMovement(stockInstance, quantity, type);
-    stockHistoryUseCase.createStockHistory(
+    await stockHistoryUseCase.createStockHistory(
       initialStockInstance,
-      stockInstance,
       quantity,
-      type
+      type,
+      createdBy
     );
     return await stockInstance.save();
   }

@@ -10,8 +10,8 @@ export class StockUseCase {
   ) {
     switch (movementType) {
       case StockMovementTypeEnum.INWARD: {
-        stock.quantity += quantity;
         stock.lastStockEntry = stock.quantity + quantity;
+        stock.quantity += quantity;
         return stock;
       }
       case StockMovementTypeEnum.OUTWARD: {

@@ -30,6 +30,7 @@ const stockSchema = new Schema<IStock>(
     },
     lastStockEntry: {
       type: Number,
+      default: 0,
     },
     units: {
       type: String,

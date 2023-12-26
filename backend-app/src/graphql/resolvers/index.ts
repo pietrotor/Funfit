@@ -17,6 +17,11 @@ import {
   warehouseType,
 } from "./warehose.resolver";
 import { stockMutation, stockQuery, stockType } from "./stock.resolver";
+import {
+  stockHistoryMutation,
+  stockHistoryQuery,
+  stockHistoryType,
+} from "./stockHistory.resolver";
 
 const resolvers: Resolvers<ContextGraphQl> = {
   Date: dateTimeScalar,
@@ -27,6 +32,7 @@ const resolvers: Resolvers<ContextGraphQl> = {
   ...warehouseType,
   ...configurationType,
   ...stockType,
+  ...stockHistoryType,
   Query: {
     ...userQuery,
     ...roleQuery,
@@ -34,6 +40,7 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...warehouseQuery,
     ...configurationQuery,
     ...stockQuery,
+    ...stockHistoryQuery,
   },
   Mutation: {
     ...userMutation,
@@ -41,6 +48,7 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...warehouseMutation,
     ...configurationMutation,
     ...stockMutation,
+    ...stockHistoryMutation,
   },
 };
 
