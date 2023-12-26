@@ -28,6 +28,6 @@
       "@/lib/*": ["./lib/*"]
     }
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "lib/message.js", "pages/[productName]"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "lib/message.js", "pages/producto"],
   "exclude": ["node_modules"]
 }

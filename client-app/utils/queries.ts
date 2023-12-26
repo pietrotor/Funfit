@@ -275,9 +275,9 @@ query GetStockById($getStockByIdId: ObjectId!) {
   }
 }
 `
-export const GET_WAREHOUSES_BY_ID = gql`
-query GetWarehouseById($getWarehouseByIdId: ObjectId!) {
-  getWarehouseById(id: $getWarehouseByIdId) {
+export const GET_PRODUCTS_OUT_OF_WAREHOUSE = gql`
+query GetProductsOutOfWarehouse($paginationInput: PaginationInput!, $warehouseId: ObjectId!) {
+  getProductsOutOfWarehouse(paginationInput: $paginationInput, warehouseId: $warehouseId) {
     errorInput {
       message
       field
@@ -287,9 +287,17 @@ query GetWarehouseById($getWarehouseByIdId: ObjectId!) {
     data {
       id
       name
+      suggetedPrice
+      code
       description
-      address
+      cost
+      image
+      warehouses
     }
+    totalRecords
+    totalPages
+    rows
+    currentPage
   }
 }
 `

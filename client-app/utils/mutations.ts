@@ -106,6 +106,7 @@ mutation CreateStock($createStockInput: CreateStockInput!) {
       warehouseId
       quantity
       securityStock
+      lastStockEntry
       units
       product {
         id
@@ -119,10 +120,6 @@ mutation CreateStock($createStockInput: CreateStockInput!) {
       }
       warehouse {
         id
-        id
-        name
-        description
-        address
         name
         description
         address
