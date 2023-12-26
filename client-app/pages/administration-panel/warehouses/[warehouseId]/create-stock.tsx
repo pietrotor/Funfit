@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form'
 import { Button, Image } from '@nextui-org/react'
+import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 
 import Input from '@/components/atoms/Input'
@@ -20,6 +21,7 @@ function CreateStock() {
   const [productsData, setProductsData] = useState <TValueProductData>()
   const [warehouseData/* ,setWarehousesData */] = useState <TValuesWarehouses>({})
   const { control, handleSubmit, watch, reset } = useForm()
+  const router = useRouter()
   const [getProducts, { data }] = useGetProductsLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -36,6 +38,7 @@ function CreateStock() {
       }
     }
   })
+  const warehouseId = router.query.warehouseId as string
 
   const onSubmit = () => {
     CreateStock({
@@ -46,7 +49,7 @@ function CreateStock() {
           units: watch('units'),
           productId: productsData?.id,
           securityStock: parseInt(watch('securityStock')),
-          warehouseId: '657e33b1f2348d91dde57d3b'
+          warehouseId
         }
       },
       onCompleted: data => {
