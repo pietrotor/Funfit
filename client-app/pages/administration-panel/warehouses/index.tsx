@@ -1,6 +1,7 @@
 import { Button, useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
+// import { useRouter } from 'next/router'
 
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
@@ -35,6 +36,7 @@ function Warehouses() {
   const handleConfirmModal = useDisclosure()
   const handleEditModal = useDisclosure()
   const handleAddWarehouse = useDisclosure()
+  // const router = useRouter()
 
   const [UpdateWarehousesMutationVariables] = useUpdateWarehouseMutation()
   const [DeleteteWarehouseMutation] = useDeleteWarehouseMutation()
@@ -42,7 +44,6 @@ function Warehouses() {
   const { loading, data, refetch } = useGetWarehousesQuery({
     variables: {
       paginationInput: {
-        page: variables?.currentPage,
         rows: 5,
         filter: filtroDebounced
       }
@@ -81,6 +82,7 @@ function Warehouses() {
     })
     console.log(values)
   }
+
   const handleUpdateWarehouse = (idWarehouse: number) => {
     const warehouse = data?.getWarehouses?.data?.find(
       warehouse => warehouse.id === idWarehouse
