@@ -1,8 +1,9 @@
 import { Button, useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
-// import { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 
+import { WarehouseRoute } from '@/utils/routes'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
@@ -36,7 +37,7 @@ function Warehouses() {
   const handleConfirmModal = useDisclosure()
   const handleEditModal = useDisclosure()
   const handleAddWarehouse = useDisclosure()
-  // const router = useRouter()
+  const router = useRouter()
 
   const [UpdateWarehousesMutationVariables] = useUpdateWarehouseMutation()
   const [DeleteteWarehouseMutation] = useDeleteWarehouseMutation()
@@ -193,7 +194,7 @@ function Warehouses() {
               </div>,
               <div key={idx} className="flex justify-center space-x-1">
                 <ButtonComponent
-                  onClick={() => handleDeleteWarehouse(warehouse.id)}
+                  onClick={() => router.push(`${WarehouseRoute}/${warehouse.id}/warehouse-history`)}
                   type="history"
                   showTooltip
                   tooltipText="Historial de almacén"
