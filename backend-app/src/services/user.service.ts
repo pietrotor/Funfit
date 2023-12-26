@@ -69,6 +69,14 @@ export class UserService extends UserRepository<objectId> {
     return user;
   }
 
+  async getUserByIdInstance(id: objectId) {
+    const user = await User.findOne({
+      _id: id,
+      deleted: false,
+    });
+    return user;
+  }
+
   async getUsersPaginated(paginationInput: PaginationInput) {
     const { filter } = paginationInput;
     if (filter) {

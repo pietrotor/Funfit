@@ -1,5 +1,5 @@
-import { Document, Model, Schema, model } from 'mongoose'
-import IGeneric from '@/interfaces/generic.interface'
+import { Document, Model, Schema, model } from "mongoose";
+import IGeneric from "@/interfaces/generic.interface";
 
 export interface IStock extends Document, IGeneric {
   id: objectId;
@@ -10,43 +10,47 @@ export interface IStock extends Document, IGeneric {
   lastStockEntry: number;
   units: string;
 }
-export interface IModelStock extends Model<IStock> { }
+export interface IModelStock extends Model<IStock> {}
 const stockSchema = new Schema<IStock>(
   {
     productId: {
       type: Schema.Types.ObjectId,
-      ref: 'Product'
+      ref: "Product",
     },
     warehouseId: {
       type: Schema.Types.ObjectId,
-      ref: 'Warehouse'
+      ref: "Warehouse",
     },
     quantity: {
       type: Number,
-      required: [true, 'cantidad es obligatorio']
+      required: [true, "cantidad es obligatorio"],
     },
     securityStock: {
-      type: Number
+      type: Number,
+    },
+    lastStockEntry: {
+      type: Number,
+      default: 0,
     },
     units: {
-      type: String
+      type: String,
     },
     // ============= Generic Types ===========
     status: { type: Boolean, default: true },
     createdBy: {
       type: Schema.Types.ObjectId,
-      ref: 'User'
+      ref: "User",
     },
     deleted: { type: Boolean, default: false },
     deletedAt: { type: Date, default: null },
     deletedBy: {
       type: Schema.Types.ObjectId,
-      ref: 'User'
-    }
+      ref: "User",
+    },
   },
   { timestamps: true }
-)
+);
 
-const Stock = model<IStock, IModelStock>('Stock', stockSchema, 'stocks')
+const Stock = model<IStock, IModelStock>("Stock", stockSchema, "stocks");
 
-export default Stock
+export default Stock;

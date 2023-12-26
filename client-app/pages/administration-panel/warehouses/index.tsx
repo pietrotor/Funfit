@@ -1,9 +1,8 @@
+import { useRouter } from 'next/router'
 import { Button, useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
-import { useRouter } from 'next/router'
 
-import { WarehouseRoute } from '@/utils/routes'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
@@ -192,18 +191,18 @@ function Warehouses() {
               <div key={idx} className="text-left text-sm">
                 {warehouse.address}
               </div>,
-              <div key={idx} className="flex justify-center space-x-1">
+              <div
+                key={idx}
+                className="flex justify-center space-x-1"
+              >
                 <ButtonComponent
-                  onClick={() => router.push(`${WarehouseRoute}/${warehouse.id}/warehouse-history`)}
-                  type="history"
+                  onClick={() => router.push(`/administration-panel/warehouses/${warehouse.id}`)}
+                  type="edit"
                   showTooltip
-                  tooltipText="Historial de almacén"
+                  tooltipText="Editar"
+                  className='px-3'
                 >
-                  <IconSelector
-                    name="Warehouse"
-                    color="text-blue-500"
-                    width="w-6"
-                  />
+                  <IconSelector name="eye" color="text-primary" width="w-8" />
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() => handleUpdateWarehouse(warehouse.id)}

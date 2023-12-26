@@ -9,6 +9,7 @@ import { IUser } from "@/models/user.model";
 
 export default abstract class UserRepository<T> {
   abstract getUserById(id: T): Promise<IUser | OutErrorResponse>;
+  abstract getUserByIdInstance(id: T): Promise<IUser | null>;
   abstract getUsersPaginated(
     paginationInput: PaginationInput
   ): Promise<IPaginatedResponse<IUser[]> | OutErrorResponse>;
