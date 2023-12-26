@@ -54,7 +54,8 @@ export class StocksService extends StockRepository<objectId> {
   ) {
     const { warehouses, ...paginationInput } = warehouseStockPaginationInput;
     const warehousesFilter =
-      warehouses.length > 0 ? { warehouseId: { $in: { warehouses } } } : {};
+      warehouses.length > 0 ? { warehouseId: { $in: warehouses } } : {};
+    console.log('🚀 ~ file: stock.service.ts:56 ~ StocksService ~ paginationInput:', warehousesFilter)
     return await getInstancesPagination<IStock, IModelStock>(
       Stock,
       paginationInput,
