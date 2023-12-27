@@ -1,15 +1,19 @@
 import { useState } from 'react'
-// import { useRouter } from 'next/router'
 import { Chip } from '@nextui-org/react'
+import { useRouter } from 'next/router'
+import { GetServerSideProps } from 'next'
 import { StockMovementTypeEnum, useGetStockHistoryQuery } from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 
 import AdministrationLayout from '@/components/templates/layouts'
 import Table from '@/components/organisms/tableNext/Table'
+import DateConverter from '@/components/atoms/DateConverter'
+import { authUserHeader } from '@/utils/verificationUser'
 
 function StockHistory() {
-  const stockId = '658abb339afd96f09cc8df29'
+  const router = useRouter()
+  const stockId = router.query.stockId
   const [variables, setVariables] = useState<PaginationInterfaceState>({
     rows: 5,
     filter: '',
@@ -44,10 +48,10 @@ function StockHistory() {
   }
 
   return (
-    <AdministrationLayout>
-      <div className="m-auto mt-16 w-5/6 space-y-10">
+    <AdministrationLayout showBackButton={true}>
+      <div className="m-auto w-5/6 space-y-10">
         <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Historial de stock
+          Historial del stock
         </h2>
         <Table
           tableName="ALMACENES"
@@ -64,11 +68,11 @@ function StockHistory() {
           }
           titles={[
             { name: '#' },
-            { name: 'Almacén' },
+            { name: 'Producto' },
             { name: 'Cantidad' },
-            { name: 'Tipo de movimiento' },
-            { name: 'stock de seguridad' },
             { name: 'Fecha' },
+            { name: 'Tipo de movimiento' },
+            { name: 'Stock de seguridad' },
             { name: 'Stock anterior' },
             { name: 'Stock posterior' }
           ]}
@@ -77,6 +81,7 @@ function StockHistory() {
               idx + 1,
               history.stock?.warehouse?.name,
               history.quantity,
+              <DateConverter key={idx} dateString={history.date} />,
               history.type === StockMovementTypeEnum.INWARD ? (
                 <Chip color="success" variant="flat">
                   Entrada
@@ -90,7 +95,7 @@ function StockHistory() {
                   Desechado
                 </Chip>
               ),
-              history.date,
+              history.stock?.securityStock,
               history.stockBefore,
               history.stockLater
             ]
@@ -102,3 +107,6 @@ function StockHistory() {
 }
 
 export default StockHistory
+
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)

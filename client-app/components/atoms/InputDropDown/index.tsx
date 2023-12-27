@@ -1,6 +1,10 @@
 import React from 'react'
+import { Control, Controller, RegisterOptions } from 'react-hook-form'
 
 interface ComboInputProps {
+  name: string;
+  rules?: Omit<RegisterOptions<any, string>, 'valueAsNumber' | 'valueAsDat' | 'setValueAs' | 'disabled'> | undefined
+  control?: Control<any>
   label: string;
   options: {
     label: string;
@@ -10,9 +14,15 @@ interface ComboInputProps {
   onClick: () => void;
 }
 
-const ComboInput: React.FC<ComboInputProps> = ({ label, options, value, onChange, onClick }) => {
+const ComboInput: React.FC<ComboInputProps> = ({ name, rules, control, label, options, value, onChange, onClick }) => {
   return (
-    <div className='px-4'>
+    <Controller
+        name={name}
+        control={control}
+        rules={rules}
+        render={({ field, formState: { errors } }) => (
+          <div className='w-full'>
+    <div className=''>
       <label className='mb-2 font-bold'>{label}</label>
       <input
         onClick={onClick}
@@ -32,6 +42,9 @@ const ComboInput: React.FC<ComboInputProps> = ({ label, options, value, onChange
         ))}
       </datalist>
     </div>
+    </div>
+        )}
+    />
   )
 }
 

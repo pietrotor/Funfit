@@ -3,7 +3,6 @@ import { useState } from 'react'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 
-import { WarehouseRoute } from '@/utils/routes'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
@@ -46,6 +45,7 @@ function Warehouses() {
     variables: {
       paginationInput: {
         rows: 5,
+        page: variables?.currentPage,
         filter: filtroDebounced
       }
     },
@@ -141,14 +141,6 @@ function Warehouses() {
         </h3>
         <div className="space-x-3 text-end">
           <Button
-            onClick={() => router.push('/administration-panel/stock-history')}
-            color="primary"
-            className=" my-4 font-extrabold text-white"
-          >
-            <IconSelector name="Boxes" />
-            Historial del stock
-          </Button>
-          <Button
             onClick={handleAddWarehouse.onOpen}
             color="secondary"
             className=" my-4 font-extrabold text-white"
@@ -194,16 +186,17 @@ function Warehouses() {
               </div>,
               <div key={idx} className="flex justify-center space-x-1">
                 <ButtonComponent
-                  onClick={() => router.push(`${WarehouseRoute}/${warehouse.id}/warehouse-history`)}
-                  type="history"
+                  onClick={() =>
+                    router.push(
+                      `/administration-panel/warehouses/${warehouse.id}`
+                    )
+                  }
+                  type="eye"
                   showTooltip
-                  tooltipText="Historial de almacén"
+                  tooltipText="Administrar Stock"
+                  className="px-3"
                 >
-                  <IconSelector
-                    name="Warehouse"
-                    color="text-blue-500"
-                    width="w-6"
-                  />
+                  <IconSelector name="eye" color="text-secondary" width="w-5" />
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() => handleUpdateWarehouse(warehouse.id)}

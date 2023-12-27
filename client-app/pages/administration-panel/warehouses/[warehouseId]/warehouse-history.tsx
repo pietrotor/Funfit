@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { Chip } from '@nextui-org/react'
+import { GetServerSideProps } from 'next'
 import {
   StockMovementTypeEnum,
   useGetWarehouseHistoryQuery
@@ -10,6 +11,8 @@ import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import AdministrationLayout from '@/components/templates/layouts'
 import Table from '@/components/organisms/tableNext/Table'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
+import DateConverter from '@/components/atoms/DateConverter'
+import { authUserHeader } from '@/utils/verificationUser'
 
 const WarehouseHsitory = () => {
   const router = useRouter()
@@ -48,8 +51,8 @@ const WarehouseHsitory = () => {
   }
 
   return (
-    <AdministrationLayout>
-      <div className="m-auto mt-16 w-5/6 space-y-10">
+    <AdministrationLayout showBackButton>
+      <div className="m-auto w-5/6 space-y-5">
         <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
           Historial de almacén
         </h2>
@@ -70,8 +73,8 @@ const WarehouseHsitory = () => {
             { name: '#' },
             { name: 'Producto' },
             { name: 'Cantidad' },
-            { name: 'Tipo de movimiento' },
             { name: 'Fecha' },
+            { name: 'Tipo de movimiento' },
             { name: 'Stock anterior' },
             { name: 'Stock posterior' }
           ]}
@@ -81,6 +84,7 @@ const WarehouseHsitory = () => {
                 idx + 1,
                 history.stock?.product?.name,
                 history.quantity,
+                <DateConverter key={idx} dateString={history.date as string} />,
                 history.type === StockMovementTypeEnum.INWARD ? (
                   <Chip color="success" variant="flat">
                     Entrada
@@ -94,7 +98,6 @@ const WarehouseHsitory = () => {
                     Desechado
                   </Chip>
                 ),
-                history.date,
                 history.stockBefore,
                 history.stockLater
               ]
@@ -107,3 +110,6 @@ const WarehouseHsitory = () => {
 }
 
 export default WarehouseHsitory
+
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)

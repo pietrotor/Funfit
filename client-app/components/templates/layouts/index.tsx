@@ -5,12 +5,15 @@ import ToastComponent from '@/components/atoms/Toast/toasts'
 import { useGetConfigurationLazyQuery } from '@/graphql/graphql-types'
 import { useAppDispatch, useAppSelector } from '@/store/index'
 import { setBusiness } from '@/store/slices'
+import BackButton from '@/components/atoms/BackButton/intex'
 
 type TAdministrationLayoutProps = {
   children: React.ReactNode
+  showBackButton?: boolean
 }
 
 const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
+  showBackButton = false,
   children
 }) => {
   const { business } = useAppSelector(state => state.configuration)
@@ -79,7 +82,10 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
             isSidebarOpen={sidebarOpen}
             setSidebar={setsidebarOpen}
           />
-          <div className="transition-duration-500 w-full transition-all">
+          <div className="transition-duration-500 w-full ps-10 transition-all">
+            {showBackButton && (
+              <BackButton/>
+            )}
             {children}
             <ToastComponent />
           </div>

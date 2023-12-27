@@ -38,7 +38,7 @@ const ButtonComponent = ({
       case 'history':
         return 'blue-500'
       case 'eye':
-        return 'dark'
+        return 'secondary'
       default:
         return 'primary'
     }
