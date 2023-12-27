@@ -1,8 +1,9 @@
-import { useRouter } from 'next/router'
 import { Button, useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
+import { useRouter } from 'next/router'
 
+import { WarehouseRoute } from '@/utils/routes'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
@@ -140,7 +141,7 @@ function Warehouses() {
         </h3>
         <div className="space-x-3 text-end">
           <Button
-            onClick={handleAddWarehouse.onOpen}
+            onClick={() => router.push('/administration-panel/stock-history')}
             color="primary"
             className=" my-4 font-extrabold text-white"
           >
@@ -191,18 +192,18 @@ function Warehouses() {
               <div key={idx} className="text-left text-sm">
                 {warehouse.address}
               </div>,
-              <div
-                key={idx}
-                className="flex justify-center space-x-1"
-              >
+              <div key={idx} className="flex justify-center space-x-1">
                 <ButtonComponent
-                  onClick={() => router.push(`/administration-panel/warehouses/${warehouse.id}`)}
-                  type="edit"
+                  onClick={() => router.push(`${WarehouseRoute}/${warehouse.id}/warehouse-history`)}
+                  type="history"
                   showTooltip
-                  tooltipText="Editar"
-                  className='px-3'
+                  tooltipText="Historial de almacén"
                 >
-                  <IconSelector name="eye" color="text-primary" width="w-8" />
+                  <IconSelector
+                    name="Warehouse"
+                    color="text-blue-500"
+                    width="w-6"
+                  />
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() => handleUpdateWarehouse(warehouse.id)}

@@ -1,19 +1,15 @@
-import React, { useState } from 'react'
-import { useRouter } from 'next/router'
+import { useState } from 'react'
+// import { useRouter } from 'next/router'
 import { Chip } from '@nextui-org/react'
-import {
-  StockMovementTypeEnum,
-  useGetWarehouseHistoryQuery
-} from '@/graphql/graphql-types'
+import { StockMovementTypeEnum, useGetStockHistoryQuery } from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
+import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 
 import AdministrationLayout from '@/components/templates/layouts'
 import Table from '@/components/organisms/tableNext/Table'
-import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 
-const WarehouseHsitory = () => {
-  const router = useRouter()
-  const { warehouseId } = router.query
+function StockHistory() {
+  const stockId = '658abb339afd96f09cc8df29'
   const [variables, setVariables] = useState<PaginationInterfaceState>({
     rows: 5,
     filter: '',
@@ -22,9 +18,9 @@ const WarehouseHsitory = () => {
   const [filter, setFilter] = useState<string>('')
   const filterProductDebounced = UseDebouncedValue(filter, 800)
 
-  const { loading, data } = useGetWarehouseHistoryQuery({
+  const { loading, data } = useGetStockHistoryQuery({
     variables: {
-      warehouseId,
+      stockId,
       paginationInput: {
         page: variables?.currentPage,
         rows: variables?.rows,
@@ -34,11 +30,11 @@ const WarehouseHsitory = () => {
     fetchPolicy: 'network-only',
     onCompleted: data => {
       setVariables({
-        totalPages: data.getWarehouseHistory?.totalPages || 1,
-        rows: data.getWarehouseHistory?.rows || 5,
+        totalPages: data.getStockHistory?.totalPages || 1,
+        rows: data.getStockHistory?.rows || 5,
         filter: filterProductDebounced,
-        currentPage: data.getWarehouseHistory?.currentPage || 1,
-        totalRecords: data.getWarehouseHistory?.totalRecords || 1
+        currentPage: data.getStockHistory?.currentPage || 1,
+        totalRecords: data.getStockHistory?.totalRecords || 1
       })
     }
   })
@@ -51,10 +47,10 @@ const WarehouseHsitory = () => {
     <AdministrationLayout>
       <div className="m-auto mt-16 w-5/6 space-y-10">
         <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Historial de almacén
+          Historial de stock
         </h2>
         <Table
-          tableName="PRODUCTOS"
+          tableName="ALMACENES"
           isLoading={loading}
           currentPage={variables.currentPage}
           totalItems={variables.totalRecords}
@@ -68,42 +64,41 @@ const WarehouseHsitory = () => {
           }
           titles={[
             { name: '#' },
-            { name: 'Producto' },
+            { name: 'Almacén' },
             { name: 'Cantidad' },
             { name: 'Tipo de movimiento' },
+            { name: 'stock de seguridad' },
             { name: 'Fecha' },
             { name: 'Stock anterior' },
             { name: 'Stock posterior' }
           ]}
-          items={(data?.getWarehouseHistory?.data || []).map(
-            (history, idx) => ({
-              content: [
-                idx + 1,
-                history.stock?.product?.name,
-                history.quantity,
-                history.type === StockMovementTypeEnum.INWARD ? (
-                  <Chip color="success" variant="flat">
-                    Entrada
-                  </Chip>
-                ) : history.type === StockMovementTypeEnum.OUTWARD ? (
-                  <Chip color="warning" variant="flat">
-                    Salida
-                  </Chip>
-                ) : (
-                  <Chip color="danger" variant="flat">
-                    Desechado
-                  </Chip>
-                ),
-                history.date,
-                history.stockBefore,
-                history.stockLater
-              ]
-            })
-          )}
+          items={(data?.getStockHistory?.data || []).map((history, idx) => ({
+            content: [
+              idx + 1,
+              history.stock?.warehouse?.name,
+              history.quantity,
+              history.type === StockMovementTypeEnum.INWARD ? (
+                <Chip color="success" variant="flat">
+                  Entrada
+                </Chip>
+              ) : history.type === StockMovementTypeEnum.OUTWARD ? (
+                <Chip color="warning" variant="flat">
+                  Salida
+                </Chip>
+              ) : (
+                <Chip color="danger" variant="flat">
+                  Desechado
+                </Chip>
+              ),
+              history.date,
+              history.stockBefore,
+              history.stockLater
+            ]
+          }))}
         />
       </div>
     </AdministrationLayout>
   )
 }
 
-export default WarehouseHsitory
+export default StockHistory
