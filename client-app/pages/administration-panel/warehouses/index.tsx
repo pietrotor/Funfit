@@ -42,6 +42,7 @@ function Warehouses() {
     variables: {
       paginationInput: {
         rows: 5,
+        page: variables?.currentPage,
         filter: filtroDebounced
       }
     },
@@ -184,9 +185,9 @@ function Warehouses() {
               >
                 <ButtonComponent
                   onClick={() => router.push(`/administration-panel/warehouses/${warehouse.id}`)}
-                  type="edit"
+                  type="default"
                   showTooltip
-                  tooltipText="Editar"
+                  tooltipText="Administrar Stock"
                   className='px-3'
                 >
                   <IconSelector name="eye" color="text-primary" width="w-8" />
