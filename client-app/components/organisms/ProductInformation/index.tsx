@@ -1,13 +1,13 @@
 import { Button } from '@nextui-org/react'
-import { useRef, useState } from 'react'
 import { useRouter } from 'next/router'
-import ClientLayout from '@/components/templates/ClientLayout/ClientLayout'
-import Slide from '@/components/atoms/slide'
-import { addToCart, TCartItem } from '@/components/redux/features/cartSlice'
-import { useAppDispatch } from '@/components/redux/hooks'
-import { showSuccessToast } from '@/components/atoms/Toast/toasts'
+import { useRef, useState } from 'react'
 
-function Producto() {
+import { showSuccessToast } from '@/components/atoms/Toast/toasts'
+import { useAppDispatch } from '@/store/index'
+import { addToCart, TCartItem } from '@/store/slices'
+import Slide from '@/components/atoms/slide'
+
+function ProductInformation() {
   const router = useRouter()
   const { id } = router.query
   const dispatch = useAppDispatch()
@@ -16,7 +16,7 @@ function Producto() {
     id,
     name: 'Torta saludable  ',
     description:
-      'Torta de chocolate con harina de avena, sin azucar, sin gluten, sin lactosa. ',
+        'Torta de chocolate con harina de avena, sin azucar, sin gluten, sin lactosa. ',
     price: 100,
     image: 'https://images5.alphacoders.com/132/1323979.png',
     images: [
@@ -25,7 +25,7 @@ function Producto() {
       'https://images5.alphacoders.com/132/1323979.png'
     ],
     ingredients:
-      'Harina de avena, Cacao, Huevos, Leche de almendras, Aceite de coco,Vainilla, Sal',
+        'Harina de avena, Cacao, Huevos, Leche de almendras, Aceite de coco,Vainilla, Sal',
     category: 'Tortas',
     subcategory: 'Saludables',
     stock: 10
@@ -48,9 +48,7 @@ function Producto() {
     }
     dispatch(addToCart(data.current))
   }
-
   return (
-    <ClientLayout>
     <article className='bg-white py-10 '>
       <div className=' py-10 md:px-20 md:flex md:space-x-32 md:justify-center'>
         <div className='lg:w-1/3 '>
@@ -116,8 +114,6 @@ function Producto() {
               {product.ingredients}
         </p>
       </article>
-    </ClientLayout>
   )
 }
-
-export default Producto
+export default ProductInformation

@@ -3,8 +3,10 @@ import { Button } from '@nextui-org/react'
 
 import React from 'react'
 import { MyModal } from './MyModal'
+import { showSuccessToast } from '../Toast/toasts'
 import Input from '../Input'
 import Selector from '../InputSelector'
+import { StatusEnum, StockMovementTypeEnum, useCreatStockMovementMutation } from '@/graphql/graphql-types'
 
 type TProps = {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full'
@@ -12,24 +14,57 @@ type TProps = {
   onClose: () => void
   onOpen: () => void
   isOpen: boolean
+  stockId: string
+  onAddWarehouse: () => void
 }
-export const ShowStocksModal = ({ isOpen, onClose, onOpen, hideCloseButton, size }: TProps) => {
-  const { control } = useForm()
+export const MoveStockModal = ({ isOpen, onClose, onOpen, hideCloseButton, size, stockId, onAddWarehouse }: TProps) => {
+  const { control, handleSubmit, reset, watch } = useForm()
+  const [createStockMovement] = useCreatStockMovementMutation()
+  const onSubmit = () => {
+    createStockMovement({
+      variables: {
+        createStockMovementInput: {
+          stockId,
+          type: watch('type'),
+          quantity: parseInt(watch('quantity')),
+          date: watch('date'),
+          detail: watch('detail')
+        }
+      },
+      onCompleted: data => {
+        if (data.creatStockMovement?.status === StatusEnum.ERROR) {
+          showSuccessToast(
+            data.creatStockMovement.message || 'Error al crear un usuario',
+            'error'
+          )
+          return
+        }
+        showSuccessToast(
+          data.creatStockMovement?.message || 'Usuario creado correctamente',
+          'success'
+        )
+        console.log(data, 'data')
+        onAddWarehouse()
+        onClose()
+        reset()
+      }
+    })
+  }
   return <MyModal isOpen={isOpen} onClose={onClose} hideCloseButton={hideCloseButton} size={'xl'}>
   <section className=' relative bg-[url(https://us.123rf.com/450wm/123rfexclusive/123rfexclusive2302/123rfexclusive230200151/198953137-tel%C3%A9fono-m%C3%B3vil-3d-con-concepto-de-entrega.jpg?ver=6)] bg-cover bg-center space-y-3 bg-opacity-20 '>
   <div className=' inset-0 bg-gray-100 opacity-60 p-8'>
     <h2 className=' text-center  font-extrabold text-2xl text-gray-600 '>
       Agregar Stock
     </h2>
-      <form action="" className='space-y-5 '>
+      <form action="" onSubmit={handleSubmit(onSubmit)} className='space-y-5 '>
         <Selector
           name='type'
           label='Tipo de movimiento'
           control={control}
           placeholder='Tipo de movimiento'
           options={[
-            { value: 'entrada', label: 'Entrada' },
-            { value: 'salida', label: 'Salida' }
+            { value: StockMovementTypeEnum.INWARD, label: 'Entrada' },
+            { value: StockMovementTypeEnum.OUTWARD, label: 'Salida' }
           ]}
         />
         <Input
@@ -76,10 +111,10 @@ export const ShowStocksModal = ({ isOpen, onClose, onOpen, hideCloseButton, size
           customeClassName='h-16'
         />
         <div className='flex justify-around'>
-        <Button color='secondary'>
+        <Button color='secondary' type='submit'>
           Completar movimiento
         </Button>
-        <Button color='danger'>
+        <Button color='danger' onClick={onClose}>
           Cancelar movimiento
         </Button>
         </div>
