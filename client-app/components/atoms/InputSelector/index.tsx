@@ -28,9 +28,9 @@ const Selector: React.FC<TSelectorProps> = ({ onChange = () => {}, onClick, cont
       rules={rules}
       render={({ field, formState: { errors } }) => (
         <div className={`${width} ${fontSize}`}>
-          <label className={` gap-3 items-center mb-2 font-medium ${textColor} w-full` }>
-            {label && <p className='m-0 font-bold'>{label} {rules?.required ? '*' : ''}</p>}
-            <select {...field} defaultValue={''} onClick= {onClick} style={{ border: '1px solid' }} className="!w-full  !bg-gray-300/30 !border-b-3 transition-all !border-gray-500  text-gray-900 focus:!bg-gray-200 focus:!shadow-xl rounded-lg  p-2.5">
+          <label className={` gap-3 items-center mb-2 t-4 font-medium ${textColor} w-full` }>
+            {label && <p className='m-0 font-bold mb-2'>{label} {rules?.required ? '*' : ''}</p>}
+            <select {...field} defaultValue={''} onClick= {onClick} className="!w-full !bg-gray-300/30 !border-b-3 transition-all !border-gray-500  text-gray-900 focus:!bg-gray-200 focus:!shadow-xl focus:border-none rounded-lg  p-2.5">
               {placeholder && <option value={''} selected disabled>{placeholder}</option>}
               {options.map((option, idx) => (
                 <option key={idx} value={option.value}>{option.label}</option>

@@ -22,9 +22,7 @@ import Selector from '@/components/atoms/InputSelector'
 function CreateStock() {
   const [filterProduct] = useState<string>('')
   const [productsData, setProductsData] = useState<TValueProductData>()
-  const [warehouseData] = useState<TValuesWarehouses>(
-    {}
-  )
+  const [warehouseData] = useState<TValuesWarehouses>({})
   const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
   // const { measurementUnits } = useAppSelector(state => state.configuration)
   const units = useAppSelector(
@@ -76,7 +74,8 @@ function CreateStock() {
     console.log('send')
   }
   useEffect(() => {
-    // console.log(productsData, 'data')
+    console.log(productsData, 'data')
+    console.log(watch('units'), 'watch')
   }, [data])
   return (
     <AdministrationLayout showBackButton={true}>
@@ -88,7 +87,7 @@ function CreateStock() {
         />
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className={` relative z-30 flex  h-full flex-col items-center justify-center border bg-slate-50/100  px-16 py-9 transition-all duration-700  ${
+          className={` relative z-30 flex h-full  w-[40%] flex-col items-center justify-center border bg-slate-50/100  px-16 py-9 transition-all duration-700  ${
             productsData ? '' : ''
           }`}
         >
@@ -145,25 +144,16 @@ function CreateStock() {
                 }}
               />
               <Selector
-                options={
-                  units?.map((unit: any) => ({
-                    label: unit.shortName,
-                    value: unit.name
-                  })) || []
-                }
-                control={control}
                 name="units"
                 label="Unidades"
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                  },
-                  pattern: {
-                    value: /^[a-zA-Z\s]+$/i,
-                    message: 'Solo se permiten letras'
-                  }
-                }}
+                control={control}
+                placeholder="Unidades"
+                options={
+                  units?.map(unit => ({
+                    value: unit.name,
+                    label: unit.shortName
+                  })) || [{ value: 'Cargando..', label: 'Cargando..' }]
+                }
               />
             </div>
           </div>

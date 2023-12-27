@@ -50,6 +50,7 @@ export const MoveStockModal = ({ isOpen, onClose, onOpen, hideCloseButton, size,
       }
     })
   }
+  console.log(watch('type'), 'watch')
   return <MyModal isOpen={isOpen} onClose={onClose} hideCloseButton={hideCloseButton} size={'xl'}>
   <section className=' relative bg-[url(https://us.123rf.com/450wm/123rfexclusive/123rfexclusive2302/123rfexclusive230200151/198953137-tel%C3%A9fono-m%C3%B3vil-3d-con-concepto-de-entrega.jpg?ver=6)] bg-cover bg-center space-y-3 bg-opacity-20 '>
   <div className=' inset-0 bg-gray-100 opacity-60 p-8'>
