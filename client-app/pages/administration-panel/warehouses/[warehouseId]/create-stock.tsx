@@ -63,13 +63,14 @@ function CreateStock() {
   }
   useEffect(() => {
     console.log(productsData, 'data')
+    console.log(watch('units'), 'watch')
   }
   , [data])
   return (
     <AdministrationLayout showBackButton={true}>
       <div className='flex flex-col items-start ms-5 justify-center h-[75%] mt-5 bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] transform absolute w-[90%] bg-cover bg-center'>
         <div className={`${productsData ? 'bg-gray-700 opacity-60 w-[60%] h-full right-0 absolute' : ''}`}/>
-        <form onSubmit={handleSubmit(onSubmit)} className={` border px-16 py-9  flex flex-col justify-center items-center bg-slate-50/100 relative  h-full z-30 transition-all duration-700  ${productsData ? '' : ''}` }>
+        <form onSubmit={handleSubmit(onSubmit)} className={` border w-[40%] px-16 py-9  flex flex-col justify-center items-center bg-slate-50/100 relative  h-full z-30 transition-all duration-700  ${productsData ? '' : ''}` }>
                 <h3 className='mb-7'> Registrar producto </h3>
                 <div className='max-w-5/6'>
                   <ComboInput
@@ -123,24 +124,16 @@ function CreateStock() {
                     }}
                   />
                   <Selector
-                  options={units?.map((unit:any) => ({
-                    label: unit.shortName,
-                    value: unit.name
-                  })) || []
-                  }
-                    control={control}
-                    name="units"
+                    name='units'
                     label='Unidades'
-                    rules={{
-                      required: {
-                        value: true,
-                        message: 'Este campo es requerido'
-                      },
-                      pattern: {
-                        value: /^[a-zA-Z\s]+$/i,
-                        message: 'Solo se permiten letras'
-                      }
-                    }}
+                    control={control}
+                    placeholder='Unidades'
+                    options={units?.map((unit) => ({
+                      value: unit.name,
+                      label: unit.shortName
+                    })) || [
+                      { value: 'Cargando..', label: 'Cargando..' }
+                    ]}
                   />
 
                 </div>
