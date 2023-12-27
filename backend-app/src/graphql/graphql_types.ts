@@ -181,6 +181,7 @@ export type Product = {
   description: Scalars['String']['output'];
   id: Scalars['ObjectId']['output'];
   image?: Maybe<Scalars['String']['output']>;
+  internalCode: Scalars['String']['output'];
   name: Scalars['String']['output'];
   suggetedPrice: Scalars['Float']['output'];
   warehouses: Array<Scalars['ObjectId']['output']>;
@@ -214,6 +215,7 @@ export type Query = {
   getProductStock?: Maybe<StocksResponse>;
   getProducts?: Maybe<ProductsResponse>;
   getProductsOutOfWarehouse?: Maybe<ProductsResponse>;
+  getPublicProducts?: Maybe<ProductsResponse>;
   getRoles?: Maybe<RolesResponse>;
   getStockById?: Maybe<StockResponse>;
   getStockHistory?: Maybe<StocksHistoryResponse>;
@@ -247,6 +249,11 @@ export type QueryGetProductsArgs = {
 export type QueryGetProductsOutOfWarehouseArgs = {
   paginationInput: PaginationInput;
   warehouseId: Scalars['ObjectId']['input'];
+};
+
+
+export type QueryGetPublicProductsArgs = {
+  paginationInput: PaginationInput;
 };
 
 
@@ -773,6 +780,7 @@ export type ProductResolvers<ContextType = any, ParentType extends ResolversPare
   description?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  internalCode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   suggetedPrice?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   warehouses?: Resolver<Array<ResolversTypes['ObjectId']>, ParentType, ContextType>;
@@ -806,6 +814,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getProductStock?: Resolver<Maybe<ResolversTypes['StocksResponse']>, ParentType, ContextType, RequireFields<QueryGetProductStockArgs, 'paginationInput' | 'productId'>>;
   getProducts?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsArgs, 'paginationInput'>>;
   getProductsOutOfWarehouse?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsOutOfWarehouseArgs, 'paginationInput' | 'warehouseId'>>;
+  getPublicProducts?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetPublicProductsArgs, 'paginationInput'>>;
   getRoles?: Resolver<Maybe<ResolversTypes['RolesResponse']>, ParentType, ContextType, RequireFields<QueryGetRolesArgs, 'paginationInput'>>;
   getStockById?: Resolver<Maybe<ResolversTypes['StockResponse']>, ParentType, ContextType, RequireFields<QueryGetStockByIdArgs, 'id'>>;
   getStockHistory?: Resolver<Maybe<ResolversTypes['StocksHistoryResponse']>, ParentType, ContextType, RequireFields<QueryGetStockHistoryArgs, 'paginationInput' | 'stockId'>>;

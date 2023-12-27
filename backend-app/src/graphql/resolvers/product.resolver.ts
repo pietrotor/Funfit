@@ -11,6 +11,18 @@ import { errorHandler } from "@/lib/graphqlerrors";
 import { productCore } from "@/services/index";
 
 // ========================================== Mutations ====================================================
+const getPublicProducts = async (
+  _: any,
+  args: { paginationInput: PaginationInput }
+): Promise<ProductsResponse> => {
+  try {
+    const { paginationInput } = args;
+    return await productCore.getProductsPaginated(paginationInput);
+  } catch (error) {
+    console.log(error);
+    return errorHandler(error);
+  }
+};
 const getProducts = async (
   _: any,
   args: { paginationInput: PaginationInput }
@@ -118,6 +130,7 @@ const deleteProduct = async (
 
 export const productQuery = {
   getProducts,
+  getPublicProducts,
   getProductById,
   getProductsOutOfWarehouse,
 };

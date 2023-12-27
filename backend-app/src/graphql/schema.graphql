@@ -48,6 +48,8 @@ type Query {
     paginationInput: PaginationInput!
     warehouseId: ObjectId!
   ): StocksHistoryResponse
+  # ECOMMERCE ROUTES ================================
+  getPublicProducts(paginationInput: PaginationInput!): ProductsResponse
 }
 type Mutation {
   # CONFIGURATION ====================================
@@ -119,6 +121,7 @@ type Product {
   # TODO: Change to pricelist
   suggetedPrice: Float!
   code: String!
+  internalCode: String!
   description: String!
   cost: Float
   image: String
