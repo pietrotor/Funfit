@@ -6,12 +6,13 @@ export interface IProduct extends Document, IGeneric {
   name: string;
   suggetedPrice: number;
   code: string;
+  internalCode: string;
   description: string;
   cost: number | null;
   image?: string;
   warehouses: objectId[];
 }
-export interface IModelProduct extends Model<IProduct> {}
+export interface IModelProduct extends Model<IProduct> { }
 const productSchema = new Schema<IProduct>(
   {
     name: {
@@ -26,6 +27,10 @@ const productSchema = new Schema<IProduct>(
     code: {
       type: String,
       required: [true, 'código es obligatorio'],
+      trim: true
+    },
+    internalCode: {
+      type: String,
       trim: true
     },
     cost: {
