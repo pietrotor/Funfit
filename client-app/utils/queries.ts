@@ -301,3 +301,44 @@ query GetProductsOutOfWarehouse($paginationInput: PaginationInput!, $warehouseId
   }
 }
 `
+export const GET_WAREHOUSE_STOCKS = gql`
+query GetWarehouseStock($warehouseStockPaginationInput: WarehouseStockPaginationInput!) {
+  getWarehouseStock(warehouseStockPaginationInput: $warehouseStockPaginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      productId
+      warehouseId
+      quantity
+      securityStock
+      lastStockEntry
+      units
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        description
+        cost
+        image
+        warehouses
+      }
+      warehouse {
+        id
+        name
+        description
+        address
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+`

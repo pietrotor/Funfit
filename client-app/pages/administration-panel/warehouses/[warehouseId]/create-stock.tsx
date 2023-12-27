@@ -2,6 +2,8 @@ import { useForm } from 'react-hook-form'
 import { Button, Image } from '@nextui-org/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+// import { useAppSelector } from '@/store/index'
+import { useAppSelector } from '@/store/index'
 
 import Input from '@/components/atoms/Input'
 import AdministrationLayout from '@/components/templates/layouts'
@@ -11,13 +13,17 @@ import ComboInput from '@/components/atoms/InputDropDown'
 import { TValueProductData } from '@/components/atoms/modals/EditProductModal'
 import { TValuesWarehouses } from '@/components/atoms/modals/EditWarehouseModal'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
+import Selector from '@/components/atoms/InputSelector'
 
 function CreateStock() {
   const [filterProduct/*, setFilterProduct */] = useState<string>('')
-  const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
-  const [CreateStock] = useCreateStockMutation()
   const [productsData, setProductsData] = useState <TValueProductData>()
   const [warehouseData/* ,setWarehousesData */] = useState <TValuesWarehouses>({})
+  const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
+  // const { measurementUnits } = useAppSelector(state => state.configuration)
+  const units = useAppSelector(state => state.configuration.business?.measurementUnits)
+  console.log(units, 'units')
+  const [CreateStock] = useCreateStockMutation()
   const { control, handleSubmit, watch, reset } = useForm()
   const router = useRouter()
   const { warehouseId } = router.query
@@ -60,8 +66,8 @@ function CreateStock() {
   }
   , [data])
   return (
-    <AdministrationLayout>
-      <div className='flex flex-col items-start ms-10 justify-center h-[90%] bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] transform absolute w-[90%] mt-10 bg-cover bg-center'>
+    <AdministrationLayout showBackButton={true}>
+      <div className='flex flex-col items-start ms-5 justify-center h-[75%] mt-5 bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] transform absolute w-[90%] bg-cover bg-center'>
         <div className={`${productsData ? 'bg-gray-700 opacity-60 w-[60%] h-full right-0 absolute' : ''}`}/>
         <form onSubmit={handleSubmit(onSubmit)} className={` border px-16 py-9  flex flex-col justify-center items-center bg-slate-50/100 relative  h-full z-30 transition-all duration-700  ${productsData ? '' : ''}` }>
                 <h3 className='mb-7'> Registrar producto </h3>
@@ -116,7 +122,12 @@ function CreateStock() {
                       }
                     }}
                   />
-                  <Input
+                  <Selector
+                  options={units?.map((unit:any) => ({
+                    label: unit.shortName,
+                    value: unit.name
+                  })) || []
+                  }
                     control={control}
                     name="units"
                     label='Unidades'

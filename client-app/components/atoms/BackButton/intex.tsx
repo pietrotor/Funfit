@@ -1,5 +1,6 @@
 import { Button } from '@nextui-org/react'
 import { useRouter } from 'next/router'
+import IconSelector from '../IconSelector'
 function BackButton() {
   const router = useRouter()
 
@@ -7,9 +8,11 @@ function BackButton() {
         <Button
         variant='bordered'
         color="primary"
+        className='mt-14 ms-4'
         onClick={() => router.back()}
         >
-        Back
+        <IconSelector name='arrow-left'/>
+          Atrás
         </Button>
   )
 }
