@@ -1,8 +1,7 @@
-import { useRouter } from 'next/router'
 import { Button, useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
-// import { useRouter } from 'next/router'
+import { useRouter } from 'next/router'
 
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
@@ -140,14 +139,16 @@ function Warehouses() {
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de Almacenes
         </h3>
-        <Button
-          onClick={handleAddWarehouse.onOpen}
-          color="secondary"
-          className="float-right my-4 font-extrabold text-white"
-        >
-          <IconSelector name="Bussines" />
-          Agregar nuevo Almacén
-        </Button>
+        <div className="space-x-3 text-end">
+          <Button
+            onClick={handleAddWarehouse.onOpen}
+            color="secondary"
+            className=" my-4 font-extrabold text-white"
+          >
+            <IconSelector name="Bussines" />
+            Agregar nuevo Almacén
+          </Button>
+        </div>
         <Table
           onChangeRow={row => handleChangeRow(row)}
           tableName="ALMACENES"
@@ -191,12 +192,12 @@ function Warehouses() {
                       `/administration-panel/warehouses/${warehouse.id}`
                     )
                   }
-                  type="default"
+                  type="eye"
                   showTooltip
                   tooltipText="Administrar Stock"
                   className="px-3"
                 >
-                  <IconSelector name="eye" color="text-primary" width="w-8" />
+                  <IconSelector name="eye" color="text-secondary" width="w-5" />
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() => handleUpdateWarehouse(warehouse.id)}

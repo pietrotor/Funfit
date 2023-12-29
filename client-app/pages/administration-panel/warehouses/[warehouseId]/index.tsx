@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
+import { WarehouseRoute } from '@/utils/routes'
 
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -65,13 +66,25 @@ function Warehouse() {
             <Button
               color="secondary"
               className="float-right my-4 font-extrabold text-white"
-              onClick={ () => router.push(`/administration-panel/warehouses/${warehouseId}/create-stock`)}
+              onClick={ () => router.push(`${WarehouseRoute} ${warehouseId}/create-stock`)}
             >
               <IconSelector name="Box" />
               Agregar nuevo Stock
             </Button>
         </div>
         <Table
+          tableName="STOCKS"
+          onChangeRow={row => handleChangeRow(row)}
+          onChangePage={page =>
+            setVariables({ ...variables, currentPage: page })
+          }
+          itemsPerPage={variables?.rows}
+          currentPage={variables?.currentPage}
+          totalPages={variables?.totalPages}
+          isLoading={loading}
+          enablePagination={true}
+          onSearch={value => setFilter(value)}
+          totalItems={variables?.totalRecords}
           titles={[
             { name: '#' },
             { name: 'Producto' },
@@ -108,18 +121,7 @@ function Warehouse() {
               </div>
             ]
           }))}
-          onChangeRow={row => handleChangeRow(row)}
-          tableName="Usuarios"
-          onChangePage={page =>
-            setVariables({ ...variables, currentPage: page })
-          }
-          itemsPerPage={variables?.rows}
-          currentPage={variables?.currentPage}
-          totalPages={variables?.totalPages}
-          isLoading={loading}
-          enablePagination={true}
-          onSearch={value => setFilter(value)}
-          totalItems={variables?.totalRecords}
+
         />
       </div>
       <MoveStockModal

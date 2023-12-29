@@ -16,13 +16,12 @@ import ComboInput from '@/components/atoms/ComboInput'
 import { TValueProductData } from '@/components/atoms/modals/EditProductModal'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import Selector from '@/components/atoms/InputSelector'
+import { TValuesWarehouses } from '@/components/atoms/modals/EditWarehouseModal'
 
 function CreateStock() {
   const [filterProduct] = useState<string>('')
   const [productsData, setProductsData] = useState<TValueProductData>()
-  // const [warehouseData /* ,setWarehousesData */] = useState<TValuesWarehouses>(
-  //   {}
-  // )
+  const [warehouseData] = useState<TValuesWarehouses>({})
   const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
   // const { measurementUnits } = useAppSelector(state => state.configuration)
   const units = useAppSelector(
@@ -75,8 +74,8 @@ function CreateStock() {
   }
   useEffect(() => {
     console.log(productsData, 'data')
-    console.log(watch('product'), 'watch')
-  }, [productsData])
+    console.log(watch('units'), 'watch')
+  }, [data])
   return (
     <AdministrationLayout showBackButton={true}>
       <div className="absolute ms-5 mt-5 flex h-[75%] w-[90%] transform flex-col items-start justify-center bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center">
@@ -87,24 +86,18 @@ function CreateStock() {
         />
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className={` relative z-30 flex h-full  w-[43%] flex-col items-center justify-center border bg-slate-50/100  px-16 py-9 transition-all duration-700  ${
+          className={` relative z-30 flex h-full  w-[40%] flex-col items-center justify-center border bg-slate-50/100  px-16 py-9 transition-all duration-700  ${
             productsData ? '' : ''
           }`}
         >
           <h3 className="mb-7"> Registrar producto </h3>
-          <div className="max-w-full space-y-3">
+          <div className="max-w-5/6">
             <ComboInput
-              rules={{
-                required: {
-                  value: true,
-                  message: 'Este campo es requerido'
-                }
-              }}
+              // rules={{ required: { value: true, message: 'Este campo es requerido' } }}
               control={control}
               name="product"
               onClick={getProducts}
               label="Producto"
-              value={productsData?.name || ''}
               onChange={value => {
                 setProductsData(
                   data?.getProductsOutOfWarehouse?.data?.find(
@@ -134,7 +127,7 @@ function CreateStock() {
                 }
               }}
             />
-            <div className="grid grid-cols-2 gap-2  ">
+            <div className="grid grid-cols-2 gap-2  pt-3">
               <Input
                 control={control}
                 name="quantity"
@@ -161,12 +154,6 @@ function CreateStock() {
                     label: unit.shortName
                   })) || [{ value: 'Cargando..', label: 'Cargando..' }]
                 }
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                  }
-                }}
               />
             </div>
           </div>
@@ -184,6 +171,16 @@ function CreateStock() {
           }`}
         >
           <div className="">
+            <Input
+              labelColor=" text-white "
+              required={false}
+              value={warehouseData.address || ''}
+              type="textArea"
+              name="address"
+              label="Dirección del almacén"
+              disabled={true}
+              customeClassName="cursor-not-allowed mb-2"
+            />
             <Input
               required={false}
               value={productsData?.description || ''}
