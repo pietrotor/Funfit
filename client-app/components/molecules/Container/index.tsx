@@ -14,7 +14,9 @@ const Container: React.FC<TContainer> = ({
   children
 }) => {
   return (
-    <div className={`w-full xl:max-w-7xl lg:max-w-4xl md:max-w-2xl max-w-xs m-auto ${background} ${paddingX} ${paddingY}`}>
+    <div
+      className={`m-auto w-full max-w-xs md:max-w-2xl lg:max-w-4xl xl:max-w-7xl ${background} ${paddingX} ${paddingY}`}
+    >
       {children}
     </div>
   )

@@ -1,7 +1,4 @@
-import {
-  ApolloClient,
-  InMemoryCache
-} from '@apollo/client'
+import { ApolloClient, InMemoryCache } from '@apollo/client'
 
 const apolloClientSSR = new ApolloClient({
   uri: process.env.BACKENDSERVICEURL,

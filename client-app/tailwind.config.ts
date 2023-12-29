@@ -20,12 +20,15 @@ const config: Config = {
           darken: '#251655'
         },
         secondary: {
-          DEFAULT: '#CCE266',
-          transparent: 'rgba(245, 46, 85, 0.62)',
+          DEFAULT: '#A8C428',
+          transparent: 'rgba(204,226,102, 0.62)',
           darken: '#e50b36'
         },
         tertiary: {
-          DEFAULT: '#5252db'
+          DEFAULT: '#353838'
+        },
+        success: {
+          DEFAULT: '#6aa84f'
         }
       }
     }

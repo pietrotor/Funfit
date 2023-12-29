@@ -5,19 +5,97 @@ enum StatusEnum {
   OK
   ERROR
 }
+enum StockMovementTypeEnum {
+  INWARD
+  OUTWARD
+  DISPOSE
+}
 
 type Query {
+  # CONFIGURATION ====================================
+  getConfiguration: ConfigurationResponse
+  # USERS ============================================
   login(loginInput: LoginInput!): LoginResponse
   currentUser: UserResponse
-  getRoles(paginationInput: PaginationInput!): RolesResponse  
+  getRoles(paginationInput: PaginationInput!): RolesResponse
   getUsers(paginationInput: PaginationInput!): UsersResponse
   getUserById(id: ObjectId!): UserResponse
+  # PRODUCTS ==========================================
+  getProducts(paginationInput: PaginationInput!): ProductsResponse
+  getProductById(id: ObjectId!): ProductResponse
+  getProductsOutOfWarehouse(
+    paginationInput: PaginationInput!
+    warehouseId: ObjectId!
+  ): ProductsResponse
+  # WAREHOUSES =======================================
+  getWarehouses(paginationInput: PaginationInput!): WarehousesResponse
+  getWarehouseById(id: ObjectId!): WarehouseResponse
+  # STOCKS =======================================
+  getStocksPaginated(paginationInput: PaginationInput!): StocksResponse
+  getStockById(id: ObjectId!): StockResponse
+  getProductStock(
+    paginationInput: PaginationInput!
+    productId: ObjectId!
+  ): StocksResponse
+  getWarehouseStock(
+    warehouseStockPaginationInput: WarehouseStockPaginationInput!
+  ): StocksResponse
+  getStockHistory(
+    paginationInput: PaginationInput!
+    stockId: ObjectId!
+  ): StocksHistoryResponse
+  getWarehouseHistory(
+    paginationInput: PaginationInput!
+    warehouseId: ObjectId!
+  ): StocksHistoryResponse
+  # ECOMMERCE ROUTES ================================
+  getPublicProducts(paginationInput: PaginationInput!): ProductsResponse
 }
-type Mutation {  
-  createUser(userInput: UserInput!): Response
-  updateUser(updateUserInput: UpdateUserInput!, deleteInput: Boolean = false): Response
+type Mutation {
+  # CONFIGURATION ====================================
+  updateConfiguration(
+    updateConfigurationInput: UpdateConfigurationInput!
+  ): ConfigurationResponse
+  # USERS ============================================
+  createUser(userInput: UserInput!): UserResponse
+  updateUser(
+    updateUserInput: UpdateUserInput!
+    deleteInput: Boolean = false
+  ): UserResponse
+  # PRODUCTS ==========================================
+  createProduct(createProductInput: CreateProductInput!): ProductResponse
+  updateProduct(updateProductInput: UpdateProductInput!): ProductResponse
+  deleteProduct(id: ObjectId!): ProductResponse
+  # WAREHOUSES =======================================
+  createWarehouse(
+    createWarehouseInput: CreateWarehouseInput!
+  ): WarehouseResponse
+  updateWarehouse(
+    updateWarehouseInput: UpdateWarehouseInput!
+  ): WarehouseResponse
+  deleteWarehouse(id: ObjectId!): WarehouseResponse
+  # STOCK =======================================
+  createStock(createStockInput: CreateStockInput!): StockResponse
+  creatStockMovement(
+    createStockMovementInput: CreateStockMovementInput!
+  ): StockResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
+type MeasurementUnits {
+  name: String!
+  shortName: String!
+}
+type Configuration {
+  id: ObjectId!
+  businessName: String!
+  nit: String
+  phone: String!
+  email: String!
+  web: String
+  address: String!
+  s3BucketUrl: String
+  measurementUnits: [MeasurementUnits!]!
+}
 type Role {
   id: ObjectId!
   name: String!
@@ -37,6 +115,51 @@ type User {
   # resolvers
   roleInfo: Role
 }
+type Product {
+  id: ObjectId!
+  name: String!
+  # TODO: Change to pricelist
+  suggetedPrice: Float!
+  code: String!
+  internalCode: String!
+  description: String!
+  cost: Float
+  image: String
+  warehouses: [ObjectId!]!
+}
+type Warehouse {
+  id: ObjectId!
+  name: String!
+  description: String!
+  address: String!
+}
+type Stock {
+  id: ObjectId!
+  productId: ObjectId!
+  warehouseId: ObjectId!
+  quantity: Int!
+  securityStock: Int
+  lastStockEntry: Int!
+  units: String!
+  # Fields Resolvers
+  product: Product
+  warehouse: Warehouse
+}
+type StockHistory {
+  id: ObjectId!
+  stockId: ObjectId!
+  warehouseId: ObjectId!
+  quantity: Int!
+  type: StockMovementTypeEnum!
+  date: Date!
+  stockBefore: Int!
+  stockLater: Int!
+  createdBy: ObjectId
+  # Fields Resolvers
+  stock: Stock
+  warehouse: Warehouse
+  createdByInfo: User
+}
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
   errorInput: [ErrorInput!]
@@ -52,7 +175,12 @@ type Response implements ResponseBase {
   status: StatusEnum!
   message: String
 }
-
+type ConfigurationResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Configuration
+}
 type LoginResponse implements ResponseBase {
   errorInput: [ErrorInput!]
   status: StatusEnum!
@@ -81,7 +209,81 @@ type UserResponse implements ResponseBase {
   message: String
   data: User
 }
+type ProductsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Product!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type ProductResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Product
+}
+type WarehouseResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Warehouse
+}
+type WarehousesResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Warehouse!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type StockResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Stock
+}
+type StocksResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Stock!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type StocksHistoryResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [StockHistory!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
+input UpdateMeasurementUnitsInput {
+  name: String!
+  shortName: String!
+}
+input UpdateConfigurationInput {
+  id: ObjectId!
+  businessName: String
+  nit: String
+  phone: String
+  email: String
+  web: String
+  address: String
+  direction: String
+  s3BucketUrl: String
+  measurementUnits: [UpdateMeasurementUnitsInput!]
+}
 input LoginInput {
   email: String!
   password: String!
@@ -96,16 +298,66 @@ input UserInput {
   lastName: String!
   email: String!
   password: String!
-  phone: String!  
-  roleId: ObjectId
+  phone: String!
+  roleId: ObjectId!
 }
 input UpdateUserInput {
   id: ObjectId!
   name: String
   lastName: String
-  email: String  
+  email: String
   password: String
   phone: String
   roleId: ObjectId
   status: Boolean
+}
+input CreateProductInput {
+  name: String!
+  code: String!
+  # TODO: Change to pricelist
+  suggetedPrice: Float!
+  description: String!
+  cost: Float
+  image: String
+}
+input UpdateProductInput {
+  id: ObjectId!
+  name: String
+  code: String
+  # TODO: Change to PriceList
+  suggetedPrice: Float
+  description: String
+  cost: Float
+  image: String
+}
+input CreateWarehouseInput {
+  name: String!
+  description: String!
+  address: String!
+}
+input UpdateWarehouseInput {
+  id: ObjectId!
+  name: String
+  description: String
+  address: String
+}
+input WarehouseStockPaginationInput {
+  rows: Int
+  page: Int
+  filter: String
+  warehouses: [ObjectId!]!
+}
+input CreateStockInput {
+  productId: ObjectId!
+  warehouseId: ObjectId!
+  quantity: Int!
+  securityStock: Int
+  units: String!
+}
+input CreateStockMovementInput {
+  stockId: ObjectId!
+  quantity: Int!
+  type: StockMovementTypeEnum!
+  detail: String
+  date: Date!
 }
