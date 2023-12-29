@@ -146,10 +146,7 @@ export const MoveStockModal = ({
                       value: /^[0-9]*$/,
                       message: 'Solo se permiten números'
                     },
-                    max: {
-                      value: (stockData?.lastStockEntry - stockData?.quantity),
-                      message: 'No puede superar la cantidad en stock'
-                    },
+
                     min: {
                       value: ((stockData?.lastStockEntry - stockData?.quantity) - stockData?.lastStockEntry + 1),
                       message: 'No puede ser menor a 1'
@@ -175,10 +172,9 @@ export const MoveStockModal = ({
                 <CircularProgressbar
                   value={
                     handlePlusController() &&
-                    handlePlusController() >= 0 &&
-                    handlePlusController() <= stockData?.lastStockEntry ? handlePlusController() : stockData?.quantity
+                    handlePlusController() >= 0 ? handlePlusController() : stockData?.quantity
                   }
-                  maxValue={stockData?.lastStockEntry}
+                  maxValue={stockData?.lastStockEntry }
                   text={
                     `${
                       handlePlusController() &&
