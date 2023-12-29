@@ -518,3 +518,51 @@ query GetWarehouseStock($warehouseStockPaginationInput: WarehouseStockPagination
   }
 }
 `
+export const GET_PRODUCT_BY_ID = gql`
+query GetProductById($getProductByIdId: ObjectId!) {
+  getProductById(id: $getProductByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      suggetedPrice
+      code
+      description
+      cost
+      image
+      warehouses
+    }
+  }
+}
+`
+export const GET_PUBLIC_PRODUCTS = gql`
+query GetPublicProducts($paginationInput: PaginationInput!) {
+  getPublicProducts(paginationInput: $paginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      suggetedPrice
+      code
+      description
+      cost
+      image
+      warehouses
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+`

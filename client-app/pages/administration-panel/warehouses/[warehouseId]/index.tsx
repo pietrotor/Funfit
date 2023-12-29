@@ -1,10 +1,8 @@
 import { Button, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import { useState } from 'react'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
-import { WarehouseRoute } from '@/utils/routes'
 
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -14,6 +12,8 @@ import Table from '@/components/organisms/tableNext/Table'
 import ButtonComponent from '@/components/atoms/Button'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
+import { TStockData } from '@/interfaces/TData'
+import { WarehouseRoute } from '@/utils/routes'
 
 function Warehouse() {
   const [variables, setVariables] = useState<PaginationInterfaceState>({
@@ -22,7 +22,7 @@ function Warehouse() {
     currentPage: 1
   })
   const [filter, setFilter] = useState<string>('')
-  const [stock, setStock] = useState<string>('')
+  const [stock, setStock] = useState<TStockData>()
   const handleMoveStockModal = useDisclosure()
   const filtroDebounced = UseDebouncedValue(filter, 2000)
   const router = useRouter()
@@ -51,18 +51,18 @@ function Warehouse() {
   const handleChangeRow = (row: number) => {
     setVariables({ ...variables, rows: row, currentPage: 1 })
   }
-  const handleCreateMovement = (stockId: string) => {
+  const handleCreateMovement = (stockId: TStockData) => {
     handleMoveStockModal.onOpen()
     setStock(stockId)
   }
   return (
     <AdministrationLayout showBackButton={true}>
-      <div className="m-auto w-5/6 space-y-5">
+      <div className="m-auto w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de Stocks
         </h3>
         <div className="flex justify-end space-x-3">
-          <Button
+        <Button
             onClick={() =>
               router.push(` ${WarehouseRoute}/${warehouseId}/warehouse-history`)
             }
@@ -72,31 +72,17 @@ function Warehouse() {
             <IconSelector name="Warehouse" />
             Historial del almacén
           </Button>
-          <Link
-            href={`/administration-panel/warehouses/${warehouseId}/create-stock`}
-          >
+
             <Button
               color="secondary"
               className="float-right my-4 font-extrabold text-white"
+              onClick={ () => router.push(`/administration-panel/warehouses/${warehouseId}/create-stock`)}
             >
               <IconSelector name="Box" />
               Agregar nuevo Stock
             </Button>
-          </Link>
         </div>
         <Table
-          tableName="STOCKS"
-          onChangeRow={row => handleChangeRow(row)}
-          onChangePage={page =>
-            setVariables({ ...variables, currentPage: page })
-          }
-          itemsPerPage={variables?.rows}
-          currentPage={variables?.currentPage}
-          totalPages={variables?.totalPages}
-          isLoading={loading}
-          enablePagination={true}
-          onSearch={value => setFilter(value)}
-          totalItems={variables?.totalRecords}
           titles={[
             { name: '#' },
             { name: 'Producto' },
@@ -106,8 +92,8 @@ function Warehouse() {
           items={(data?.getWarehouseStock?.data || []).map((stock, idx) => ({
             content: [
               <h3 key={idx} className="text-sm">
-                {' '}
-                {idx + 1}
+                {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
+                  idx + 1}
               </h3>,
               <div key={idx} className="text-center">
                 {stock?.product?.name}
@@ -115,16 +101,18 @@ function Warehouse() {
               <div key={idx} className="mx-auto w-16 text-sm">
                 <CircularProgressbar
                   value={stock.quantity}
-                  maxValue={stock.securityStock as number}
-                  text={`${stock.quantity} ${stock.units}`}
-                />
+                  maxValue={stock.lastStockEntry as number}
+                  text={`${stock.quantity}`}
+                />{' '}
+                {stock.units}
               </div>,
               <div key={idx} className="flex justify-center space-x-3">
                 <ButtonComponent
-                  onClick={() => handleCreateMovement(stock.id)}
+                  onClick={() => handleCreateMovement(stock as TStockData)}
                   type="edit"
                   showTooltip
                   tooltipText="Mover Stock"
+                  className="px-3"
                 >
                   <IconSelector name="edit" color="text-primary" width="w-8" />
                 </ButtonComponent>
@@ -144,9 +132,22 @@ function Warehouse() {
                     width="w-8"
                   />
                 </ButtonComponent>
+
               </div>
             ]
           }))}
+          onChangeRow={row => handleChangeRow(row)}
+          tableName="Usuarios"
+          onChangePage={page =>
+            setVariables({ ...variables, currentPage: page })
+          }
+          itemsPerPage={variables?.rows}
+          currentPage={variables?.currentPage}
+          totalPages={variables?.totalPages}
+          isLoading={loading}
+          enablePagination={true}
+          onSearch={value => setFilter(value)}
+          totalItems={variables?.totalRecords}
         />
       </div>
       <MoveStockModal
@@ -154,7 +155,7 @@ function Warehouse() {
         onClose={handleMoveStockModal.onClose}
         onOpen={handleMoveStockModal.onOpen}
         onAddWarehouse={refetch}
-        stockId={stock}
+        stockData={stock as TStockData}
         hideCloseButton={false}
         size="md"
       />

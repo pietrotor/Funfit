@@ -1,6 +1,6 @@
 import { Button, Input } from '@nextui-org/react'
 import Cookies from 'js-cookie'
-import { NextPage } from 'next'
+import { GetServerSideProps, NextPage } from 'next'
 import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
@@ -8,6 +8,7 @@ import { StatusEnum, useLoginLazyQuery } from '@/graphql/graphql-types'
 import ToastComponent, {
   showSuccessToast
 } from '@/components/atoms/Toast/toasts'
+import { userVerificated } from '@/utils/userVericated'
 
 type TLoginInput = {
   email: string
@@ -105,3 +106,5 @@ const LoginPage: NextPage = () => {
 }
 
 export default LoginPage
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await userVerificated(ctx)

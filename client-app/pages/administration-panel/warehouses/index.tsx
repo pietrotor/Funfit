@@ -172,8 +172,9 @@ function Warehouses() {
           items={(data?.getWarehouses?.data || []).map((warehouse, idx) => ({
             content: [
               <h3 key={idx} className="text-sm">
-                {' '}
-                {idx + 1}
+                {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
+                  idx +
+                  1}
               </h3>,
               <div key={idx} className="text-sm">
                 {warehouse.name}

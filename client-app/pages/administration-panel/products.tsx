@@ -23,9 +23,13 @@ import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 
 const Productos = () => {
-  const [editProduct, setEditProduct] = useState <TValueProductData>({})
-  const [variables, setVariables] = useState<PaginationInterfaceState>({ rows: 5, filter: '', currentPage: 1 })
-  const [filter, setFilter] = useState <string>('')
+  const [editProduct, setEditProduct] = useState<TValueProductData>({})
+  const [variables, setVariables] = useState<PaginationInterfaceState>({
+    rows: 5,
+    filter: '',
+    currentPage: 1
+  })
+  const [filter, setFilter] = useState<string>('')
   const [DeleteteProductMutation] = useDeleteProductMutation()
   const [UpdateUserMutationVariables] = useUpdateProductMutation()
   const handleAddProduct = useDisclosure()
@@ -168,7 +172,11 @@ const Productos = () => {
           ]}
           items={(data?.getProducts?.data || []).map((product, idx) => ({
             content: [
-              idx + 1,
+              <h3 key={idx} className="text-sm">
+                {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
+                  idx +
+                  1}
+              </h3>,
               <Image alt="image" src={product.image || 'asd'} key={idx} />,
               <div key={idx} className="text-left text-sm">
                 {product.name}

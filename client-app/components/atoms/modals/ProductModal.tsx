@@ -56,7 +56,7 @@ const ProductModal: React.FC<TProps> = ({
   }
   return (
     <>
-      <Modal isOpen={isOpen} onClose={close} size="lg">
+      <Modal isOpen={isOpen} onClose={close} size="lg" isDismissable={false}>
         <ModalContent>
           {close => (
             <>

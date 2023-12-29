@@ -1,4 +1,5 @@
 import { ErrorMessage } from '@hookform/error-message'
+import { Input, InputProps } from '@nextui-org/react'
 import React from 'react'
 import { Control, Controller, RegisterOptions } from 'react-hook-form'
 
@@ -9,19 +10,21 @@ type TLabelProps = {
   labelColor?: string
 }
 
-const Label = ({ label, children, required, labelColor }: TLabelProps) => {
+const Label = ({ label, children, required, labelColor = 'text-white' }: TLabelProps) => {
   if (!label) {
-    return (<>{children}</>)
+    return <>{children}</>
   }
   return (
-    <label className='w-full'>
-      <p className={`mb-2 font-bold ${labelColor}`}>{label} {required ? '*' : ''}</p>
+    <label className="w-full mt-2">
+      <p className={`mb-2 font-bold ${labelColor}`}>
+        {label} {required ? '*' : ''}
+      </p>
       {children}
     </label>
   )
 }
 
-type TInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
+type TInputProps = InputProps & {
   name: string
   control?: Control<any>
   type?: 'text' | 'number' | 'date' | 'textArea' | 'email' | 'password'
@@ -31,12 +34,18 @@ type TInputProps = React.InputHTMLAttributes<HTMLInputElement> & {
   onChange?: () => void
   value?: any
   disabled?: boolean
-  rules?: Omit<RegisterOptions<any, string>, 'valueAsNumber' | 'valueAsDat' | 'setValueAs' | 'disabled'> | undefined
+  rules?:
+    | Omit<
+        RegisterOptions<any, string>,
+        'valueAsNumber' | 'valueAsDat' | 'setValueAs' | 'disabled'
+      >
+    | undefined
   customeClassName?: string
   labelColor?: string
+  defaultValue?: any
 }
 
-const Input: React.FC<TInputProps> = ({
+const InputComponent: React.FC<TInputProps> = ({
   control,
   valueAs = 'string',
   required = true,
@@ -50,6 +59,7 @@ const Input: React.FC<TInputProps> = ({
   customeClassName,
   labelColor = 'text-black',
   disabled = false,
+  defaultValue,
   ...props
 }) => {
   function getTypeOfValue(event: React.ChangeEvent<HTMLInputElement>) {
@@ -67,54 +77,72 @@ const Input: React.FC<TInputProps> = ({
       <Controller
         name={name}
         control={control}
+        defaultValue={ type === 'date' ? new Date().toISOString().split('T')[0] : ''}
         rules={rules}
         render={({ field, formState: { errors } }) => (
-          <div className='w-full'>
-            {type !== 'textArea' ? <>
-                <Label required={!!rules?.required || false} label={label} labelColor={labelColor}>
-                  <input
-                    {...field}
-                    type={type}
-                    onChange={(event) => field.onChange(getTypeOfValue(event))}
-                    className={`p-2 appearance-none bg-gray-300/30 placeholder-gray-700 border-b-3 border-gray-500 outline-none w-full rounded-md focus:bg-gray-200 focus:shadow-xl transition-all text-black disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
-                    placeholder={placeholder}
-                    {...props}
-                  />
-                </Label>
-                <ErrorMessage errors={errors} name={name} render={({ message }) =>
-                  <p className='text-red-500 text-sm font-semibold ml-2'>{message || 'Este campo es obligatorio'}</p>}
+          <div className="w-full">
+            {type !== 'textArea' ? (
+              <>
+                <Input
+                  {...field}
+                  defaultValue={defaultValue}
+                  type={type}
+                  variant={'bordered'}
+                  radius="sm"
+                  label={label}
+                  onChange={event => field.onChange(getTypeOfValue(event))}
+                  className={`w-full appearance-none rounded-md bg-gray-100/30 text-black placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+                  placeholder={placeholder}
+                  value={field.value || ''}
+                  {...props}
                 />
-              </> : <>
-                <Label required={required} label={label} labelColor={labelColor}>
-                  <input
-                    {...field}
-                    type={type}
-                    onChange={(event) => field.onChange(getTypeOfValue(event))}
-                    className={`p-2 appearance-none bg-gray-600/30 border-b-3 border-gray-500 outline-none w-full rounded-md focus:bg-gray-200 focus:shadow-xl transition-all text-black disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
-                    {...props}
-                  />
-                </Label>
-              <ErrorMessage errors={errors} name={name} render={({ message }) =>
-                <p className='text-red-500 text-sm font-semibold ml-2'>{message || 'Este campo es obligatorio'}</p>}
-              />
-            </>
-            }
-          </div>)
-        }
+                <ErrorMessage
+                  errors={errors}
+                  name={name}
+                  render={({ message }) => (
+                    <p className="ml-2 text-sm font-semibold text-red-500">
+                      {message || 'Este campo es obligatorio'}
+                    </p>
+                  )}
+                />
+              </>
+            ) : (
+              <>
+                <Input
+                  {...field}
+                  type={type}
+                  variant={'bordered'}
+                  label={label}
+                  radius="sm"
+                  onChange={event => field.onChange(getTypeOfValue(event))}
+                  className={`w-full appearance-none rounded-md  border-gray-500 bg-gray-100/30 p-2 text-black outline-none  transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+                />
+                <ErrorMessage
+                  errors={errors}
+                  name={name}
+                  render={({ message }) => (
+                    <p className="ml-2 text-sm font-semibold text-red-500">
+                      {message || 'Este campo es obligatorio'}
+                    </p>
+                  )}
+                />
+              </>
+            )}
+          </div>
+        )}
       />
     )
   }
   return (
     <Label required={required} label={label}>
-      <input
-        disabled = {disabled}
+      <Input
+        disabled={disabled}
         type={type}
         value={value}
-        className={`p-2 appearance-none border border-gray-300 border-b-3 outline-none w-full rounded-md focus:bg-gray-200 focus:shadow-xl transition-all text-black disabled:bg-gray-100 disabled:text-gray-600 ${customeClassName}`}
         {...props}
       />
     </Label>
   )
 }
 
-export default Input
+export default InputComponent
