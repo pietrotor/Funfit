@@ -4,7 +4,7 @@ import { MyModal } from './MyModal'
 import Input from '../Input'
 import { DropZone } from '@/components/molecules/DropZone'
 export type TValueProductData = {
-  id?: string
+  id?: any
   name?: string
   description?: string
   cost?: number
@@ -65,7 +65,7 @@ export const EditProductModal = (
           control={control}
           name='suggetedPrice'
           label='Precio sugerido'
-          defaultValue={values.suggetedPrice}
+          defaultValue={values.suggetedPrice?.toString()}
           placeholder='Precio sugerido'
           type='text'
           rules={{
@@ -78,7 +78,7 @@ export const EditProductModal = (
           />
           <Input
           control={control}
-          defaultValue={values.cost}
+          defaultValue={values.cost?.toString()}
           name='cost'
           label='Costo'
           placeholder='Costo'
@@ -118,11 +118,11 @@ export const EditProductModal = (
 
         <DropZone/>
 
-        <div className="mt-4 flex space-x-4">
-          <Button type="submit" color="secondary">
+        <div className="grid h-16 grid-cols-2 gap-3 w-full">
+          <Button type="submit" color="secondary" className='h-full font-bold'>
             Guardar
           </Button>
-          <Button onClick={ onClose } color="warning">Cancelar</Button>
+          <Button onClick={ onClose } variant="flat" color="warning" className='h-full font-bold'>Cancelar</Button>
         </div>
       </form>
     </MyModal>

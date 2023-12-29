@@ -160,11 +160,11 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
             }}
           />
         </div>
-        <div className="mt-6 flex space-x-6">
-          <Button type="submit" color="secondary" className="w-1/7">
+        <div className="grid h-16 grid-cols-2 gap-3 w-full mt-4">
+          <Button type="submit" color="secondary" className="h-full font-bold">
             Agregar
           </Button>
-          <Button color="primary" className="w-1/7" onClick={handleCancel}>
+          <Button variant="flat" color="danger" className="h-full font-bold" onClick={handleCancel}>
             Cancelar
           </Button>
         </div>

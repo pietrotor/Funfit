@@ -6,54 +6,38 @@ import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import { useAppDispatch } from '@/store/index'
 import { addToCart, TCartItem } from '@/store/slices'
 import Slide from '@/components/atoms/slide'
+import useProductsByIdQuery from '@/services/UseProductById'
 
 function ProductInformation() {
   const router = useRouter()
-  const { id } = router.query
+  const { productName } = router.query
+  const { data } = useProductsByIdQuery(productName as string)
   const dispatch = useAppDispatch()
 
-  const product = {
-    id,
-    name: 'Torta saludable  ',
-    description:
-        'Torta de chocolate con harina de avena, sin azucar, sin gluten, sin lactosa. ',
-    price: 100,
-    image: 'https://images5.alphacoders.com/132/1323979.png',
-    images: [
-      'https://images5.alphacoders.com/132/1323979.png',
-      'https://images5.alphacoders.com/132/1323979.png',
-      'https://images5.alphacoders.com/132/1323979.png'
-    ],
-    ingredients:
-        'Harina de avena, Cacao, Huevos, Leche de almendras, Aceite de coco,Vainilla, Sal',
-    category: 'Tortas',
-    subcategory: 'Saludables',
-    stock: 10
-  }
   const [count, setCount] = useState(1)
-  const data = useRef<TCartItem>({
-    productName: product.name,
+  const saveData = useRef<TCartItem>({
+    productName: data?.getProductById?.data?.name as string,
     quantity: count,
-    price: product.price * count,
+    price: (data?.getProductById?.data?.suggetedPrice as number * count),
     pictureUrl: ''
   })
 
   const addProduct = (units: number) => {
     showSuccessToast('Producto añadido exitosamente', 'success')
-    data.current = {
-      productName: product.name,
+    saveData.current = {
+      productName: data?.getProductById?.data?.name as string,
       quantity: units,
-      price: product.price * units,
-      pictureUrl: product.images[0]
+      price: data?.getProductById?.data?.suggetedPrice as number * units,
+      pictureUrl: data?.getProductById?.data?.image as string
     }
-    dispatch(addToCart(data.current))
+    dispatch(addToCart(saveData.current))
   }
   return (
     <article className='bg-white py-10 '>
       <div className=' py-10 md:px-20 md:flex md:space-x-32 md:justify-center'>
         <div className='lg:w-1/3 '>
           <Slide
-            images={product.images}
+            images={[data?.getProductById?.data?.image as string]}
             infiniteLoop={false}
             radius='none'
             showArrows={true}
@@ -61,13 +45,13 @@ function ProductInformation() {
         </div>
         <section className='p-3 space-y-4'>
           <h2 className='text-3xl text-center'>
-            {product.name}
+            {data?.getProductById?.data?.name}
           </h2>
           <p className='font-bold'>
-           Precio unitario Bs. {product.price}
+           Precio unitario Bs. {data?.getProductById?.data?.suggetedPrice}
           </p>
           <p>
-            {product.description}
+            {data?.getProductById?.data?.description}
           </p>
           <section className="my-2 flex h-10 items-center justify-between rounded-md px-5 shadow-medium ">
             <h4>Unidades</h4>
@@ -102,7 +86,7 @@ function ProductInformation() {
               className="h-14 w-64 text-lg font-bold hover:bg-primary/80 hover:shadow-lg "
             >
               Añadir al carrito
-              <div>{`${product.price * count} Bs`}</div>
+              <div>{`${data?.getProductById?.data?.suggetedPrice as number * count} Bs`}</div>
             </Button>
           </div>
           </section>
@@ -111,7 +95,7 @@ function ProductInformation() {
           Ingredientes
         </h2>
         <p className=' px-20 '>
-              {product.ingredients}
+              asdasd
         </p>
       </article>
   )

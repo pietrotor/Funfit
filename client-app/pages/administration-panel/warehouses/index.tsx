@@ -26,8 +26,12 @@ import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import ButtonComponent from '@/components/atoms/Button'
 
 function Warehouses() {
-  const [edit, setEdit] = useState <TValuesWarehouses>({})
-  const [variables, setVariables] = useState<PaginationInterfaceState>({ rows: 5, filter: '', currentPage: 1 })
+  const [edit, setEdit] = useState<TValuesWarehouses>({})
+  const [variables, setVariables] = useState<PaginationInterfaceState>({
+    rows: 5,
+    filter: '',
+    currentPage: 1
+  })
   const [filter, setFilter] = useState<string>('')
   const filtroDebounced = UseDebouncedValue(filter, 2000)
   const handleConfirmModal = useDisclosure()
@@ -167,8 +171,9 @@ function Warehouses() {
           items={(data?.getWarehouses?.data || []).map((warehouse, idx) => ({
             content: [
               <h3 key={idx} className="text-sm">
-                {' '}
-                {idx + 1}
+                {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
+                  idx +
+                  1}
               </h3>,
               <div key={idx} className="text-sm">
                 {warehouse.name}
@@ -179,16 +184,17 @@ function Warehouses() {
               <div key={idx} className="text-left text-sm">
                 {warehouse.address}
               </div>,
-              <div
-                key={idx}
-                className="flex justify-center space-x-1"
-              >
+              <div key={idx} className="flex justify-center space-x-1">
                 <ButtonComponent
-                  onClick={() => router.push(`/administration-panel/warehouses/${warehouse.id}`)}
+                  onClick={() =>
+                    router.push(
+                      `/administration-panel/warehouses/${warehouse.id}`
+                    )
+                  }
                   type="default"
                   showTooltip
                   tooltipText="Administrar Stock"
-                  className='px-3'
+                  className="px-3"
                 >
                   <IconSelector name="eye" color="text-primary" width="w-8" />
                 </ButtonComponent>

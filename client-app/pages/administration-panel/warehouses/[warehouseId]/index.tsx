@@ -1,6 +1,5 @@
 import { Button, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
-import Link from 'next/link'
 import { useState } from 'react'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
@@ -13,11 +12,16 @@ import Table from '@/components/organisms/tableNext/Table'
 import ButtonComponent from '@/components/atoms/Button'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
+import { TStockData } from '@/interfaces/TData'
 
 function Warehouse() {
-  const [variables, setVariables] = useState<PaginationInterfaceState>({ rows: 5, filter: '', currentPage: 1 })
+  const [variables, setVariables] = useState<PaginationInterfaceState>({
+    rows: 5,
+    filter: '',
+    currentPage: 1
+  })
   const [filter, setFilter] = useState<string>('')
-  const [stock, setStock] = useState<string>('')
+  const [stock, setStock] = useState<TStockData>()
   const handleMoveStockModal = useDisclosure()
   const filtroDebounced = UseDebouncedValue(filter, 2000)
   const router = useRouter()
@@ -28,10 +32,7 @@ function Warehouse() {
         filter: filtroDebounced,
         page: variables?.currentPage,
         rows: variables?.rows,
-        warehouses: [
-          warehouseId as string
-        ]
-
+        warehouses: [warehouseId as string]
       }
     },
     fetchPolicy: 'network-only',
@@ -49,24 +50,27 @@ function Warehouse() {
   const handleChangeRow = (row: number) => {
     setVariables({ ...variables, rows: row, currentPage: 1 })
   }
-  const handleCreateMovement = (stockId: string) => {
+  const handleCreateMovement = (stockId: TStockData) => {
     handleMoveStockModal.onOpen()
     setStock(stockId)
   }
   return (
-  <AdministrationLayout showBackButton={true}>
+    <AdministrationLayout showBackButton={true}>
       <div className="m-auto w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de Stocks
         </h3>
-      <div className='w-1/4 ms-auto mb-8'>
-        <Link href={ `/administration-panel/warehouses/${warehouseId}/create-stock`}>
-          <Button color="secondary" className="float-right my-4 text-white font-extrabold">
-            <IconSelector name="Box" />
-            Agregar nuevo Stock
-          </Button>
-        </Link>
-      </div>
+        <div className="mb-8 ms-auto w-1/4">
+
+            <Button
+              color="secondary"
+              className="float-right my-4 font-extrabold text-white"
+              onClick={ () => router.push(`/administration-panel/warehouses/${warehouseId}/create-stock`)}
+            >
+              <IconSelector name="Box" />
+              Agregar nuevo Stock
+            </Button>
+        </div>
         <Table
           titles={[
             { name: '#' },
@@ -74,45 +78,60 @@ function Warehouse() {
             { name: 'Stock' },
             { name: 'Acciones' }
           ]}
-          items={ (data?.getWarehouseStock?.data || []).map((stock, idx) => ({
-            content: [<h3 key={idx} className='text-sm'> {(idx + 1)}</h3>,
-            <div key={idx} className='text-center'>{stock?.product?.name}</div>,
-            <div key={idx} className='text-sm w-20 mx-auto'>
-              <CircularProgressbar value={stock.quantity} maxValue={stock.securityStock as number} text={ `${stock.quantity} ${stock.units}` } /></div>,
-            <div key={idx} className="">
-              <ButtonComponent
-                onClick={() => handleCreateMovement(stock.id)}
-                type="edit"
-                showTooltip
-                tooltipText="Mover Stock"
-                className='px-3'>
-                <IconSelector name='edit' color="text-primary" width="w-8"/>
-              </ButtonComponent>
-            </div>
+          items={(data?.getWarehouseStock?.data || []).map((stock, idx) => ({
+            content: [
+              <h3 key={idx} className="text-sm">
+                {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
+                  idx + 1}
+              </h3>,
+              <div key={idx} className="text-center">
+                {stock?.product?.name}
+              </div>,
+              <div key={idx} className="mx-auto w-16 text-sm">
+                <CircularProgressbar
+                  value={stock.quantity}
+                  maxValue={stock.lastStockEntry as number}
+                  text={`${stock.quantity}`}
+                />{' '}
+                {stock.units}
+              </div>,
+              <div key={idx} className="">
+                <ButtonComponent
+                  onClick={() => handleCreateMovement(stock as TStockData)}
+                  type="edit"
+                  showTooltip
+                  tooltipText="Mover Stock"
+                  className="px-3"
+                >
+                  <IconSelector name="edit" color="text-primary" width="w-8" />
+                </ButtonComponent>
+              </div>
             ]
-          })) }
+          }))}
           onChangeRow={row => handleChangeRow(row)}
-          tableName='Usuarios'
-          onChangePage={page => setVariables({ ...variables, currentPage: page }) }
-          itemsPerPage={variables?.rows }
-          currentPage={variables?.currentPage }
-          totalPages={ variables?.totalPages }
-          isLoading ={loading}
+          tableName="Usuarios"
+          onChangePage={page =>
+            setVariables({ ...variables, currentPage: page })
+          }
+          itemsPerPage={variables?.rows}
+          currentPage={variables?.currentPage}
+          totalPages={variables?.totalPages}
+          isLoading={loading}
           enablePagination={true}
-          onSearch={ value => setFilter(value) }
-          totalItems={variables?.totalRecords }
+          onSearch={value => setFilter(value)}
+          totalItems={variables?.totalRecords}
         />
-    </div>
-    <MoveStockModal
+      </div>
+      <MoveStockModal
         isOpen={handleMoveStockModal.isOpen}
         onClose={handleMoveStockModal.onClose}
         onOpen={handleMoveStockModal.onOpen}
-        onAddWarehouse={ refetch }
-        stockId={stock}
+        onAddWarehouse={refetch}
+        stockData={stock as TStockData}
         hideCloseButton={false}
-        size='md'
+        size="md"
       />
-  </AdministrationLayout>
+    </AdministrationLayout>
   )
 }
 export default Warehouse
