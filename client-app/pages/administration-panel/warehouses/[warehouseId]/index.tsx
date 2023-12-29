@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { useState } from 'react'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
+import { WarehouseRoute } from '@/utils/routes'
 
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -15,7 +16,11 @@ import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 
 function Warehouse() {
-  const [variables, setVariables] = useState<PaginationInterfaceState>({ rows: 5, filter: '', currentPage: 1 })
+  const [variables, setVariables] = useState<PaginationInterfaceState>({
+    rows: 5,
+    filter: '',
+    currentPage: 1
+  })
   const [filter, setFilter] = useState<string>('')
   const [stock, setStock] = useState<string>('')
   const handleMoveStockModal = useDisclosure()
@@ -28,10 +33,7 @@ function Warehouse() {
         filter: filtroDebounced,
         page: variables?.currentPage,
         rows: variables?.rows,
-        warehouses: [
-          warehouseId as string
-        ]
-
+        warehouses: [warehouseId as string]
       }
     },
     fetchPolicy: 'network-only',
@@ -54,65 +56,109 @@ function Warehouse() {
     setStock(stockId)
   }
   return (
-  <AdministrationLayout showBackButton={true}>
-      <div className="m-auto w-5/6 ">
+    <AdministrationLayout showBackButton={true}>
+      <div className="m-auto w-5/6 space-y-5">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de Stocks
         </h3>
-      <div className='w-1/4 ms-auto mb-8'>
-        <Link href={ `/administration-panel/warehouses/${warehouseId}/create-stock`}>
-          <Button color="secondary" className="float-right my-4 text-white font-extrabold">
-            <IconSelector name="Box" />
-            Agregar nuevo Stock
+        <div className="flex justify-end space-x-3">
+          <Button
+            onClick={() =>
+              router.push(` ${WarehouseRoute}/${warehouseId}/warehouse-history`)
+            }
+            color="primary"
+            className=" my-4 font-extrabold text-white"
+          >
+            <IconSelector name="Warehouse" />
+            Historial del almacén
           </Button>
-        </Link>
-      </div>
+          <Link
+            href={`/administration-panel/warehouses/${warehouseId}/create-stock`}
+          >
+            <Button
+              color="secondary"
+              className="float-right my-4 font-extrabold text-white"
+            >
+              <IconSelector name="Box" />
+              Agregar nuevo Stock
+            </Button>
+          </Link>
+        </div>
         <Table
+          tableName="STOCKS"
+          onChangeRow={row => handleChangeRow(row)}
+          onChangePage={page =>
+            setVariables({ ...variables, currentPage: page })
+          }
+          itemsPerPage={variables?.rows}
+          currentPage={variables?.currentPage}
+          totalPages={variables?.totalPages}
+          isLoading={loading}
+          enablePagination={true}
+          onSearch={value => setFilter(value)}
+          totalItems={variables?.totalRecords}
           titles={[
             { name: '#' },
             { name: 'Producto' },
             { name: 'Stock' },
             { name: 'Acciones' }
           ]}
-          items={ (data?.getWarehouseStock?.data || []).map((stock, idx) => ({
-            content: [<h3 key={idx} className='text-sm'> {(idx + 1)}</h3>,
-            <div key={idx} className='text-center'>{stock?.product?.name}</div>,
-            <div key={idx} className='text-sm w-20 mx-auto'>
-              <CircularProgressbar value={stock.quantity} maxValue={stock.securityStock as number} text={ `${stock.quantity} ${stock.units}` } /></div>,
-            <div key={idx} className="">
-              <ButtonComponent
-                onClick={() => handleCreateMovement(stock.id)}
-                type="edit"
-                showTooltip
-                tooltipText="Mover Stock"
-                className='px-3'>
-                <IconSelector name='edit' color="text-primary" width="w-8"/>
-              </ButtonComponent>
-            </div>
+          items={(data?.getWarehouseStock?.data || []).map((stock, idx) => ({
+            content: [
+              <h3 key={idx} className="text-sm">
+                {' '}
+                {idx + 1}
+              </h3>,
+              <div key={idx} className="text-center">
+                {stock?.product?.name}
+              </div>,
+              <div key={idx} className="mx-auto w-16 text-sm">
+                <CircularProgressbar
+                  value={stock.quantity}
+                  maxValue={stock.securityStock as number}
+                  text={`${stock.quantity} ${stock.units}`}
+                />
+              </div>,
+              <div key={idx} className="flex justify-center space-x-3">
+                <ButtonComponent
+                  onClick={() => handleCreateMovement(stock.id)}
+                  type="edit"
+                  showTooltip
+                  tooltipText="Mover Stock"
+                >
+                  <IconSelector name="edit" color="text-primary" width="w-8" />
+                </ButtonComponent>
+                <ButtonComponent
+                  onClick={() =>
+                    router.push(
+                      `${WarehouseRoute}/${warehouseId}/stock-history/${stock.id}`
+                    )
+                  }
+                  type="history"
+                  showTooltip
+                  tooltipText="Historial de Stock"
+                >
+                  <IconSelector
+                    name="Boxes"
+                    color="text-blue-500"
+                    width="w-8"
+                  />
+                </ButtonComponent>
+              </div>
             ]
-          })) }
-          onChangeRow={row => handleChangeRow(row)}
-          tableName='Usuarios'
-          onChangePage={page => setVariables({ ...variables, currentPage: page }) }
-          itemsPerPage={variables?.rows }
-          currentPage={variables?.currentPage }
-          totalPages={ variables?.totalPages }
-          isLoading ={loading}
-          enablePagination={true}
-          onSearch={ value => setFilter(value) }
-          totalItems={variables?.totalRecords }
+          }))}
         />
-    </div>
-    <MoveStockModal
+      </div>
+      <MoveStockModal
         isOpen={handleMoveStockModal.isOpen}
         onClose={handleMoveStockModal.onClose}
         onOpen={handleMoveStockModal.onOpen}
-        onAddWarehouse={ refetch }
+        onAddWarehouse={refetch}
         stockId={stock}
         hideCloseButton={false}
-        size='md'
+        size="md"
       />
-  </AdministrationLayout>
+    </AdministrationLayout>
   )
 }
 export default Warehouse
