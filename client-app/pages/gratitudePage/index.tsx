@@ -9,7 +9,9 @@ function GratitudePage() {
           title="¡Gracias por elegir FunFit!"
           description="Su compra ha sido exitosa y está en camino."
           buttonText="Regresar a la tienda"
+          showButton
           buttonDestination="/"
+          className='p-6'
         />
       </ClientLayout>
     </div>

@@ -2,7 +2,7 @@ import React from 'react'
 
 import { Tooltip } from '@nextui-org/react'
 
-type typeButtons = 'edit' | 'delete' | 'submit' | 'default'
+type typeButtons = 'edit' | 'delete' | 'submit' | 'history' | 'eye' | 'default'
 
 type TButtonProps = {
   children: React.ReactNode
@@ -35,6 +35,10 @@ const ButtonComponent = ({
         return 'danger'
       case 'submit':
         return 'success'
+      case 'history':
+        return 'blue-500'
+      case 'eye':
+        return 'secondary'
       default:
         return 'primary'
     }

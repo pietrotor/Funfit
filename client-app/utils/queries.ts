@@ -201,7 +201,148 @@ export const DELETE_WAREHOUSE = gql`
 
 export const GET_STOCKS = gql`
   query GetStocksPaginated($paginationInput: PaginationInput!) {
-  getStocksPaginated(paginationInput: $paginationInput) {
+    getStocksPaginated(paginationInput: $paginationInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        productId
+        warehouseId
+        quantity
+        securityStock
+        units
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          description
+          cost
+          image
+          warehouses
+        }
+        warehouse {
+          id
+          name
+          description
+          address
+        }
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+export const GET_WAREHOUSES_BY_ID = gql`
+  query GetWarehouseById($getWarehouseByIdId: ObjectId!) {
+    getWarehouseById(id: $getWarehouseByIdId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        description
+        address
+      }
+    }
+  }
+`
+
+export const GET_WAREHOUSE_HISTORY = gql`
+  query GetWarehouseHistory(
+    $paginationInput: PaginationInput!
+    $warehouseId: ObjectId!
+  ) {
+    getWarehouseHistory(
+      paginationInput: $paginationInput
+      warehouseId: $warehouseId
+    ) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        stockId
+        warehouseId
+        quantity
+        type
+        date
+        stockBefore
+        stockLater
+        createdBy
+        stock {
+          id
+          productId
+          warehouseId
+          quantity
+          securityStock
+          lastStockEntry
+          units
+          product {
+            id
+            name
+            suggetedPrice
+            code
+            description
+            cost
+            image
+            warehouses
+          }
+          warehouse {
+            id
+            name
+            description
+            address
+          }
+        }
+        warehouse {
+          id
+          name
+          description
+          address
+        }
+        createdByInfo {
+          id
+          name
+          lastName
+          email
+          phone
+          lastLogin
+          status
+          createdBy
+          roleId
+          roleInfo {
+            id
+            name
+            code
+            status
+          }
+        }
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+
+export const GET_STOCK_HISTORY = gql`
+query GetStockHistory($paginationInput: PaginationInput!, $stockId: ObjectId!) {
+  getStockHistory(paginationInput: $paginationInput, stockId: $stockId) {
     errorInput {
       message
       field
@@ -210,26 +351,61 @@ export const GET_STOCKS = gql`
     message
     data {
       id
-      productId
+      stockId
       warehouseId
       quantity
-      securityStock
-      units
-      product {
+      type
+      date
+      stockBefore
+      stockLater
+      createdBy
+      stock {
         id
-        name
-        suggetedPrice
-        code
-        description
-        cost
-        image
-        warehouses
+        productId
+        warehouseId
+        quantity
+        securityStock
+        lastStockEntry
+        units
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          description
+          cost
+          image
+          warehouses
+        }
+        warehouse {
+          id
+          name
+          description
+          address
+        }
       }
       warehouse {
         id
         name
         description
         address
+      }
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
       }
     }
     totalRecords
