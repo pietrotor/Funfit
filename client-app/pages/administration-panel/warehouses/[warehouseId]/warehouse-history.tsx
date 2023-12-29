@@ -13,6 +13,8 @@ import Table from '@/components/organisms/tableNext/Table'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import DateConverter from '@/components/atoms/DateConverter'
 import { authUserHeader } from '@/utils/verificationUser'
+import InformationCard from '@/components/molecules/Card/InformationCard'
+import IconSelector from '@/components/atoms/IconSelector'
 
 const WarehouseHsitory = () => {
   const router = useRouter()
@@ -50,12 +52,28 @@ const WarehouseHsitory = () => {
     setVariables({ ...variables, rows: row, currentPage: 1 })
   }
 
+  const warehouse =
+    data?.getWarehouseHistory?.data && data.getWarehouseHistory.data.length > 0 ? data.getWarehouseHistory.data[0] : null
   return (
     <AdministrationLayout showBackButton>
       <div className="m-auto w-5/6 space-y-5">
         <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
           Historial de almacén
         </h2>
+        <InformationCard className="w-3/5 rounded-3xl border-2 border-primary/60">
+          <section className="flex flex-col space-y-3 p-3">
+            <h2 className="text-left text-4xl font-extrabold text-primary">
+              {warehouse?.stock?.warehouse?.name}
+            </h2>
+            <div className="flex space-x-5 justify-between">
+              <p>{warehouse?.stock?.warehouse?.description}</p>
+              <div className='flex space-x-2'>
+                <IconSelector name="Map-pin" />
+                <p>{warehouse?.stock?.warehouse?.address}</p>
+              </div>
+            </div>
+          </section>
+        </InformationCard>
         <Table
           tableName="PRODUCTOS"
           isLoading={loading}
@@ -72,7 +90,6 @@ const WarehouseHsitory = () => {
           titles={[
             { name: '#' },
             { name: 'Producto' },
-            { name: 'Cantidad' },
             { name: 'Fecha' },
             { name: 'Tipo de movimiento' },
             { name: 'Stock anterior' },
@@ -83,7 +100,6 @@ const WarehouseHsitory = () => {
               content: [
                 idx + 1,
                 history.stock?.product?.name,
-                history.quantity,
                 <DateConverter key={idx} dateString={history.date as string} />,
                 history.type === StockMovementTypeEnum.INWARD ? (
                   <Chip color="success" variant="flat">

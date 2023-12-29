@@ -17,6 +17,7 @@ function Order() {
             description="Agrega productos a tu carrito para poder realizar tu compra."
             buttonText="Regresar a la tienda"
             buttonDestination="/"
+            className='p-6'
           />
         </ClientLayout>
       </div>
