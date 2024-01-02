@@ -12,7 +12,7 @@ interface EditBranchModalProps {
   isOpen: boolean
   onClose: () => void
   onAdd: () => void
-  values : TStockDataBranch
+  values? : TStockDataBranch
 }
 
 export const EditBranchModal = ({
@@ -28,13 +28,13 @@ export const EditBranchModal = ({
     UpdateUserMutationVariables({
       variables: {
         updateProductInput: {
-          id: values.id,
+          id: values?.id || '2321',
           name: watch('name'),
-          city: watch('city'),
-          code: watch('code'),
-          address: watch('address'),
-          phone: watch('phone'),
-          nit: watch('nit')
+          // city: watch('city'),
+          code: watch('code')
+          // address: watch('address'),
+          // phone: watch('phone'),
+          // nit: watch('nit')
         }
       },
       onCompleted: data => {

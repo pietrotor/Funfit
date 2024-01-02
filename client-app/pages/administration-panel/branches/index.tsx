@@ -14,8 +14,8 @@ import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
 import {
   StatusEnum,
-  useDeleteWarehouseMutation,
-  useUpdateWarehouseMutation
+  useDeleteWarehouseMutation
+  // useUpdateWarehouseMutation
 } from '@/graphql/graphql-types'
 import ButtonComponent from '@/components/atoms/Button'
 import useCustomGetWarehousesQuery from '@/services/UseBranches'
@@ -30,7 +30,7 @@ function Warehouses() {
   const handleAddWarehouse = useDisclosure()
   const router = useRouter()
 
-  const [UpdateWarehousesMutationVariables] = useUpdateWarehouseMutation()
+  // const [UpdateWarehousesMutationVariables] = useUpdateWarehouseMutation()
   const [DeleteteWarehouseMutation] = useDeleteWarehouseMutation()
 
   const { loading, data, refetch, variables, setVariables, setFilter } = useCustomGetWarehousesQuery()
@@ -180,7 +180,7 @@ function Warehouses() {
         <EditBranchModal
           isOpen={handleEditModal.isOpen}
           onClose={handleEditModal.onClose}
-          values={edit}
+          // values={edit}
           onAdd={refetch}
         />
 
