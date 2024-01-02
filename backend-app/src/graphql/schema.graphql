@@ -179,6 +179,17 @@ type Branch {
   # Fields Resolvers
   cash: Cash
 }
+type BranchProduct {
+  id: ObjectId!
+  branchId: ObjectId!
+  productId: ObjectId!
+  price: Float!
+  isVisibleOnWeb: Boolean!
+  isVisibleOnMenu: Boolean!
+  # Fields Resolvers
+  product: Product
+  branch: Branch
+}
 type Cash {
   id: ObjectId!
 }
@@ -415,4 +426,17 @@ input UpdateBranchInput {
   direction: String
   phone: String
   nit: String
+}
+input CreateBranchProductInput {
+  branchId: ObjectId!
+  productId: ObjectId!
+  price: Float!
+  isVisibleOnWeb: Boolean!
+  isVisibleOnMenu: Boolean!
+}
+input UpdateBranchProductInput {
+  id: ObjectId!
+  price: Float
+  isVisibleOnWeb: Boolean
+  isVisibleOnMenu: Boolean
 }

@@ -33,6 +33,18 @@ export type Branch = {
   phone?: Maybe<Scalars['String']['output']>;
 };
 
+export type BranchProduct = {
+  __typename?: 'BranchProduct';
+  branch?: Maybe<Branch>;
+  branchId: Scalars['ObjectId']['output'];
+  id: Scalars['ObjectId']['output'];
+  isVisibleOnMenu: Scalars['Boolean']['output'];
+  isVisibleOnWeb: Scalars['Boolean']['output'];
+  price: Scalars['Float']['output'];
+  product?: Maybe<Product>;
+  productId: Scalars['ObjectId']['output'];
+};
+
 export type BranchResponse = ResponseBase & {
   __typename?: 'BranchResponse';
   data?: Maybe<Branch>;
@@ -86,6 +98,14 @@ export type CreateBranchInput = {
   name: Scalars['String']['input'];
   nit?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type CreateBranchProductInput = {
+  branchId: Scalars['ObjectId']['input'];
+  isVisibleOnMenu: Scalars['Boolean']['input'];
+  isVisibleOnWeb: Scalars['Boolean']['input'];
+  price: Scalars['Float']['input'];
+  productId: Scalars['ObjectId']['input'];
 };
 
 export type CreateProductInput = {
@@ -501,6 +521,13 @@ export type UpdateBranchInput = {
   phone?: InputMaybe<Scalars['String']['input']>;
 };
 
+export type UpdateBranchProductInput = {
+  id: Scalars['ObjectId']['input'];
+  isVisibleOnMenu?: InputMaybe<Scalars['Boolean']['input']>;
+  isVisibleOnWeb?: InputMaybe<Scalars['Boolean']['input']>;
+  price?: InputMaybe<Scalars['Float']['input']>;
+};
+
 export type UpdateConfigurationInput = {
   address?: InputMaybe<Scalars['String']['input']>;
   businessName?: InputMaybe<Scalars['String']['input']>;
@@ -702,12 +729,14 @@ export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
 export type ResolversTypes = {
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
   Branch: ResolverTypeWrapper<Branch>;
+  BranchProduct: ResolverTypeWrapper<BranchProduct>;
   BranchResponse: ResolverTypeWrapper<BranchResponse>;
   BranchsResponse: ResolverTypeWrapper<BranchsResponse>;
   Cash: ResolverTypeWrapper<Cash>;
   Configuration: ResolverTypeWrapper<Configuration>;
   ConfigurationResponse: ResolverTypeWrapper<ConfigurationResponse>;
   CreateBranchInput: CreateBranchInput;
+  CreateBranchProductInput: CreateBranchProductInput;
   CreateProductInput: CreateProductInput;
   CreateStockInput: CreateStockInput;
   CreateStockMovementInput: CreateStockMovementInput;
@@ -740,6 +769,7 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Time: ResolverTypeWrapper<Scalars['Time']['output']>;
   UpdateBranchInput: UpdateBranchInput;
+  UpdateBranchProductInput: UpdateBranchProductInput;
   UpdateConfigurationInput: UpdateConfigurationInput;
   UpdateMeasurementUnitsInput: UpdateMeasurementUnitsInput;
   UpdateProductInput: UpdateProductInput;
@@ -759,12 +789,14 @@ export type ResolversTypes = {
 export type ResolversParentTypes = {
   Boolean: Scalars['Boolean']['output'];
   Branch: Branch;
+  BranchProduct: BranchProduct;
   BranchResponse: BranchResponse;
   BranchsResponse: BranchsResponse;
   Cash: Cash;
   Configuration: Configuration;
   ConfigurationResponse: ConfigurationResponse;
   CreateBranchInput: CreateBranchInput;
+  CreateBranchProductInput: CreateBranchProductInput;
   CreateProductInput: CreateProductInput;
   CreateStockInput: CreateStockInput;
   CreateStockMovementInput: CreateStockMovementInput;
@@ -795,6 +827,7 @@ export type ResolversParentTypes = {
   String: Scalars['String']['output'];
   Time: Scalars['Time']['output'];
   UpdateBranchInput: UpdateBranchInput;
+  UpdateBranchProductInput: UpdateBranchProductInput;
   UpdateConfigurationInput: UpdateConfigurationInput;
   UpdateMeasurementUnitsInput: UpdateMeasurementUnitsInput;
   UpdateProductInput: UpdateProductInput;
@@ -820,6 +853,18 @@ export type BranchResolvers<ContextType = any, ParentType extends ResolversParen
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BranchProductResolvers<ContextType = any, ParentType extends ResolversParentTypes['BranchProduct'] = ResolversParentTypes['BranchProduct']> = {
+  branch?: Resolver<Maybe<ResolversTypes['Branch']>, ParentType, ContextType>;
+  branchId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  isVisibleOnMenu?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  isVisibleOnWeb?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
+  productId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1129,6 +1174,7 @@ export type WarehousesResponseResolvers<ContextType = any, ParentType extends Re
 
 export type Resolvers<ContextType = any> = {
   Branch?: BranchResolvers<ContextType>;
+  BranchProduct?: BranchProductResolvers<ContextType>;
   BranchResponse?: BranchResponseResolvers<ContextType>;
   BranchsResponse?: BranchsResponseResolvers<ContextType>;
   Cash?: CashResolvers<ContextType>;
