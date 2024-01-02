@@ -17,6 +17,16 @@ const branchProductSchema = new Schema<IBranchProduct>(
       type: Schema.Types.ObjectId,
       ref: 'Branch'
     },
+    productId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Product'
+    },
+    price: {
+      type: Number,
+      required: true
+    },
+    isVisibleOnWeb: { type: Boolean, default: true },
+    isVisibleOnMenu: { type: Boolean, default: true },
     // Generic Types
     status: { type: Boolean, default: true },
     createdBy: {

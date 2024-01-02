@@ -51,6 +51,8 @@ type Query {
   # BRANCHES ===============================
   getBranchesPaginated(paginationInput: PaginationInput!): BranchsResponse
   getBranchById(id: ObjectId!): BranchResponse
+  getBranchProductsPaginated(paginationInput: PaginationInput!, branchId: ObjectId!): BranchProductsResponse
+  getBranchProductById(id: ObjectId!): BranchProductResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(paginationInput: PaginationInput!): ProductsResponse
 }
@@ -86,6 +88,9 @@ type Mutation {
   createBranch(createBranchInput: CreateBranchInput!): BranchResponse
   updateBranch(updateBranchInput: UpdateBranchInput!): BranchResponse
   deleteBranch(id: ObjectId!): BranchResponse
+  createBranchProduct(createBranchProductInput: CreateBranchProductInput!): BranchProductResponse
+  updateBranchProduct(updateBranchProductInput: UpdateBranchProductInput!): BranchProductResponse
+  deleteBranchProduct(id: ObjectId!): BranchProductResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type MeasurementUnits {
@@ -315,6 +320,22 @@ type BranchResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: Branch
+}
+type BranchProductsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [BranchProduct!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type BranchProductResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: BranchProduct
 }
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
