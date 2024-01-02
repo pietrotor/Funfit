@@ -7,6 +7,7 @@ import { TValueProductData } from './EditProductModal'
 import Input from '../Input'
 import ComboInput from '../ComboInput'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
+import { useGetProductsLazyQuery } from '@/graphql/graphql-types'
 // import { showSuccessToast } from '../Toast/toasts'
 
 // import { StatusEnum, useCreateProductMutation } from '@/graphql/graphql-types'
@@ -26,15 +27,12 @@ export const AddBranchProductModal = ({
   const [filterProduct] = useState<string>('')
   const [productsData, setProductsData] = useState<TValueProductData>()
   const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
-  const router = useRouter()
-  const { warehouseId } = router.query
-  const [getProducts, { data }] = useGetProductsOutOfWarehouseLazyQuery({
+  const [getProducts, { data }] = useGetProductsLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
       paginationInput: {
         filter: valueFilterProduct
-      },
-      warehouseId
+      }
     }
   })
   // const [createProduct] = useCreateProductMutation()
@@ -103,13 +101,13 @@ export const AddBranchProductModal = ({
               value={productsData?.name || ''}
               onChange={value => {
                 setProductsData(
-                  data?.getProductsOutOfWarehouse?.data?.find(
+                  data?.getProducts?.data?.find(
                     product => product.name === value
                   ) as TValueProductData
                 )
               }}
               options={
-                data?.getProductsOutOfWarehouse?.data?.map(product => ({
+                data?.getProducts?.data?.map(product => ({
                   label: product.name,
                   value: product.name
                 })) || [{ label: 'Cargando..', value: 'Cargando..' }]
