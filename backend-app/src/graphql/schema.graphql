@@ -48,7 +48,10 @@ type Query {
     paginationInput: PaginationInput!
     warehouseId: ObjectId!
   ): StocksHistoryResponse
-  # ECOMMERCE ROUTES ================================
+  # BRANCHES ===============================
+  getBranchesPaginated(paginationInput: PaginationInput!): BranchsResponse
+  getBranchById(id: ObjectId!): BranchResponse
+  # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(paginationInput: PaginationInput!): ProductsResponse
 }
 type Mutation {
@@ -79,6 +82,10 @@ type Mutation {
   creatStockMovement(
     createStockMovementInput: CreateStockMovementInput!
   ): StockResponse
+  # BRANCHES ===============================
+  createBranch(createBranchInput: CreateBranchInput!): BranchResponse
+  updateBranch(updateBranchInput: UpdateBranchInput!): BranchResponse
+  deleteBranch(id: ObjectId!): BranchResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type MeasurementUnits {
@@ -159,6 +166,32 @@ type StockHistory {
   stock: Stock
   warehouse: Warehouse
   createdByInfo: User
+}
+type Branch {
+  id: ObjectId!
+  name: String!
+  code: String!
+  city: String!
+  direction: String!
+  phone: String
+  nit: String
+  cashId: ObjectId!
+  # Fields Resolvers
+  cash: Cash
+}
+type BranchProduct {
+  id: ObjectId!
+  branchId: ObjectId!
+  productId: ObjectId!
+  price: Float!
+  isVisibleOnWeb: Boolean!
+  isVisibleOnMenu: Boolean!
+  # Fields Resolvers
+  product: Product
+  branch: Branch
+}
+type Cash {
+  id: ObjectId!
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -267,6 +300,22 @@ type StocksHistoryResponse implements ResponseBase {
   rows: Int
   currentPage: Int
 }
+type BranchsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Branch!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type BranchResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Branch
+}
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
   name: String!
@@ -360,4 +409,34 @@ input CreateStockMovementInput {
   type: StockMovementTypeEnum!
   detail: String
   date: Date!
+}
+input CreateBranchInput {
+  name: String!
+  code: String!
+  city: String!
+  direction: String!
+  phone: String
+  nit: String
+}
+input UpdateBranchInput {
+  id: ObjectId!
+  name: String
+  code: String
+  city: String
+  direction: String
+  phone: String
+  nit: String
+}
+input CreateBranchProductInput {
+  branchId: ObjectId!
+  productId: ObjectId!
+  price: Float!
+  isVisibleOnWeb: Boolean!
+  isVisibleOnMenu: Boolean!
+}
+input UpdateBranchProductInput {
+  id: ObjectId!
+  price: Float
+  isVisibleOnWeb: Boolean
+  isVisibleOnMenu: Boolean
 }
