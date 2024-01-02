@@ -12,3 +12,13 @@ export type TStockData = {
     product?: TValueProductData
     warehouse?: TValuesWarehouses
 }
+
+export type TStockDataBranch = {
+    id : string;
+    name: string;
+    code: string;
+    city: string;
+    address: string;
+    telephone?: string;
+    nit?: string;
+}

@@ -33,7 +33,6 @@ export const EditModal = ({
       phone: watch('phone')
     })
   }
-  console.log(values)
   return (
     <MyModal isOpen={isOpen} size="2xl" onClose={onClose} hideCloseButton = {false} >
       <h1 className="mb-10 mt-10 text-center text-3xl font-bold text-gray-500">
@@ -103,11 +102,11 @@ export const EditModal = ({
             }
           }}
         />
-        <div className="mt-4 flex space-x-4">
-          <Button type="submit" color="secondary">
+        <div className="grid h-16 grid-cols-2 gap-3 w-full ">
+          <Button type="submit" color="secondary" className="h-full text-xl font-bold text">
             Guardar
           </Button>
-          <Button onClick={ onClose } color="warning">Cancelar</Button>
+          <Button onClick={ onClose } color="warning" className="h-full text-xl text-white font-bold">Cancelar</Button>
         </div>
       </form>
     </MyModal>

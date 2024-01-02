@@ -38,7 +38,6 @@ export const EditProductModal = (
       suggetedPrice: parseFloat(watch('suggetedPrice'))
     })
   }
-  console.log(values)
   return <MyModal isOpen={isOpen} onClose={onClose}>
     <h1 className="mb-10 mt-10 text-center text-3xl font-bold text-gray-500">
         Editar Producto
