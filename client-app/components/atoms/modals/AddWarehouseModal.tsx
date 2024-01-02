@@ -60,7 +60,7 @@ export const AddWarehouseModal = ({
       </h1>
       <article className="mt-4 flex min-w-full items-center justify-center p-8 text-gray-500">
         <form
-          className="flex w-full flex-col items-center"
+          className="flex w-full flex-col items-center space-y-3"
           onSubmit={handleSubmit(onSubmit)}
         >
           <Input
@@ -112,11 +112,11 @@ export const AddWarehouseModal = ({
               }
             }}
           />
-          <div className="mt-6 flex space-x-6">
-            <Button type="submit" color="secondary" className="w-1/7">
+          <div className="mt-6 w-full grid h-16 grid-cols-2 gap-3 ">
+            <Button type="submit" color="secondary" className="h-full font-bold">
               Agregar
             </Button>
-            <Button color="primary" className="w-1/7" onClick={handleCancel}>
+            <Button variant="flat" color="danger" className="h-full font-bold" onClick={handleCancel}>
               Cancelar
             </Button>
           </div>

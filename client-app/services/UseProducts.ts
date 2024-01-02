@@ -1,36 +1,51 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { showSuccessToast } from '@/components/atoms/Toast/toasts'
+import { StatusEnum, useGetPublicProductsQuery } from '@/graphql/graphql-types'
 
-import { useGetProductsQuery } from '@/graphql/graphql-types'
-import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
-import UseDebouncedValue from '@/hooks/UseDebouncedValue'
+const useCustomPublicProductsQuery = () => {
+  const [variables, setVariables] = useState({
+    filter: '',
+    page: 1,
+    rows: 10
+  })
 
-export const UseProducts = () => {
-  const [filter, setFilter] = useState <string>('')
-  const [variables, setVariables] = useState <PaginationInterfaceState>({})
-  const filterProductDebounced = UseDebouncedValue(filter, 2000)
-  const { loading, data, refetch } = useGetProductsQuery({
+  const { data, loading, refetch } = useGetPublicProductsQuery({
+    fetchPolicy: 'network-only',
     variables: {
       paginationInput: {
-        page: variables?.currentPage,
-        rows: variables?.rows,
-        filter: variables?.filter
+        filter: variables.filter,
+        page: variables.page,
+        rows: variables.rows
       }
     },
-    fetchPolicy: 'network-only',
-    onCompleted: data => {
-      setVariables({
-        totalPages: data.getProducts?.totalPages || 1,
-        rows: data.getProducts?.rows || 5,
-        filter: filterProductDebounced,
-        currentPage: data.getProducts?.currentPage || 1,
-        totalRecords: data.getProducts?.totalRecords || 1
-      })
+    onCompleted: (result) => {
+      if (result.getPublicProducts?.status === StatusEnum.ERROR) {
+        showSuccessToast(
+          result.getPublicProducts?.message || 'Error al cargar los productos',
+          'error'
+        )
+      }
     }
   })
 
+  // Use useEffect to handle changes in variables
+  useEffect(() => {
+    refetch({
+      paginationInput: {
+        filter: variables.filter,
+        page: variables.page,
+        rows: variables.rows
+      }
+    })
+  }, [variables, refetch])
+
   return {
-    loading,
     data,
-    refetch
+    loading,
+    refetch,
+    variables,
+    setVariables
   }
 }
+
+export default useCustomPublicProductsQuery

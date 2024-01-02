@@ -25,7 +25,11 @@ function CreateUserForm() {
   const handleEditModal = useDisclosure()
   const handleDeleteModal = useDisclosure()
   const [filter, setFilter] = useState<string>('')
-  const [variables, setVariables] = useState<PaginationInterfaceState>({ rows: 5, filter: '', currentPage: 1 })
+  const [variables, setVariables] = useState<PaginationInterfaceState>({
+    rows: 5,
+    filter: '',
+    currentPage: 1
+  })
   const filtroDebounced = UseDebouncedValue(filter, 2000)
 
   const [edit, setEdit] = useState<TValueUserData>({})
@@ -152,8 +156,9 @@ function CreateUserForm() {
           items={(data?.getUsers?.data || []).map((user, idx) => ({
             content: [
               <h3 key={idx} className="text-sm">
-                {' '}
-                {idx + 1}
+                {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
+                  idx +
+                  1}
               </h3>,
               <div key={idx} className="text-left text-sm">
                 {user.name + ' ' + user.lastName}
