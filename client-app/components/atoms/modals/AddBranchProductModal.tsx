@@ -2,12 +2,10 @@ import { useForm } from 'react-hook-form'
 import { Button, Checkbox } from '@nextui-org/react'
 
 import { useState } from 'react'
-import { useRouter } from 'next/router'
 import { MyModal } from './MyModal'
 import { TValueProductData } from './EditProductModal'
 import Input from '../Input'
 import ComboInput from '../ComboInput'
-import { useGetProductsOutOfWarehouseLazyQuery } from '@/graphql/graphql-types'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 // import { showSuccessToast } from '../Toast/toasts'
 
