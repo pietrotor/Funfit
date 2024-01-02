@@ -124,7 +124,10 @@ function StockHistory() {
           ]}
           items={(data?.getStockHistory?.data || []).map((history, idx) => ({
             content: [
-              idx + 1,
+              <h3 key={idx} className="text-sm">
+                {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
+                  idx + 1}
+              </h3>,
               <DateConverter key={idx} dateString={history.date} />,
               history.type === StockMovementTypeEnum.INWARD ? (
                 <Chip color="success" variant="flat">
