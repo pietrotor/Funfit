@@ -6,6 +6,7 @@ import { ConfigurationService } from './configuration.service'
 import { StocksService } from './stock.service'
 import { StocksHistoryService } from './stockHistory.service'
 import { BranchService } from './branch.service'
+import { BranchProductService } from './branchProduct.service'
 
 export const configurationCore = new ConfigurationService()
 export const userCore = new UserService()
@@ -15,3 +16,4 @@ export const warehouseCore = new WarehouseService()
 export const stockCore = new StocksService()
 export const stockHistoryCore = new StocksHistoryService()
 export const branchCore = new BranchService()
+export const branchProductCore = new BranchProductService()
