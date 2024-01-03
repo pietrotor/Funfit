@@ -4,7 +4,7 @@ import { StatusEnum, useGetBranchesPaginatedQuery } from '@/graphql/graphql-type
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 
-const useCustomGetWarehousesQuery = () => {
+const useCustomGetBranchesQuery = () => {
   const [variables, setVariables] = useState <PaginationInterfaceState>()
   const [filter, setFilter] = useState <string>()
   const filtroDebounced = UseDebouncedValue(filter, 2000)
@@ -45,4 +45,4 @@ const useCustomGetWarehousesQuery = () => {
   }
 }
 
-export default useCustomGetWarehousesQuery
+export default useCustomGetBranchesQuery

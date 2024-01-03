@@ -10,35 +10,31 @@ import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
-import {
-  StatusEnum,
-  useDeleteBranchMutation
-  // useUpdateWarehouseMutation
-} from '@/graphql/graphql-types'
+import { StatusEnum, useDeleteBranchMutation } from '@/graphql/graphql-types'
 import ButtonComponent from '@/components/atoms/Button'
-import useCustomGetWarehousesQuery from '@/services/UseBranches'
 import { AddBranchModal } from '@/components/atoms/modals/AddBranchModal'
 import { EditBranchModal } from '@/components/atoms/modals/EditBranchModal'
-import { TStockDataBranch } from '@/interfaces/TData'
+import { TDataBranch } from '@/interfaces/TData'
+import useCustomGetBranchesQuery from '@/services/UseBranches'
 
-function Warehouses() {
-  const [edit, setEdit] = useState<TStockDataBranch>({} as TStockDataBranch)
+function Branches() {
+  const [edit, setEdit] = useState<TDataBranch>({} as TDataBranch)
 
   const handleConfirmModal = useDisclosure()
   const handleEditModal = useDisclosure()
-  const handleAddWarehouse = useDisclosure()
+  const handleAddBranch = useDisclosure()
   const router = useRouter()
 
-  // const [UpdateWarehousesMutationVariables] = useUpdateWarehouseMutation()
   const [DeleteteBranchMutation] = useDeleteBranchMutation()
 
-  const { loading, data, refetch, variables, setVariables, setFilter } = useCustomGetWarehousesQuery()
+  const { loading, data, refetch, variables, setVariables, setFilter } =
+    useCustomGetBranchesQuery()
 
-  const handleUpdateWarehouse = (branchId: number) => {
-    const warehouse = data?.getBranchesPaginated?.data?.find(
-      warehouse => warehouse.id === branchId
+  const handleUpdateBranch = (branchId: number) => {
+    const branch = data?.getBranchesPaginated?.data?.find(
+      branch => branch.id === branchId
     )
-    setEdit(warehouse as TStockDataBranch)
+    setEdit(branch as TDataBranch)
 
     handleEditModal.onOpen()
   }
@@ -47,12 +43,12 @@ function Warehouses() {
     setVariables({ ...variables, rows: row, currentPage: 1 })
   }
 
-  const handleDeleteWarehouse = (BranchId: number) => {
+  const handleDeleteBranch = (BranchId: number) => {
     const branch = data?.getBranchesPaginated?.data?.find(
       branch => branch.id === BranchId
     )
     console.log(branch)
-    setEdit(branch as TStockDataBranch)
+    setEdit(branch as TDataBranch)
 
     handleConfirmModal.onOpen()
   }
@@ -72,7 +68,7 @@ function Warehouses() {
         } else {
           showSuccessToast(
             data.deleteBranch?.message ||
-              'El Warehouse ha sido eliminado correctamente',
+              'La sucursal ha sido eliminado correctamente',
             'success'
           )
           refetch()
@@ -92,7 +88,7 @@ function Warehouses() {
         </h3>
         <div className="space-x-3 text-end">
           <Button
-            onClick={handleAddWarehouse.onOpen}
+            onClick={handleAddBranch.onOpen}
             color="secondary"
             className=" my-4 font-extrabold text-white"
           >
@@ -123,76 +119,89 @@ function Warehouses() {
             { name: 'Nit' },
             { name: 'Acciones' }
           ]}
-          items={(data?.getBranchesPaginated?.data || []).map((branch, idx) => ({
-            content: [
-              <h3 key={idx} className="text-sm">
-                {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
-                  idx +
-                  1}
-              </h3>,
-              <div key={idx} className="text-sm">
-                {branch.name}
-              </div>,
-              <div key={idx} className="text-left text-sm">
-                {branch.city}
-              </div>,
-              <div key={idx} className="text-left text-sm">
-                {branch.direction}
-              </div>,
-              <div key={idx} className="text-left text-sm">
-              {branch.phone}
-              </div>,
-              <div key={idx} className="text-left text-sm">
-              {branch.code}
-              </div>,
-              <div key={idx} className="text-left text-sm">
-              {branch.nit}
-              </div>,
-              <div key={idx} className="flex justify-center space-x-1">
-                <ButtonComponent
-                  onClick={() =>
-                    router.push(
-                      `/administration-panel/branches/${branch.id}`
-                    )
-                  }
-                  type="eye"
-                  showTooltip
-                  tooltipText="Administrar Stock"
-                  className="px-3"
-                >
-                  <IconSelector name="Branch" color="text-secondary" width="w-5" />
-                </ButtonComponent>
-                <ButtonComponent
-                  onClick={() => handleUpdateWarehouse(branch.id)}
-                  type="edit"
-                  showTooltip
-                  tooltipText="Editar"
-                >
-                  <IconSelector name="edit" color="text-primary" width="w-8" />
-                </ButtonComponent>
-                <ButtonComponent
-                  onClick={() => handleDeleteWarehouse(branch.id)}
-                  type="delete"
-                  showTooltip
-                  tooltipText="Eliminar"
-                >
-                  <IconSelector name="trash" color="text-danger" width="w-8" />
-                </ButtonComponent>
-              </div>
-            ]
-          }))}
+          items={(data?.getBranchesPaginated?.data || []).map(
+            (branch, idx) => ({
+              content: [
+                <h3 key={idx} className="text-sm">
+                  {((variables?.currentPage || 0) - 1) *
+                    (variables?.rows || 0) +
+                    idx +
+                    1}
+                </h3>,
+                <div key={idx} className="text-sm">
+                  {branch.name}
+                </div>,
+                <div key={idx} className="text-left text-sm">
+                  {branch.city}
+                </div>,
+                <div key={idx} className="text-left text-sm">
+                  {branch.direction}
+                </div>,
+                <div key={idx} className="text-left text-sm">
+                  {branch.phone}
+                </div>,
+                <div key={idx} className="text-left text-sm">
+                  {branch.code}
+                </div>,
+                <div key={idx} className="text-left text-sm">
+                  {branch.nit}
+                </div>,
+                <div key={idx} className="flex justify-center space-x-1">
+                  <ButtonComponent
+                    onClick={() =>
+                      router.push(`/administration-panel/branches/${branch.id}`)
+                    }
+                    type="eye"
+                    showTooltip
+                    tooltipText="Administrar Stock"
+                    className="px-3"
+                  >
+                    <IconSelector
+                      name="Branch"
+                      color="text-secondary"
+                      width="w-5"
+                    />
+                  </ButtonComponent>
+                  <ButtonComponent
+                    onClick={() => handleUpdateBranch(branch.id)}
+                    type="edit"
+                    showTooltip
+                    tooltipText="Editar"
+                  >
+                    <IconSelector
+                      name="edit"
+                      color="text-primary"
+                      width="w-8"
+                    />
+                  </ButtonComponent>
+                  <ButtonComponent
+                    onClick={() => handleDeleteBranch(branch.id)}
+                    type="delete"
+                    showTooltip
+                    tooltipText="Eliminar"
+                  >
+                    <IconSelector
+                      name="trash"
+                      color="text-danger"
+                      width="w-8"
+                    />
+                  </ButtonComponent>
+                </div>
+              ]
+            })
+          )}
         />
 
         <AddBranchModal
-          isOpen={handleAddWarehouse.isOpen}
-          onClose={handleAddWarehouse.onClose}
+          isOpen={handleAddBranch.isOpen}
+          onClose={handleAddBranch.onClose}
           onAdd={refetch}
-          />
+        />
 
         <EditBranchModal
           isOpen={handleEditModal.isOpen}
           onClose={handleEditModal.onClose}
-          values={edit as TStockDataBranch}
+          values={edit}
           onAdd={refetch}
         />
 
@@ -208,7 +217,7 @@ function Warehouses() {
     </AdministrationLayout>
   )
 }
-export default Warehouses
+export default Branches
 
 export const getServerSideProps: GetServerSideProps = async ctx =>
   await authUserHeader(ctx)

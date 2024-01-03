@@ -13,7 +13,7 @@ export type TStockData = {
     warehouse?: TValuesWarehouses
 }
 
-export type TStockDataBranch = {
+export type TDataBranch = {
     id: any;
     name: string;
     code: string;
