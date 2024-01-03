@@ -1,35 +1,82 @@
 import { useState } from 'react'
+import UseDebouncedValue from './UseDebouncedValue'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
-import { StatusEnum, useGetWarehouseStockQuery } from '@/graphql/graphql-types'
+import {
+  StatusEnum,
+  useCreateBranchProductMutation,
+  useGetBranchProductsPaginatedQuery
+} from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
-import UseDebouncedValue from '@/hooks/UseDebouncedValue'
+export interface CreateBranchProductInput {
+  branchId: string
+  productId: string
+  isVisibleOnMenu: boolean
+  isVisibleOnWeb: boolean
+  price: number
+}
 
-const useCustomGetWarehousesQuery = () => {
-  const [variables, setVariables] = useState <PaginationInterfaceState>()
-  const [filter, setFilter] = useState <string>()
-  const filtroDebounced = UseDebouncedValue(filter, 2000)
+export const useCreateBranchProductQuery = () => {
+  const [variables, setVariables] = useState<PaginationInterfaceState>()
 
-  const { data, loading, refetch } = useGetWarehouseStockQuery({
+  const [createBranchProduct] = useCreateBranchProductMutation({
+    onCompleted: result => {
+      if (result.createBranchProduct?.status === StatusEnum.ERROR) {
+        showSuccessToast(
+          result.createBranchProduct.message || 'Something went wrong',
+          'error'
+        )
+      }
+    }
+  })
+
+  const handleCreateBranchProduct = (data: CreateBranchProductInput) => {
+    createBranchProduct({
+      variables: {
+        createBranchProductInput: {
+          branchId: data.branchId,
+          productId: data.productId,
+          isVisibleOnMenu: data.isVisibleOnMenu,
+          isVisibleOnWeb: data.isVisibleOnWeb,
+          price: data.price
+        }
+      }
+    })
+  }
+
+  return {
+    handleCreateBranchProduct,
+    variables,
+    setVariables
+  }
+}
+
+export const useGetBranchProductQuery = (branchId: string) => {
+  const [variables, setVariables] = useState<PaginationInterfaceState>()
+  const [filter, setFilter] = useState<string>()
+  const filterDebounced = UseDebouncedValue(filter, 2000)
+
+  const { data, loading, refetch } = useGetBranchProductsPaginatedQuery({
     fetchPolicy: 'network-only',
     variables: {
-      warehouseStockPaginationInput: {
-        warehouses: [],
-        filter: filtroDebounced,
+      branchId,
+      paginationInput: {
+        filter: filterDebounced,
         page: variables?.currentPage || 1,
         rows: 5
       }
     },
-    onCompleted: (result) => {
+    onCompleted: result => {
       setVariables({
-        totalPages: result.getWarehouseStock?.totalPages || 1,
-        rows: result.getWarehouseStock?.rows || 5,
-        filter: filtroDebounced,
-        currentPage: result.getWarehouseStock?.currentPage || 1,
-        totalRecords: result.getWarehouseStock?.totalRecords || 1
+        totalPages: result.getBranchProductsPaginated?.totalPages || 1,
+        rows: result.getBranchProductsPaginated?.rows || 5,
+        filter: filterDebounced,
+        currentPage: result.getBranchProductsPaginated?.currentPage || 1,
+        totalRecords: result.getBranchProductsPaginated?.totalRecords || 1
       })
-      if (result.getWarehouseStock?.status === StatusEnum.ERROR) {
+      if (result.getBranchProductsPaginated?.status === StatusEnum.ERROR) {
         showSuccessToast(
-          result.getWarehouseStock?.message || 'Error al cargar los productos',
+          result.getBranchProductsPaginated?.message ||
+            'Error al cargar los productos',
           'error'
         )
       }
@@ -45,5 +92,3 @@ const useCustomGetWarehousesQuery = () => {
     setFilter
   }
 }
-
-export default useCustomGetWarehousesQuery

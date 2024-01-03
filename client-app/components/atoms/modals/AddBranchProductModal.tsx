@@ -8,9 +8,7 @@ import Input from '../Input'
 import ComboInput from '../ComboInput'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { useGetProductsLazyQuery } from '@/graphql/graphql-types'
-// import { showSuccessToast } from '../Toast/toasts'
-
-// import { StatusEnum, useCreateProductMutation } from '@/graphql/graphql-types'
+import { useCreateBranchProductQuery } from '@/hooks/UseBranchQuery'
 
 interface AddBranchProductModalProps {
   isOpen: boolean
@@ -23,7 +21,8 @@ export const AddBranchProductModal = ({
   onClose,
   onAdd
 }: AddBranchProductModalProps) => {
-  const { handleSubmit, control /*, watch, reset */ } = useForm()
+  const { handleCreateBranchProduct } = useCreateBranchProductQuery()
+  const { handleSubmit, control, watch } = useForm()
   const [filterProduct] = useState<string>('')
   const [productsData, setProductsData] = useState<TValueProductData>()
   const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
@@ -35,37 +34,15 @@ export const AddBranchProductModal = ({
       }
     }
   })
-  // const [createProduct] = useCreateProductMutation()
+
   const onSubmit = () => {
-    console.log('submit')
-    /*
-    createProduct({
-      variables: {
-        createProductInput: {
-          productId: parseFloat(watch('cost')),
-          price: watch('code'),
-          isVisibleOnMenu: watch('description'),
-          isVisibleOnWeb: watch('image')
-        }
-      },
-      onCompleted: data => {
-        if (data.createProduct?.status === StatusEnum.ERROR) {
-          showSuccessToast(
-            data.createProduct.message || 'Ocurrió un error',
-            'error'
-          )
-        } else {
-          showSuccessToast(
-            data.createProduct?.message || 'Producto guardado correctamente',
-            'success'
-          )
-          onClose()
-          reset()
-          onAdd()
-        }
-      }
+    handleCreateBranchProduct({
+      branchId: '6595544d0aa5406c5d1a72ae',
+      productId: productsData?.id,
+      price: parseFloat(watch('price')),
+      isVisibleOnMenu: watch('isVisibleMenu'),
+      isVisibleOnWeb: watch('isVisibleWeb')
     })
-    */
   }
 
   const handleCancel = () => {
@@ -131,10 +108,10 @@ export const AddBranchProductModal = ({
               }}
             />
             <div className="flex space-x-5">
-              <Checkbox defaultSelected size="sm">
+              <Checkbox name="isVisibleMenu" defaultSelected size="sm">
                 Es Visible en el Menú
               </Checkbox>
-              <Checkbox defaultSelected size="sm">
+              <Checkbox name="isVisibleWeb" defaultSelected size="sm">
                 Es Visible en la Web
               </Checkbox>
             </div>

@@ -18,6 +18,76 @@ export type Scalars = {
   Time: any;
 };
 
+export type Branch = {
+  __typename?: 'Branch';
+  cash?: Maybe<Cash>;
+  cashId: Scalars['ObjectId'];
+  city: Scalars['String'];
+  code: Scalars['String'];
+  direction: Scalars['String'];
+  id: Scalars['ObjectId'];
+  name: Scalars['String'];
+  nit?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+};
+
+export type BranchProduct = {
+  __typename?: 'BranchProduct';
+  branch?: Maybe<Branch>;
+  branchId: Scalars['ObjectId'];
+  id: Scalars['ObjectId'];
+  isVisibleOnMenu: Scalars['Boolean'];
+  isVisibleOnWeb: Scalars['Boolean'];
+  price: Scalars['Float'];
+  product?: Maybe<Product>;
+  productId: Scalars['ObjectId'];
+};
+
+export type BranchProductResponse = ResponseBase & {
+  __typename?: 'BranchProductResponse';
+  data?: Maybe<BranchProduct>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type BranchProductsResponse = ResponseBase & {
+  __typename?: 'BranchProductsResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<BranchProduct>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
+};
+
+export type BranchResponse = ResponseBase & {
+  __typename?: 'BranchResponse';
+  data?: Maybe<Branch>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type BranchsResponse = ResponseBase & {
+  __typename?: 'BranchsResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Branch>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
+};
+
+export type Cash = {
+  __typename?: 'Cash';
+  id: Scalars['ObjectId'];
+};
+
 export type Configuration = {
   __typename?: 'Configuration';
   address: Scalars['String'];
@@ -37,6 +107,23 @@ export type ConfigurationResponse = ResponseBase & {
   errorInput?: Maybe<Array<ErrorInput>>;
   message?: Maybe<Scalars['String']>;
   status: StatusEnum;
+};
+
+export type CreateBranchInput = {
+  city: Scalars['String'];
+  code: Scalars['String'];
+  direction: Scalars['String'];
+  name: Scalars['String'];
+  nit?: InputMaybe<Scalars['String']>;
+  phone?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateBranchProductInput = {
+  branchId: Scalars['ObjectId'];
+  isVisibleOnMenu: Scalars['Boolean'];
+  isVisibleOnWeb: Scalars['Boolean'];
+  price: Scalars['Float'];
+  productId: Scalars['ObjectId'];
 };
 
 export type CreateProductInput = {
@@ -98,12 +185,18 @@ export type MeasurementUnits = {
 export type Mutation = {
   __typename?: 'Mutation';
   creatStockMovement?: Maybe<StockResponse>;
+  createBranch?: Maybe<BranchResponse>;
+  createBranchProduct?: Maybe<BranchProductResponse>;
   createProduct?: Maybe<ProductResponse>;
   createStock?: Maybe<StockResponse>;
   createUser?: Maybe<UserResponse>;
   createWarehouse?: Maybe<WarehouseResponse>;
+  deleteBranch?: Maybe<BranchResponse>;
+  deleteBranchProduct?: Maybe<BranchProductResponse>;
   deleteProduct?: Maybe<ProductResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
+  updateBranch?: Maybe<BranchResponse>;
+  updateBranchProduct?: Maybe<BranchProductResponse>;
   updateConfiguration?: Maybe<ConfigurationResponse>;
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
@@ -113,6 +206,16 @@ export type Mutation = {
 
 export type MutationCreatStockMovementArgs = {
   createStockMovementInput: CreateStockMovementInput;
+};
+
+
+export type MutationCreateBranchArgs = {
+  createBranchInput: CreateBranchInput;
+};
+
+
+export type MutationCreateBranchProductArgs = {
+  createBranchProductInput: CreateBranchProductInput;
 };
 
 
@@ -136,6 +239,16 @@ export type MutationCreateWarehouseArgs = {
 };
 
 
+export type MutationDeleteBranchArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type MutationDeleteBranchProductArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
 export type MutationDeleteProductArgs = {
   id: Scalars['ObjectId'];
 };
@@ -143,6 +256,16 @@ export type MutationDeleteProductArgs = {
 
 export type MutationDeleteWarehouseArgs = {
   id: Scalars['ObjectId'];
+};
+
+
+export type MutationUpdateBranchArgs = {
+  updateBranchInput: UpdateBranchInput;
+};
+
+
+export type MutationUpdateBranchProductArgs = {
+  updateBranchProductInput: UpdateBranchProductInput;
 };
 
 
@@ -208,6 +331,10 @@ export type ProductsResponse = ResponseBase & {
 export type Query = {
   __typename?: 'Query';
   currentUser?: Maybe<UserResponse>;
+  getBranchById?: Maybe<BranchResponse>;
+  getBranchProductById?: Maybe<BranchProductResponse>;
+  getBranchProductsPaginated?: Maybe<BranchProductsResponse>;
+  getBranchesPaginated?: Maybe<BranchsResponse>;
   getConfiguration?: Maybe<ConfigurationResponse>;
   getProductById?: Maybe<ProductResponse>;
   getProductStock?: Maybe<StocksResponse>;
@@ -225,6 +352,27 @@ export type Query = {
   getWarehouseStock?: Maybe<StocksResponse>;
   getWarehouses?: Maybe<WarehousesResponse>;
   login?: Maybe<LoginResponse>;
+};
+
+
+export type QueryGetBranchByIdArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetBranchProductByIdArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetBranchProductsPaginatedArgs = {
+  branchId: Scalars['ObjectId'];
+  paginationInput: PaginationInput;
+};
+
+
+export type QueryGetBranchesPaginatedArgs = {
+  paginationInput: PaginationInput;
 };
 
 
@@ -410,6 +558,23 @@ export type StocksResponse = ResponseBase & {
   status: StatusEnum;
   totalPages?: Maybe<Scalars['Int']>;
   totalRecords?: Maybe<Scalars['Int']>;
+};
+
+export type UpdateBranchInput = {
+  city?: InputMaybe<Scalars['String']>;
+  code?: InputMaybe<Scalars['String']>;
+  direction?: InputMaybe<Scalars['String']>;
+  id: Scalars['ObjectId'];
+  name?: InputMaybe<Scalars['String']>;
+  nit?: InputMaybe<Scalars['String']>;
+  phone?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateBranchProductInput = {
+  id: Scalars['ObjectId'];
+  isVisibleOnMenu?: InputMaybe<Scalars['Boolean']>;
+  isVisibleOnWeb?: InputMaybe<Scalars['Boolean']>;
+  price?: InputMaybe<Scalars['Float']>;
 };
 
 export type UpdateConfigurationInput = {
@@ -710,6 +875,21 @@ export type GetPublicProductsQueryVariables = Exact<{
 
 
 export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'ProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> }> | null } | null };
+
+export type CreateBranchProductMutationVariables = Exact<{
+  createBranchProductInput: CreateBranchProductInput;
+}>;
+
+
+export type CreateBranchProductMutation = { __typename?: 'Mutation', createBranchProduct?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null } | null };
+
+export type GetBranchProductsPaginatedQueryVariables = Exact<{
+  paginationInput: PaginationInput;
+  branchId: Scalars['ObjectId'];
+}>;
+
+
+export type GetBranchProductsPaginatedQuery = { __typename?: 'Query', getBranchProductsPaginated?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -2119,3 +2299,153 @@ export function useGetPublicProductsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetPublicProductsQueryHookResult = ReturnType<typeof useGetPublicProductsQuery>;
 export type GetPublicProductsLazyQueryHookResult = ReturnType<typeof useGetPublicProductsLazyQuery>;
 export type GetPublicProductsQueryResult = Apollo.QueryResult<GetPublicProductsQuery, GetPublicProductsQueryVariables>;
+export const CreateBranchProductDocument = gql`
+    mutation CreateBranchProduct($createBranchProductInput: CreateBranchProductInput!) {
+  createBranchProduct(createBranchProductInput: $createBranchProductInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      productId
+      price
+      isVisibleOnWeb
+      isVisibleOnMenu
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        internalCode
+        description
+        cost
+        image
+        warehouses
+      }
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cashId
+        cash {
+          id
+        }
+      }
+    }
+  }
+}
+    `;
+export type CreateBranchProductMutationFn = Apollo.MutationFunction<CreateBranchProductMutation, CreateBranchProductMutationVariables>;
+
+/**
+ * __useCreateBranchProductMutation__
+ *
+ * To run a mutation, you first call `useCreateBranchProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBranchProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBranchProductMutation, { data, loading, error }] = useCreateBranchProductMutation({
+ *   variables: {
+ *      createBranchProductInput: // value for 'createBranchProductInput'
+ *   },
+ * });
+ */
+export function useCreateBranchProductMutation(baseOptions?: Apollo.MutationHookOptions<CreateBranchProductMutation, CreateBranchProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateBranchProductMutation, CreateBranchProductMutationVariables>(CreateBranchProductDocument, options);
+      }
+export type CreateBranchProductMutationHookResult = ReturnType<typeof useCreateBranchProductMutation>;
+export type CreateBranchProductMutationResult = Apollo.MutationResult<CreateBranchProductMutation>;
+export type CreateBranchProductMutationOptions = Apollo.BaseMutationOptions<CreateBranchProductMutation, CreateBranchProductMutationVariables>;
+export const GetBranchProductsPaginatedDocument = gql`
+    query GetBranchProductsPaginated($paginationInput: PaginationInput!, $branchId: ObjectId!) {
+  getBranchProductsPaginated(
+    paginationInput: $paginationInput
+    branchId: $branchId
+  ) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      productId
+      price
+      isVisibleOnWeb
+      isVisibleOnMenu
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        internalCode
+        description
+        cost
+        image
+        warehouses
+      }
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cashId
+        cash {
+          id
+        }
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetBranchProductsPaginatedQuery__
+ *
+ * To run a query within a React component, call `useGetBranchProductsPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBranchProductsPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBranchProductsPaginatedQuery({
+ *   variables: {
+ *      paginationInput: // value for 'paginationInput'
+ *      branchId: // value for 'branchId'
+ *   },
+ * });
+ */
+export function useGetBranchProductsPaginatedQuery(baseOptions: Apollo.QueryHookOptions<GetBranchProductsPaginatedQuery, GetBranchProductsPaginatedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBranchProductsPaginatedQuery, GetBranchProductsPaginatedQueryVariables>(GetBranchProductsPaginatedDocument, options);
+      }
+export function useGetBranchProductsPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBranchProductsPaginatedQuery, GetBranchProductsPaginatedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBranchProductsPaginatedQuery, GetBranchProductsPaginatedQueryVariables>(GetBranchProductsPaginatedDocument, options);
+        }
+export type GetBranchProductsPaginatedQueryHookResult = ReturnType<typeof useGetBranchProductsPaginatedQuery>;
+export type GetBranchProductsPaginatedLazyQueryHookResult = ReturnType<typeof useGetBranchProductsPaginatedLazyQuery>;
+export type GetBranchProductsPaginatedQueryResult = Apollo.QueryResult<GetBranchProductsPaginatedQuery, GetBranchProductsPaginatedQueryVariables>;
