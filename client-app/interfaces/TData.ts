@@ -14,11 +14,14 @@ export type TStockData = {
 }
 
 export type TStockDataBranch = {
-    id : string;
+    id: any;
     name: string;
     code: string;
     city: string;
-    address: string;
-    telephone?: string;
-    nit?: string;
+    direction: string;
+    phone?: string | null | undefined;
+    nit?: string | null | undefined;
+    cash?: {
+      id: any;
+    };
 }

@@ -18,6 +18,44 @@ export type Scalars = {
   Time: any;
 };
 
+export type Branch = {
+  __typename?: 'Branch';
+  cash?: Maybe<Cash>;
+  cashId: Scalars['ObjectId'];
+  city: Scalars['String'];
+  code: Scalars['String'];
+  direction: Scalars['String'];
+  id: Scalars['ObjectId'];
+  name: Scalars['String'];
+  nit?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+};
+
+export type BranchResponse = ResponseBase & {
+  __typename?: 'BranchResponse';
+  data?: Maybe<Branch>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type BranchsResponse = ResponseBase & {
+  __typename?: 'BranchsResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Branch>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
+};
+
+export type Cash = {
+  __typename?: 'Cash';
+  id: Scalars['ObjectId'];
+};
+
 export type Configuration = {
   __typename?: 'Configuration';
   address: Scalars['String'];
@@ -37,6 +75,15 @@ export type ConfigurationResponse = ResponseBase & {
   errorInput?: Maybe<Array<ErrorInput>>;
   message?: Maybe<Scalars['String']>;
   status: StatusEnum;
+};
+
+export type CreateBranchInput = {
+  city: Scalars['String'];
+  code: Scalars['String'];
+  direction: Scalars['String'];
+  name: Scalars['String'];
+  nit?: InputMaybe<Scalars['String']>;
+  phone?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateProductInput = {
@@ -98,12 +145,15 @@ export type MeasurementUnits = {
 export type Mutation = {
   __typename?: 'Mutation';
   creatStockMovement?: Maybe<StockResponse>;
+  createBranch?: Maybe<BranchResponse>;
   createProduct?: Maybe<ProductResponse>;
   createStock?: Maybe<StockResponse>;
   createUser?: Maybe<UserResponse>;
   createWarehouse?: Maybe<WarehouseResponse>;
+  deleteBranch?: Maybe<BranchResponse>;
   deleteProduct?: Maybe<ProductResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
+  updateBranch?: Maybe<BranchResponse>;
   updateConfiguration?: Maybe<ConfigurationResponse>;
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
@@ -113,6 +163,11 @@ export type Mutation = {
 
 export type MutationCreatStockMovementArgs = {
   createStockMovementInput: CreateStockMovementInput;
+};
+
+
+export type MutationCreateBranchArgs = {
+  createBranchInput: CreateBranchInput;
 };
 
 
@@ -136,6 +191,11 @@ export type MutationCreateWarehouseArgs = {
 };
 
 
+export type MutationDeleteBranchArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
 export type MutationDeleteProductArgs = {
   id: Scalars['ObjectId'];
 };
@@ -143,6 +203,11 @@ export type MutationDeleteProductArgs = {
 
 export type MutationDeleteWarehouseArgs = {
   id: Scalars['ObjectId'];
+};
+
+
+export type MutationUpdateBranchArgs = {
+  updateBranchInput: UpdateBranchInput;
 };
 
 
@@ -208,6 +273,8 @@ export type ProductsResponse = ResponseBase & {
 export type Query = {
   __typename?: 'Query';
   currentUser?: Maybe<UserResponse>;
+  getBranchById?: Maybe<BranchResponse>;
+  getBranchesPaginated?: Maybe<BranchsResponse>;
   getConfiguration?: Maybe<ConfigurationResponse>;
   getProductById?: Maybe<ProductResponse>;
   getProductStock?: Maybe<StocksResponse>;
@@ -225,6 +292,16 @@ export type Query = {
   getWarehouseStock?: Maybe<StocksResponse>;
   getWarehouses?: Maybe<WarehousesResponse>;
   login?: Maybe<LoginResponse>;
+};
+
+
+export type QueryGetBranchByIdArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetBranchesPaginatedArgs = {
+  paginationInput: PaginationInput;
 };
 
 
@@ -410,6 +487,16 @@ export type StocksResponse = ResponseBase & {
   status: StatusEnum;
   totalPages?: Maybe<Scalars['Int']>;
   totalRecords?: Maybe<Scalars['Int']>;
+};
+
+export type UpdateBranchInput = {
+  city?: InputMaybe<Scalars['String']>;
+  code?: InputMaybe<Scalars['String']>;
+  direction?: InputMaybe<Scalars['String']>;
+  id: Scalars['ObjectId'];
+  name?: InputMaybe<Scalars['String']>;
+  nit?: InputMaybe<Scalars['String']>;
+  phone?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateConfigurationInput = {
@@ -710,6 +797,34 @@ export type GetPublicProductsQueryVariables = Exact<{
 
 
 export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'ProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> }> | null } | null };
+
+export type CreateBranchMutationVariables = Exact<{
+  createBranchInput: CreateBranchInput;
+}>;
+
+
+export type CreateBranchMutation = { __typename?: 'Mutation', createBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null };
+
+export type UpdateBranchMutationVariables = Exact<{
+  updateBranchInput: UpdateBranchInput;
+}>;
+
+
+export type UpdateBranchMutation = { __typename?: 'Mutation', updateBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null };
+
+export type GetBranchesPaginatedQueryVariables = Exact<{
+  paginationInput: PaginationInput;
+}>;
+
+
+export type GetBranchesPaginatedQuery = { __typename?: 'Query', getBranchesPaginated?: { __typename?: 'BranchsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cash?: { __typename?: 'Cash', id: any } | null }> | null } | null };
+
+export type DeleteBranchMutationVariables = Exact<{
+  deleteBranchId: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteBranchMutation = { __typename?: 'Mutation', deleteBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -2119,3 +2234,212 @@ export function useGetPublicProductsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetPublicProductsQueryHookResult = ReturnType<typeof useGetPublicProductsQuery>;
 export type GetPublicProductsLazyQueryHookResult = ReturnType<typeof useGetPublicProductsLazyQuery>;
 export type GetPublicProductsQueryResult = Apollo.QueryResult<GetPublicProductsQuery, GetPublicProductsQueryVariables>;
+export const CreateBranchDocument = gql`
+    mutation CreateBranch($createBranchInput: CreateBranchInput!) {
+  createBranch(createBranchInput: $createBranchInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
+        id
+      }
+    }
+  }
+}
+    `;
+export type CreateBranchMutationFn = Apollo.MutationFunction<CreateBranchMutation, CreateBranchMutationVariables>;
+
+/**
+ * __useCreateBranchMutation__
+ *
+ * To run a mutation, you first call `useCreateBranchMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBranchMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBranchMutation, { data, loading, error }] = useCreateBranchMutation({
+ *   variables: {
+ *      createBranchInput: // value for 'createBranchInput'
+ *   },
+ * });
+ */
+export function useCreateBranchMutation(baseOptions?: Apollo.MutationHookOptions<CreateBranchMutation, CreateBranchMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateBranchMutation, CreateBranchMutationVariables>(CreateBranchDocument, options);
+      }
+export type CreateBranchMutationHookResult = ReturnType<typeof useCreateBranchMutation>;
+export type CreateBranchMutationResult = Apollo.MutationResult<CreateBranchMutation>;
+export type CreateBranchMutationOptions = Apollo.BaseMutationOptions<CreateBranchMutation, CreateBranchMutationVariables>;
+export const UpdateBranchDocument = gql`
+    mutation UpdateBranch($updateBranchInput: UpdateBranchInput!) {
+  updateBranch(updateBranchInput: $updateBranchInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
+        id
+      }
+    }
+  }
+}
+    `;
+export type UpdateBranchMutationFn = Apollo.MutationFunction<UpdateBranchMutation, UpdateBranchMutationVariables>;
+
+/**
+ * __useUpdateBranchMutation__
+ *
+ * To run a mutation, you first call `useUpdateBranchMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateBranchMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateBranchMutation, { data, loading, error }] = useUpdateBranchMutation({
+ *   variables: {
+ *      updateBranchInput: // value for 'updateBranchInput'
+ *   },
+ * });
+ */
+export function useUpdateBranchMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBranchMutation, UpdateBranchMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateBranchMutation, UpdateBranchMutationVariables>(UpdateBranchDocument, options);
+      }
+export type UpdateBranchMutationHookResult = ReturnType<typeof useUpdateBranchMutation>;
+export type UpdateBranchMutationResult = Apollo.MutationResult<UpdateBranchMutation>;
+export type UpdateBranchMutationOptions = Apollo.BaseMutationOptions<UpdateBranchMutation, UpdateBranchMutationVariables>;
+export const GetBranchesPaginatedDocument = gql`
+    query GetBranchesPaginated($paginationInput: PaginationInput!) {
+  getBranchesPaginated(paginationInput: $paginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cash {
+        id
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetBranchesPaginatedQuery__
+ *
+ * To run a query within a React component, call `useGetBranchesPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBranchesPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBranchesPaginatedQuery({
+ *   variables: {
+ *      paginationInput: // value for 'paginationInput'
+ *   },
+ * });
+ */
+export function useGetBranchesPaginatedQuery(baseOptions: Apollo.QueryHookOptions<GetBranchesPaginatedQuery, GetBranchesPaginatedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBranchesPaginatedQuery, GetBranchesPaginatedQueryVariables>(GetBranchesPaginatedDocument, options);
+      }
+export function useGetBranchesPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBranchesPaginatedQuery, GetBranchesPaginatedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBranchesPaginatedQuery, GetBranchesPaginatedQueryVariables>(GetBranchesPaginatedDocument, options);
+        }
+export type GetBranchesPaginatedQueryHookResult = ReturnType<typeof useGetBranchesPaginatedQuery>;
+export type GetBranchesPaginatedLazyQueryHookResult = ReturnType<typeof useGetBranchesPaginatedLazyQuery>;
+export type GetBranchesPaginatedQueryResult = Apollo.QueryResult<GetBranchesPaginatedQuery, GetBranchesPaginatedQueryVariables>;
+export const DeleteBranchDocument = gql`
+    mutation DeleteBranch($deleteBranchId: ObjectId!) {
+  deleteBranch(id: $deleteBranchId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
+        id
+      }
+    }
+  }
+}
+    `;
+export type DeleteBranchMutationFn = Apollo.MutationFunction<DeleteBranchMutation, DeleteBranchMutationVariables>;
+
+/**
+ * __useDeleteBranchMutation__
+ *
+ * To run a mutation, you first call `useDeleteBranchMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteBranchMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteBranchMutation, { data, loading, error }] = useDeleteBranchMutation({
+ *   variables: {
+ *      deleteBranchId: // value for 'deleteBranchId'
+ *   },
+ * });
+ */
+export function useDeleteBranchMutation(baseOptions?: Apollo.MutationHookOptions<DeleteBranchMutation, DeleteBranchMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteBranchMutation, DeleteBranchMutationVariables>(DeleteBranchDocument, options);
+      }
+export type DeleteBranchMutationHookResult = ReturnType<typeof useDeleteBranchMutation>;
+export type DeleteBranchMutationResult = Apollo.MutationResult<DeleteBranchMutation>;
+export type DeleteBranchMutationOptions = Apollo.BaseMutationOptions<DeleteBranchMutation, DeleteBranchMutationVariables>;

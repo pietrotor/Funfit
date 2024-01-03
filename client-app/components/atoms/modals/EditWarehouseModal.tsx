@@ -84,11 +84,11 @@ export const EditWarehouseModal = (
         }
       }}
       />
-        <div className="w-full grid h-16 grid-cols-2 gap-3 ">
-          <Button type="submit" color="secondary" className='h-full font-bold'>
+        <div className="w-full grid h-12 grid-cols-2 gap-3 ">
+          <Button type="submit" color="secondary" className='h-full text-lg font-bold'>
             Guardar
           </Button>
-          <Button onClick={ onClose } color="warning" className='h-full font-bold' variant="flat">Cancelar</Button>
+          <Button onClick={ onClose } color="warning" className='h-full text-lg font-bold' variant="flat">Cancelar</Button>
         </div>
       </form>
     </MyModal>

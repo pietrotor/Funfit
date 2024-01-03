@@ -153,12 +153,12 @@ export const AddProductModal = ({
             }}
           />
           <DropZone />
-          <div className="grid h-16 grid-cols-2 gap-3 ">
-            <Button type="submit" color="secondary" className="h-full font-bold">
+          <div className="grid h-12 grid-cols-2 gap-3 ">
+            <Button type="submit" color="secondary" className="h-full text-lg font-bold">
               Agregar
             </Button>
             <Button variant="flat"
-                color="danger"className="h-full font-bold" onClick={handleCancel}>
+                color="danger"className="h-full font-bold text-lg" onClick={handleCancel}>
               Cancelar
             </Button>
           </div>

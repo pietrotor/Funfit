@@ -5,7 +5,7 @@ import { MyModal } from './MyModal'
 import Input from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
 
-import { StatusEnum, useCreateProductMutation } from '@/graphql/graphql-types'
+import { StatusEnum, useCreateBranchMutation } from '@/graphql/graphql-types'
 
 interface AddBranchModalProps {
   isOpen: boolean
@@ -19,28 +19,28 @@ export const AddBranchModal = ({
   onAdd
 }: AddBranchModalProps) => {
   const { handleSubmit, watch, control, reset } = useForm()
-  const [createBranch] = useCreateProductMutation()
+  const [createBranch] = useCreateBranchMutation()
   const onSubmit = () => {
     createBranch({
       variables: {
-        createProductInput: {
-          cost: parseFloat(watch('cost')),
-          code: watch('code'),
-          description: watch('description'),
-          image: watch('image'),
+        createBranchInput: {
           name: watch('name'),
-          suggetedPrice: parseFloat(watch('suggetedPrice'))
+          city: watch('city'),
+          code: watch('code'),
+          direction: watch('address'),
+          phone: watch('phone'),
+          nit: watch('nit')
         }
       },
       onCompleted: data => {
-        if (data.createProduct?.status === StatusEnum.ERROR) {
+        if (data.createBranch?.status === StatusEnum.ERROR) {
           showSuccessToast(
-            data.createProduct.message || 'Ocurrió un error',
+            data.createBranch.message || 'Ocurrió un error',
             'error'
           )
         } else {
           showSuccessToast(
-            data.createProduct?.message || 'Brancho guardado correctamente',
+            data.createBranch?.message || 'Brancho guardado correctamente',
             'success'
           )
           onClose()
@@ -155,18 +155,18 @@ export const AddBranchModal = ({
               }}
             />
           </div>
-          <div className="grid h-16 grid-cols-2 gap-3 ">
+          <div className="grid h-12 grid-cols-2 gap-3 ">
             <Button
               type="submit"
               color="secondary"
-              className="h-full text-xl font-bold"
+              className="h-full text-lg font-bold"
             >
               Agregar
             </Button>
             <Button
               variant="flat"
               color="danger"
-              className="h-full text-xl font-bold"
+              className="h-full text-lg font-bold"
               onClick={handleCancel}
             >
               Cancelar

@@ -6,24 +6,23 @@ import { useRouter } from 'next/router'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
-import {
-  TValuesWarehouses
-} from '@/components/atoms/modals/EditWarehouseModal'
+
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
 import {
   StatusEnum,
-  useDeleteWarehouseMutation
+  useDeleteBranchMutation
   // useUpdateWarehouseMutation
 } from '@/graphql/graphql-types'
 import ButtonComponent from '@/components/atoms/Button'
 import useCustomGetWarehousesQuery from '@/services/UseBranches'
 import { AddBranchModal } from '@/components/atoms/modals/AddBranchModal'
 import { EditBranchModal } from '@/components/atoms/modals/EditBranchModal'
+import { TStockDataBranch } from '@/interfaces/TData'
 
 function Warehouses() {
-  const [edit, setEdit] = useState<TValuesWarehouses>({})
+  const [edit, setEdit] = useState<TStockDataBranch>({} as TStockDataBranch)
 
   const handleConfirmModal = useDisclosure()
   const handleEditModal = useDisclosure()
@@ -31,15 +30,15 @@ function Warehouses() {
   const router = useRouter()
 
   // const [UpdateWarehousesMutationVariables] = useUpdateWarehouseMutation()
-  const [DeleteteWarehouseMutation] = useDeleteWarehouseMutation()
+  const [DeleteteBranchMutation] = useDeleteBranchMutation()
 
   const { loading, data, refetch, variables, setVariables, setFilter } = useCustomGetWarehousesQuery()
 
-  const handleUpdateWarehouse = (idWarehouse: number) => {
-    const warehouse = data?.getWarehouses?.data?.find(
-      warehouse => warehouse.id === idWarehouse
+  const handleUpdateWarehouse = (branchId: number) => {
+    const warehouse = data?.getBranchesPaginated?.data?.find(
+      warehouse => warehouse.id === branchId
     )
-    setEdit(warehouse as TValuesWarehouses)
+    setEdit(warehouse as TStockDataBranch)
 
     handleEditModal.onOpen()
   }
@@ -48,30 +47,31 @@ function Warehouses() {
     setVariables({ ...variables, rows: row, currentPage: 1 })
   }
 
-  const handleDeleteWarehouse = (WarehouseId: number) => {
-    const warehouse = data?.getWarehouses?.data?.find(
-      warehouse => warehouse.id === WarehouseId
+  const handleDeleteWarehouse = (BranchId: number) => {
+    const branch = data?.getBranchesPaginated?.data?.find(
+      branch => branch.id === BranchId
     )
-    setEdit(warehouse as TValuesWarehouses)
+    console.log(branch)
+    setEdit(branch as TStockDataBranch)
 
     handleConfirmModal.onOpen()
   }
 
   const handleConfirmDelete = () => {
-    DeleteteWarehouseMutation({
+    DeleteteBranchMutation({
       variables: {
-        deleteWarehouseId: edit.id
+        deleteBranchId: edit?.id
       },
       onCompleted: data => {
-        if (data.deleteWarehouse?.status === StatusEnum.ERROR) {
+        if (data.deleteBranch?.status === StatusEnum.ERROR) {
           showSuccessToast(
-            data?.deleteWarehouse?.message || 'error al eliminar',
+            data?.deleteBranch.message || 'error al eliminar',
             'error'
           )
           handleConfirmModal.onClose()
         } else {
           showSuccessToast(
-            data.deleteWarehouse?.message ||
+            data.deleteBranch?.message ||
               'El Warehouse ha sido eliminado correctamente',
             'success'
           )
@@ -117,10 +117,13 @@ function Warehouses() {
             { name: '#' },
             { name: 'Nombre' },
             { name: 'Ciudad' },
-            { name: 'Calle' },
+            { name: 'Direccion' },
+            { name: 'Telefono' },
+            { name: 'Codigo' },
+            { name: 'Nit' },
             { name: 'Acciones' }
           ]}
-          items={(data?.getWarehouses?.data || []).map((warehouse, idx) => ({
+          items={(data?.getBranchesPaginated?.data || []).map((branch, idx) => ({
             content: [
               <h3 key={idx} className="text-sm">
                 {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
@@ -128,19 +131,28 @@ function Warehouses() {
                   1}
               </h3>,
               <div key={idx} className="text-sm">
-                {warehouse.name}
+                {branch.name}
               </div>,
               <div key={idx} className="text-left text-sm">
-                {warehouse.description}
+                {branch.city}
               </div>,
               <div key={idx} className="text-left text-sm">
-                {warehouse.address}
+                {branch.direction}
+              </div>,
+              <div key={idx} className="text-left text-sm">
+              {branch.phone}
+              </div>,
+              <div key={idx} className="text-left text-sm">
+              {branch.code}
+              </div>,
+              <div key={idx} className="text-left text-sm">
+              {branch.nit}
               </div>,
               <div key={idx} className="flex justify-center space-x-1">
                 <ButtonComponent
                   onClick={() =>
                     router.push(
-                      `/administration-panel/branches/${warehouse.id}`
+                      `/administration-panel/branches/${branch.id}`
                     )
                   }
                   type="eye"
@@ -148,10 +160,10 @@ function Warehouses() {
                   tooltipText="Administrar Stock"
                   className="px-3"
                 >
-                  <IconSelector name="eye" color="text-secondary" width="w-5" />
+                  <IconSelector name="Branch" color="text-secondary" width="w-5" />
                 </ButtonComponent>
                 <ButtonComponent
-                  onClick={() => handleUpdateWarehouse(warehouse.id)}
+                  onClick={() => handleUpdateWarehouse(branch.id)}
                   type="edit"
                   showTooltip
                   tooltipText="Editar"
@@ -159,7 +171,7 @@ function Warehouses() {
                   <IconSelector name="edit" color="text-primary" width="w-8" />
                 </ButtonComponent>
                 <ButtonComponent
-                  onClick={() => handleDeleteWarehouse(warehouse.id)}
+                  onClick={() => handleDeleteWarehouse(branch.id)}
                   type="delete"
                   showTooltip
                   tooltipText="Eliminar"
@@ -180,7 +192,7 @@ function Warehouses() {
         <EditBranchModal
           isOpen={handleEditModal.isOpen}
           onClose={handleEditModal.onClose}
-          // values={edit}
+          values={edit as TStockDataBranch}
           onAdd={refetch}
         />
 

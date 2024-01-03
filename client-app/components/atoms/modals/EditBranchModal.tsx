@@ -5,14 +5,14 @@ import { MyModal } from './MyModal'
 import Input from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
 
-import { StatusEnum, useUpdateProductMutation } from '@/graphql/graphql-types'
+import { StatusEnum, useUpdateBranchMutation } from '@/graphql/graphql-types'
 import { TStockDataBranch } from '@/interfaces/TData'
 
 interface EditBranchModalProps {
   isOpen: boolean
   onClose: () => void
   onAdd: () => void
-  values? : TStockDataBranch
+  values : TStockDataBranch
 }
 
 export const EditBranchModal = ({
@@ -22,46 +22,37 @@ export const EditBranchModal = ({
   values
 }: EditBranchModalProps) => {
   const { handleSubmit, watch, control, reset } = useForm()
-  const [UpdateUserMutationVariables] = useUpdateProductMutation()
+  const [updateBranchInput] = useUpdateBranchMutation()
 
   const onSubmit = () => {
-    UpdateUserMutationVariables({
+    updateBranchInput({
       variables: {
-        updateProductInput: {
-          id: values?.id || '2321',
+        updateBranchInput: {
+          id: values.id,
           name: watch('name'),
-          // city: watch('city'),
-          code: watch('code')
-          // address: watch('address'),
-          // phone: watch('phone'),
-          // nit: watch('nit')
+          city: watch('city'),
+          code: watch('code'),
+          direction: watch('address'),
+          phone: watch('phone'),
+          nit: watch('nit')
         }
       },
       onCompleted: data => {
-        if (data.updateProduct?.status === StatusEnum.ERROR) {
+        if (data.updateBranch?.status === StatusEnum.ERROR) {
           showSuccessToast(
-            data.updateProduct.message || 'Ocurrio un error',
+            data.updateBranch.message || 'Ocurrio un error',
             'error'
           )
           return
         }
         showSuccessToast(
-          data.updateProduct?.message || 'Usuario actualizado correctamente',
+          data.updateBranch?.message || 'Usuario actualizado correctamente',
           'success'
         )
         onClose()
         onAdd()
       }
     })
-    // handleSendUpdateBranch({
-    //   id: values.id,
-    //   name: watch('name'),
-    //   city: watch('city'),
-    //   code: watch('code'),
-    //   address: watch('address'),
-    //   phone: watch('phone'),
-    //   nit: watch('nit')
-    // })
   }
 
   const handleCancel = () => {
@@ -88,6 +79,7 @@ export const EditBranchModal = ({
             label="Nombre"
             placeholder="Nombre"
             type="text"
+            defaultValue={values.name}
             rules={{
               required: {
                 value: true,
@@ -105,6 +97,7 @@ export const EditBranchModal = ({
               label='Código'
               placeholder='Código'
               type='text'
+              defaultValue={values.code}
               rules={{
                 required: {
                   value: true,
@@ -118,6 +111,7 @@ export const EditBranchModal = ({
               label="Ciudad"
               placeholder="Ciudad"
               type="text"
+              defaultValue={values.city}
               rules={{
                 required: {
                   value: true,
@@ -131,6 +125,7 @@ export const EditBranchModal = ({
               label="Teléfono"
               placeholder="Teléfono"
               type="text"
+              defaultValue={values.phone?.toString()}
               rules={{
                 required: {
                   value: true,
@@ -148,6 +143,7 @@ export const EditBranchModal = ({
               label="Código"
               placeholder="Código"
               type="text"
+              defaultValue={values.code}
               rules={{
                 required: {
                   value: true,
@@ -160,6 +156,7 @@ export const EditBranchModal = ({
               control={control}
               label="NIT"
               placeholder="NIT"
+              defaultValue={values.nit?.toString()}
               type="text"
               rules={{
                 required: {
@@ -169,18 +166,18 @@ export const EditBranchModal = ({
               }}
             />
           </div>
-          <div className="grid h-16 grid-cols-2 gap-3 ">
+          <div className="grid h-12 grid-cols-2 gap-3 ">
             <Button
               type="submit"
               color="secondary"
-              className="h-full text-xl font-bold"
+              className="h-full text-lg font-bold"
             >
               Agregar
             </Button>
             <Button
               variant="flat"
               color="danger"
-              className="h-full text-xl font-bold"
+              className="h-full text-lg font-bold"
               onClick={handleCancel}
             >
               Cancelar

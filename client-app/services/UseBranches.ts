@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
-import { StatusEnum, useGetWarehousesQuery } from '@/graphql/graphql-types'
+import { StatusEnum, useGetBranchesPaginatedQuery } from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 
@@ -9,7 +9,7 @@ const useCustomGetWarehousesQuery = () => {
   const [filter, setFilter] = useState <string>()
   const filtroDebounced = UseDebouncedValue(filter, 2000)
 
-  const { data, loading, refetch } = useGetWarehousesQuery({
+  const { data, loading, refetch } = useGetBranchesPaginatedQuery({
     fetchPolicy: 'network-only',
     variables: {
       paginationInput: {
@@ -20,15 +20,15 @@ const useCustomGetWarehousesQuery = () => {
     },
     onCompleted: (result) => {
       setVariables({
-        totalPages: result.getWarehouses?.totalPages || 1,
-        rows: result.getWarehouses?.rows || 5,
+        totalPages: result.getBranchesPaginated?.totalPages || 1,
+        rows: result.getBranchesPaginated?.rows || 5,
         filter: filtroDebounced,
-        currentPage: result.getWarehouses?.currentPage || 1,
-        totalRecords: result.getWarehouses?.totalRecords || 1
+        currentPage: result.getBranchesPaginated?.currentPage || 1,
+        totalRecords: result.getBranchesPaginated?.totalRecords || 1
       })
-      if (result.getWarehouses?.status === StatusEnum.ERROR) {
+      if (result.getBranchesPaginated?.status === StatusEnum.ERROR) {
         showSuccessToast(
-          result.getWarehouses?.message || 'Error al cargar los productos',
+          result.getBranchesPaginated?.message || 'Error al cargar los productos',
           'error'
         )
       }

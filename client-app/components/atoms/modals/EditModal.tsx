@@ -102,11 +102,11 @@ export const EditModal = ({
             }
           }}
         />
-        <div className="grid h-16 grid-cols-2 gap-3 w-full ">
-          <Button type="submit" color="secondary" className="h-full text-xl font-bold text">
+        <div className="grid h-12 grid-cols-2 gap-3 w-full ">
+          <Button type="submit" color="secondary" className="h-full text-lg font-bold text">
             Guardar
           </Button>
-          <Button onClick={ onClose } color="warning" className="h-full text-xl text-white font-bold">Cancelar</Button>
+          <Button onClick={ onClose } color="warning" className="h-full text-lg text-white font-bold">Cancelar</Button>
         </div>
       </form>
     </MyModal>
