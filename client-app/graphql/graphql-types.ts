@@ -18,6 +18,44 @@ export type Scalars = {
   Time: any;
 };
 
+export type Branch = {
+  __typename?: 'Branch';
+  cash?: Maybe<Cash>;
+  cashId: Scalars['ObjectId'];
+  city: Scalars['String'];
+  code: Scalars['String'];
+  direction: Scalars['String'];
+  id: Scalars['ObjectId'];
+  name: Scalars['String'];
+  nit?: Maybe<Scalars['String']>;
+  phone?: Maybe<Scalars['String']>;
+};
+
+export type BranchResponse = ResponseBase & {
+  __typename?: 'BranchResponse';
+  data?: Maybe<Branch>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type BranchsResponse = ResponseBase & {
+  __typename?: 'BranchsResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Branch>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
+};
+
+export type Cash = {
+  __typename?: 'Cash';
+  id: Scalars['ObjectId'];
+};
+
 export type Configuration = {
   __typename?: 'Configuration';
   address: Scalars['String'];
@@ -37,6 +75,15 @@ export type ConfigurationResponse = ResponseBase & {
   errorInput?: Maybe<Array<ErrorInput>>;
   message?: Maybe<Scalars['String']>;
   status: StatusEnum;
+};
+
+export type CreateBranchInput = {
+  city: Scalars['String'];
+  code: Scalars['String'];
+  direction: Scalars['String'];
+  name: Scalars['String'];
+  nit?: InputMaybe<Scalars['String']>;
+  phone?: InputMaybe<Scalars['String']>;
 };
 
 export type CreateProductInput = {
@@ -98,12 +145,15 @@ export type MeasurementUnits = {
 export type Mutation = {
   __typename?: 'Mutation';
   creatStockMovement?: Maybe<StockResponse>;
+  createBranch?: Maybe<BranchResponse>;
   createProduct?: Maybe<ProductResponse>;
   createStock?: Maybe<StockResponse>;
   createUser?: Maybe<UserResponse>;
   createWarehouse?: Maybe<WarehouseResponse>;
+  deleteBranch?: Maybe<BranchResponse>;
   deleteProduct?: Maybe<ProductResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
+  updateBranch?: Maybe<BranchResponse>;
   updateConfiguration?: Maybe<ConfigurationResponse>;
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
@@ -113,6 +163,11 @@ export type Mutation = {
 
 export type MutationCreatStockMovementArgs = {
   createStockMovementInput: CreateStockMovementInput;
+};
+
+
+export type MutationCreateBranchArgs = {
+  createBranchInput: CreateBranchInput;
 };
 
 
@@ -136,6 +191,11 @@ export type MutationCreateWarehouseArgs = {
 };
 
 
+export type MutationDeleteBranchArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
 export type MutationDeleteProductArgs = {
   id: Scalars['ObjectId'];
 };
@@ -143,6 +203,11 @@ export type MutationDeleteProductArgs = {
 
 export type MutationDeleteWarehouseArgs = {
   id: Scalars['ObjectId'];
+};
+
+
+export type MutationUpdateBranchArgs = {
+  updateBranchInput: UpdateBranchInput;
 };
 
 
@@ -208,6 +273,8 @@ export type ProductsResponse = ResponseBase & {
 export type Query = {
   __typename?: 'Query';
   currentUser?: Maybe<UserResponse>;
+  getBranchById?: Maybe<BranchResponse>;
+  getBranchesPaginated?: Maybe<BranchsResponse>;
   getConfiguration?: Maybe<ConfigurationResponse>;
   getProductById?: Maybe<ProductResponse>;
   getProductStock?: Maybe<StocksResponse>;
@@ -225,6 +292,16 @@ export type Query = {
   getWarehouseStock?: Maybe<StocksResponse>;
   getWarehouses?: Maybe<WarehousesResponse>;
   login?: Maybe<LoginResponse>;
+};
+
+
+export type QueryGetBranchByIdArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetBranchesPaginatedArgs = {
+  paginationInput: PaginationInput;
 };
 
 
@@ -410,6 +487,16 @@ export type StocksResponse = ResponseBase & {
   status: StatusEnum;
   totalPages?: Maybe<Scalars['Int']>;
   totalRecords?: Maybe<Scalars['Int']>;
+};
+
+export type UpdateBranchInput = {
+  city?: InputMaybe<Scalars['String']>;
+  code?: InputMaybe<Scalars['String']>;
+  direction?: InputMaybe<Scalars['String']>;
+  id: Scalars['ObjectId'];
+  name?: InputMaybe<Scalars['String']>;
+  nit?: InputMaybe<Scalars['String']>;
+  phone?: InputMaybe<Scalars['String']>;
 };
 
 export type UpdateConfigurationInput = {
@@ -652,28 +739,6 @@ export type GetStocksPaginatedQueryVariables = Exact<{
 
 export type GetStocksPaginatedQuery = { __typename?: 'Query', getStocksPaginated?: { __typename?: 'StocksResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null }> | null } | null };
 
-export type GetStockByIdQueryVariables = Exact<{
-  getStockByIdId: Scalars['ObjectId'];
-}>;
-
-
-export type GetStockByIdQuery = { __typename?: 'Query', getStockById?: { __typename?: 'StockResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null } | null };
-
-export type GetProductsOutOfWarehouseQueryVariables = Exact<{
-  paginationInput: PaginationInput;
-  warehouseId: Scalars['ObjectId'];
-}>;
-
-
-export type GetProductsOutOfWarehouseQuery = { __typename?: 'Query', getProductsOutOfWarehouse?: { __typename?: 'ProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> }> | null } | null };
-
-export type GetWarehouseStockQueryVariables = Exact<{
-  warehouseStockPaginationInput: WarehouseStockPaginationInput;
-}>;
-
-
-export type GetWarehouseStockQuery = { __typename?: 'Query', getWarehouseStock?: { __typename?: 'StocksResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null }> | null } | null };
-
 export type GetWarehouseByIdQueryVariables = Exact<{
   getWarehouseByIdId: Scalars['ObjectId'];
 }>;
@@ -696,6 +761,70 @@ export type GetStockHistoryQueryVariables = Exact<{
 
 
 export type GetStockHistoryQuery = { __typename?: 'Query', getStockHistory?: { __typename?: 'StocksHistoryResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'StockHistory', id: any, stockId: any, warehouseId: any, quantity: number, type: StockMovementTypeEnum, date: any, stockBefore: number, stockLater: number, createdBy?: any | null, stock?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }> | null } | null };
+
+export type GetStockByIdQueryVariables = Exact<{
+  getStockByIdId: Scalars['ObjectId'];
+}>;
+
+
+export type GetStockByIdQuery = { __typename?: 'Query', getStockById?: { __typename?: 'StockResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null } | null };
+
+export type GetProductsOutOfWarehouseQueryVariables = Exact<{
+  paginationInput: PaginationInput;
+  warehouseId: Scalars['ObjectId'];
+}>;
+
+
+export type GetProductsOutOfWarehouseQuery = { __typename?: 'Query', getProductsOutOfWarehouse?: { __typename?: 'ProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> }> | null } | null };
+
+export type GetWarehouseStockQueryVariables = Exact<{
+  warehouseStockPaginationInput: WarehouseStockPaginationInput;
+}>;
+
+
+export type GetWarehouseStockQuery = { __typename?: 'Query', getWarehouseStock?: { __typename?: 'StocksResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null }> | null } | null };
+
+export type GetProductByIdQueryVariables = Exact<{
+  getProductByIdId: Scalars['ObjectId'];
+}>;
+
+
+export type GetProductByIdQuery = { __typename?: 'Query', getProductById?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null } | null };
+
+export type GetPublicProductsQueryVariables = Exact<{
+  paginationInput: PaginationInput;
+}>;
+
+
+export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'ProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> }> | null } | null };
+
+export type CreateBranchMutationVariables = Exact<{
+  createBranchInput: CreateBranchInput;
+}>;
+
+
+export type CreateBranchMutation = { __typename?: 'Mutation', createBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null };
+
+export type UpdateBranchMutationVariables = Exact<{
+  updateBranchInput: UpdateBranchInput;
+}>;
+
+
+export type UpdateBranchMutation = { __typename?: 'Mutation', updateBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null };
+
+export type GetBranchesPaginatedQueryVariables = Exact<{
+  paginationInput: PaginationInput;
+}>;
+
+
+export type GetBranchesPaginatedQuery = { __typename?: 'Query', getBranchesPaginated?: { __typename?: 'BranchsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cash?: { __typename?: 'Cash', id: any } | null }> | null } | null };
+
+export type DeleteBranchMutationVariables = Exact<{
+  deleteBranchId: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteBranchMutation = { __typename?: 'Mutation', deleteBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -1553,6 +1682,263 @@ export function useGetStocksPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetStocksPaginatedQueryHookResult = ReturnType<typeof useGetStocksPaginatedQuery>;
 export type GetStocksPaginatedLazyQueryHookResult = ReturnType<typeof useGetStocksPaginatedLazyQuery>;
 export type GetStocksPaginatedQueryResult = Apollo.QueryResult<GetStocksPaginatedQuery, GetStocksPaginatedQueryVariables>;
+export const GetWarehouseByIdDocument = gql`
+    query GetWarehouseById($getWarehouseByIdId: ObjectId!) {
+  getWarehouseById(id: $getWarehouseByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      description
+      address
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetWarehouseByIdQuery__
+ *
+ * To run a query within a React component, call `useGetWarehouseByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWarehouseByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWarehouseByIdQuery({
+ *   variables: {
+ *      getWarehouseByIdId: // value for 'getWarehouseByIdId'
+ *   },
+ * });
+ */
+export function useGetWarehouseByIdQuery(baseOptions: Apollo.QueryHookOptions<GetWarehouseByIdQuery, GetWarehouseByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWarehouseByIdQuery, GetWarehouseByIdQueryVariables>(GetWarehouseByIdDocument, options);
+      }
+export function useGetWarehouseByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWarehouseByIdQuery, GetWarehouseByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWarehouseByIdQuery, GetWarehouseByIdQueryVariables>(GetWarehouseByIdDocument, options);
+        }
+export type GetWarehouseByIdQueryHookResult = ReturnType<typeof useGetWarehouseByIdQuery>;
+export type GetWarehouseByIdLazyQueryHookResult = ReturnType<typeof useGetWarehouseByIdLazyQuery>;
+export type GetWarehouseByIdQueryResult = Apollo.QueryResult<GetWarehouseByIdQuery, GetWarehouseByIdQueryVariables>;
+export const GetWarehouseHistoryDocument = gql`
+    query GetWarehouseHistory($paginationInput: PaginationInput!, $warehouseId: ObjectId!) {
+  getWarehouseHistory(
+    paginationInput: $paginationInput
+    warehouseId: $warehouseId
+  ) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      stockId
+      warehouseId
+      quantity
+      type
+      date
+      stockBefore
+      stockLater
+      createdBy
+      stock {
+        id
+        productId
+        warehouseId
+        quantity
+        securityStock
+        lastStockEntry
+        units
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          description
+          cost
+          image
+          warehouses
+        }
+        warehouse {
+          id
+          name
+          description
+          address
+        }
+      }
+      warehouse {
+        id
+        name
+        description
+        address
+      }
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetWarehouseHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetWarehouseHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWarehouseHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWarehouseHistoryQuery({
+ *   variables: {
+ *      paginationInput: // value for 'paginationInput'
+ *      warehouseId: // value for 'warehouseId'
+ *   },
+ * });
+ */
+export function useGetWarehouseHistoryQuery(baseOptions: Apollo.QueryHookOptions<GetWarehouseHistoryQuery, GetWarehouseHistoryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWarehouseHistoryQuery, GetWarehouseHistoryQueryVariables>(GetWarehouseHistoryDocument, options);
+      }
+export function useGetWarehouseHistoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWarehouseHistoryQuery, GetWarehouseHistoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWarehouseHistoryQuery, GetWarehouseHistoryQueryVariables>(GetWarehouseHistoryDocument, options);
+        }
+export type GetWarehouseHistoryQueryHookResult = ReturnType<typeof useGetWarehouseHistoryQuery>;
+export type GetWarehouseHistoryLazyQueryHookResult = ReturnType<typeof useGetWarehouseHistoryLazyQuery>;
+export type GetWarehouseHistoryQueryResult = Apollo.QueryResult<GetWarehouseHistoryQuery, GetWarehouseHistoryQueryVariables>;
+export const GetStockHistoryDocument = gql`
+    query GetStockHistory($paginationInput: PaginationInput!, $stockId: ObjectId!) {
+  getStockHistory(paginationInput: $paginationInput, stockId: $stockId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      stockId
+      warehouseId
+      quantity
+      type
+      date
+      stockBefore
+      stockLater
+      createdBy
+      stock {
+        id
+        productId
+        warehouseId
+        quantity
+        securityStock
+        lastStockEntry
+        units
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          description
+          cost
+          image
+          warehouses
+        }
+        warehouse {
+          id
+          name
+          description
+          address
+        }
+      }
+      warehouse {
+        id
+        name
+        description
+        address
+      }
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetStockHistoryQuery__
+ *
+ * To run a query within a React component, call `useGetStockHistoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetStockHistoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetStockHistoryQuery({
+ *   variables: {
+ *      paginationInput: // value for 'paginationInput'
+ *      stockId: // value for 'stockId'
+ *   },
+ * });
+ */
+export function useGetStockHistoryQuery(baseOptions: Apollo.QueryHookOptions<GetStockHistoryQuery, GetStockHistoryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetStockHistoryQuery, GetStockHistoryQueryVariables>(GetStockHistoryDocument, options);
+      }
+export function useGetStockHistoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetStockHistoryQuery, GetStockHistoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetStockHistoryQuery, GetStockHistoryQueryVariables>(GetStockHistoryDocument, options);
+        }
+export type GetStockHistoryQueryHookResult = ReturnType<typeof useGetStockHistoryQuery>;
+export type GetStockHistoryLazyQueryHookResult = ReturnType<typeof useGetStockHistoryLazyQuery>;
+export type GetStockHistoryQueryResult = Apollo.QueryResult<GetStockHistoryQuery, GetStockHistoryQueryVariables>;
 export const GetStockByIdDocument = gql`
     query GetStockById($getStockByIdId: ObjectId!) {
   getStockById(id: $getStockByIdId) {
@@ -1744,3 +2130,316 @@ export function useGetWarehouseStockLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetWarehouseStockQueryHookResult = ReturnType<typeof useGetWarehouseStockQuery>;
 export type GetWarehouseStockLazyQueryHookResult = ReturnType<typeof useGetWarehouseStockLazyQuery>;
 export type GetWarehouseStockQueryResult = Apollo.QueryResult<GetWarehouseStockQuery, GetWarehouseStockQueryVariables>;
+export const GetProductByIdDocument = gql`
+    query GetProductById($getProductByIdId: ObjectId!) {
+  getProductById(id: $getProductByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      suggetedPrice
+      code
+      description
+      cost
+      image
+      warehouses
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetProductByIdQuery__
+ *
+ * To run a query within a React component, call `useGetProductByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProductByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProductByIdQuery({
+ *   variables: {
+ *      getProductByIdId: // value for 'getProductByIdId'
+ *   },
+ * });
+ */
+export function useGetProductByIdQuery(baseOptions: Apollo.QueryHookOptions<GetProductByIdQuery, GetProductByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProductByIdQuery, GetProductByIdQueryVariables>(GetProductByIdDocument, options);
+      }
+export function useGetProductByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductByIdQuery, GetProductByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProductByIdQuery, GetProductByIdQueryVariables>(GetProductByIdDocument, options);
+        }
+export type GetProductByIdQueryHookResult = ReturnType<typeof useGetProductByIdQuery>;
+export type GetProductByIdLazyQueryHookResult = ReturnType<typeof useGetProductByIdLazyQuery>;
+export type GetProductByIdQueryResult = Apollo.QueryResult<GetProductByIdQuery, GetProductByIdQueryVariables>;
+export const GetPublicProductsDocument = gql`
+    query GetPublicProducts($paginationInput: PaginationInput!) {
+  getPublicProducts(paginationInput: $paginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      suggetedPrice
+      code
+      description
+      cost
+      image
+      warehouses
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetPublicProductsQuery__
+ *
+ * To run a query within a React component, call `useGetPublicProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublicProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublicProductsQuery({
+ *   variables: {
+ *      paginationInput: // value for 'paginationInput'
+ *   },
+ * });
+ */
+export function useGetPublicProductsQuery(baseOptions: Apollo.QueryHookOptions<GetPublicProductsQuery, GetPublicProductsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPublicProductsQuery, GetPublicProductsQueryVariables>(GetPublicProductsDocument, options);
+      }
+export function useGetPublicProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPublicProductsQuery, GetPublicProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPublicProductsQuery, GetPublicProductsQueryVariables>(GetPublicProductsDocument, options);
+        }
+export type GetPublicProductsQueryHookResult = ReturnType<typeof useGetPublicProductsQuery>;
+export type GetPublicProductsLazyQueryHookResult = ReturnType<typeof useGetPublicProductsLazyQuery>;
+export type GetPublicProductsQueryResult = Apollo.QueryResult<GetPublicProductsQuery, GetPublicProductsQueryVariables>;
+export const CreateBranchDocument = gql`
+    mutation CreateBranch($createBranchInput: CreateBranchInput!) {
+  createBranch(createBranchInput: $createBranchInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
+        id
+      }
+    }
+  }
+}
+    `;
+export type CreateBranchMutationFn = Apollo.MutationFunction<CreateBranchMutation, CreateBranchMutationVariables>;
+
+/**
+ * __useCreateBranchMutation__
+ *
+ * To run a mutation, you first call `useCreateBranchMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBranchMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBranchMutation, { data, loading, error }] = useCreateBranchMutation({
+ *   variables: {
+ *      createBranchInput: // value for 'createBranchInput'
+ *   },
+ * });
+ */
+export function useCreateBranchMutation(baseOptions?: Apollo.MutationHookOptions<CreateBranchMutation, CreateBranchMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateBranchMutation, CreateBranchMutationVariables>(CreateBranchDocument, options);
+      }
+export type CreateBranchMutationHookResult = ReturnType<typeof useCreateBranchMutation>;
+export type CreateBranchMutationResult = Apollo.MutationResult<CreateBranchMutation>;
+export type CreateBranchMutationOptions = Apollo.BaseMutationOptions<CreateBranchMutation, CreateBranchMutationVariables>;
+export const UpdateBranchDocument = gql`
+    mutation UpdateBranch($updateBranchInput: UpdateBranchInput!) {
+  updateBranch(updateBranchInput: $updateBranchInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
+        id
+      }
+    }
+  }
+}
+    `;
+export type UpdateBranchMutationFn = Apollo.MutationFunction<UpdateBranchMutation, UpdateBranchMutationVariables>;
+
+/**
+ * __useUpdateBranchMutation__
+ *
+ * To run a mutation, you first call `useUpdateBranchMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateBranchMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateBranchMutation, { data, loading, error }] = useUpdateBranchMutation({
+ *   variables: {
+ *      updateBranchInput: // value for 'updateBranchInput'
+ *   },
+ * });
+ */
+export function useUpdateBranchMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBranchMutation, UpdateBranchMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateBranchMutation, UpdateBranchMutationVariables>(UpdateBranchDocument, options);
+      }
+export type UpdateBranchMutationHookResult = ReturnType<typeof useUpdateBranchMutation>;
+export type UpdateBranchMutationResult = Apollo.MutationResult<UpdateBranchMutation>;
+export type UpdateBranchMutationOptions = Apollo.BaseMutationOptions<UpdateBranchMutation, UpdateBranchMutationVariables>;
+export const GetBranchesPaginatedDocument = gql`
+    query GetBranchesPaginated($paginationInput: PaginationInput!) {
+  getBranchesPaginated(paginationInput: $paginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cash {
+        id
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetBranchesPaginatedQuery__
+ *
+ * To run a query within a React component, call `useGetBranchesPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBranchesPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBranchesPaginatedQuery({
+ *   variables: {
+ *      paginationInput: // value for 'paginationInput'
+ *   },
+ * });
+ */
+export function useGetBranchesPaginatedQuery(baseOptions: Apollo.QueryHookOptions<GetBranchesPaginatedQuery, GetBranchesPaginatedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBranchesPaginatedQuery, GetBranchesPaginatedQueryVariables>(GetBranchesPaginatedDocument, options);
+      }
+export function useGetBranchesPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBranchesPaginatedQuery, GetBranchesPaginatedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBranchesPaginatedQuery, GetBranchesPaginatedQueryVariables>(GetBranchesPaginatedDocument, options);
+        }
+export type GetBranchesPaginatedQueryHookResult = ReturnType<typeof useGetBranchesPaginatedQuery>;
+export type GetBranchesPaginatedLazyQueryHookResult = ReturnType<typeof useGetBranchesPaginatedLazyQuery>;
+export type GetBranchesPaginatedQueryResult = Apollo.QueryResult<GetBranchesPaginatedQuery, GetBranchesPaginatedQueryVariables>;
+export const DeleteBranchDocument = gql`
+    mutation DeleteBranch($deleteBranchId: ObjectId!) {
+  deleteBranch(id: $deleteBranchId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
+        id
+      }
+    }
+  }
+}
+    `;
+export type DeleteBranchMutationFn = Apollo.MutationFunction<DeleteBranchMutation, DeleteBranchMutationVariables>;
+
+/**
+ * __useDeleteBranchMutation__
+ *
+ * To run a mutation, you first call `useDeleteBranchMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteBranchMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteBranchMutation, { data, loading, error }] = useDeleteBranchMutation({
+ *   variables: {
+ *      deleteBranchId: // value for 'deleteBranchId'
+ *   },
+ * });
+ */
+export function useDeleteBranchMutation(baseOptions?: Apollo.MutationHookOptions<DeleteBranchMutation, DeleteBranchMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteBranchMutation, DeleteBranchMutationVariables>(DeleteBranchDocument, options);
+      }
+export type DeleteBranchMutationHookResult = ReturnType<typeof useDeleteBranchMutation>;
+export type DeleteBranchMutationResult = Apollo.MutationResult<DeleteBranchMutation>;
+export type DeleteBranchMutationOptions = Apollo.BaseMutationOptions<DeleteBranchMutation, DeleteBranchMutationVariables>;

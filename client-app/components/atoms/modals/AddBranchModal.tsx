@@ -4,44 +4,43 @@ import { Button } from '@nextui-org/react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
-import { DropZone } from '@/components/molecules/DropZone'
 
-import { StatusEnum, useCreateProductMutation } from '@/graphql/graphql-types'
+import { StatusEnum, useCreateBranchMutation } from '@/graphql/graphql-types'
 
-interface AddProductModalProps {
+interface AddBranchModalProps {
   isOpen: boolean
   onClose: () => void
   onAdd: () => void
 }
 
-export const AddProductModal = ({
+export const AddBranchModal = ({
   isOpen,
   onClose,
   onAdd
-}: AddProductModalProps) => {
+}: AddBranchModalProps) => {
   const { handleSubmit, watch, control, reset } = useForm()
-  const [createProduct] = useCreateProductMutation()
+  const [createBranch] = useCreateBranchMutation()
   const onSubmit = () => {
-    createProduct({
+    createBranch({
       variables: {
-        createProductInput: {
-          cost: parseFloat(watch('cost')),
-          code: watch('code'),
-          description: watch('description'),
-          image: watch('image'),
+        createBranchInput: {
           name: watch('name'),
-          suggetedPrice: parseFloat(watch('suggetedPrice'))
+          city: watch('city'),
+          code: watch('code'),
+          direction: watch('address'),
+          phone: watch('phone'),
+          nit: watch('nit')
         }
       },
       onCompleted: data => {
-        if (data.createProduct?.status === StatusEnum.ERROR) {
+        if (data.createBranch?.status === StatusEnum.ERROR) {
           showSuccessToast(
-            data.createProduct.message || 'Ocurrió un error',
+            data.createBranch.message || 'Ocurrió un error',
             'error'
           )
         } else {
           showSuccessToast(
-            data.createProduct?.message || 'Producto guardado correctamente',
+            data.createBranch?.message || 'Brancho guardado correctamente',
             'success'
           )
           onClose()
@@ -61,53 +60,62 @@ export const AddProductModal = ({
     <MyModal isOpen={isOpen} onClose={onClose}>
       <section>
         <h1 className="mt-5 text-center text-3xl font-bold text-gray-500">
-          Agregar Producto
+          Agregar sucursal
         </h1>
         <form
           action=""
           onSubmit={handleSubmit(onSubmit)}
-          className="p-4 text-gray-500 md:p-8"
+          className="p-4 space-y-3 text-gray-500 md:p-8"
         >
           <div className="grid grid-cols-2 gap-3">
+          <Input
+            control={control}
+            name="name"
+            label="Nombre"
+            placeholder="Nombre"
+            type="text"
+            rules={{
+              required: {
+                value: true,
+                message: 'Este campo es obligatorio'
+              },
+              pattern: {
+                value: /^[a-zA-Z\s]+$/i,
+                message: 'Solo se permiten letras'
+              }
+            }}
+          />
             <Input
               control={control}
-              name="name"
-              label="Nombre"
-              placeholder="Nombre"
+              name="city"
+              label="Ciudad"
+              placeholder="Ciudad"
               type="text"
               rules={{
                 required: {
                   value: true,
                   message: 'Este campo es obligatorio'
-                },
-                pattern: {
-                  value: /^[a-zA-Z\s]+$/i,
-                  message: 'Solo se permiten letras'
                 }
               }}
             />
             <Input
               control={control}
-              name="suggetedPrice"
-              label="Precio sugerido"
-              placeholder="Precio sugerido"
+              name="address"
+              label="Dirección"
+              placeholder="Dirección"
               type="text"
               rules={{
                 required: {
                   value: true,
                   message: 'Este campo es obligatorio'
-                },
-                pattern: {
-                  value: /^[0-9]+$/i,
-                  message: 'Solo se permiten números'
                 }
               }}
             />
             <Input
               control={control}
-              name="cost"
-              label="Costo"
-              placeholder="Costo"
+              name="phone"
+              label="Teléfono"
+              placeholder="Teléfono"
               type="text"
               rules={{
                 required: {
@@ -133,32 +141,34 @@ export const AddProductModal = ({
                 }
               }}
             />
+            <Input
+              name="nit"
+              control={control}
+              label="NIT"
+              placeholder="NIT"
+              type="text"
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Este campo es obligatorio'
+                }
+              }}
+            />
           </div>
-          <Input
-            customeClassName="h-20 "
-            control={control}
-            name="description"
-            label="Descripción"
-            placeholder="Descripción"
-            type="textArea"
-            rules={{
-              required: {
-                value: true,
-                message: 'Este campo es obligatorio'
-              },
-              pattern: {
-                value: /^[a-zA-Z\s]+$/i,
-                message: 'Solo se permiten letras'
-              }
-            }}
-          />
-          <DropZone />
           <div className="grid h-12 grid-cols-2 gap-3 ">
-            <Button type="submit" color="secondary" className="h-full text-lg font-bold">
+            <Button
+              type="submit"
+              color="secondary"
+              className="h-full text-lg font-bold"
+            >
               Agregar
             </Button>
-            <Button variant="flat"
-                color="danger"className="h-full font-bold text-lg" onClick={handleCancel}>
+            <Button
+              variant="flat"
+              color="danger"
+              className="h-full text-lg font-bold"
+              onClick={handleCancel}
+            >
               Cancelar
             </Button>
           </div>

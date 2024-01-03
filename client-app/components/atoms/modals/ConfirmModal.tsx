@@ -24,17 +24,21 @@ export const ConfirmModal = ({
   cancelButtonText = 'Cancelar'
 }: ConfirmModalProps) => {
   return (
-      <MyModal isOpen={isOpen} size="lg" onClose={onClose}>
-      <h1 className="mb-10 mt-10 text-center text-3xl font-bold text-gray-500">{title}</h1>
-      <p className="text-center text-lg px-6 text-gray-500">{message}</p>
-      <div className="flex justify-center space-x-4 my-10">
-          <Button color="secondary" onClick={onConfirm}>
-          {confirmButtonText}
+    <MyModal isOpen={isOpen} size="lg" onClose={onClose}>
+      <div className='m-4 space-y-5'>
+        <h1 className="mb-10 mt-10 text-center text-3xl font-bold text-gray-500">
+          {title}
+        </h1>
+        <p className="px-6 text-center text-lg text-gray-500">{message}</p>
+        <div className="grid h-12 w-full grid-cols-2 gap-3 ">
+          <Button color="secondary" className="h-full text-lg font-bold" onClick={onConfirm}>
+            {confirmButtonText}
           </Button>
-          <Button color="warning" onClick={onCancel}>
-          {cancelButtonText}
+          <Button variant="flat" color="danger" className="h-full text-lg font-bold" onClick={onCancel}>
+            {cancelButtonText}
           </Button>
+        </div>
       </div>
-      </MyModal>
+    </MyModal>
   )
 }

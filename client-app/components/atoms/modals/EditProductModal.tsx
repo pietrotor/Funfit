@@ -38,7 +38,6 @@ export const EditProductModal = (
       suggetedPrice: parseFloat(watch('suggetedPrice'))
     })
   }
-  console.log(values)
   return <MyModal isOpen={isOpen} onClose={onClose}>
     <h1 className="mb-10 mt-10 text-center text-3xl font-bold text-gray-500">
         Editar Producto
@@ -118,11 +117,11 @@ export const EditProductModal = (
 
         <DropZone/>
 
-        <div className="grid h-16 grid-cols-2 gap-3 w-full">
-          <Button type="submit" color="secondary" className='h-full font-bold'>
+        <div className="grid h-12 grid-cols-2 gap-3 w-full">
+          <Button type="submit" color="secondary" className='h-full font-bold text-lg'>
             Guardar
           </Button>
-          <Button onClick={ onClose } variant="flat" color="warning" className='h-full font-bold'>Cancelar</Button>
+          <Button onClick={ onClose } variant="flat" color="warning" className='h-full text-lg font-bold'>Cancelar</Button>
         </div>
       </form>
     </MyModal>

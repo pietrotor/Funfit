@@ -108,7 +108,7 @@ const ProductModal: React.FC<TProps> = ({
                   onPress={() => {
                     addProduct(count)
                   }}
-                  className="h-14 w-64 text-lg font-bold hover:bg-primary/80 hover:shadow-lg "
+                  className="h-14  w-64 text-lg font-bold hover:bg-primary/80 hover:shadow-lg "
                 >
                   Añadir al carrito
                   <div>{`${price * count} Bs`}</div>

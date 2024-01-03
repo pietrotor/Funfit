@@ -164,3 +164,79 @@ mutation CreatStockMovement($createStockMovementInput: CreateStockMovementInput!
   }
 }
 `
+export const CREATE_BRANCH = gql`
+mutation CreateBranch($createBranchInput: CreateBranchInput!) {
+  createBranch(createBranchInput: $createBranchInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
+        id
+      }
+    }
+  }
+}
+`
+
+export const UPDATE_BRANCH = gql`
+mutation UpdateBranch($updateBranchInput: UpdateBranchInput!) {
+  updateBranch(updateBranchInput: $updateBranchInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
+        id
+      }
+    }
+  }
+}
+`
+export const DELETE_BRANCH = gql`
+mutation DeleteBranch($deleteBranchId: ObjectId!) {
+  deleteBranch(id: $deleteBranchId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
+        id
+      }
+    }
+  }
+}
+`
