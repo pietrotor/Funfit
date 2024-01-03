@@ -27,6 +27,11 @@ import {
   branchQuery,
   branchType
 } from './branch.resolver'
+import {
+  branchProductMutation,
+  branchProductQuery,
+  branchProductType
+} from './branchProduct.resolver'
 
 const resolvers: Resolvers<ContextGraphQl> = {
   Date: dateTimeScalar,
@@ -39,6 +44,7 @@ const resolvers: Resolvers<ContextGraphQl> = {
   ...stockType,
   ...stockHistoryType,
   ...branchType,
+  ...branchProductType,
   Query: {
     ...userQuery,
     ...roleQuery,
@@ -47,7 +53,8 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...configurationQuery,
     ...stockQuery,
     ...stockHistoryQuery,
-    ...branchQuery
+    ...branchQuery,
+    ...branchProductQuery
   },
   Mutation: {
     ...userMutation,
@@ -56,7 +63,8 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...configurationMutation,
     ...stockMutation,
     ...stockHistoryMutation,
-    ...branchMutation
+    ...branchMutation,
+    ...branchProductMutation,
   }
 }
 

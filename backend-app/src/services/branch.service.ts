@@ -1,9 +1,10 @@
 import { CreateBranchInput, PaginationInput, UpdateBranchInput } from '@/graphql/graphql_types'
 import { BadRequestError } from '@/lib/graphqlerrors'
 import { updateGenericInstance } from '@/lib/updateInstance'
-import { BranchRepository } from '@/repositories/index'
+// import { BranchRepository } from '@/repositories/index'
 import { getInstancesPagination } from './generic.service'
 import { Branch, Cash, IBranch, IModelBranch } from '../models'
+import { BranchRepository } from '../repositories'
 
 export class BranchService extends BranchRepository<objectId> {
   async getBranchesPaginated (paginationInput: PaginationInput) {
@@ -55,10 +56,10 @@ export class BranchService extends BranchRepository<objectId> {
 
   async updateBranch (updateBranchInput: UpdateBranchInput) {
     const { id } = updateBranchInput
-    const branchInstance = this.getBranchById(id)
+    const branchInstance = await this.getBranchById(id)
     updateGenericInstance(branchInstance, updateBranchInput)
 
-    return (await branchInstance).save()
+    return await branchInstance.save()
   }
 
   async deleteBranch (id: objectId, deletedBy?: objectId) {
