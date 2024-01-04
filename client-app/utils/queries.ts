@@ -579,52 +579,6 @@ export const GET_PUBLIC_PRODUCTS = gql`
     }
   }
 `
-export const GET_PRODUCTS_ON_BRANCH = gql`
-  mutation CreateBranchProduct(
-    $createBranchProductInput: CreateBranchProductInput!
-  ) {
-    createBranchProduct(createBranchProductInput: $createBranchProductInput) {
-      errorInput {
-        message
-        field
-      }
-      status
-      message
-      data {
-        id
-        branchId
-        productId
-        price
-        isVisibleOnWeb
-        isVisibleOnMenu
-        product {
-          id
-          name
-          suggetedPrice
-          code
-          internalCode
-          description
-          cost
-          image
-          warehouses
-        }
-        branch {
-          id
-          name
-          code
-          city
-          direction
-          phone
-          nit
-          cashId
-          cash {
-            id
-          }
-        }
-      }
-    }
-  }
-`
 
 export const GET_BRANCH_PRODUCTS = gql`
   query GetBranchProductsPaginated(
@@ -653,7 +607,6 @@ export const GET_BRANCH_PRODUCTS = gql`
           name
           suggetedPrice
           code
-          internalCode
           description
           cost
           image
@@ -679,4 +632,57 @@ export const GET_BRANCH_PRODUCTS = gql`
       currentPage
     }
   }
+`
+export const GET_BRANCH_PAGINATION = gql`
+  query GetBranchesPaginated($paginationInput: PaginationInput!) {
+    getBranchesPaginated(paginationInput: $paginationInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cash {
+          id
+        }
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+export const GET_BRANCH_BY_ID = gql`
+  query GetBranchById($getBranchByIdId: ObjectId!) {
+  getBranchById(id: $getBranchByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
+        id
+      }
+    }
+  }
+}
 `

@@ -164,3 +164,169 @@ mutation CreatStockMovement($createStockMovementInput: CreateStockMovementInput!
   }
 }
 `
+export const CREATE_BRANCH = gql`
+mutation CreateBranch($createBranchInput: CreateBranchInput!) {
+  createBranch(createBranchInput: $createBranchInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
+        id
+      }
+    }
+  }
+}
+`
+
+export const UPDATE_BRANCH = gql`
+mutation UpdateBranch($updateBranchInput: UpdateBranchInput!) {
+  updateBranch(updateBranchInput: $updateBranchInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
+        id
+      }
+    }
+  }
+}
+`
+export const DELETE_BRANCH = gql`
+mutation DeleteBranch($deleteBranchId: ObjectId!) {
+  deleteBranch(id: $deleteBranchId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
+        id
+      }
+    }
+  }
+}
+`
+
+export const CREATE_BRANCH_PRODUCT = gql`
+  mutation CreateBranchProduct(
+    $createBranchProductInput: CreateBranchProductInput!
+  ) {
+    createBranchProduct(createBranchProductInput: $createBranchProductInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        branchId
+        productId
+        price
+        isVisibleOnWeb
+        isVisibleOnMenu
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          description
+          cost
+          image
+          warehouses
+        }
+        branch {
+          id
+          name
+          code
+          city
+          direction
+          phone
+          nit
+          cashId
+          cash {
+            id
+          }
+        }
+      }
+    }
+  }
+`
+
+export const UPDATE_BRANCH_PRODUCT = gql`
+mutation UpdateBranchProduct($updateBranchProductInput: UpdateBranchProductInput!) {
+  updateBranchProduct(updateBranchProductInput: $updateBranchProductInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      productId
+      price
+      isVisibleOnWeb
+      isVisibleOnMenu
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        description
+        cost
+        image
+        warehouses
+      }
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cashId
+        cash {
+          id
+        }
+      }
+    }
+  }
+}
+`

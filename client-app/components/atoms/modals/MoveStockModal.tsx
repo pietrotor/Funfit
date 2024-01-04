@@ -201,7 +201,7 @@ export const MoveStockModal = ({
               type="textArea"
               customeClassName="h-16"
             />
-            <div className="grid h-16 grid-cols-2 gap-3 ">
+            <div className="grid h-12 grid-cols-2 gap-3 ">
               <Button
                 className="h-full font-bold bg-secondary text-lg text-white"
                 type="submit"

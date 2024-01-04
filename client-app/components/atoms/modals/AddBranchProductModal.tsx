@@ -2,6 +2,7 @@ import { useForm } from 'react-hook-form'
 import { Button, Checkbox } from '@nextui-org/react'
 
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 import { MyModal } from './MyModal'
 import { TValueProductData } from './EditProductModal'
 import Input from '../Input'
@@ -22,9 +23,13 @@ export const AddBranchProductModal = ({
   onAdd
 }: AddBranchProductModalProps) => {
   const { handleCreateBranchProduct } = useCreateBranchProductQuery()
-  const { handleSubmit, control, watch } = useForm()
+  const { handleSubmit, control, watch, reset } = useForm()
   const [filterProduct] = useState<string>('')
   const [productsData, setProductsData] = useState<TValueProductData>()
+  const [isVisibleMenu, setIsVisibleMenu] = useState<boolean>(true)
+  const [isVisibleWeb, setIsVisibleWeb] = useState<boolean>(true)
+  const router = useRouter()
+  const { branchId } = router.query
   const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
   const [getProducts, { data }] = useGetProductsLazyQuery({
     fetchPolicy: 'network-only',
@@ -37,19 +42,20 @@ export const AddBranchProductModal = ({
 
   const onSubmit = () => {
     handleCreateBranchProduct({
-      branchId: '6595544d0aa5406c5d1a72ae',
+      branchId: branchId as string,
       productId: productsData?.id,
       price: parseFloat(watch('price')),
-      isVisibleOnMenu: watch('isVisibleMenu'),
-      isVisibleOnWeb: watch('isVisibleWeb')
+      isVisibleOnMenu: isVisibleMenu,
+      isVisibleOnWeb: isVisibleWeb
     })
+    reset()
+    onClose()
+    onAdd()
   }
 
   const handleCancel = () => {
-    /*
     reset()
     onClose()
-    */
   }
 
   return (
@@ -108,10 +114,22 @@ export const AddBranchProductModal = ({
               }}
             />
             <div className="flex space-x-5">
-              <Checkbox name="isVisibleMenu" defaultSelected size="sm">
+              <Checkbox
+                name="isVisibleMenu"
+                size="sm"
+                defaultSelected
+                isSelected={watch('isVisibleMenu')}
+                onValueChange={setIsVisibleMenu}
+              >
                 Es Visible en el Menú
               </Checkbox>
-              <Checkbox name="isVisibleWeb" defaultSelected size="sm">
+              <Checkbox
+                name="isVisibleWeb"
+                size="sm"
+                defaultSelected
+                isSelected={watch('isVisibleWeb')}
+                onValueChange={setIsVisibleWeb}
+              >
                 Es Visible en la Web
               </Checkbox>
             </div>

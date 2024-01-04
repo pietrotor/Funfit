@@ -53,6 +53,7 @@ function StockHistory() {
 
   const product =
     data?.getStockHistory?.data && data.getStockHistory.data.length > 0 ? data.getStockHistory.data[0] : null
+
   return (
     <AdministrationLayout showBackButton={true}>
       <div className="m-auto w-5/6 space-y-10">

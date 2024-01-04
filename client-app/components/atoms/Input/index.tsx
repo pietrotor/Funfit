@@ -42,7 +42,7 @@ type TInputProps = InputProps & {
     | undefined
   customeClassName?: string
   labelColor?: string
-  defaultValue?: any
+  defaultValue?: string
 }
 
 const InputComponent: React.FC<TInputProps> = ({
@@ -77,7 +77,7 @@ const InputComponent: React.FC<TInputProps> = ({
       <Controller
         name={name}
         control={control}
-        defaultValue={ type === 'date' ? new Date().toISOString().split('T')[0] : ''}
+        defaultValue={ type === 'date' ? new Date().toISOString().split('T')[0] : defaultValue}
         rules={rules}
         render={({ field, formState: { errors } }) => (
           <div className="w-full">
@@ -115,7 +115,7 @@ const InputComponent: React.FC<TInputProps> = ({
                   label={label}
                   radius="sm"
                   onChange={event => field.onChange(getTypeOfValue(event))}
-                  className={`w-full appearance-none rounded-md  border-gray-500 bg-gray-100/30 p-2 text-black outline-none  transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+                  className={`w-full appearance-none rounded-md  border-gray-500 bg-gray-100/30 text-black outline-none  transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
                 />
                 <ErrorMessage
                   errors={errors}

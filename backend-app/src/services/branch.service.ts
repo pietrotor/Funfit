@@ -56,10 +56,10 @@ export class BranchService extends BranchRepository<objectId> {
 
   async updateBranch (updateBranchInput: UpdateBranchInput) {
     const { id } = updateBranchInput
-    const branchInstance = this.getBranchById(id)
+    const branchInstance = await this.getBranchById(id)
     updateGenericInstance(branchInstance, updateBranchInput)
 
-    return (await branchInstance).save()
+    return await branchInstance.save()
   }
 
   async deleteBranch (id: objectId, deletedBy?: objectId) {

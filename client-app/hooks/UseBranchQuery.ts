@@ -1,10 +1,11 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import UseDebouncedValue from './UseDebouncedValue'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import {
   StatusEnum,
   useCreateBranchProductMutation,
-  useGetBranchProductsPaginatedQuery
+  useGetBranchProductsPaginatedQuery,
+  useUpdateBranchProductMutation
 } from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 export interface CreateBranchProductInput {
@@ -15,19 +16,17 @@ export interface CreateBranchProductInput {
   price: number
 }
 
+export type BranchProductData = {
+  id: string
+  price: number
+  isVisibleOnMenu: boolean
+  isVisibleOnWeb: boolean
+}
+
 export const useCreateBranchProductQuery = () => {
   const [variables, setVariables] = useState<PaginationInterfaceState>()
 
-  const [createBranchProduct] = useCreateBranchProductMutation({
-    onCompleted: result => {
-      if (result.createBranchProduct?.status === StatusEnum.ERROR) {
-        showSuccessToast(
-          result.createBranchProduct.message || 'Something went wrong',
-          'error'
-        )
-      }
-    }
-  })
+  const [createBranchProduct] = useCreateBranchProductMutation()
 
   const handleCreateBranchProduct = (data: CreateBranchProductInput) => {
     createBranchProduct({
@@ -38,6 +37,17 @@ export const useCreateBranchProductQuery = () => {
           isVisibleOnMenu: data.isVisibleOnMenu,
           isVisibleOnWeb: data.isVisibleOnWeb,
           price: data.price
+        }
+      },
+      onCompleted: result => {
+        if (result.createBranchProduct?.status === StatusEnum.ERROR) {
+          showSuccessToast(
+            result.createBranchProduct.message || 'Something went wrong',
+            'error'
+          )
+        }
+        if (result.createBranchProduct?.status === StatusEnum.OK) {
+          showSuccessToast('Producto creado correctamente', 'success')
         }
       }
     })
@@ -54,16 +64,15 @@ export const useGetBranchProductQuery = (branchId: string) => {
   const [variables, setVariables] = useState<PaginationInterfaceState>()
   const [filter, setFilter] = useState<string>()
   const filterDebounced = UseDebouncedValue(filter, 2000)
-
   const { data, loading, refetch } = useGetBranchProductsPaginatedQuery({
     fetchPolicy: 'network-only',
     variables: {
-      branchId,
       paginationInput: {
         filter: filterDebounced,
         page: variables?.currentPage || 1,
         rows: 5
-      }
+      },
+      branchId
     },
     onCompleted: result => {
       setVariables({
@@ -83,6 +92,10 @@ export const useGetBranchProductQuery = (branchId: string) => {
     }
   })
 
+  useEffect(() => {
+    refetch()
+  }, [refetch, branchId])
+
   return {
     data,
     loading,
@@ -90,5 +103,38 @@ export const useGetBranchProductQuery = (branchId: string) => {
     variables,
     setVariables,
     setFilter
+  }
+}
+
+export const useUpdateBranchProductQuery = () => {
+  const [variables, setVariables] = useState<PaginationInterfaceState>()
+  const [updateBranchProduct] = useUpdateBranchProductMutation()
+  const handleUpdateBranchProduct = (data: BranchProductData, field: string) => {
+    updateBranchProduct({
+      variables: {
+        updateBranchProductInput: {
+          id: data.id,
+          isVisibleOnMenu: field === 'menu' ? !data.isVisibleOnMenu : data.isVisibleOnMenu,
+          isVisibleOnWeb: field === 'web' ? !data.isVisibleOnWeb : data.isVisibleOnWeb,
+          price: data.price
+        }
+      },
+      onCompleted: result => {
+        if (result.updateBranchProduct?.status === StatusEnum.ERROR) {
+          showSuccessToast(
+            result.updateBranchProduct.message || 'No se pudo actualizar el producto',
+            'error'
+          )
+        }
+        if (result.updateBranchProduct?.status === StatusEnum.OK) {
+          showSuccessToast('Producto actualizado correctamente', 'success')
+        }
+      }
+    })
+  }
+  return {
+    handleUpdateBranchProduct,
+    variables,
+    setVariables
   }
 }
