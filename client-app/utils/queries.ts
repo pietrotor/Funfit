@@ -341,25 +341,165 @@ export const GET_WAREHOUSE_HISTORY = gql`
 `
 
 export const GET_STOCK_HISTORY = gql`
-query GetStockHistory($paginationInput: PaginationInput!, $stockId: ObjectId!) {
-  getStockHistory(paginationInput: $paginationInput, stockId: $stockId) {
-    errorInput {
+  query GetStockHistory(
+    $paginationInput: PaginationInput!
+    $stockId: ObjectId!
+  ) {
+    getStockHistory(paginationInput: $paginationInput, stockId: $stockId) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
+      data {
+        id
+        stockId
+        warehouseId
+        quantity
+        type
+        date
+        stockBefore
+        stockLater
+        createdBy
+        stock {
+          id
+          productId
+          warehouseId
+          quantity
+          securityStock
+          lastStockEntry
+          units
+          product {
+            id
+            name
+            suggetedPrice
+            code
+            description
+            cost
+            image
+            warehouses
+          }
+          warehouse {
+            id
+            name
+            description
+            address
+          }
+        }
+        warehouse {
+          id
+          name
+          description
+          address
+        }
+        createdByInfo {
+          id
+          name
+          lastName
+          email
+          phone
+          lastLogin
+          status
+          createdBy
+          roleId
+          roleInfo {
+            id
+            name
+            code
+            status
+          }
+        }
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
     }
-    status
-    message
-    data {
-      id
-      stockId
-      warehouseId
-      quantity
-      type
-      date
-      stockBefore
-      stockLater
-      createdBy
-      stock {
+  }
+`
+export const GET_STOCKS_BY_WAREHOUSE = gql`
+  query GetStockById($getStockByIdId: ObjectId!) {
+    getStockById(id: $getStockByIdId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        productId
+        warehouseId
+        quantity
+        securityStock
+        units
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          description
+          cost
+          image
+          warehouses
+        }
+        warehouse {
+          id
+          name
+          description
+          address
+        }
+      }
+    }
+  }
+`
+export const GET_PRODUCTS_OUT_OF_WAREHOUSE = gql`
+  query GetProductsOutOfWarehouse(
+    $paginationInput: PaginationInput!
+    $warehouseId: ObjectId!
+  ) {
+    getProductsOutOfWarehouse(
+      paginationInput: $paginationInput
+      warehouseId: $warehouseId
+    ) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        suggetedPrice
+        code
+        description
+        cost
+        image
+        warehouses
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+export const GET_WAREHOUSE_STOCKS = gql`
+  query GetWarehouseStock(
+    $warehouseStockPaginationInput: WarehouseStockPaginationInput!
+  ) {
+    getWarehouseStock(
+      warehouseStockPaginationInput: $warehouseStockPaginationInput
+    ) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
         id
         productId
         warehouseId
@@ -384,191 +524,146 @@ query GetStockHistory($paginationInput: PaginationInput!, $stockId: ObjectId!) {
           address
         }
       }
-      warehouse {
-        id
-        name
-        description
-        address
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+export const GET_PRODUCT_BY_ID = gql`
+  query GetProductById($getProductByIdId: ObjectId!) {
+    getProductById(id: $getProductByIdId) {
+      errorInput {
+        message
+        field
       }
-      createdByInfo {
+      status
+      message
+      data {
         id
         name
-        lastName
-        email
-        phone
-        lastLogin
-        status
-        createdBy
-        roleId
-        roleInfo {
+        suggetedPrice
+        code
+        description
+        cost
+        image
+        warehouses
+      }
+    }
+  }
+`
+export const GET_PUBLIC_PRODUCTS = gql`
+  query GetPublicProducts($paginationInput: PaginationInput!) {
+    getPublicProducts(paginationInput: $paginationInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        suggetedPrice
+        code
+        description
+        cost
+        image
+        warehouses
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+
+export const GET_BRANCH_PRODUCTS = gql`
+  query GetBranchProductsPaginated(
+    $paginationInput: PaginationInput!
+    $branchId: ObjectId!
+  ) {
+    getBranchProductsPaginated(
+      paginationInput: $paginationInput
+      branchId: $branchId
+    ) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        branchId
+        productId
+        price
+        isVisibleOnWeb
+        isVisibleOnMenu
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          description
+          cost
+          image
+          warehouses
+        }
+        branch {
           id
           name
           code
-          status
+          city
+          direction
+          phone
+          nit
+          cashId
+          cash {
+            id
+          }
         }
       }
-    }
-    totalRecords
-    totalPages
-    rows
-    currentPage
-  }
-}
-`
-export const GET_STOCKS_BY_WAREHOUSE = gql`
-query GetStockById($getStockByIdId: ObjectId!) {
-  getStockById(id: $getStockByIdId) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-      id
-      productId
-      warehouseId
-      quantity
-      securityStock
-      units
-      product {
-        id
-        name
-        suggetedPrice
-        code
-        description
-        cost
-        image
-        warehouses
-      }
-      warehouse {
-        id
-        name
-        description
-        address
-      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
     }
   }
-}
-`
-export const GET_PRODUCTS_OUT_OF_WAREHOUSE = gql`
-query GetProductsOutOfWarehouse($paginationInput: PaginationInput!, $warehouseId: ObjectId!) {
-  getProductsOutOfWarehouse(paginationInput: $paginationInput, warehouseId: $warehouseId) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-      id
-      name
-      suggetedPrice
-      code
-      description
-      cost
-      image
-      warehouses
-    }
-    totalRecords
-    totalPages
-    rows
-    currentPage
-  }
-}
-`
-export const GET_WAREHOUSE_STOCKS = gql`
-query GetWarehouseStock($warehouseStockPaginationInput: WarehouseStockPaginationInput!) {
-  getWarehouseStock(warehouseStockPaginationInput: $warehouseStockPaginationInput) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-      id
-      productId
-      warehouseId
-      quantity
-      securityStock
-      lastStockEntry
-      units
-      product {
-        id
-        name
-        suggetedPrice
-        code
-        description
-        cost
-        image
-        warehouses
-      }
-      warehouse {
-        id
-        name
-        description
-        address
-      }
-    }
-    totalRecords
-    totalPages
-    rows
-    currentPage
-  }
-}
-`
-export const GET_PRODUCT_BY_ID = gql`
-query GetProductById($getProductByIdId: ObjectId!) {
-  getProductById(id: $getProductByIdId) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-      id
-      name
-      suggetedPrice
-      code
-      description
-      cost
-      image
-      warehouses
-    }
-  }
-}
-`
-export const GET_PUBLIC_PRODUCTS = gql`
-query GetPublicProducts($paginationInput: PaginationInput!) {
-  getPublicProducts(paginationInput: $paginationInput) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-      id
-      name
-      suggetedPrice
-      code
-      description
-      cost
-      image
-      warehouses
-    }
-    totalRecords
-    totalPages
-    rows
-    currentPage
-  }
-}
 `
 export const GET_BRANCH_PAGINATION = gql`
-query GetBranchesPaginated($paginationInput: PaginationInput!) {
-  getBranchesPaginated(paginationInput: $paginationInput) {
+  query GetBranchesPaginated($paginationInput: PaginationInput!) {
+    getBranchesPaginated(paginationInput: $paginationInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cash {
+          id
+        }
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+export const GET_BRANCH_BY_ID = gql`
+  query GetBranchById($getBranchByIdId: ObjectId!) {
+  getBranchById(id: $getBranchByIdId) {
     errorInput {
       message
       field
@@ -583,14 +678,11 @@ query GetBranchesPaginated($paginationInput: PaginationInput!) {
       direction
       phone
       nit
+      cashId
       cash {
         id
       }
     }
-    totalRecords
-    totalPages
-    rows
-    currentPage
   }
 }
 `

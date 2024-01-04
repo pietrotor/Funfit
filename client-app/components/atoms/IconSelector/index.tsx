@@ -33,6 +33,7 @@ export type TSvgNames =
   | 'Boxes'
   | 'Map-pin'
   | 'Branch'
+  | 'AddProduct'
 
 type TIconSelectorProps = {
   name: TSvgNames
