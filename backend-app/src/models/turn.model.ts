@@ -11,7 +11,7 @@ export interface ITurn extends Document, IGeneric {
     difference: number;
     date: Date;
     observation: string;
-    user: objectId;
+    openBy: objectId;
   };
   closeInfo: {
     amount: number;
@@ -19,7 +19,7 @@ export interface ITurn extends Document, IGeneric {
     difference: number;
     date: Date;
     observation: string;
-    user: objectId;
+    closeBy: objectId;
   } | null;
 }
 export interface IModelTurn extends Model<ITurn> { }
@@ -32,6 +32,7 @@ const turnSchema = new Schema<ITurn>(
     },
     isOpen: { type: Boolean, default: false },
     openInfo: {
+      _id: false,
       amount: {
         type: Number,
         required: [true, 'es necesario el monto de apertura de caja']
@@ -50,12 +51,13 @@ const turnSchema = new Schema<ITurn>(
       observation: {
         type: String
       },
-      user: {
+      openBy: {
         type: Schema.Types.ObjectId,
         ref: 'User'
       }
     },
     closeInfo: {
+      _id: false,
       amount: {
         type: Number
       },
@@ -71,7 +73,7 @@ const turnSchema = new Schema<ITurn>(
       observation: {
         type: String
       },
-      user: {
+      closeBy: {
         type: Schema.Types.ObjectId,
         ref: 'User'
       }

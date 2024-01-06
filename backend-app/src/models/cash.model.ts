@@ -5,7 +5,7 @@ export interface ICash extends Document, IGeneric {
   id: objectId;
   branchId: objectId;
   amount: number;
-  lastTurnId: objectId;
+  currentTurnId: objectId;
   isOpen: boolean;
 }
 export interface IModelCash extends Model<ICash> { }
@@ -19,7 +19,7 @@ const cashSchema = new Schema<ICash>(
     amount: {
       type: Number
     },
-    lastTurnId: {
+    currentTurnId: {
       type: Schema.Types.ObjectId,
       ref: 'Turn'
     },

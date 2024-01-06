@@ -198,7 +198,38 @@ type BranchProduct {
 type Cash {
   id: ObjectId!
   branchId: ObjectId!
-  
+  amount: Float!
+  currentTurnId: ObjectId
+  isOpen: Boolean!
+  # Fields Resolvers
+  currentTurn: Turn
+}
+type OpenTurnInfo {
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  date: Date!
+  observation: String
+  openBy: ObjectId!
+  # Fields Resolver
+  openByInfo: User
+}
+type CloseTurnInfo {
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  date: Date!
+  observation: String
+  closeBy: ObjectId!
+  # Fields Resolver
+  closeByInfo: User
+}
+type Turn {
+  id: ObjectId!
+  cashId: ObjectId!
+  isOpen: Boolean!
+  openInfo: OpenTurnInfo!
+  closeInfo: CloseTurnInfo
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
