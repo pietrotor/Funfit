@@ -10,7 +10,7 @@ export interface ITurn extends Document, IGeneric {
     physicialAmount: number;
     difference: number;
     date: Date;
-    observation: string;
+    observation?: string | null;
     openBy: objectId;
   };
   closeInfo: {
@@ -18,7 +18,7 @@ export interface ITurn extends Document, IGeneric {
     physicialAmount: number;
     difference: number;
     date: Date;
-    observation: string;
+    observation?: string | null;
     closeBy: objectId;
   } | null;
 }

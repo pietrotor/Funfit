@@ -91,6 +91,9 @@ type Mutation {
   createBranchProduct(createBranchProductInput: CreateBranchProductInput!): BranchProductResponse
   updateBranchProduct(updateBranchProductInput: UpdateBranchProductInput!): BranchProductResponse
   deleteBranchProduct(id: ObjectId!): BranchProductResponse
+  # CASH ==================================
+  openCash(createTurnInput: CreateTurnInput!): CashResponse
+  closeCash(closeTurnInput: CloseTurnInput!): CashResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type MeasurementUnits {
@@ -370,6 +373,12 @@ type BranchProductResponse implements ResponseBase {
   message: String
   data: BranchProduct
 }
+type CashResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Cash
+}
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
   name: String!
@@ -493,4 +502,21 @@ input UpdateBranchProductInput {
   price: Float
   isVisibleOnWeb: Boolean
   isVisibleOnMenu: Boolean
+}
+input CreateTurnInput {
+  cashId: ObjectId!
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  observation: String
+  updateToPhysicialAmount: Boolean!
+}
+input CloseTurnInput {
+  cashId: ObjectId!
+  turnId: ObjectId!
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  observation: String
+  updateToPhysicialAmount: Boolean!
 }
