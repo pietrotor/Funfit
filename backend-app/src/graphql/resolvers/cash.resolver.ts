@@ -26,7 +26,7 @@ const getCashById = async (
     const cashInstance = await cashCore.getCashById(id)
     return {
       status: StatusEnum.OK,
-      message: 'Caja abierta correactamente',
+      message: 'Caja encontrada correactamente',
       data: cashInstance
     }
   } catch (error) {
