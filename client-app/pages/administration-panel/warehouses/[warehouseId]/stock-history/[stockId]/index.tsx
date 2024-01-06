@@ -53,6 +53,7 @@ function StockHistory() {
 
   const product =
     data?.getStockHistory?.data && data.getStockHistory.data.length > 0 ? data.getStockHistory.data[0] : null
+
   return (
     <AdministrationLayout showBackButton={true}>
       <div className="m-auto w-5/6 space-y-10">
@@ -124,7 +125,10 @@ function StockHistory() {
           ]}
           items={(data?.getStockHistory?.data || []).map((history, idx) => ({
             content: [
-              idx + 1,
+              <h3 key={idx} className="text-sm">
+                {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
+                  idx + 1}
+              </h3>,
               <DateConverter key={idx} dateString={history.date} />,
               history.type === StockMovementTypeEnum.INWARD ? (
                 <Chip color="success" variant="flat">

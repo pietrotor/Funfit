@@ -133,7 +133,7 @@ function Warehouse() {
             ]
           }))}
           onChangeRow={row => handleChangeRow(row)}
-          tableName="Usuarios"
+          tableName="STOCKS"
           onChangePage={page =>
             setVariables({ ...variables, currentPage: page })
           }

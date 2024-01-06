@@ -91,6 +91,9 @@ type Mutation {
   createBranchProduct(createBranchProductInput: CreateBranchProductInput!): BranchProductResponse
   updateBranchProduct(updateBranchProductInput: UpdateBranchProductInput!): BranchProductResponse
   deleteBranchProduct(id: ObjectId!): BranchProductResponse
+  # CASH ==================================
+  openCash(createTurnInput: CreateTurnInput!): CashResponse
+  closeCash(closeTurnInput: CloseTurnInput!): CashResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type MeasurementUnits {
@@ -197,6 +200,39 @@ type BranchProduct {
 }
 type Cash {
   id: ObjectId!
+  branchId: ObjectId!
+  amount: Float!
+  currentTurnId: ObjectId
+  isOpen: Boolean!
+  # Fields Resolvers
+  currentTurn: Turn
+}
+type OpenTurnInfo {
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  date: Date!
+  observation: String
+  openBy: ObjectId!
+  # Fields Resolver
+  openByInfo: User
+}
+type CloseTurnInfo {
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  date: Date!
+  observation: String
+  closeBy: ObjectId!
+  # Fields Resolver
+  closeByInfo: User
+}
+type Turn {
+  id: ObjectId!
+  cashId: ObjectId!
+  isOpen: Boolean!
+  openInfo: OpenTurnInfo!
+  closeInfo: CloseTurnInfo
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -337,6 +373,12 @@ type BranchProductResponse implements ResponseBase {
   message: String
   data: BranchProduct
 }
+type CashResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Cash
+}
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
   name: String!
@@ -460,4 +502,21 @@ input UpdateBranchProductInput {
   price: Float
   isVisibleOnWeb: Boolean
   isVisibleOnMenu: Boolean
+}
+input CreateTurnInput {
+  cashId: ObjectId!
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  observation: String
+  updateToPhysicialAmount: Boolean!
+}
+input CloseTurnInput {
+  cashId: ObjectId!
+  turnId: ObjectId!
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  observation: String
+  updateToPhysicialAmount: Boolean!
 }

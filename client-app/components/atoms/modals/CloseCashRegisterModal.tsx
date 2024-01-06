@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { Button } from '@nextui-org/react'
+import { Button, Checkbox } from '@nextui-org/react'
 import { MyModal } from './MyModal'
 import InputComponent from '../Input'
 
@@ -32,6 +32,7 @@ export const CloseCashRegister = ({ isOpen, onClose, onConfirm }: ModalProps) =>
             <div> 0 Bs</div>
         </div>
         <InputComponent name='details' control={control} type='textArea'/>
+        <Checkbox defaultSelected size="sm">Small</Checkbox>
         <div className="mt-6 w-full grid h-12 grid-cols-2 gap-3 ">
             <Button type="submit" color="secondary" className="h-full text-lg font-bold">
               Cerrar caja

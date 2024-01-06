@@ -33,12 +33,13 @@ export type TSvgNames =
   | 'Boxes'
   | 'Map-pin'
   | 'Branch'
+  | 'Calendar'
+  | 'Coins'
+  | 'CrossArrowsY'
+  | 'Delivery-truck'
+  | 'Padlock'
   | 'Plus'
   | 'Cash'
-  | 'Coins'
-  | 'Calendar'
-  | 'CrossArrowsY'
-  | 'Padlock'
 
 type TIconSelectorProps = {
   name: TSvgNames
