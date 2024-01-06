@@ -32,7 +32,7 @@ export const CloseCashRegister = ({ isOpen, onClose, onConfirm }: ModalProps) =>
             <div> 0 Bs</div>
         </div>
         <InputComponent name='details' control={control} type='textArea'/>
-        <Checkbox defaultSelected size="sm">Small</Checkbox>
+        <Checkbox defaultSelected size="sm">Actualizar estado en caja</Checkbox>
         <div className="mt-6 w-full grid h-12 grid-cols-2 gap-3 ">
             <Button type="submit" color="secondary" className="h-full text-lg font-bold">
               Cerrar caja

@@ -21,6 +21,7 @@ export type TDataBranch = {
     direction: string;
     phone?: string | null | undefined;
     nit?: string | null | undefined;
+    cashId?: any;
     cash?: {
       id: any;
     };

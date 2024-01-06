@@ -330,3 +330,151 @@ mutation UpdateBranchProduct($updateBranchProductInput: UpdateBranchProductInput
   }
 }
 `
+export const OPEN_CASH = gql`
+mutation OpenCash($createTurnInput: CreateTurnInput!) {
+  openCash(createTurnInput: $createTurnInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      amount
+      currentTurnId
+      isOpen
+      currentTurn {
+        id
+        cashId
+        isOpen
+        openInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          openBy
+          openByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+        closeInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          closeBy
+          closeByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`
+export const CLOSE_CASH = gql`
+mutation Mutation($closeTurnInput: CloseTurnInput!) {
+  closeCash(closeTurnInput: $closeTurnInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      amount
+      currentTurnId
+      isOpen
+      currentTurn {
+        id
+        cashId
+        isOpen
+        openInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          openBy
+          openByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+        closeInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          closeBy
+          closeByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`

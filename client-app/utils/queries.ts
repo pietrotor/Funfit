@@ -686,3 +686,78 @@ export const GET_BRANCH_BY_ID = gql`
   }
 }
 `
+
+export const GET_CASH_BY_ID = gql`
+query GetCashById($getCashByIdId: ObjectId!) {
+  getCashById(id: $getCashByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      amount
+      currentTurnId
+      isOpen
+      currentTurn {
+        id
+        cashId
+        isOpen
+        openInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          openBy
+          openByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+        closeInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          closeBy
+          closeByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`

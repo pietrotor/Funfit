@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { Button } from '@nextui-org/react'
+import { Button, Checkbox } from '@nextui-org/react'
 
 import { useState } from 'react'
 import { MyModal } from './MyModal'
@@ -90,14 +90,8 @@ export const CashMovimentModal = ({
             <div>Diferencia</div>
             <div> {value} Bs</div>
           </div>
-          <InputComponent name="details" control={control} type="textArea"
-          rules={{
-            required: {
-              value: true,
-              message: 'Este campo es obligatorio'
-            }
-          }}
-          />
+          <InputComponent name="details" control={control} type="textArea"/>
+          <Checkbox defaultSelected size="sm">Actualizar movimiento caja</Checkbox>
           <div className="mt-6 grid h-12 w-full grid-cols-2 gap-3 ">
             <Button
               type="submit"
