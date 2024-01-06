@@ -11,7 +11,23 @@ import { errorHandler } from '@/lib/graphqlerrors'
 import { cashCore, turnCore } from '@/services/index'
 
 // ========================================== Queries ====================================================
-
+const getCashById = async (
+  _: any,
+  args: { id: objectId }
+): Promise<CashResponse> => {
+  try {
+    const { id } = args
+    const cashInstance = await cashCore.getCashById(id)
+    return {
+      status: StatusEnum.OK,
+      message: 'Caja abierta correactamente',
+      data: cashInstance
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
 // ========================================== Mutations ====================================================
 const openCash = async (
   _: any,
@@ -57,7 +73,7 @@ const closeCash = async (
 }
 
 export const cashQuery = {
-
+  getCashById
 }
 export const cashMutation = {
   openCash,

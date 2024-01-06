@@ -53,6 +53,8 @@ type Query {
   getBranchById(id: ObjectId!): BranchResponse
   getBranchProductsPaginated(paginationInput: PaginationInput!, branchId: ObjectId!): BranchProductsResponse
   getBranchProductById(id: ObjectId!): BranchProductResponse
+  # CASH ==================================
+  getCashById(id: ObjectId!): CashResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(paginationInput: PaginationInput!): ProductsResponse
 }
