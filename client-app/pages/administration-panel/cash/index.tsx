@@ -1,4 +1,4 @@
-import { useDisclosure, Chip } from '@nextui-org/react'
+import { Chip, useDisclosure } from '@nextui-org/react'
 import { GetServerSideProps } from 'next'
 
 import Table from '@/components/organisms/tableNext/Table'
@@ -17,7 +17,7 @@ function Cash() {
   const handleMovementModal = useDisclosure()
   const handleCloseCashModal = useDisclosure()
 
-  const { loading, data, refetch, variables, setVariables, setFilter } =
+  const { loading, data, variables, setVariables, setFilter } =
     useCustomGetBranchesQuery()
 
   const handleChangeRow = (row: number) => {

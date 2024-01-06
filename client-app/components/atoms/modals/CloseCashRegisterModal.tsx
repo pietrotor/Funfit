@@ -10,7 +10,7 @@ type ModalProps = {
 }
 
 export const CloseCashRegister = ({ isOpen, onClose, onConfirm }: ModalProps) => {
-  const { handleSubmit, control, watch, reset } = useForm()
+  const { control } = useForm()
   return (
     <MyModal isOpen={isOpen} onClose={onClose} size='lg'>
       <section className='p-6 text-lg font-semibold'>
