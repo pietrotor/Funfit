@@ -103,6 +103,26 @@ export type CashResponse = ResponseBase & {
   status: StatusEnum;
 };
 
+export type CashTurnMovementResponse = ResponseBase & {
+  __typename?: 'CashTurnMovementResponse';
+  data?: Maybe<TurnMovements>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']['output']>;
+  status: StatusEnum;
+};
+
+export type CashTurnMovementsResponse = ResponseBase & {
+  __typename?: 'CashTurnMovementsResponse';
+  currentPage?: Maybe<Scalars['Int']['output']>;
+  data?: Maybe<Array<TurnMovements>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']['output']>;
+  rows?: Maybe<Scalars['Int']['output']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+  totalRecords?: Maybe<Scalars['Int']['output']>;
+};
+
 export type CloseTurnInfo = {
   __typename?: 'CloseTurnInfo';
   amount: Scalars['Float']['output'];
@@ -196,6 +216,15 @@ export type CreateTurnInput = {
   updateToPhysicialAmount: Scalars['Boolean']['input'];
 };
 
+export type CreateTurnMovementInput = {
+  amount: Scalars['Float']['input'];
+  cashId: Scalars['ObjectId']['input'];
+  concept?: InputMaybe<Scalars['String']['input']>;
+  date: Scalars['Date']['input'];
+  turnId: Scalars['ObjectId']['input'];
+  type?: InputMaybe<TurnMovementTypeEnum>;
+};
+
 export type CreateWarehouseInput = {
   address: Scalars['String']['input'];
   description: Scalars['String']['input'];
@@ -233,6 +262,7 @@ export type Mutation = {
   creatStockMovement?: Maybe<StockResponse>;
   createBranch?: Maybe<BranchResponse>;
   createBranchProduct?: Maybe<BranchProductResponse>;
+  createCashMovement?: Maybe<CashTurnMovementResponse>;
   createProduct?: Maybe<ProductResponse>;
   createStock?: Maybe<StockResponse>;
   createUser?: Maybe<UserResponse>;
@@ -268,6 +298,11 @@ export type MutationCreateBranchArgs = {
 
 export type MutationCreateBranchProductArgs = {
   createBranchProductInput: CreateBranchProductInput;
+};
+
+
+export type MutationCreateCashMovementArgs = {
+  createTurnMovementInput: CreateTurnMovementInput;
 };
 
 
@@ -404,6 +439,7 @@ export type Query = {
   getBranchProductsPaginated?: Maybe<BranchProductsResponse>;
   getBranchesPaginated?: Maybe<BranchsResponse>;
   getCashById?: Maybe<CashResponse>;
+  getCashTurnMovements?: Maybe<CashTurnMovementsResponse>;
   getConfiguration?: Maybe<ConfigurationResponse>;
   getProductById?: Maybe<ProductResponse>;
   getProductStock?: Maybe<StocksResponse>;
@@ -447,6 +483,12 @@ export type QueryGetBranchesPaginatedArgs = {
 
 export type QueryGetCashByIdArgs = {
   id: Scalars['ObjectId']['input'];
+};
+
+
+export type QueryGetCashTurnMovementsArgs = {
+  paginationInput: PaginationInput;
+  turnId: Scalars['ObjectId']['input'];
 };
 
 
@@ -641,6 +683,25 @@ export type Turn = {
   id: Scalars['ObjectId']['output'];
   isOpen: Scalars['Boolean']['output'];
   openInfo: OpenTurnInfo;
+};
+
+export enum TurnMovementTypeEnum {
+  ADD = 'ADD',
+  ADJUST = 'ADJUST',
+  WITHDRAW = 'WITHDRAW'
+}
+
+export type TurnMovements = {
+  __typename?: 'TurnMovements';
+  amount: Scalars['Float']['output'];
+  cashId: Scalars['ObjectId']['output'];
+  concept?: Maybe<Scalars['String']['output']>;
+  createdBy?: Maybe<Scalars['ObjectId']['output']>;
+  createdByInfo?: Maybe<User>;
+  date: Scalars['Date']['output'];
+  id: Scalars['ObjectId']['output'];
+  turnId: Scalars['ObjectId']['output'];
+  type?: Maybe<TurnMovementTypeEnum>;
 };
 
 export type UpdateBranchInput = {
@@ -854,7 +915,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  ResponseBase: ( BranchProductResponse ) | ( BranchProductsResponse ) | ( BranchResponse ) | ( BranchsResponse ) | ( CashResponse ) | ( ConfigurationResponse ) | ( LoginResponse ) | ( ProductResponse ) | ( ProductsResponse ) | ( Response ) | ( RolesResponse ) | ( StockResponse ) | ( StocksHistoryResponse ) | ( StocksResponse ) | ( UserResponse ) | ( UsersResponse ) | ( WarehouseResponse ) | ( WarehousesResponse );
+  ResponseBase: ( BranchProductResponse ) | ( BranchProductsResponse ) | ( BranchResponse ) | ( BranchsResponse ) | ( CashResponse ) | ( CashTurnMovementResponse ) | ( CashTurnMovementsResponse ) | ( ConfigurationResponse ) | ( LoginResponse ) | ( ProductResponse ) | ( ProductsResponse ) | ( Response ) | ( RolesResponse ) | ( StockResponse ) | ( StocksHistoryResponse ) | ( StocksResponse ) | ( UserResponse ) | ( UsersResponse ) | ( WarehouseResponse ) | ( WarehousesResponse );
 };
 
 /** Mapping between all available schema types and the resolvers types */
@@ -868,6 +929,8 @@ export type ResolversTypes = {
   BranchsResponse: ResolverTypeWrapper<BranchsResponse>;
   Cash: ResolverTypeWrapper<Cash>;
   CashResponse: ResolverTypeWrapper<CashResponse>;
+  CashTurnMovementResponse: ResolverTypeWrapper<CashTurnMovementResponse>;
+  CashTurnMovementsResponse: ResolverTypeWrapper<CashTurnMovementsResponse>;
   CloseTurnInfo: ResolverTypeWrapper<CloseTurnInfo>;
   CloseTurnInput: CloseTurnInput;
   Configuration: ResolverTypeWrapper<Configuration>;
@@ -878,6 +941,7 @@ export type ResolversTypes = {
   CreateStockInput: CreateStockInput;
   CreateStockMovementInput: CreateStockMovementInput;
   CreateTurnInput: CreateTurnInput;
+  CreateTurnMovementInput: CreateTurnMovementInput;
   CreateWarehouseInput: CreateWarehouseInput;
   Date: ResolverTypeWrapper<Scalars['Date']['output']>;
   ErrorInput: ResolverTypeWrapper<ErrorInput>;
@@ -908,6 +972,8 @@ export type ResolversTypes = {
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Time: ResolverTypeWrapper<Scalars['Time']['output']>;
   Turn: ResolverTypeWrapper<Turn>;
+  TurnMovementTypeEnum: TurnMovementTypeEnum;
+  TurnMovements: ResolverTypeWrapper<TurnMovements>;
   UpdateBranchInput: UpdateBranchInput;
   UpdateBranchProductInput: UpdateBranchProductInput;
   UpdateConfigurationInput: UpdateConfigurationInput;
@@ -936,6 +1002,8 @@ export type ResolversParentTypes = {
   BranchsResponse: BranchsResponse;
   Cash: Cash;
   CashResponse: CashResponse;
+  CashTurnMovementResponse: CashTurnMovementResponse;
+  CashTurnMovementsResponse: CashTurnMovementsResponse;
   CloseTurnInfo: CloseTurnInfo;
   CloseTurnInput: CloseTurnInput;
   Configuration: Configuration;
@@ -946,6 +1014,7 @@ export type ResolversParentTypes = {
   CreateStockInput: CreateStockInput;
   CreateStockMovementInput: CreateStockMovementInput;
   CreateTurnInput: CreateTurnInput;
+  CreateTurnMovementInput: CreateTurnMovementInput;
   CreateWarehouseInput: CreateWarehouseInput;
   Date: Scalars['Date']['output'];
   ErrorInput: ErrorInput;
@@ -974,6 +1043,7 @@ export type ResolversParentTypes = {
   String: Scalars['String']['output'];
   Time: Scalars['Time']['output'];
   Turn: Turn;
+  TurnMovements: TurnMovements;
   UpdateBranchInput: UpdateBranchInput;
   UpdateBranchProductInput: UpdateBranchProductInput;
   UpdateConfigurationInput: UpdateConfigurationInput;
@@ -1074,6 +1144,26 @@ export type CashResponseResolvers<ContextType = any, ParentType extends Resolver
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type CashTurnMovementResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CashTurnMovementResponse'] = ResolversParentTypes['CashTurnMovementResponse']> = {
+  data?: Resolver<Maybe<ResolversTypes['TurnMovements']>, ParentType, ContextType>;
+  errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type CashTurnMovementsResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['CashTurnMovementsResponse'] = ResolversParentTypes['CashTurnMovementsResponse']> = {
+  currentPage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  data?: Resolver<Maybe<Array<ResolversTypes['TurnMovements']>>, ParentType, ContextType>;
+  errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  rows?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
+  totalPages?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  totalRecords?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type CloseTurnInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['CloseTurnInfo'] = ResolversParentTypes['CloseTurnInfo']> = {
   amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   closeBy?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
@@ -1135,6 +1225,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   creatStockMovement?: Resolver<Maybe<ResolversTypes['StockResponse']>, ParentType, ContextType, RequireFields<MutationCreatStockMovementArgs, 'createStockMovementInput'>>;
   createBranch?: Resolver<Maybe<ResolversTypes['BranchResponse']>, ParentType, ContextType, RequireFields<MutationCreateBranchArgs, 'createBranchInput'>>;
   createBranchProduct?: Resolver<Maybe<ResolversTypes['BranchProductResponse']>, ParentType, ContextType, RequireFields<MutationCreateBranchProductArgs, 'createBranchProductInput'>>;
+  createCashMovement?: Resolver<Maybe<ResolversTypes['CashTurnMovementResponse']>, ParentType, ContextType, RequireFields<MutationCreateCashMovementArgs, 'createTurnMovementInput'>>;
   createProduct?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationCreateProductArgs, 'createProductInput'>>;
   createStock?: Resolver<Maybe<ResolversTypes['StockResponse']>, ParentType, ContextType, RequireFields<MutationCreateStockArgs, 'createStockInput'>>;
   createUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'userInput'>>;
@@ -1207,6 +1298,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getBranchProductsPaginated?: Resolver<Maybe<ResolversTypes['BranchProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetBranchProductsPaginatedArgs, 'branchId' | 'paginationInput'>>;
   getBranchesPaginated?: Resolver<Maybe<ResolversTypes['BranchsResponse']>, ParentType, ContextType, RequireFields<QueryGetBranchesPaginatedArgs, 'paginationInput'>>;
   getCashById?: Resolver<Maybe<ResolversTypes['CashResponse']>, ParentType, ContextType, RequireFields<QueryGetCashByIdArgs, 'id'>>;
+  getCashTurnMovements?: Resolver<Maybe<ResolversTypes['CashTurnMovementsResponse']>, ParentType, ContextType, RequireFields<QueryGetCashTurnMovementsArgs, 'paginationInput' | 'turnId'>>;
   getConfiguration?: Resolver<Maybe<ResolversTypes['ConfigurationResponse']>, ParentType, ContextType>;
   getProductById?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<QueryGetProductByIdArgs, 'id'>>;
   getProductStock?: Resolver<Maybe<ResolversTypes['StocksResponse']>, ParentType, ContextType, RequireFields<QueryGetProductStockArgs, 'paginationInput' | 'productId'>>;
@@ -1234,7 +1326,7 @@ export type ResponseResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type ResponseBaseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResponseBase'] = ResolversParentTypes['ResponseBase']> = {
-  __resolveType: TypeResolveFn<'BranchProductResponse' | 'BranchProductsResponse' | 'BranchResponse' | 'BranchsResponse' | 'CashResponse' | 'ConfigurationResponse' | 'LoginResponse' | 'ProductResponse' | 'ProductsResponse' | 'Response' | 'RolesResponse' | 'StockResponse' | 'StocksHistoryResponse' | 'StocksResponse' | 'UserResponse' | 'UsersResponse' | 'WarehouseResponse' | 'WarehousesResponse', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'BranchProductResponse' | 'BranchProductsResponse' | 'BranchResponse' | 'BranchsResponse' | 'CashResponse' | 'CashTurnMovementResponse' | 'CashTurnMovementsResponse' | 'ConfigurationResponse' | 'LoginResponse' | 'ProductResponse' | 'ProductsResponse' | 'Response' | 'RolesResponse' | 'StockResponse' | 'StocksHistoryResponse' | 'StocksResponse' | 'UserResponse' | 'UsersResponse' | 'WarehouseResponse' | 'WarehousesResponse', ParentType, ContextType>;
   errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
@@ -1330,6 +1422,19 @@ export type TurnResolvers<ContextType = any, ParentType extends ResolversParentT
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type TurnMovementsResolvers<ContextType = any, ParentType extends ResolversParentTypes['TurnMovements'] = ResolversParentTypes['TurnMovements']> = {
+  amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  cashId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  concept?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  createdBy?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
+  createdByInfo?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  date?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  turnId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  type?: Resolver<Maybe<ResolversTypes['TurnMovementTypeEnum']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   createdBy?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -1401,6 +1506,8 @@ export type Resolvers<ContextType = any> = {
   BranchsResponse?: BranchsResponseResolvers<ContextType>;
   Cash?: CashResolvers<ContextType>;
   CashResponse?: CashResponseResolvers<ContextType>;
+  CashTurnMovementResponse?: CashTurnMovementResponseResolvers<ContextType>;
+  CashTurnMovementsResponse?: CashTurnMovementsResponseResolvers<ContextType>;
   CloseTurnInfo?: CloseTurnInfoResolvers<ContextType>;
   Configuration?: ConfigurationResolvers<ContextType>;
   ConfigurationResponse?: ConfigurationResponseResolvers<ContextType>;
@@ -1426,6 +1533,7 @@ export type Resolvers<ContextType = any> = {
   StocksResponse?: StocksResponseResolvers<ContextType>;
   Time?: GraphQLScalarType;
   Turn?: TurnResolvers<ContextType>;
+  TurnMovements?: TurnMovementsResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserResponse?: UserResponseResolvers<ContextType>;
   UsersResponse?: UsersResponseResolvers<ContextType>;
