@@ -10,7 +10,11 @@ enum StockMovementTypeEnum {
   OUTWARD
   DISPOSE
 }
-
+enum TurnMovementTypeEnum {
+  ADD
+  WITHDRAW
+  ADJUST
+}
 type Query {
   # CONFIGURATION ====================================
   getConfiguration: ConfigurationResponse
@@ -55,6 +59,7 @@ type Query {
   getBranchProductById(id: ObjectId!): BranchProductResponse
   # CASH ==================================
   getCashById(id: ObjectId!): CashResponse
+  getCashTurnMovements(paginationInput: PaginationInput!, turnId: ObjectId!): CashTurnMovementsResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(paginationInput: PaginationInput!): ProductsResponse
 }
@@ -96,6 +101,7 @@ type Mutation {
   # CASH ==================================
   openCash(createTurnInput: CreateTurnInput!): CashResponse
   closeCash(closeTurnInput: CloseTurnInput!): CashResponse
+  createCashMovement(createTurnMovementInput: CreateTurnMovementInput!): CashTurnMovementResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type MeasurementUnits {
@@ -235,6 +241,18 @@ type Turn {
   isOpen: Boolean!
   openInfo: OpenTurnInfo!
   closeInfo: CloseTurnInfo
+}
+type TurnMovements {
+  id: ObjectId!
+  turnId: ObjectId!
+  cashId: ObjectId!
+  amount: Float!
+  date: Date!
+  type: TurnMovementTypeEnum
+  concept: String
+  createdBy: ObjectId
+  # Fields Resolvers
+  createdByInfo: User
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -381,6 +399,22 @@ type CashResponse implements ResponseBase {
   message: String
   data: Cash
 }
+type CashTurnMovementsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [TurnMovements!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type CashTurnMovementResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: TurnMovements
+}
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
   name: String!
@@ -521,4 +555,12 @@ input CloseTurnInput {
   difference: Float!
   observation: String
   updateToPhysicialAmount: Boolean!
+}
+input CreateTurnMovementInput {
+  turnId: ObjectId!
+  cashId: ObjectId!
+  amount: Float!
+  date: Date!
+  type: TurnMovementTypeEnum
+  concept: String
 }

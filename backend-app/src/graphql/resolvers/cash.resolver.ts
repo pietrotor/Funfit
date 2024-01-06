@@ -4,11 +4,17 @@ import {
   CashResponse,
   CloseTurnInput,
   Cash,
-  Turn
+  Turn,
+  PaginationInput,
+  CashTurnMovementsResponse,
+  TurnMovements,
+  User,
+  CreateTurnMovementInput,
+  CashTurnMovementResponse
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
-import { cashCore, turnCore } from '@/services/index'
+import { cashCore, turnCore, turnMovementCore, userCore } from '@/services/index'
 
 // ========================================== Queries ====================================================
 const getCashById = async (
@@ -23,6 +29,18 @@ const getCashById = async (
       message: 'Caja abierta correactamente',
       data: cashInstance
     }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
+const getCashTurnMovements = async (
+  _: any,
+  args: { paginationInput: PaginationInput, turnId: objectId }
+): Promise<CashTurnMovementsResponse> => {
+  try {
+    const { paginationInput, turnId } = args
+    return await turnMovementCore.getTurnMovementsPaginated(paginationInput, turnId)
   } catch (error) {
     console.log(error)
     return errorHandler(error)
@@ -71,13 +89,35 @@ const closeCash = async (
     return errorHandler(error)
   }
 }
-
+const createCashMovement = async (
+  _: any,
+  args: { createTurnMovementInput: CreateTurnMovementInput },
+  context: ContextGraphQl
+): Promise<CashTurnMovementResponse> => {
+  try {
+    const { createTurnMovementInput } = args
+    const movementInstance = await turnMovementCore.createMovement(
+      createTurnMovementInput,
+      context.req.currentUser?.id
+    )
+    return {
+      status: StatusEnum.OK,
+      message: 'Movimiento de dinero realizado exitosamente',
+      data: movementInstance
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
 export const cashQuery = {
-  getCashById
+  getCashById,
+  getCashTurnMovements
 }
 export const cashMutation = {
   openCash,
-  closeCash
+  closeCash,
+  createCashMovement
 }
 
 export const cashType = {
@@ -86,6 +126,15 @@ export const cashType = {
       if (parent.currentTurnId) {
         const turn = await turnCore.getTurnByIdInstance(parent.currentTurnId)
         return turn
+      }
+      return null
+    }
+  },
+  TurnMovements: {
+    async createdByInfo(parent: TurnMovements, _: any, __: any): Promise<User | null> {
+      if (parent.createdBy) {
+        const user = await userCore.getUserByIdInstance(parent.createdBy)
+        return user
       }
       return null
     }
