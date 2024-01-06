@@ -1,8 +1,8 @@
-import { Button, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
+import { useDisclosure } from '@nextui-org/react'
 
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -14,6 +14,7 @@ import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { TStockData } from '@/interfaces/TData'
 import { WarehouseRoute } from '@/utils/routes'
+import { AdminButton } from '@/components/atoms/Button/AdminButton'
 
 function Warehouse() {
   const [variables, setVariables] = useState<PaginationInterfaceState>({
@@ -62,25 +63,20 @@ function Warehouse() {
           Administración de Stocks
         </h3>
         <div className="flex justify-end space-x-3">
-        <Button
-            onClick={() =>
-              router.push(` ${WarehouseRoute}/${warehouseId}/warehouse-history`)
-            }
-            color="primary"
-            className=" my-4 font-extrabold text-white"
-          >
-            <IconSelector name="Warehouse" />
-            Historial del almacén
-          </Button>
-
-            <Button
-              color="secondary"
-              className="float-right my-4 font-extrabold text-white"
-              onClick={ () => router.push(`/administration-panel/warehouses/${warehouseId}/create-stock`)}
-            >
-              <IconSelector name="Box" />
-              Agregar nuevo Stock
-            </Button>
+        <AdminButton
+         pathname={`${WarehouseRoute}/${warehouseId}/warehouse-history`}
+          color="primary"
+          text='Historial del almacén'
+          iconName='Warehouse'
+          showMinIcon={true}
+          addPlusIcon={false}
+          />
+          <AdminButton
+          color='secondary'
+          pathname={`/administration-panel/warehouses/${warehouseId}/create-stock`}
+          iconName='Box'
+          text='Agregar nuevo Stock'
+          />
         </div>
         <Table
           titles={[

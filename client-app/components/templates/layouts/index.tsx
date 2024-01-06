@@ -62,6 +62,11 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           icon: 'Branch',
           text: 'Sucursales',
           link: '/administration-panel/branches'
+        },
+        {
+          icon: 'Cash',
+          text: 'Caja',
+          link: '/administration-panel/cash'
         }
       ]
     }

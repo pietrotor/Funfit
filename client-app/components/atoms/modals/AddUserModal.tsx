@@ -107,10 +107,6 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
               required: {
                 value: true,
                 message: 'Este campo es obligatorio'
-              },
-              pattern: {
-                value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
-                message: 'Email inválido'
               }
             }}
           />

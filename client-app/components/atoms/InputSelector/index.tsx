@@ -16,6 +16,7 @@ type TSelectorProps = {
   label?: string
   width?: string
   fontSize?: string
+  defaultValue: string[] | any
   rules?:
     | Omit<
         RegisterOptions<any, string>,
@@ -36,6 +37,7 @@ const Selector: React.FC<TSelectorProps> = ({
   placeholder,
   width = 'w-full',
   fontSize = 'text-base',
+  defaultValue,
   textColor = 'text-gray-900'
 }) => {
   if (control) {
@@ -51,6 +53,7 @@ const Selector: React.FC<TSelectorProps> = ({
                 variant={'bordered'}
                 label={label}
                 onClick={onClick}
+                defaultSelectedKeys={[defaultValue]}
                 style={{ border: '1px solid' }}
               >
                 {options.map((option, idx) => (

@@ -35,7 +35,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
       {/* backdrop (mobile) */}
       <div
         onClick={() => setSidebar(false)}
-        className={`fixed inset-0 z-40 bg-primary bg-opacity-50 transition-opacity duration-200 lg:z-auto lg:hidden ${
+        className={`fixed inset-0 z-40  bg-opacity-50 transition-opacity duration-200 lg:z-auto lg:hidden ${
           isSidebarOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         aria-hidden="true"
@@ -47,7 +47,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
       >
         {/* Simple sidebar */}
         <div
-          className={`flex h-full w-24 min-w-[64px] flex-col justify-between bg-secondary/20 shadow-2xl  ${
+          className={`flex bg-red-600 h-full w-24 min-w-[64px] flex-col justify-between bg-secondary/20 shadow-2xl  ${
             !isSidebarOpen ? 'rounded-br-2xl rounded-tr-2xl' : ''
           }`}
         >

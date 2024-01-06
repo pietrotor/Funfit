@@ -6,13 +6,13 @@ import Input from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
 
 import { StatusEnum, useUpdateBranchMutation } from '@/graphql/graphql-types'
-import { TStockDataBranch } from '@/interfaces/TData'
+import { TDataBranch } from '@/interfaces/TData'
 
 interface EditBranchModalProps {
   isOpen: boolean
   onClose: () => void
   onAdd: () => void
-  values : TStockDataBranch
+  values : TDataBranch
 }
 
 export const EditBranchModal = ({

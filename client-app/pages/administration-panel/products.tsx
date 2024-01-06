@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Image, useDisclosure } from '@nextui-org/react'
+import { Image, useDisclosure } from '@nextui-org/react'
 import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
 import Table from '@/components/organisms/tableNext/Table'
@@ -21,6 +21,7 @@ import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
+import { AdminButton } from '@/components/atoms/Button/AdminButton'
 
 const Productos = () => {
   const [editProduct, setEditProduct] = useState<TValueProductData>({})
@@ -139,14 +140,13 @@ const Productos = () => {
         <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de productos
         </h2>
-        <Button
+        <AdminButton
           onClick={handleAddProduct.onOpen}
           color="secondary"
-          className="float-right my-4 font-extrabold text-white"
-        >
-          <IconSelector name="Box" />
-          Agregar nuevo producto
-        </Button>
+          text='Agregar nuevo producto'
+          iconName='Box'
+        />
+
         <Table
           tableName="PRODUCTOS"
           isLoading={loading}
