@@ -15,6 +15,11 @@ module.exports = {
   ],
   rules: {
     'no-undef': 'off',
-    'no-useless-constructor': 'off'
+    'no-useless-constructor': 'off',
+    'space-before-function-paren': ['error', {
+      anonymous: 'never',
+      named: 'never',
+      asyncArrow: 'always'
+    }]
   }
 }

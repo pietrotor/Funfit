@@ -221,7 +221,7 @@ type OpenTurnInfo {
   difference: Float!
   date: Date!
   observation: String
-  openBy: ObjectId!
+  openBy: ObjectId
   # Fields Resolver
   openByInfo: User
 }
@@ -231,7 +231,7 @@ type CloseTurnInfo {
   difference: Float!
   date: Date!
   observation: String
-  closeBy: ObjectId!
+  closeBy: ObjectId
   # Fields Resolver
   closeByInfo: User
 }
