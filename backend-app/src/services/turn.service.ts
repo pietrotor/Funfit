@@ -36,13 +36,13 @@ export class TurnService extends TurnRepository<objectId> {
     const turnInstance = new Turn({
       cashId,
       isOpen: true,
+      closeInfo: null,
       openInfo: {
         ...openInfo,
         date: new Date(),
         openBy: createdBy
       },
-      createdBy,
-      closeInfo: null
+      createdBy
     })
     cashInstance.currentTurnId = turnInstance._id
     cashInstance.isOpen = true

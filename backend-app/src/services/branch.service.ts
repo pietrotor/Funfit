@@ -1,7 +1,6 @@
 import { CreateBranchInput, PaginationInput, UpdateBranchInput } from '@/graphql/graphql_types'
 import { BadRequestError } from '@/lib/graphqlerrors'
 import { updateGenericInstance } from '@/lib/updateInstance'
-// import { BranchRepository } from '@/repositories/index'
 import { getInstancesPagination } from './generic.service'
 import { Branch, Cash, IBranch, IModelBranch } from '../models'
 import { BranchRepository } from '../repositories'

@@ -4,11 +4,13 @@ import {
   BranchsResponse,
   BranchResponse,
   CreateBranchInput,
-  UpdateBranchInput
+  UpdateBranchInput,
+  Branch,
+  Cash
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
-import { branchCore } from '@/services/index'
+import { branchCore, cashCore } from '@/services/index'
 
 // ========================================== Queries ====================================================
 const getBranchesPaginated = async (
@@ -117,5 +119,13 @@ export const branchMutation = {
 }
 
 export const branchType = {
-
+  Branch: {
+    async cash(parent: Branch, _: any, __: any): Promise<Cash | null> {
+      if (parent.cashId) {
+        const cash = await cashCore.getCashByIdInstance(parent.cashId)
+        return cash
+      }
+      return null
+    }
+  }
 }

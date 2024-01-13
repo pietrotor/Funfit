@@ -57,26 +57,28 @@ const turnSchema = new Schema<ITurn>(
       }
     },
     closeInfo: {
-      _id: false,
-      amount: {
-        type: Number
+      type: {
+        amount: {
+          type: Number
+        },
+        physicialAmount: {
+          type: Number
+        },
+        difference: {
+          type: Number
+        },
+        date: {
+          type: Date
+        },
+        observation: {
+          type: String
+        },
+        closeBy: {
+          type: Schema.Types.ObjectId,
+          ref: 'User'
+        }
       },
-      physicialAmount: {
-        type: Number
-      },
-      difference: {
-        type: Number
-      },
-      date: {
-        type: Date
-      },
-      observation: {
-        type: String
-      },
-      closeBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-      }
+      default: null
     },
     // Generic Types
     status: { type: Boolean, default: true },

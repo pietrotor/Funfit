@@ -18,7 +18,6 @@ module.exports = {
     }
   ],
   trailingComma: 'none',
-  importOrder: ['^components/(.*)$', '^[./]'],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
   singleQuote: true
