@@ -126,7 +126,7 @@ export type CashTurnMovementsResponse = ResponseBase & {
 export type CloseTurnInfo = {
   __typename?: 'CloseTurnInfo';
   amount: Scalars['Float']['output'];
-  closeBy: Scalars['ObjectId']['output'];
+  closeBy?: Maybe<Scalars['ObjectId']['output']>;
   closeByInfo?: Maybe<User>;
   date: Scalars['Date']['output'];
   difference: Scalars['Float']['output'];
@@ -387,7 +387,7 @@ export type OpenTurnInfo = {
   date: Scalars['Date']['output'];
   difference: Scalars['Float']['output'];
   observation?: Maybe<Scalars['String']['output']>;
-  openBy: Scalars['ObjectId']['output'];
+  openBy?: Maybe<Scalars['ObjectId']['output']>;
   openByInfo?: Maybe<User>;
   physicialAmount: Scalars['Float']['output'];
 };
@@ -678,6 +678,7 @@ export type StocksResponse = ResponseBase & {
 
 export type Turn = {
   __typename?: 'Turn';
+  amountOfMovents: Scalars['Int']['output'];
   cashId: Scalars['ObjectId']['output'];
   closeInfo?: Maybe<CloseTurnInfo>;
   id: Scalars['ObjectId']['output'];
@@ -1166,7 +1167,7 @@ export type CashTurnMovementsResponseResolvers<ContextType = any, ParentType ext
 
 export type CloseTurnInfoResolvers<ContextType = any, ParentType extends ResolversParentTypes['CloseTurnInfo'] = ResolversParentTypes['CloseTurnInfo']> = {
   amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
-  closeBy?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  closeBy?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   closeByInfo?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   date?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   difference?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
@@ -1252,7 +1253,7 @@ export type OpenTurnInfoResolvers<ContextType = any, ParentType extends Resolver
   date?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   difference?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   observation?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  openBy?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  openBy?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   openByInfo?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   physicialAmount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1414,6 +1415,7 @@ export interface TimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type TurnResolvers<ContextType = any, ParentType extends ResolversParentTypes['Turn'] = ResolversParentTypes['Turn']> = {
+  amountOfMovents?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   cashId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   closeInfo?: Resolver<Maybe<ResolversTypes['CloseTurnInfo']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;

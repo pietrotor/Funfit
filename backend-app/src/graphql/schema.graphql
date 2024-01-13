@@ -239,6 +239,7 @@ type Turn {
   id: ObjectId!
   cashId: ObjectId!
   isOpen: Boolean!
+  amountOfMovents: Int!
   openInfo: OpenTurnInfo!
   closeInfo: CloseTurnInfo
 }

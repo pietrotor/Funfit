@@ -9,7 +9,7 @@ export class TurnMovementService extends TurnMovementRepository<objectId> {
   async createMovement(createTurnMovementInput: CreateTurnMovementInput, createdBy?: objectId) {
     const { amount, cashId, turnId } = createTurnMovementInput
     if (amount < 0) throw new BadRequestError('El monto no puede ser negativo')
-    await Promise.all([
+    const [, turnInstance] = await Promise.all([
       cashCore.getCashById(cashId),
       turnCore.getTurnById(turnId)
     ])
@@ -17,6 +17,8 @@ export class TurnMovementService extends TurnMovementRepository<objectId> {
       ...createTurnMovementInput,
       createdBy
     })
+    turnInstance.amountOfMovents += 1
+    await turnInstance.save()
     return await turnMovmementInstance.save()
   }
 

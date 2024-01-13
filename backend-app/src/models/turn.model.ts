@@ -5,6 +5,7 @@ export interface ITurn extends Document, IGeneric {
   id: objectId;
   cashId: objectId;
   isOpen: boolean;
+  amountOfMovents: number;
   openInfo: {
     amount: number;
     physicialAmount: number;
@@ -31,6 +32,10 @@ const turnSchema = new Schema<ITurn>(
       ref: 'Cash'
     },
     isOpen: { type: Boolean, default: false },
+    amountOfMovents: {
+      type: Number,
+      default: 0
+    },
     openInfo: {
       _id: false,
       amount: {
