@@ -64,6 +64,11 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           link: '/administration-panel/branches'
         }
       ]
+    },
+    {
+      icon: 'PointOfSale',
+      text: 'Punto de venta',
+      link: '/administration-panel/point-of-sale'
     }
   ]
   useEffect(() => {
@@ -88,9 +93,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
             setSidebar={setsidebarOpen}
           />
           <div className="transition-duration-500 w-full ps-10 transition-all">
-            {showBackButton && (
-              <BackButton/>
-            )}
+            {showBackButton && <BackButton />}
             {children}
             <ToastComponent />
           </div>
