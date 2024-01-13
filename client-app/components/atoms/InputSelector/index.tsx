@@ -16,7 +16,7 @@ type TSelectorProps = {
   label?: string
   width?: string
   fontSize?: string
-  defaultValue: string[] | any
+  defaultValue?: string[] | any
   rules?:
     | Omit<
         RegisterOptions<any, string>,

@@ -1,41 +1,82 @@
 import { useForm } from 'react-hook-form'
 import { Button, Checkbox } from '@nextui-org/react'
 
-import { useState } from 'react'
 import { MyModal } from './MyModal'
 import Selector from '../InputSelector'
 import InputComponent from '../Input'
+import { showSuccessToast } from '../Toast/toasts'
+import useGetCashById from '@/services/UseGetCashById'
+import { StatusEnum, TurnMovementTypeEnum, useCreateCashMovementMutation } from '@/graphql/graphql-types'
 
 type ModalProps = {
   isOpen: boolean
   onClose: () => void
   onConfirm: () => void
+  cashId: string
 }
 
 export const CashMovimentModal = ({
   isOpen,
   onClose,
-  onConfirm
+  onConfirm,
+  cashId
 }: ModalProps) => {
-  const [value, setValue] = useState <number>(0)
   const { handleSubmit, control, watch, reset } = useForm()
+  const { data } = useGetCashById(cashId)
+
+  const [createCashMovement, { loading }] = useCreateCashMovementMutation()
+
   const onSubmit = () => {
-    console.log(watch())
+    createCashMovement({
+      variables: {
+        createTurnMovementInput: {
+          amount: parseInt(watch('physicialAmount')),
+          cashId,
+          concept: watch('details'),
+          type: watch('movement'),
+          date: new Date().toISOString(),
+          turnId: data?.getCashById?.data?.currentTurnId.toString()
+        }
+      },
+      onCompleted: data => {
+        if (data.createCashMovement?.status === StatusEnum.ERROR) {
+          showSuccessToast(
+            data.createCashMovement?.message || 'Ocurrió un error',
+            'error'
+          )
+        } else {
+          showSuccessToast(
+            data.createCashMovement?.message || 'Movimiento guardado correctamente',
+            'success'
+          )
+          onClose()
+          reset()
+          onConfirm()
+        }
+      }
+    })
   }
   const handleCancel = () => {
     reset()
     onClose()
   }
-  const handleChangeValue = (e:number) => {
-    if (watch('movement') === 'entrada') {
-      setValue(value - parseInt(watch('money')))
-      console.log(value)
+  const handleChangeValue = () => {
+    if (watch('movement') === TurnMovementTypeEnum.ADD) {
+      console.log('value')
+
+      return (
+        parseInt(watch('physicialAmount')) + data?.getCashById?.data?.amount! || 0
+      ).toString()
     }
-    if (watch('movement') === 'salida') {
-      setValue(value - parseInt(watch('money')))
+    if (watch('movement') === TurnMovementTypeEnum.WITHDRAW || watch('movement') === TurnMovementTypeEnum.ADJUST) {
+      console.log('value')
+
+      return (
+        (data?.getCashById?.data?.amount! || 0) - parseInt(watch('physicialAmount'))
+      ).toString()
     }
-    console.log(value)
   }
+
   return (
     <MyModal isOpen={isOpen} onClose={onClose} size="lg">
       <section className="p-6 text-lg font-semibold">
@@ -51,15 +92,16 @@ export const CashMovimentModal = ({
                   defaultValue={'entrada'}
                   control={control}
                   options={[
-                    { label: 'Entrada', value: 'entrada' },
-                    { label: 'Salida', value: 'salida' }
+                    { label: 'Entrada', value: TurnMovementTypeEnum.ADD },
+                    { label: 'Salida', value: TurnMovementTypeEnum.WITHDRAW },
+                    { label: 'Ajuste', value: TurnMovementTypeEnum.ADJUST }
                   ]}
                 />
               </div>
             </div>
             <div className="flex justify-between">
               <div>Dinero en caja</div>
-              <div>300 Bs</div>
+              <div>{data?.getCashById?.data?.amount}</div>
             </div>
             <div className="flex justify-between ">
               <div>Monto del movimiento</div>
@@ -69,8 +111,7 @@ export const CashMovimentModal = ({
                   defaultValue={'0'}
                   customeClassName=""
                   control={control}
-                  onChange={ (e) => handleChangeValue(parseInt(e.target.value))}
-                  name="money"
+                  name="physicialAmount"
                   height={'h-full'}
                   variant="underlined"
                   rules={{
@@ -88,12 +129,13 @@ export const CashMovimentModal = ({
           <hr />
           <div className="my-4 flex justify-between">
             <div>Diferencia</div>
-            <div> {value} Bs</div>
+            <div> {handleChangeValue()} Bs</div>
           </div>
           <InputComponent name="details" control={control} type="textArea"/>
           <Checkbox defaultSelected size="sm">Actualizar movimiento caja</Checkbox>
           <div className="mt-6 grid h-12 w-full grid-cols-2 gap-3 ">
             <Button
+              isLoading={loading}
               type="submit"
               color="secondary"
               className="h-full text-lg font-bold"

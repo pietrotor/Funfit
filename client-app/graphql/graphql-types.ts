@@ -101,6 +101,26 @@ export type CashResponse = ResponseBase & {
   status: StatusEnum;
 };
 
+export type CashTurnMovementResponse = ResponseBase & {
+  __typename?: 'CashTurnMovementResponse';
+  data?: Maybe<TurnMovements>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type CashTurnMovementsResponse = ResponseBase & {
+  __typename?: 'CashTurnMovementsResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<TurnMovements>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
+};
+
 export type CloseTurnInfo = {
   __typename?: 'CloseTurnInfo';
   amount: Scalars['Float'];
@@ -194,6 +214,15 @@ export type CreateTurnInput = {
   updateToPhysicialAmount: Scalars['Boolean'];
 };
 
+export type CreateTurnMovementInput = {
+  amount: Scalars['Float'];
+  cashId: Scalars['ObjectId'];
+  concept?: InputMaybe<Scalars['String']>;
+  date: Scalars['Date'];
+  turnId: Scalars['ObjectId'];
+  type?: InputMaybe<TurnMovementTypeEnum>;
+};
+
 export type CreateWarehouseInput = {
   address: Scalars['String'];
   description: Scalars['String'];
@@ -231,6 +260,7 @@ export type Mutation = {
   creatStockMovement?: Maybe<StockResponse>;
   createBranch?: Maybe<BranchResponse>;
   createBranchProduct?: Maybe<BranchProductResponse>;
+  createCashMovement?: Maybe<CashTurnMovementResponse>;
   createProduct?: Maybe<ProductResponse>;
   createStock?: Maybe<StockResponse>;
   createUser?: Maybe<UserResponse>;
@@ -266,6 +296,11 @@ export type MutationCreateBranchArgs = {
 
 export type MutationCreateBranchProductArgs = {
   createBranchProductInput: CreateBranchProductInput;
+};
+
+
+export type MutationCreateCashMovementArgs = {
+  createTurnMovementInput: CreateTurnMovementInput;
 };
 
 
@@ -402,6 +437,7 @@ export type Query = {
   getBranchProductsPaginated?: Maybe<BranchProductsResponse>;
   getBranchesPaginated?: Maybe<BranchsResponse>;
   getCashById?: Maybe<CashResponse>;
+  getCashTurnMovements?: Maybe<CashTurnMovementsResponse>;
   getConfiguration?: Maybe<ConfigurationResponse>;
   getProductById?: Maybe<ProductResponse>;
   getProductStock?: Maybe<StocksResponse>;
@@ -445,6 +481,12 @@ export type QueryGetBranchesPaginatedArgs = {
 
 export type QueryGetCashByIdArgs = {
   id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetCashTurnMovementsArgs = {
+  paginationInput: PaginationInput;
+  turnId: Scalars['ObjectId'];
 };
 
 
@@ -639,6 +681,25 @@ export type Turn = {
   id: Scalars['ObjectId'];
   isOpen: Scalars['Boolean'];
   openInfo: OpenTurnInfo;
+};
+
+export enum TurnMovementTypeEnum {
+  ADD = 'ADD',
+  ADJUST = 'ADJUST',
+  WITHDRAW = 'WITHDRAW'
+}
+
+export type TurnMovements = {
+  __typename?: 'TurnMovements';
+  amount: Scalars['Float'];
+  cashId: Scalars['ObjectId'];
+  concept?: Maybe<Scalars['String']>;
+  createdBy?: Maybe<Scalars['ObjectId']>;
+  createdByInfo?: Maybe<User>;
+  date: Scalars['Date'];
+  id: Scalars['ObjectId'];
+  turnId: Scalars['ObjectId'];
+  type?: Maybe<TurnMovementTypeEnum>;
 };
 
 export type UpdateBranchInput = {
@@ -860,6 +921,27 @@ export type CreateBranchProductMutationVariables = Exact<{
 
 export type CreateBranchProductMutation = { __typename?: 'Mutation', createBranchProduct?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null } | null };
 
+export type UpdateBranchProductMutationVariables = Exact<{
+  updateBranchProductInput: UpdateBranchProductInput;
+}>;
+
+
+export type UpdateBranchProductMutation = { __typename?: 'Mutation', updateBranchProduct?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null } | null };
+
+export type OpenCashMutationVariables = Exact<{
+  createTurnInput: CreateTurnInput;
+}>;
+
+
+export type OpenCashMutation = { __typename?: 'Mutation', openCash?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy: any, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy: any, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null };
+
+export type CloseCashMutationVariables = Exact<{
+  closeTurnInput: CloseTurnInput;
+}>;
+
+
+export type CloseCashMutation = { __typename?: 'Mutation', closeCash?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy: any, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy: any, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null };
+
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1007,33 +1089,27 @@ export type GetBranchByIdQueryVariables = Exact<{
 
 export type GetBranchByIdQuery = { __typename?: 'Query', getBranchById?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null };
 
-export type UpdateBranchProductMutationVariables = Exact<{
-  updateBranchProductInput: UpdateBranchProductInput;
-}>;
-
-
-export type UpdateBranchProductMutation = { __typename?: 'Mutation', updateBranchProduct?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null } | null };
-
-export type OpenCashMutationVariables = Exact<{
-  createTurnInput: CreateTurnInput;
-}>;
-
-
-export type OpenCashMutation = { __typename?: 'Mutation', openCash?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy: any, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy: any, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null };
-
-export type MutationMutationVariables = Exact<{
-  closeTurnInput: CloseTurnInput;
-}>;
-
-
-export type MutationMutation = { __typename?: 'Mutation', closeCash?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy: any, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy: any, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null };
-
 export type GetCashByIdQueryVariables = Exact<{
   getCashByIdId: Scalars['ObjectId'];
 }>;
 
 
-export type GetCashByIdQuery = { __typename?: 'Query', getCashById?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy: any, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy: any, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null };
+export type GetCashByIdQuery = { __typename?: 'Query', getCashById?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean } | null } | null } | null };
+
+export type CreateCashMovementMutationVariables = Exact<{
+  createTurnMovementInput: CreateTurnMovementInput;
+}>;
+
+
+export type CreateCashMovementMutation = { __typename?: 'Mutation', createCashMovement?: { __typename?: 'CashTurnMovementResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'TurnMovements', id: any, turnId: any, cashId: any, amount: number, date: any, type?: TurnMovementTypeEnum | null, concept?: string | null, createdBy?: any | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null };
+
+export type GetCashTurnMovementsQueryVariables = Exact<{
+  paginationInput: PaginationInput;
+  turnId: Scalars['ObjectId'];
+}>;
+
+
+export type GetCashTurnMovementsQuery = { __typename?: 'Query', getCashTurnMovements?: { __typename?: 'CashTurnMovementsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'TurnMovements', id: any, turnId: any, cashId: any, amount: number, date: any, type?: TurnMovementTypeEnum | null, concept?: string | null, createdBy?: any | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -1604,6 +1680,275 @@ export function useCreateBranchProductMutation(baseOptions?: Apollo.MutationHook
 export type CreateBranchProductMutationHookResult = ReturnType<typeof useCreateBranchProductMutation>;
 export type CreateBranchProductMutationResult = Apollo.MutationResult<CreateBranchProductMutation>;
 export type CreateBranchProductMutationOptions = Apollo.BaseMutationOptions<CreateBranchProductMutation, CreateBranchProductMutationVariables>;
+export const UpdateBranchProductDocument = gql`
+    mutation UpdateBranchProduct($updateBranchProductInput: UpdateBranchProductInput!) {
+  updateBranchProduct(updateBranchProductInput: $updateBranchProductInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      productId
+      price
+      isVisibleOnWeb
+      isVisibleOnMenu
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        description
+        cost
+        image
+        warehouses
+      }
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cashId
+        cash {
+          id
+        }
+      }
+    }
+  }
+}
+    `;
+export type UpdateBranchProductMutationFn = Apollo.MutationFunction<UpdateBranchProductMutation, UpdateBranchProductMutationVariables>;
+
+/**
+ * __useUpdateBranchProductMutation__
+ *
+ * To run a mutation, you first call `useUpdateBranchProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateBranchProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateBranchProductMutation, { data, loading, error }] = useUpdateBranchProductMutation({
+ *   variables: {
+ *      updateBranchProductInput: // value for 'updateBranchProductInput'
+ *   },
+ * });
+ */
+export function useUpdateBranchProductMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBranchProductMutation, UpdateBranchProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateBranchProductMutation, UpdateBranchProductMutationVariables>(UpdateBranchProductDocument, options);
+      }
+export type UpdateBranchProductMutationHookResult = ReturnType<typeof useUpdateBranchProductMutation>;
+export type UpdateBranchProductMutationResult = Apollo.MutationResult<UpdateBranchProductMutation>;
+export type UpdateBranchProductMutationOptions = Apollo.BaseMutationOptions<UpdateBranchProductMutation, UpdateBranchProductMutationVariables>;
+export const OpenCashDocument = gql`
+    mutation OpenCash($createTurnInput: CreateTurnInput!) {
+  openCash(createTurnInput: $createTurnInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      amount
+      currentTurnId
+      isOpen
+      currentTurn {
+        id
+        cashId
+        isOpen
+        openInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          openBy
+          openByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+        closeInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          closeBy
+          closeByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export type OpenCashMutationFn = Apollo.MutationFunction<OpenCashMutation, OpenCashMutationVariables>;
+
+/**
+ * __useOpenCashMutation__
+ *
+ * To run a mutation, you first call `useOpenCashMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useOpenCashMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [openCashMutation, { data, loading, error }] = useOpenCashMutation({
+ *   variables: {
+ *      createTurnInput: // value for 'createTurnInput'
+ *   },
+ * });
+ */
+export function useOpenCashMutation(baseOptions?: Apollo.MutationHookOptions<OpenCashMutation, OpenCashMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<OpenCashMutation, OpenCashMutationVariables>(OpenCashDocument, options);
+      }
+export type OpenCashMutationHookResult = ReturnType<typeof useOpenCashMutation>;
+export type OpenCashMutationResult = Apollo.MutationResult<OpenCashMutation>;
+export type OpenCashMutationOptions = Apollo.BaseMutationOptions<OpenCashMutation, OpenCashMutationVariables>;
+export const CloseCashDocument = gql`
+    mutation CloseCash($closeTurnInput: CloseTurnInput!) {
+  closeCash(closeTurnInput: $closeTurnInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      amount
+      currentTurnId
+      isOpen
+      currentTurn {
+        id
+        cashId
+        isOpen
+        openInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          openBy
+          openByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+        closeInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          closeBy
+          closeByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export type CloseCashMutationFn = Apollo.MutationFunction<CloseCashMutation, CloseCashMutationVariables>;
+
+/**
+ * __useCloseCashMutation__
+ *
+ * To run a mutation, you first call `useCloseCashMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCloseCashMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [closeCashMutation, { data, loading, error }] = useCloseCashMutation({
+ *   variables: {
+ *      closeTurnInput: // value for 'closeTurnInput'
+ *   },
+ * });
+ */
+export function useCloseCashMutation(baseOptions?: Apollo.MutationHookOptions<CloseCashMutation, CloseCashMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CloseCashMutation, CloseCashMutationVariables>(CloseCashDocument, options);
+      }
+export type CloseCashMutationHookResult = ReturnType<typeof useCloseCashMutation>;
+export type CloseCashMutationResult = Apollo.MutationResult<CloseCashMutation>;
+export type CloseCashMutationOptions = Apollo.BaseMutationOptions<CloseCashMutation, CloseCashMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {
@@ -2853,275 +3198,6 @@ export function useGetBranchByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOpti
 export type GetBranchByIdQueryHookResult = ReturnType<typeof useGetBranchByIdQuery>;
 export type GetBranchByIdLazyQueryHookResult = ReturnType<typeof useGetBranchByIdLazyQuery>;
 export type GetBranchByIdQueryResult = Apollo.QueryResult<GetBranchByIdQuery, GetBranchByIdQueryVariables>;
-export const UpdateBranchProductDocument = gql`
-    mutation UpdateBranchProduct($updateBranchProductInput: UpdateBranchProductInput!) {
-  updateBranchProduct(updateBranchProductInput: $updateBranchProductInput) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-      id
-      branchId
-      productId
-      price
-      isVisibleOnWeb
-      isVisibleOnMenu
-      product {
-        id
-        name
-        suggetedPrice
-        code
-        description
-        cost
-        image
-        warehouses
-      }
-      branch {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        cashId
-        cash {
-          id
-        }
-      }
-    }
-  }
-}
-    `;
-export type UpdateBranchProductMutationFn = Apollo.MutationFunction<UpdateBranchProductMutation, UpdateBranchProductMutationVariables>;
-
-/**
- * __useUpdateBranchProductMutation__
- *
- * To run a mutation, you first call `useUpdateBranchProductMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateBranchProductMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateBranchProductMutation, { data, loading, error }] = useUpdateBranchProductMutation({
- *   variables: {
- *      updateBranchProductInput: // value for 'updateBranchProductInput'
- *   },
- * });
- */
-export function useUpdateBranchProductMutation(baseOptions?: Apollo.MutationHookOptions<UpdateBranchProductMutation, UpdateBranchProductMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateBranchProductMutation, UpdateBranchProductMutationVariables>(UpdateBranchProductDocument, options);
-      }
-export type UpdateBranchProductMutationHookResult = ReturnType<typeof useUpdateBranchProductMutation>;
-export type UpdateBranchProductMutationResult = Apollo.MutationResult<UpdateBranchProductMutation>;
-export type UpdateBranchProductMutationOptions = Apollo.BaseMutationOptions<UpdateBranchProductMutation, UpdateBranchProductMutationVariables>;
-export const OpenCashDocument = gql`
-    mutation OpenCash($createTurnInput: CreateTurnInput!) {
-  openCash(createTurnInput: $createTurnInput) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-      id
-      branchId
-      amount
-      currentTurnId
-      isOpen
-      currentTurn {
-        id
-        cashId
-        isOpen
-        openInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          openBy
-          openByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
-        }
-        closeInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          closeBy
-          closeByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-export type OpenCashMutationFn = Apollo.MutationFunction<OpenCashMutation, OpenCashMutationVariables>;
-
-/**
- * __useOpenCashMutation__
- *
- * To run a mutation, you first call `useOpenCashMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useOpenCashMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [openCashMutation, { data, loading, error }] = useOpenCashMutation({
- *   variables: {
- *      createTurnInput: // value for 'createTurnInput'
- *   },
- * });
- */
-export function useOpenCashMutation(baseOptions?: Apollo.MutationHookOptions<OpenCashMutation, OpenCashMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<OpenCashMutation, OpenCashMutationVariables>(OpenCashDocument, options);
-      }
-export type OpenCashMutationHookResult = ReturnType<typeof useOpenCashMutation>;
-export type OpenCashMutationResult = Apollo.MutationResult<OpenCashMutation>;
-export type OpenCashMutationOptions = Apollo.BaseMutationOptions<OpenCashMutation, OpenCashMutationVariables>;
-export const MutationDocument = gql`
-    mutation Mutation($closeTurnInput: CloseTurnInput!) {
-  closeCash(closeTurnInput: $closeTurnInput) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-      id
-      branchId
-      amount
-      currentTurnId
-      isOpen
-      currentTurn {
-        id
-        cashId
-        isOpen
-        openInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          openBy
-          openByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
-        }
-        closeInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          closeBy
-          closeByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
-        }
-      }
-    }
-  }
-}
-    `;
-export type MutationMutationFn = Apollo.MutationFunction<MutationMutation, MutationMutationVariables>;
-
-/**
- * __useMutationMutation__
- *
- * To run a mutation, you first call `useMutationMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useMutationMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [mutationMutation, { data, loading, error }] = useMutationMutation({
- *   variables: {
- *      closeTurnInput: // value for 'closeTurnInput'
- *   },
- * });
- */
-export function useMutationMutation(baseOptions?: Apollo.MutationHookOptions<MutationMutation, MutationMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<MutationMutation, MutationMutationVariables>(MutationDocument, options);
-      }
-export type MutationMutationHookResult = ReturnType<typeof useMutationMutation>;
-export type MutationMutationResult = Apollo.MutationResult<MutationMutation>;
-export type MutationMutationOptions = Apollo.BaseMutationOptions<MutationMutation, MutationMutationVariables>;
 export const GetCashByIdDocument = gql`
     query GetCashById($getCashByIdId: ObjectId!) {
   getCashById(id: $getCashByIdId) {
@@ -3141,56 +3217,6 @@ export const GetCashByIdDocument = gql`
         id
         cashId
         isOpen
-        openInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          openBy
-          openByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
-        }
-        closeInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          closeBy
-          closeByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
-        }
       }
     }
   }
@@ -3224,3 +3250,140 @@ export function useGetCashByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOption
 export type GetCashByIdQueryHookResult = ReturnType<typeof useGetCashByIdQuery>;
 export type GetCashByIdLazyQueryHookResult = ReturnType<typeof useGetCashByIdLazyQuery>;
 export type GetCashByIdQueryResult = Apollo.QueryResult<GetCashByIdQuery, GetCashByIdQueryVariables>;
+export const CreateCashMovementDocument = gql`
+    mutation CreateCashMovement($createTurnMovementInput: CreateTurnMovementInput!) {
+  createCashMovement(createTurnMovementInput: $createTurnMovementInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      turnId
+      cashId
+      amount
+      date
+      type
+      concept
+      createdBy
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
+      }
+    }
+  }
+}
+    `;
+export type CreateCashMovementMutationFn = Apollo.MutationFunction<CreateCashMovementMutation, CreateCashMovementMutationVariables>;
+
+/**
+ * __useCreateCashMovementMutation__
+ *
+ * To run a mutation, you first call `useCreateCashMovementMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCashMovementMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCashMovementMutation, { data, loading, error }] = useCreateCashMovementMutation({
+ *   variables: {
+ *      createTurnMovementInput: // value for 'createTurnMovementInput'
+ *   },
+ * });
+ */
+export function useCreateCashMovementMutation(baseOptions?: Apollo.MutationHookOptions<CreateCashMovementMutation, CreateCashMovementMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCashMovementMutation, CreateCashMovementMutationVariables>(CreateCashMovementDocument, options);
+      }
+export type CreateCashMovementMutationHookResult = ReturnType<typeof useCreateCashMovementMutation>;
+export type CreateCashMovementMutationResult = Apollo.MutationResult<CreateCashMovementMutation>;
+export type CreateCashMovementMutationOptions = Apollo.BaseMutationOptions<CreateCashMovementMutation, CreateCashMovementMutationVariables>;
+export const GetCashTurnMovementsDocument = gql`
+    query GetCashTurnMovements($paginationInput: PaginationInput!, $turnId: ObjectId!) {
+  getCashTurnMovements(paginationInput: $paginationInput, turnId: $turnId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      turnId
+      cashId
+      amount
+      date
+      type
+      concept
+      createdBy
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetCashTurnMovementsQuery__
+ *
+ * To run a query within a React component, call `useGetCashTurnMovementsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCashTurnMovementsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCashTurnMovementsQuery({
+ *   variables: {
+ *      paginationInput: // value for 'paginationInput'
+ *      turnId: // value for 'turnId'
+ *   },
+ * });
+ */
+export function useGetCashTurnMovementsQuery(baseOptions: Apollo.QueryHookOptions<GetCashTurnMovementsQuery, GetCashTurnMovementsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCashTurnMovementsQuery, GetCashTurnMovementsQueryVariables>(GetCashTurnMovementsDocument, options);
+      }
+export function useGetCashTurnMovementsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCashTurnMovementsQuery, GetCashTurnMovementsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCashTurnMovementsQuery, GetCashTurnMovementsQueryVariables>(GetCashTurnMovementsDocument, options);
+        }
+export type GetCashTurnMovementsQueryHookResult = ReturnType<typeof useGetCashTurnMovementsQuery>;
+export type GetCashTurnMovementsLazyQueryHookResult = ReturnType<typeof useGetCashTurnMovementsLazyQuery>;
+export type GetCashTurnMovementsQueryResult = Apollo.QueryResult<GetCashTurnMovementsQuery, GetCashTurnMovementsQueryVariables>;

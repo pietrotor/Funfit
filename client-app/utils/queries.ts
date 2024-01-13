@@ -706,58 +706,52 @@ query GetCashById($getCashByIdId: ObjectId!) {
         id
         cashId
         isOpen
-        openInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          openBy
-          openByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
-        }
-        closeInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          closeBy
-          closeByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
+      }
+    }
+  }
+}
+
+`
+export const GET_CASH_TURN_MOVEMENTS = gql`
+query GetCashTurnMovements($paginationInput: PaginationInput!, $turnId: ObjectId!) {
+  getCashTurnMovements(paginationInput: $paginationInput, turnId: $turnId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      turnId
+      cashId
+      amount
+      date
+      type
+      concept
+      createdBy
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
         }
       }
     }
+    totalRecords
+    totalPages
+    rows
+    currentPage
   }
 }
 `

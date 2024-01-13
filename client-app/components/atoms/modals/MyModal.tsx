@@ -7,6 +7,7 @@ export type ModalProps = {
   children?: React.ReactNode
   hideCloseButton?: boolean
   isDimissable?: boolean
+  radius?: 'sm' | 'md' | 'lg' | 'none' | undefined
   size?:
     | 'xs'
     | 'sm'
@@ -26,10 +27,11 @@ export const MyModal = ({
   children,
   hideCloseButton = true,
   size = '2xl',
-  isDimissable = true
+  isDimissable = true,
+  radius = 'md'
 }: ModalProps) => {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="w-full" hideCloseButton={hideCloseButton} size={size} isDismissable={isDimissable} >
+    <Modal isOpen={isOpen} onClose={onClose} radius={radius} className="w-full" hideCloseButton={hideCloseButton} size={size} isDismissable={isDimissable} >
       <ModalContent>{close => <>{children}</>}</ModalContent>
     </Modal>
   )

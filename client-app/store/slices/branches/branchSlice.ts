@@ -7,14 +7,14 @@ export type TBranch = {
 const initialState : TBranch = {
   branches: [],
   currentBranch: {
-    id: '6597066023e1ed751b6213ff',
-    name: 'Debian',
-    code: 'Camargo',
-    city: 'Camargo',
-    direction: 'Sudeste',
-    phone: '788899',
-    nit: '41455',
-    cashId: '6597066023e1ed751b6213ff'
+    id: '',
+    name: '',
+    code: '',
+    city: '',
+    direction: '',
+    phone: '',
+    nit: '',
+    cashId: ''
 
   }
 }

@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { Chip, useDisclosure } from '@nextui-org/react'
 import { GetServerSideProps } from 'next'
 
@@ -7,25 +8,47 @@ import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
 
-import useCustomGetBranchesQuery from '@/services/UseBranches'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import InformationCard from '@/components/molecules/Card/InformationCard'
 import { CashMovimentModal } from '@/components/atoms/modals/CashMovimentModal'
 import { CloseCashRegister } from '@/components/atoms/modals/CloseCashRegisterModal'
+import { OpenCashRegister } from '@/components/atoms/modals/OpenCashRegisterModal'
+import useGetCashById from '@/services/UseGetCashById'
+import useCustomGetCashTurnMovementQuery from '@/services/UseGetTurnMovementById'
+import { useGetBranchByIdLazyQuery } from '@/graphql/graphql-types'
+import { IsNotContent } from '@/components/atoms/IsNotContent'
 
 function Cash() {
   const handleMovementModal = useDisclosure()
   const handleCloseCashModal = useDisclosure()
+  const handleOpenCashModal = useDisclosure()
+  const [cashId, setCashId] = useState<string>('')
 
-  const { loading, data, variables, setVariables, setFilter } =
-    useCustomGetBranchesQuery()
+  const [getBranch, currentBranch] = useGetBranchByIdLazyQuery()
 
+  useEffect(() => {
+    const branchId = localStorage.getItem('branchId')?.toString().replace(/^"|"$/g, '')
+    getBranch({
+      variables: {
+        getBranchByIdId: branchId
+      },
+      onCompleted: data => {
+        setCashId(data.getBranchById?.data?.cash?.id)
+        console.log(cashId, 'branch')
+      },
+      onError: error => {
+        console.log(error)
+      }
+    })
+  }, [])
+
+  const cash = useGetCashById(cashId)
+  const { loading, data, variables, setVariables, setFilter } = useCustomGetCashTurnMovementQuery(cash.data?.getCashById?.data?.currentTurn?.id)
   const handleChangeRow = (row: number) => {
     setVariables({ ...variables, rows: row, currentPage: 1 })
   }
-
   return (
-    <AdministrationLayout>
+    <AdministrationLayout onSubmit={currentBranch.refetch}>
       <div className="m-auto mt-16 w-5/6 ">
         <h2 className="mb-2 text-center text-4xl font-extrabold text-gray-500 ">
           Administración de caja
@@ -35,7 +58,7 @@ function Cash() {
             <div className="flex justify-between">
               <div className="text-lg font-bold">
                 <div className="text-xl">Dinero en caja:</div>
-                <div>200 bs.</div>
+                <div>{cash.data?.getCashById?.data?.amount} bs.</div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
                 <IconSelector
@@ -51,7 +74,7 @@ function Cash() {
             <div className="flex justify-between">
               <div className="text-lg font-bold">
                 <div className="text-xl">Horario de apertura:</div>
-                <div>04/01/2024 A Hrs: 09:05</div>
+                <div>{currentBranch.data?.getBranchById?.data?.cash?.currentTurn?.openInfo || '00:00'}</div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
                 <IconSelector
@@ -67,7 +90,7 @@ function Cash() {
             <div className="flex justify-between">
               <div className="text-lg font-bold">
                 <div className="">Sucursal:</div>
-                <div>Central</div>
+                <div>{currentBranch.data?.getBranchById?.data?.name}</div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
                 <IconSelector
@@ -83,7 +106,7 @@ function Cash() {
             <div className="flex justify-between">
               <div className="text-lg font-bold">
                 <div className="">Movimientos en caja:</div>
-                <div>20</div>
+                <div>{data?.getCashTurnMovements?.data?.length}</div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
                 <IconSelector
@@ -97,7 +120,8 @@ function Cash() {
           </InformationCard>
         </section>
         <div className=" flex justify-end space-x-5 text-end">
-          <AdminButton
+          {cash.data?.getCashById?.data?.isOpen ? (
+            <AdminButton
             onClick={handleCloseCashModal.onOpen}
             color="danger"
             text="Cerrar caja"
@@ -105,7 +129,18 @@ function Cash() {
             addPlusIcon={false}
             showMinIcon={true}
           />
+          ) : (
+            <AdminButton
+            onClick={handleOpenCashModal.onOpen}
+            color="secondary"
+            text="Abrir caja"
+            iconName="Padlock"
+            addPlusIcon={false}
+            showMinIcon={true}
+            />)
+          }
           <AdminButton
+            disabled={!cash.data?.getCashById?.data?.isOpen}
             onClick={handleMovementModal.onOpen}
             color="primary"
             text="Realizar movimieto"
@@ -114,7 +149,8 @@ function Cash() {
             showMinIcon={true}
           />
         </div>
-        <Table
+        { cash.data?.getCashById?.data?.isOpen ? (
+          <Table
           onChangeRow={row => handleChangeRow(row)}
           tableName="CAJA"
           onChangePage={page =>
@@ -134,7 +170,7 @@ function Cash() {
             { name: 'En fecha' },
             { name: 'Tipo de movimiento' }
           ]}
-          items={(data?.getBranchesPaginated?.data || []).map(
+          items={(data?.getCashTurnMovements?.data || []).map(
             (branch, idx) => ({
               content: [
                 <h3 key={idx} className="text-sm">
@@ -144,14 +180,14 @@ function Cash() {
                     1}
                 </h3>,
                 <div key={idx} className="text-sm">
-                  {branch.name}
+                  {branch.amount}
                 </div>,
                 <div key={idx} className="text-left text-sm">
-                  {branch.city}
+                  {branch.concept}
                 </div>,
                 <div key={idx} className="text-center text-sm">
                   <p>14:37</p>
-                  <p>29 de diciembre de 2023  </p>
+                  <p>29 de diciembre de 2023 </p>
                 </div>,
                 <div key={idx} className="text-center text-sm font-bold">
                   <Chip color="success" variant="flat">
@@ -161,9 +197,28 @@ function Cash() {
               ]
             })
           )}
+        />) : (
+          <IsNotContent text='La caja no se encuetra abierta'/>
+        )
+        }
+        <CashMovimentModal
+          cashId={cashId}
+          onClose={handleMovementModal.onClose}
+          isOpen={handleMovementModal.isOpen}
+          onConfirm={cash.refetch}
         />
-        <CashMovimentModal onClose={handleMovementModal.onClose} isOpen={handleMovementModal.isOpen} onConfirm={() => console.log('successfull')}/>
-        <CloseCashRegister onClose={handleCloseCashModal.onClose} isOpen={handleCloseCashModal.isOpen} onConfirm={() => console.log('successfull')}/>
+        <CloseCashRegister
+          cashId={cashId}
+          onClose={handleCloseCashModal.onClose}
+          isOpen={handleCloseCashModal.isOpen}
+          onConfirm={cash.refetch}
+        />
+        <OpenCashRegister
+          cashId={cashId}
+          onClose={handleOpenCashModal.onClose}
+          isOpen={handleOpenCashModal.isOpen}
+          onConfirm={cash.refetch}
+        />
       </div>
     </AdministrationLayout>
   )

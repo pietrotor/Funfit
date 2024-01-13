@@ -405,7 +405,7 @@ mutation OpenCash($createTurnInput: CreateTurnInput!) {
 }
 `
 export const CLOSE_CASH = gql`
-mutation Mutation($closeTurnInput: CloseTurnInput!) {
+mutation CloseCash($closeTurnInput: CloseTurnInput!) {
   closeCash(closeTurnInput: $closeTurnInput) {
     errorInput {
       message
@@ -472,6 +472,45 @@ mutation Mutation($closeTurnInput: CloseTurnInput!) {
               status
             }
           }
+        }
+      }
+    }
+  }
+}
+`
+export const CREATE_CASH_MOVEMENT = gql`
+mutation CreateCashMovement($createTurnMovementInput: CreateTurnMovementInput!) {
+  createCashMovement(createTurnMovementInput: $createTurnMovementInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      turnId
+      cashId
+      amount
+      date
+      type
+      concept
+      createdBy
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
         }
       }
     }
