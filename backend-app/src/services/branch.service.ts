@@ -50,7 +50,7 @@ export class BranchService extends BranchRepository<objectId> {
       branchId: branchInstance._id
     })
     await cashInstance.save()
-    branchInstance.cashId = branchInstance._id
+    branchInstance.cashId = cashInstance._id
     return await branchInstance.save()
   }
 
