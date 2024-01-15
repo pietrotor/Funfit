@@ -1,16 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit'
 export type TCartItem = {
+  id: string
   productName: string
   price: number
   quantity: number
   pictureUrl: string
 }
 export type TCart = {
+  id: string
   cartItems: TCartItem[]
   cartSubTotal: number
   cartDetails?: string
 }
 const initialState: TCart = {
+  id: '',
   cartItems: [],
   cartSubTotal: 0,
   cartDetails: ''
@@ -23,12 +26,12 @@ export const cartSlice = createSlice({
     addToCart(state, action) {
       const item = action.payload
       const existItem = initialState.cartItems.find(
-        x => x.productName === item.productName
+        x => x.id === item.id
       )
 
       if (existItem) {
         state.initialState.cartItems = state.initialState.cartItems.map(x => {
-          if (x.productName === existItem.productName) {
+          if (x.id === existItem.id) {
             return {
               ...x,
               quantity: x.quantity + item.quantity,

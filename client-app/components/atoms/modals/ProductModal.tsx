@@ -1,4 +1,3 @@
-'use client'
 import React, { useRef, useState } from 'react'
 import {
   Button,
@@ -10,12 +9,13 @@ import {
 } from '@nextui-org/react'
 import Slide from '../../molecules/Slide/slide'
 import { showSuccessToast } from '../Toast/toasts'
-import { useAppDispatch } from '@/components/redux/hooks'
-import { addToCart, TCartItem } from '@/components/redux/features/cartSlice'
+import { addToCart, TCartItem } from '@/store/slices'
+import { useAppDispatch } from '@/store/index'
 type TProps = {
   onOpen: () => void
   onClose: () => void
   isOpen: boolean
+  id: string
   title: string
   description: string
   price: number
@@ -26,6 +26,7 @@ const ProductModal: React.FC<TProps> = ({
   onOpen,
   onClose,
   isOpen,
+  id,
   title,
   description,
   price,
@@ -34,6 +35,7 @@ const ProductModal: React.FC<TProps> = ({
   const dispatch = useAppDispatch()
   const [count, setCount] = useState(1)
   const data = useRef<TCartItem>({
+    id,
     productName: title,
     quantity: count,
     price: price * count,
@@ -46,6 +48,7 @@ const ProductModal: React.FC<TProps> = ({
   const addProduct = (units: number) => {
     showSuccessToast('Producto añadido exitosamente', 'success')
     data.current = {
+      id,
       productName: title,
       quantity: units,
       price: price * units,

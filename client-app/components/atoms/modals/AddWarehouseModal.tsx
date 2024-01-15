@@ -17,7 +17,7 @@ export const AddWarehouseModal = ({
   onClose,
   onAddWarehouse
 }: ModalProps) => {
-  const [createWarehouse] = useCreateWarehouseMutation()
+  const [createWarehouse, { loading }] = useCreateWarehouseMutation()
   const { handleSubmit, control, watch, reset } = useForm()
   const onSubmit = () => {
     createWarehouse({
@@ -73,10 +73,6 @@ export const AddWarehouseModal = ({
               required: {
                 value: true,
                 message: 'Este campo es obligatorio'
-              },
-              pattern: {
-                value: /^[a-zA-Z\s]+$/i,
-                message: 'Solo se permiten letras'
               }
             }}
           />
@@ -112,11 +108,22 @@ export const AddWarehouseModal = ({
               }
             }}
           />
-          <div className="mt-6 w-full grid h-12 grid-cols-2 gap-3 ">
-            <Button type="submit" color="secondary" className="h-full text-lg font-bold">
+          <div className="mt-6 grid h-12 w-full grid-cols-2 gap-3 ">
+            <Button
+              isLoading={loading}
+
+              type="submit"
+              color="secondary"
+              className="h-full text-lg font-bold"
+            >
               Agregar
             </Button>
-            <Button variant="flat" color="danger" className="h-full text-lg font-bold" onClick={handleCancel}>
+            <Button
+              variant="flat"
+              color="danger"
+              className="h-full text-lg font-bold"
+              onClick={handleCancel}
+            >
               Cancelar
             </Button>
           </div>

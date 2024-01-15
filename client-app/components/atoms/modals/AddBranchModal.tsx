@@ -19,7 +19,7 @@ export const AddBranchModal = ({
   onAdd
 }: AddBranchModalProps) => {
   const { handleSubmit, watch, control, reset } = useForm()
-  const [createBranch] = useCreateBranchMutation()
+  const [createBranch, { loading }] = useCreateBranchMutation()
   const onSubmit = () => {
     createBranch({
       variables: {
@@ -78,10 +78,6 @@ export const AddBranchModal = ({
               required: {
                 value: true,
                 message: 'Este campo es obligatorio'
-              },
-              pattern: {
-                value: /^[a-zA-Z\s]+$/i,
-                message: 'Solo se permiten letras'
               }
             }}
           />
@@ -160,6 +156,7 @@ export const AddBranchModal = ({
               type="submit"
               color="secondary"
               className="h-full text-lg font-bold"
+              isLoading={loading}
             >
               Agregar
             </Button>

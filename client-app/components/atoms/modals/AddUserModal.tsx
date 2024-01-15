@@ -11,7 +11,7 @@ type ModalProps = {
 }
 
 export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
-  const [createUser] = useCreateUserMutation()
+  const [createUser, { loading }] = useCreateUserMutation()
   const { handleSubmit, watch, control, reset } = useForm()
   const onSubmit = async () => {
     try {
@@ -107,10 +107,6 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
               required: {
                 value: true,
                 message: 'Este campo es obligatorio'
-              },
-              pattern: {
-                value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/i,
-                message: 'Email inválido'
               }
             }}
           />
@@ -161,7 +157,9 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
           />
         </div>
         <div className="grid h-12 grid-cols-2 gap-3 w-full mt-4">
-          <Button type="submit" color="secondary" className="h-full font-bold text-lg">
+          <Button
+              isLoading={loading}
+          type="submit" color="secondary" className="h-full font-bold text-lg">
             Agregar
           </Button>
           <Button variant="flat" color="danger" className="h-full font-bold text-lg" onClick={handleCancel}>

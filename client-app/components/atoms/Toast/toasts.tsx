@@ -1,6 +1,6 @@
 import React from 'react'
 import { toast, Toaster } from 'react-hot-toast'
-type Ttoast = 'success' | 'error' | 'loading'
+type Ttoast = 'success' | 'error' | 'loading' | 'warning'
 
 export const showSuccessToast = (message: string, type: Ttoast) => {
   switch (type) {
@@ -12,6 +12,9 @@ export const showSuccessToast = (message: string, type: Ttoast) => {
       break
     case 'loading':
       toast.loading(message, { duration: 4000 })
+      break
+    case 'warning':
+      toast(message, { duration: 4000 })
       break
     default:
       break

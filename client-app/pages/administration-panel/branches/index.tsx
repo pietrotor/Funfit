@@ -1,4 +1,4 @@
-import { Button, useDisclosure } from '@nextui-org/react'
+import { useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
@@ -16,6 +16,7 @@ import { AddBranchModal } from '@/components/atoms/modals/AddBranchModal'
 import { EditBranchModal } from '@/components/atoms/modals/EditBranchModal'
 import { TDataBranch } from '@/interfaces/TData'
 import useCustomGetBranchesQuery from '@/services/UseBranches'
+import { AdminButton } from '@/components/atoms/Button/AdminButton'
 
 function Branches() {
   const [edit, setEdit] = useState<TDataBranch>({} as TDataBranch)
@@ -87,14 +88,12 @@ function Branches() {
           Administración de Sucursales
         </h3>
         <div className="space-x-3 text-end">
-          <Button
+          <AdminButton
             onClick={handleAddBranch.onOpen}
             color="secondary"
-            className=" my-4 font-extrabold text-white"
-          >
-            <IconSelector name="Bussines" />
-            Agregar nueva Sucursal
-          </Button>
+            text='Agregar nueva sucursal'
+            iconName='Branch'
+          />
         </div>
         <Table
           onChangeRow={row => handleChangeRow(row)}
