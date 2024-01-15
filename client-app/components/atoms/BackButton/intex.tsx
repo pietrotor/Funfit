@@ -8,7 +8,7 @@ function BackButton() {
         <Button
         variant='bordered'
         color="primary"
-        className='mt-8 mdms-4'
+        className='mt-8 md:ms-4'
         onClick={() => router.back()}
         >
         <IconSelector name='arrow-left'/>
