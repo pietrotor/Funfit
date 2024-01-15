@@ -62,7 +62,7 @@ export const CashMovimentModal = ({
   }
   const handleChangeValue = () => {
     if (watch('movement') === TurnMovementTypeEnum.ADD) {
-      console.log('value')
+      console.log(watch('movement'))
 
       return (
         parseInt(watch('physicialAmount')) + data?.getCashById?.data?.amount! || 0
@@ -75,6 +75,7 @@ export const CashMovimentModal = ({
         (data?.getCashById?.data?.amount! || 0) - parseInt(watch('physicialAmount'))
       ).toString()
     }
+    console.log(watch('movement'))
   }
 
   return (
@@ -89,7 +90,7 @@ export const CashMovimentModal = ({
                 <Selector
                   name="movement"
                   label="Unidades"
-                  defaultValue={'entrada'}
+                  defaultValue={TurnMovementTypeEnum.ADD}
                   control={control}
                   options={[
                     { label: 'Entrada', value: TurnMovementTypeEnum.ADD },

@@ -1,5 +1,6 @@
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
+import Cookies from 'js-cookie'
 import Sidebar, { TMenuStructure } from './sidebar'
 import ToastComponent from '@/components/atoms/Toast/toasts'
 import { useGetBranchesPaginatedLazyQuery, useGetConfigurationLazyQuery } from '@/graphql/graphql-types'
@@ -7,6 +8,8 @@ import { useAppDispatch, useAppSelector } from '@/store/index'
 import { setBusiness } from '@/store/slices'
 import BackButton from '@/components/atoms/BackButton/intex'
 import { setBranch, setBranches } from '@/store/slices/branches/branchSlice'
+import { useRouter } from 'next/router'
+import { DropDown } from '@/components/atoms/DropDown'
 
 type TAdministrationLayoutProps = {
   children: React.ReactNode
@@ -48,6 +51,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       console.log('🚀 ~ file: index.tsx:31 ~ onError ~ error:', error)
     }
   })
+
   const [getConfiguration] = useGetConfigurationLazyQuery({
     fetchPolicy: 'cache-first',
     onCompleted(data) {
@@ -64,6 +68,11 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     }
   })
   const [sidebarOpen, setsidebarOpen] = useState(false)
+  const router = useRouter()
+  const handleLogOut = () => {
+    Cookies.remove('sao-sess')
+    router.push('/administration-panel/login')
+  }
   const menu: TMenuStructure = [
     {
       icon: 'home',
@@ -94,6 +103,11 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           icon: 'Branch',
           text: 'Sucursales',
           link: '/administration-panel/branches'
+        },
+        {
+          icon: 'Bussines',
+          text: 'Almacenes',
+          link: '/administration-panel/warehouses'
         }
       ]
     },
@@ -107,6 +121,12 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           link: '/administration-panel/cash'
         }
       ]
+    },
+    {
+      icon: 'Logout',
+      text: 'Cerrar sesión',
+      link: '/administration-panel/login',
+      onClick: () => handleLogOut()
     }
   ]
   useEffect(() => {
@@ -138,12 +158,17 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
             isSidebarOpen={sidebarOpen}
             setSidebar={setsidebarOpen}
           />
-          <div className="transition-duration-500 w-full ps-10 transition-all">
+          <div className="transition-duration-500 w-full ps-10 transition-all flex  justify-around">
             {showBackButton && (
               <BackButton/>
             )}
             {children}
             <ToastComponent />
+            <DropDown
+            label={currentBranch.name}
+            values={['cerrar sesion']}
+            handleClick={() => handleLogOut()}
+            />
           </div>
         </main>
       ) : (

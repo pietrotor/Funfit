@@ -35,11 +35,9 @@ const useCustomGetCashTurnMovementQuery = (turnId:string) => {
       }
     },
     onError: (error) => {
-      console.log('error--------------')
-      showSuccessToast(
-        'Error al cargar los productos',
-        'error'
-      )
+      setTimeout(() => {
+        refetch()
+      }, 15000)
       console.log(error)
     }
 

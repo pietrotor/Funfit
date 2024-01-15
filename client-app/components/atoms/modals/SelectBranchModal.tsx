@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router'
 import React, { useEffect, useState } from 'react'
 import { Button, Radio, RadioGroup } from '@nextui-org/react'
 import { MyModal } from './MyModal'
@@ -15,18 +16,17 @@ export const SelectBranchModal = ({
   onClose,
   onSubmit
 }: SelectBranchModalProps) => {
-  const { currentBranch, branches } = useAppSelector(
-    state => state.branchReducer
-  )
+  const { branches, currentBranch } = useAppSelector(state => state.branchReducer)
   const dispatch = useAppDispatch()
-
-  const [selected, setSelected] = useState <string>(currentBranch.name)
+  const router = useRouter()
+  const [selected, setSelected] = useState<string>(currentBranch.name)
   const handleChangeBranch = (value: string) => {
     const branch = branches.find(branch => branch.name === value)
     if (branch) {
       dispatch(setBranch(branch))
       localStorage.setItem('branchId', JSON.stringify(branch.id))
     }
+    router.reload()
     onClose()
   }
   useEffect(() => {
@@ -48,16 +48,19 @@ export const SelectBranchModal = ({
           <RadioGroup
             value={selected}
             onValueChange={value => setSelected(value)}
-
           >
             {branches.map(branch => (
               <Radio key={branch.id} value={branch.name}>
                 {branch.name}
               </Radio>
             ))}
-           <Button color='success' variant='flat' onClick={() => handleChangeBranch(selected)}>
+            <Button
+              color="success"
+              variant="flat"
+              onClick={() => handleChangeBranch(selected)}
+            >
               Seleccionar sucursal
-           </Button>
+            </Button>
           </RadioGroup>
         </div>
       </section>

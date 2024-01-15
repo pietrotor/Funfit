@@ -7,11 +7,15 @@ import SubMenu from './SubMenu'
 import IconSelector, { TSvgNames } from '@/components/atoms/IconSelector'
 import { ICurrentUser } from '@/interfaces/currentUser.interface'
 import { SelectBranchModal } from '@/components/atoms/modals/SelectBranchModal'
+import { useGetBranchesPaginatedLazyQuery } from '@/graphql/graphql-types'
+import { useAppDispatch, useAppSelector } from '@/store/index'
+import { setBranch, setBranches } from '@/store/slices/branches/branchSlice'
 
 export type TMenuStructure = {
   text: string
   link?: string
   icon: TSvgNames
+  onClick?: () => void
   subMenu?: {
     text: string
     link?: string
@@ -25,6 +29,7 @@ type TSidebarProps = {
   isSidebarOpen: boolean
   menu: TMenuStructure
   user: ICurrentUser
+  onClick?: () => void
 }
 
 const Sidebar: React.FC<TSidebarProps> = ({
@@ -32,9 +37,36 @@ const Sidebar: React.FC<TSidebarProps> = ({
   setSidebar,
   isSidebarOpen,
   menu,
+  onClick,
   user
 }) => {
   const handleChangeBranch = useDisclosure()
+  const dispatch = useAppDispatch()
+  const currentBranch = useAppSelector(
+    state => state.branchReducer.currentBranch
+  )
+  const [getBranch] = useGetBranchesPaginatedLazyQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      paginationInput: {}
+    },
+    onCompleted(data) {
+      if (!data.getBranchesPaginated?.data) {
+        getBranch()
+        return
+      }
+      dispatch(setBranches(data.getBranchesPaginated?.data))
+      data.getBranchesPaginated?.data.forEach(branch => {
+        if (branch.id === currentBranch?.id) {
+          dispatch(setBranch(branch))
+        }
+      })
+    },
+    onError(error) {
+      console.log('🚀 ~ file: index.tsx:31 ~ onError ~ error:', error)
+    }
+  })
+
   return (
     <div className={`${isSidebarOpen ? 'relative w-60' : 'md:w-16'}`}>
       {/* backdrop (mobile) */}
@@ -70,6 +102,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
               {menu.map((menuItem, idx) => {
                 return !menuItem.subMenu ? (
                   <MenuLink
+                    onClick={onClick}
                     detailView={false}
                     isSidebarOpen={isSidebarOpen}
                     text={menuItem.text}
@@ -90,8 +123,13 @@ const Sidebar: React.FC<TSidebarProps> = ({
               })}
             </div>
           </div>
+          <div>
+          <div className="mb-1  flex w-full justify-center bg-secondary py-5  text-white">
+            <IconSelector name="Store" width="w-6" height="h-6" />
+          </div>
           <div className="flex w-full justify-center bg-secondary py-5  text-white">
             <IconSelector name="user" width="w-8" height="h-8" />
+          </div>
           </div>
         </div>
         {/* Detail sidebar */}
@@ -140,14 +178,22 @@ const Sidebar: React.FC<TSidebarProps> = ({
             </div>
           </div>
           <div>
-            <div onClick={ handleChangeBranch.onOpen} className="flex cursor-pointer mb-2 w-full items-center gap-3 overflow-hidden bg-secondary px-10 py-5 text-tertiary">
+            <div
+              onClick={() => {
+                getBranch()
+                handleChangeBranch.onOpen()
+              }}
+              className="mb-1 flex w-full cursor-pointer items-center gap-3 overflow-hidden bg-secondary px-10 py-5 text-tertiary"
+            >
               <IconSelector
                 name="Store"
-                width="w-8"
-                height="h-8"
+                width="w-6"
+                height="h-6"
                 className="text-white"
               />
-              <p className="font-semibold capitalize text-white">Central</p>
+              <p className="font-semibold capitalize text-white">
+                {currentBranch.name}
+              </p>
             </div>
             <div className="flex w-full items-center gap-3 overflow-hidden bg-secondary px-10 py-5 text-tertiary">
               <IconSelector
@@ -161,7 +207,11 @@ const Sidebar: React.FC<TSidebarProps> = ({
           </div>
         </div>
       </div>
-      <SelectBranchModal onSubmit={onSubmit} isOpen={ handleChangeBranch.isOpen} onClose={handleChangeBranch.onClose}/>
+      <SelectBranchModal
+        onSubmit={onSubmit}
+        isOpen={handleChangeBranch.isOpen}
+        onClose={handleChangeBranch.onClose}
+      />
     </div>
   )
 }

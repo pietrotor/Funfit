@@ -15,6 +15,12 @@ const useGetCashById = (id: string) => {
           'error'
         )
       }
+    },
+    onError: (error) => {
+      setTimeout(() => {
+        refetch()
+      }, 15000)
+      console.log(error)
     }
   })
 

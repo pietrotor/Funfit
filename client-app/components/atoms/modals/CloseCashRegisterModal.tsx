@@ -33,7 +33,7 @@ export const CloseCashRegister = ({
           observation: watch('details'),
           updateToPhysicialAmount: updateAmount,
           difference: parseFloat(handleDiference()),
-          physicialAmount: 0,
+          physicialAmount: parseFloat(watch('physicialAmount')),
           turnId: data?.getCashById?.data?.currentTurnId.toString()
         }
       },
@@ -109,6 +109,8 @@ export const CloseCashRegister = ({
               Cerrar caja
             </Button>
             <Button
+                          isLoading={loading}
+
               variant="flat"
               color="danger"
               className="h-full text-lg font-bold"

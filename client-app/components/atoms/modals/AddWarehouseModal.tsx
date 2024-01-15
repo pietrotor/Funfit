@@ -17,7 +17,7 @@ export const AddWarehouseModal = ({
   onClose,
   onAddWarehouse
 }: ModalProps) => {
-  const [createWarehouse] = useCreateWarehouseMutation()
+  const [createWarehouse, { loading }] = useCreateWarehouseMutation()
   const { handleSubmit, control, watch, reset } = useForm()
   const onSubmit = () => {
     createWarehouse({
@@ -110,6 +110,8 @@ export const AddWarehouseModal = ({
           />
           <div className="mt-6 grid h-12 w-full grid-cols-2 gap-3 ">
             <Button
+              isLoading={loading}
+
               type="submit"
               color="secondary"
               className="h-full text-lg font-bold"

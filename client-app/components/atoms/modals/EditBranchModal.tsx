@@ -22,7 +22,7 @@ export const EditBranchModal = ({
   values
 }: EditBranchModalProps) => {
   const { handleSubmit, watch, control, reset } = useForm()
-  const [updateBranchInput] = useUpdateBranchMutation()
+  const [updateBranchInput, { loading }] = useUpdateBranchMutation()
 
   const onSubmit = () => {
     updateBranchInput({
@@ -171,6 +171,7 @@ export const EditBranchModal = ({
               Agregar
             </Button>
             <Button
+              isLoading={loading}
               variant="flat"
               color="danger"
               className="h-full text-lg font-bold"
