@@ -330,3 +330,190 @@ mutation UpdateBranchProduct($updateBranchProductInput: UpdateBranchProductInput
   }
 }
 `
+export const OPEN_CASH = gql`
+mutation OpenCash($createTurnInput: CreateTurnInput!) {
+  openCash(createTurnInput: $createTurnInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      amount
+      currentTurnId
+      isOpen
+      currentTurn {
+        id
+        cashId
+        isOpen
+        openInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          openBy
+          openByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+        closeInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          closeBy
+          closeByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`
+export const CLOSE_CASH = gql`
+mutation CloseCash($closeTurnInput: CloseTurnInput!) {
+  closeCash(closeTurnInput: $closeTurnInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      amount
+      currentTurnId
+      isOpen
+      currentTurn {
+        id
+        cashId
+        isOpen
+        openInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          openBy
+          openByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+        closeInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          closeBy
+          closeByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`
+export const CREATE_CASH_MOVEMENT = gql`
+mutation CreateCashMovement($createTurnMovementInput: CreateTurnMovementInput!) {
+  createCashMovement(createTurnMovementInput: $createTurnMovementInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      turnId
+      cashId
+      amount
+      date
+      type
+      concept
+      createdBy
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
+      }
+    }
+  }
+}
+`

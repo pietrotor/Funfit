@@ -10,15 +10,9 @@ import {
 import { useRouter } from 'next/router'
 import Images from '../Image/Image'
 import IconSelector from '../IconSelector'
-import { useAppDispatch, useAppSelector } from '@/components/redux/hooks'
-import {
-  clearCart,
-  decreaseCart,
-  increaseCart,
-  removeFromCart,
-  updateCartDetails,
-  updateCartSubTotal
-} from '@/components/redux/features/cartSlice'
+
+import { useAppDispatch, useAppSelector } from '@/store/index'
+import { clearCart, decreaseCart, increaseCart, removeFromCart, updateCartDetails, updateCartSubTotal } from '@/store/slices'
 
 type TProps = {
   onOpen: () => void

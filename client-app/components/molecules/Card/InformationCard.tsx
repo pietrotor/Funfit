@@ -25,9 +25,9 @@ export default function InformationCard({
       className={`bg-white ${className} max-w-xl self-center rounded-lg border-2 text-gray-500 shadow-xl md:max-w-full`}
     >
       {title && (
-        <h1 className="mb-4 text-center text-3xl font-extrabold">{title}</h1>
+        <h1 className="mb-3 text-center text-2xl font-extrabold">{title}</h1>
       )}
-      <h2 className="text-center text-2xl font-semibold">{description}</h2>
+      <h2 className="text-center text-xl font-semibold">{description}</h2>
       <div className="">{children}</div>
       {showButton && (
         <div className="mt-6 flex justify-center">

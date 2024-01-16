@@ -80,7 +80,7 @@ const InputComponent: React.FC<TInputProps> = ({
         defaultValue={ type === 'date' ? new Date().toISOString().split('T')[0] : defaultValue}
         rules={rules}
         render={({ field, formState: { errors } }) => (
-          <div className="w-full">
+          <div className="w-full ">
             {type !== 'textArea' ? (
               <>
                 <Input

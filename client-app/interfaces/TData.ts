@@ -21,7 +21,67 @@ export type TDataBranch = {
     direction: string;
     phone?: string | null | undefined;
     nit?: string | null | undefined;
-    cash?: {
-      id: any;
-    };
+    cashId?: any;
+      cash: {
+      id: string;
+      branchId:string;
+      amount : number;
+      currentTurnId : string;
+      isOpen : boolean;
+      currentTurn: {
+        id : string;
+        cashId : string;
+        isOpen : boolean;
+        openInfo: {
+          amount : number;
+          physicialAmount : number;
+          difference : number;
+          date : string;
+          observation : string;
+          openBy : string;
+          openByInfo : {
+            id : string;
+            name : string;
+            lastName : string;
+            email : string;
+            phone : string;
+            lastLogin : string;
+            status : string;
+            createdBy : string;
+            roleId : string;
+            roleInfo: {
+              id : string;
+              name : string;
+              code : string;
+              status : string;
+            }
+          }
+        }
+        closeInfo: {
+          amount : number;
+          physicialAmount : number;
+          difference : number;
+          date : string;
+          observation : string;
+          closeBy : string;
+          closeByInfo: {
+            id : string;
+            name : string;
+            lastName : string;
+            email : string;
+            phone : string;
+            lastLogin : string;
+            status : string;
+            createdBy : string;
+            roleId : string;
+            roleInfo :{
+              id : string;
+              name : string;
+              code : string;
+              status : string;
+            }
+          }
+        }
+      }
+    }
 }
