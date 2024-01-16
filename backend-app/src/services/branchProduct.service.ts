@@ -2,12 +2,12 @@ import { CreateBranchProductInput, PaginationInput, UpdateBranchProductInput } f
 import { BadRequestError } from '@/lib/graphqlerrors'
 import { updateGenericInstance } from '@/lib/updateInstance'
 import { getInstancesPagination } from './generic.service'
-import { Branch, BranchProduct, IBranch, IBranchProduct, IModelBranch, IModelBranchProduct } from '../models'
+import { BranchProduct, IBranchProduct, IModelBranchProduct } from '../models'
 import { BranchProductRepository } from '../repositories'
 import { branchCore, productCore } from '.'
 
 export class BranchProductService extends BranchProductRepository<objectId> {
-  async getBranchesProductsPaginated (paginationInput: PaginationInput, branchId: objectId) {
+  async getBranchesProductsPaginated(paginationInput: PaginationInput, branchId: objectId) {
     const { filter } = paginationInput
     if (filter) {
       const filterArgs = {
@@ -32,7 +32,7 @@ export class BranchProductService extends BranchProductRepository<objectId> {
     )
   }
 
-  async getBranchProductById (id: objectId) {
+  async getBranchProductById(id: objectId) {
     const branchInstance = await BranchProduct.findOne({
       _id: id,
       deleted: false
@@ -41,26 +41,31 @@ export class BranchProductService extends BranchProductRepository<objectId> {
     return branchInstance
   }
 
-  async getBranchProductByIdInstance (id: objectId) {
+  async getBranchProductByIdInstance(id: objectId) {
     return await BranchProduct.findOne({
       _id: id,
       deleted: false
     })
   }
 
-  async createBranchProduct (createBranchProductInput: CreateBranchProductInput, createdBy?: objectId) {
+  async createBranchProduct(createBranchProductInput: CreateBranchProductInput, createdBy?: objectId) {
     const { branchId, productId, price } = createBranchProductInput
-    console.log("🚀 ~ file: branchProduct.service.ts:53 ~ BranchProductService ~ createBranchProduct ~ createBranchProductInput:", createBranchProductInput)
     if (price < 0) throw new BadRequestError('El precio no puede ser negativo')
-    await Promise.all([
+    const [branchInstance, productInstance] = await Promise.all([
       branchCore.getBranchById(branchId),
       productCore.getProductById(productId)
     ])
+    const existsProductOnBranch = branchInstance.productsIds.some(branchProductId => branchProductId.toString() === productId.toString())
+    if (existsProductOnBranch) throw new BadRequestError('El producto ya se encuentra registrado en la sucursal')
+    const existsBranchOnProduct = productInstance.branchesIds.some(productBranchId => productBranchId.toString() === branchId.toString())
+    if (existsBranchOnProduct) throw new BadRequestError('El producto ya se encuentra registrado en la sucursal')
     const branchProductInstance = new BranchProduct({ ...createBranchProductInput, createdBy })
+    branchInstance.productsIds.push(productId)
+    productInstance.branchesIds.push(branchId)
     return await branchProductInstance.save()
   }
 
-  async updateBranchProduct (updateBranchProductInput: UpdateBranchProductInput) {
+  async updateBranchProduct(updateBranchProductInput: UpdateBranchProductInput) {
     const { id, price } = updateBranchProductInput
     const branchProductInstance = await this.getBranchProductById(id)
     if (typeof price === 'number') {
@@ -71,7 +76,7 @@ export class BranchProductService extends BranchProductRepository<objectId> {
     return await branchProductInstance.save()
   }
 
-  async deleteBranchProdcut (id: objectId, deletedBy?: objectId) {
+  async deleteBranchProdcut(id: objectId, deletedBy?: objectId) {
     const branchProduct = await this.getBranchProductById(id)
     branchProduct.deleted = true
     branchProduct.deletedAt = new Date()
