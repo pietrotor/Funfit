@@ -2,12 +2,13 @@ import { Button } from '@nextui-org/react'
 import IconSelector from '@/components/atoms/IconSelector'
 
 type CounterProps = {
+  productId: string
   quantity: number
-  increment: (id: number) => void
-  decrement: (id: number) => void
+  increment: (id: string) => void
+  decrement: (id: string) => void
 }
 
-function Counter({ quantity, increment, decrement }: CounterProps) {
+function Counter({ productId, quantity, increment, decrement }: CounterProps) {
   return (
     <div className="flex w-24 items-center justify-between">
       <Button
@@ -15,7 +16,7 @@ function Counter({ quantity, increment, decrement }: CounterProps) {
         size="sm"
         variant="flat"
         color="secondary"
-        onClick={() => decrement(quantity)}
+        onClick={ () => increment(productId) }
       >
         {<IconSelector name="Minus" width="w-3" />}
       </Button>
@@ -25,7 +26,7 @@ function Counter({ quantity, increment, decrement }: CounterProps) {
         size="sm"
         variant="flat"
         color="secondary"
-        onClick={() => increment(quantity)}
+        onClick={ () => decrement(productId) }
       >
         {<IconSelector name="Plus" width="w-3" />}
       </Button>

@@ -2,8 +2,8 @@ import React from 'react'
 import IconSelector from '@/components/atoms/IconSelector'
 import Input from '@/components/atoms/Input'
 
-interface SearchProps {
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+type SearchProps = {
+  onChange: (e: string) => void
 }
 
 const Search: React.FC<SearchProps> = ({ onChange }) => {
