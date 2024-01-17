@@ -26,10 +26,9 @@ function PointOfSale() {
 
     if (existingProduct) {
       setSelectedProducts((prevProducts: TPointOfSaleData | undefined) => {
-        const prevProductsArray = prevProducts?.products || []
         return {
           products: [
-            ...prevProductsArray.filter(item => item.productId !== id),
+            ...(prevProducts?.products ?? []).filter(item => item.productId !== id),
             {
               ...existingProduct,
               quantity: existingProduct?.quantity! + 1
@@ -46,14 +45,9 @@ function PointOfSale() {
       )
 
       if (newProduct) {
-        setSelectedProducts((prevProducts: TPointOfSaleData) => {
-          const prevProductsArray = prevProducts?.products || []
-          const newProductsArray = [
-            ...prevProductsArray,
-            { ...newProduct, quantity: 1 }
-          ]
+        setSelectedProducts((prevProducts: TPointOfSaleData | undefined) => {
           return {
-            products: newProductsArray,
+            products: [...(prevProducts?.products ?? []), { ...newProduct as TProductBranchData, quantity: 1 }],
             subTotal: (prevProducts?.subTotal || 0) + newProduct.price,
             total: (prevProducts?.total || 0) + newProduct.price,
             discount: 0
