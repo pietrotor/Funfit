@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import IGeneric from '@/interfaces/generic.interface'
-import { Schema, Model, model } from 'mongoose'
+import { Schema, Model, model, Document } from 'mongoose'
 
 enum PaymentMethodEnum {
   QR_TRANSFER = 'QR_TRANSFER',
