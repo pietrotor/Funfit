@@ -19,7 +19,8 @@ function SelectedProductItem({
         if (item.productId === id) {
           return {
             ...item,
-            quantity: item.quantity! + 1
+            quantity: item.quantity! + 1,
+            total: (item.quantity! + 1) * item.price
           }
         }
         return item
@@ -31,27 +32,30 @@ function SelectedProductItem({
   }
 
   const decrement = (id: string) => {
-    setSelectedProducts({
-      products: selectedProducts.products.map(item => {
-        if (item.productId === id) {
-          return {
-            ...item,
-            quantity: item.quantity! - 1
+    if (item.quantity && item.quantity > 1) {
+      setSelectedProducts({
+        products: selectedProducts.products.map(item => {
+          if (item.productId === id) {
+            return {
+              ...item,
+              quantity: item.quantity! - 1,
+              total: (item.quantity! - 1) * item.price
+            }
           }
-        }
-        return item
-      }),
-      subTotal: selectedProducts.subTotal - item.price,
-      total: selectedProducts.total - item.price,
-      discount: selectedProducts.discount
-    })
+          return item
+        }),
+        subTotal: selectedProducts.subTotal - item.price,
+        total: selectedProducts.total - item.price,
+        discount: selectedProducts.discount
+      })
+    }
   }
 
   const handleDelete = (id: string) => {
     setSelectedProducts({
       products: selectedProducts.products.filter(item => item.productId !== id),
-      subTotal: selectedProducts.subTotal - (item.price * item.quantity!),
-      total: selectedProducts.total - (item.price * item.quantity!),
+      subTotal: selectedProducts.subTotal - item.price * item.quantity!,
+      total: selectedProducts.total - item.price * item.quantity!,
       discount: selectedProducts.discount
     })
   }
@@ -74,7 +78,7 @@ function SelectedProductItem({
         />
       </div>
       <div className="flex h-full w-1/6 flex-col items-center justify-between">
-        <p className="font-semibold">Bs. {item.price * item.quantity!}</p>
+        <p className="font-semibold">Bs. {item.total}</p>
         <span
           className=" rounded-full px-1 transition hover:bg-gray-200 hover:text-danger hover:duration-300"
           onClick={() => handleDelete(item.productId)}

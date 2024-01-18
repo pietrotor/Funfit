@@ -20,6 +20,7 @@ export abstract class StockRepository<T> {
     paginationInput: PaginationInput,
     productId: T
   ): Promise<IPaginatedResponse<IStock> | OutErrorResponse>;
+
   abstract getStocksByProductIdInstance(productId: T): Promise<IStock[] | null>;
 
   abstract getStocksByWarehouseId(

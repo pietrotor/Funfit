@@ -11,6 +11,7 @@ export interface IProduct extends Document, IGeneric {
   cost: number | null;
   image?: string;
   warehouses: objectId[];
+  branchesIds: objectId[];
 }
 export interface IModelProduct extends Model<IProduct> { }
 const productSchema = new Schema<IProduct>(
@@ -49,6 +50,13 @@ const productSchema = new Schema<IProduct>(
         type: Schema.Types.ObjectId,
         default: [],
         ref: 'Warehouse'
+      }
+    ],
+    branchesIds: [
+      {
+        type: Schema.Types.ObjectId,
+        default: [],
+        ref: 'Branch'
       }
     ],
     // Generic Types

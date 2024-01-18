@@ -10,7 +10,16 @@ enum StockMovementTypeEnum {
   OUTWARD
   DISPOSE
 }
-
+enum TurnMovementTypeEnum {
+  ADD
+  WITHDRAW
+  ADJUST
+}
+enum PaymentMethodEnum {
+  QR_TRANSFER
+  CARD
+  CASH
+}
 type Query {
   # CONFIGURATION ====================================
   getConfiguration: ConfigurationResponse
@@ -53,6 +62,11 @@ type Query {
   getBranchById(id: ObjectId!): BranchResponse
   getBranchProductsPaginated(paginationInput: PaginationInput!, branchId: ObjectId!): BranchProductsResponse
   getBranchProductById(id: ObjectId!): BranchProductResponse
+  # CASH ==================================
+  getCashById(id: ObjectId!): CashResponse
+  getCashTurnMovements(paginationInput: PaginationInput!, turnId: ObjectId!): CashTurnMovementsResponse
+  # SALES =================================
+  getSales(salesPaginationInput: SalesPaginationInput!): SalesResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(paginationInput: PaginationInput!): ProductsResponse
 }
@@ -91,6 +105,12 @@ type Mutation {
   createBranchProduct(createBranchProductInput: CreateBranchProductInput!): BranchProductResponse
   updateBranchProduct(updateBranchProductInput: UpdateBranchProductInput!): BranchProductResponse
   deleteBranchProduct(id: ObjectId!): BranchProductResponse
+  # CASH ==================================
+  openCash(createTurnInput: CreateTurnInput!): CashResponse
+  closeCash(closeTurnInput: CloseTurnInput!): CashResponse
+  createCashMovement(createTurnMovementInput: CreateTurnMovementInput!): CashTurnMovementResponse
+  # SALES =================================
+  createSale(createSaleInput: CreateSaleInput!): SaleResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type MeasurementUnits {
@@ -210,7 +230,7 @@ type OpenTurnInfo {
   difference: Float!
   date: Date!
   observation: String
-  openBy: ObjectId!
+  openBy: ObjectId
   # Fields Resolver
   openByInfo: User
 }
@@ -220,7 +240,7 @@ type CloseTurnInfo {
   difference: Float!
   date: Date!
   observation: String
-  closeBy: ObjectId!
+  closeBy: ObjectId
   # Fields Resolver
   closeByInfo: User
 }
@@ -228,8 +248,46 @@ type Turn {
   id: ObjectId!
   cashId: ObjectId!
   isOpen: Boolean!
+  amountOfMovents: Int!
   openInfo: OpenTurnInfo!
   closeInfo: CloseTurnInfo
+}
+type TurnMovements {
+  id: ObjectId!
+  turnId: ObjectId!
+  cashId: ObjectId!
+  amount: Float!
+  date: Date!
+  type: TurnMovementTypeEnum
+  concept: String
+  createdBy: ObjectId
+  # Fields Resolvers
+  createdByInfo: User
+}
+type SaleItem {
+  productId: ObjectId!
+  price: Float!
+  qty: Int!
+  total: Float!
+  # Fields Resolvers
+  product: Product
+}
+type Sale {
+  id: ObjectId!
+  branchId: ObjectId!
+  products: [SaleItem!]!
+  paymentMethod: PaymentMethodEnum!
+  total: Float!
+  discount: Float!
+  date: Date!
+  code: String!
+  client: String
+  amountRecibed: Float!
+  change: Float!
+  observations: String
+  canceled: Boolean
+  reason: String
+  canceledAt: Date
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -370,6 +428,44 @@ type BranchProductResponse implements ResponseBase {
   message: String
   data: BranchProduct
 }
+type CashResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Cash
+}
+type CashTurnMovementsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [TurnMovements!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type CashTurnMovementResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: TurnMovements
+}
+type SalesResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Sale!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type SaleResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Sale
+}
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
   name: String!
@@ -493,4 +589,57 @@ input UpdateBranchProductInput {
   price: Float
   isVisibleOnWeb: Boolean
   isVisibleOnMenu: Boolean
+}
+input CreateTurnInput {
+  cashId: ObjectId!
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  observation: String
+  updateToPhysicialAmount: Boolean!
+}
+input CloseTurnInput {
+  cashId: ObjectId!
+  turnId: ObjectId!
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  observation: String
+  updateToPhysicialAmount: Boolean!
+}
+input CreateTurnMovementInput {
+  turnId: ObjectId!
+  cashId: ObjectId!
+  amount: Float!
+  date: Date!
+  type: TurnMovementTypeEnum
+  concept: String
+}
+input SalesPaginationInput {
+  rows: Int
+  page: Int
+  # Filter by sale code
+  filter: String
+  branchIds: [ObjectId!]!
+  initialDate: Date
+  endDate: Date
+  saleBy: ObjectId
+}
+input SaleItemInput {
+  productId: ObjectId!
+  price: Float!
+  qty: Int!
+  total: Float!
+}
+input CreateSaleInput {
+  branchId: ObjectId!
+  products: [SaleItemInput!]!
+  paymentMethod: PaymentMethodEnum!
+  total: Float!
+  discount: Float!
+  date: Date!
+  client: String
+  amountRecibed: Float!
+  change: Float!
+  observations: String
 }

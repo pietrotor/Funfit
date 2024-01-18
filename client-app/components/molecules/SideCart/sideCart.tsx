@@ -1,7 +1,9 @@
 import { Button, Textarea, Tooltip } from '@nextui-org/react'
 import { useRef, useState } from 'react'
 import Images from '@/components/atoms/Image/Image'
-import { useAppDispatch, useAppSelector } from '@/components/redux/hooks'
+
+import IconSelector from '@/components/atoms/IconSelector'
+import { useAppDispatch, useAppSelector } from '@/store/index'
 import {
   decreaseCart,
   increaseCart,
@@ -9,8 +11,7 @@ import {
   TCartItem,
   updateCartDetails,
   updateCartSubTotal
-} from '@/components/redux/features/cartSlice'
-import IconSelector from '@/components/atoms/IconSelector'
+} from '@/store/slices'
 
 function SideCart() {
   const dispatch = useAppDispatch()
@@ -140,6 +141,7 @@ function SideCart() {
                 >
                   <Button
                     className=" w-1/6 cursor-pointer border-2 bg-white "
+                    isIconOnly
                     onClick={() => setShowTextArea(!showTextArea)}
                   >
                     <IconSelector name="edit" color="text-primary" />

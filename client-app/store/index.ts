@@ -2,12 +2,14 @@ import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit'
 import { TypedUseSelectorHook, useDispatch, useSelector } from 'react-redux'
 
 import { cartSlice, configurationSlice } from './slices'
+import { branchSlice } from './slices/branches/branchSlice'
 
 export function makeStore() {
   return configureStore({
     reducer: {
       configuration: configurationSlice.reducer,
-      cartReducer: cartSlice.reducer
+      cartReducer: cartSlice.reducer,
+      branchReducer: branchSlice.reducer
     }
   })
 }

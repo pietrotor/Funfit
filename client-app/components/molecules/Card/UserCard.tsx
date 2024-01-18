@@ -6,7 +6,7 @@ import ProductModal from '@/components/atoms/modals/ProductModal'
 import Images from '@/components/atoms/Image/Image'
 
 type TUserCardProps = {
-  id: number
+  id: string
   name: string
   description: string
   price: number
@@ -70,6 +70,7 @@ export default function UserCard({
                   isOpen={isOpen}
                   onClose={onClose}
                   onOpen={onOpen}
+                  id={id}
                   title={name}
                   description={description}
                   price={price}

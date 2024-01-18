@@ -22,11 +22,7 @@ const Stepper: React.FC<StepperProps> = ({ steps, title }) => {
           >
             <span
               className={`flex h-10 w-10 cursor-pointer items-center justify-center rounded-full text-lg font-semibold shadow-xl ${
-                step.isActive === 'active'
-                  ? 'bg-secondary'
-                  : step.isActive === 'completed'
-                    ? 'bg-primary'
-                    : ''
+                step.isActive === 'active' ? 'bg-secondary' : step.isActive === 'completed' ? 'bg-primary' : ''
               } `}
             >
               <IconSelector
@@ -41,11 +37,7 @@ const Stepper: React.FC<StepperProps> = ({ steps, title }) => {
             {index < steps.length && (
               <div
                 className={`${
-                  step.isActive === 'inactive'
-                    ? 'text-gray-500'
-                    : step.isActive === 'active'
-                      ? 'text-secondary'
-                      : 'text-primary'
+                  step.isActive === 'inactive' ? 'text-gray-500' : step.isActive === 'active' ? 'text-secondary' : 'text-primary'
                 } hidden rounded-full md:block`}
               >
                 {step.label}

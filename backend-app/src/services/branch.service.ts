@@ -1,13 +1,12 @@
 import { CreateBranchInput, PaginationInput, UpdateBranchInput } from '@/graphql/graphql_types'
 import { BadRequestError } from '@/lib/graphqlerrors'
 import { updateGenericInstance } from '@/lib/updateInstance'
-// import { BranchRepository } from '@/repositories/index'
 import { getInstancesPagination } from './generic.service'
 import { Branch, Cash, IBranch, IModelBranch } from '../models'
 import { BranchRepository } from '../repositories'
 
 export class BranchService extends BranchRepository<objectId> {
-  async getBranchesPaginated (paginationInput: PaginationInput) {
+  async getBranchesPaginated(paginationInput: PaginationInput) {
     const { filter } = paginationInput
     if (filter) {
       const filterArgs = {
@@ -27,7 +26,7 @@ export class BranchService extends BranchRepository<objectId> {
     )
   }
 
-  async getBranchById (id: objectId) {
+  async getBranchById(id: objectId) {
     const branchInstance = await Branch.findOne({
       _id: id,
       deleted: false
@@ -36,25 +35,28 @@ export class BranchService extends BranchRepository<objectId> {
     return branchInstance
   }
 
-  async getBranchByIdInstance (id: objectId) {
+  async getBranchByIdInstance(id: objectId) {
     return await Branch.findOne({
       _id: id,
       deleted: false
     })
   }
 
-  async createBranch (createBranchInput: CreateBranchInput, createdBy?: objectId) {
+  async createBranch(createBranchInput: CreateBranchInput, createdBy?: objectId) {
     const branchInstance = new Branch({ ...createBranchInput, createdBy })
     // TODO: Create a service for this
     const cashInstance = new Cash({
-      branchId: branchInstance._id
+      branchId: branchInstance._id,
+      amount: 0,
+      currentTurnId: null,
+      createdBy
     })
     await cashInstance.save()
-    branchInstance.cashId = branchInstance._id
+    branchInstance.cashId = cashInstance._id
     return await branchInstance.save()
   }
 
-  async updateBranch (updateBranchInput: UpdateBranchInput) {
+  async updateBranch(updateBranchInput: UpdateBranchInput) {
     const { id } = updateBranchInput
     const branchInstance = await this.getBranchById(id)
     updateGenericInstance(branchInstance, updateBranchInput)
@@ -62,7 +64,7 @@ export class BranchService extends BranchRepository<objectId> {
     return await branchInstance.save()
   }
 
-  async deleteBranch (id: objectId, deletedBy?: objectId) {
+  async deleteBranch(id: objectId, deletedBy?: objectId) {
     const branchInstance = await this.getBranchById(id)
     branchInstance.deleted = true
     branchInstance.deletedAt = new Date()

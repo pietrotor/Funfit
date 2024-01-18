@@ -1,4 +1,4 @@
-import { Button, useDisclosure } from '@nextui-org/react'
+import { useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
@@ -23,14 +23,11 @@ import {
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import ButtonComponent from '@/components/atoms/Button'
+import { AdminButton } from '@/components/atoms/Button/AdminButton'
 
 function Warehouses() {
   const [edit, setEdit] = useState<TValuesWarehouses>({})
-  const [variables, setVariables] = useState<PaginationInterfaceState>({
-    rows: 5,
-    filter: '',
-    currentPage: 1
-  })
+  const [variables, setVariables] = useState<PaginationInterfaceState>({})
   const [filter, setFilter] = useState<string>('')
   const filtroDebounced = UseDebouncedValue(filter, 2000)
   const handleConfirmModal = useDisclosure()
@@ -45,7 +42,6 @@ function Warehouses() {
     variables: {
       paginationInput: {
         rows: 5,
-        page: variables?.currentPage,
         filter: filtroDebounced
       }
     },
@@ -139,16 +135,12 @@ function Warehouses() {
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de Almacenes
         </h3>
-        <div className="space-x-3 text-end">
-          <Button
-            onClick={handleAddWarehouse.onOpen}
-            color="secondary"
-            className=" my-4 font-extrabold text-white"
-          >
-            <IconSelector name="Bussines" />
-            Agregar nuevo Almacén
-          </Button>
-        </div>
+        <AdminButton
+          onClick={handleAddWarehouse.onOpen}
+          color="secondary"
+          text='Agregar nuevo Almacén'
+          iconName='Bussines'
+        />
         <Table
           onChangeRow={row => handleChangeRow(row)}
           tableName="ALMACENES"
@@ -172,9 +164,8 @@ function Warehouses() {
           items={(data?.getWarehouses?.data || []).map((warehouse, idx) => ({
             content: [
               <h3 key={idx} className="text-sm">
-                {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
-                  idx +
-                  1}
+                {' '}
+                {idx + 1}
               </h3>,
               <div key={idx} className="text-sm">
                 {warehouse.name}
@@ -185,19 +176,18 @@ function Warehouses() {
               <div key={idx} className="text-left text-sm">
                 {warehouse.address}
               </div>,
-              <div key={idx} className="flex justify-center space-x-1">
+              <div
+                key={idx}
+                className="flex justify-center space-x-1"
+              >
                 <ButtonComponent
-                  onClick={() =>
-                    router.push(
-                      `/administration-panel/warehouses/${warehouse.id}`
-                    )
-                  }
-                  type="eye"
+                  onClick={() => router.push(`/administration-panel/warehouses/${warehouse.id}`)}
+                  type="edit"
                   showTooltip
-                  tooltipText="Administrar Stock"
-                  className="px-3"
+                  tooltipText="Editar"
+                  className='px-3'
                 >
-                  <IconSelector name="eye" color="text-secondary" width="w-5" />
+                  <IconSelector name="eye" color="text-primary" width="w-8" />
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() => handleUpdateWarehouse(warehouse.id)}

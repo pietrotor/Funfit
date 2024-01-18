@@ -31,7 +31,7 @@ export const AddBranchProductModal = ({
   const router = useRouter()
   const { branchId } = router.query
   const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
-  const [getProducts, { data }] = useGetProductsLazyQuery({
+  const [getProducts, { data, loading }] = useGetProductsLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
       paginationInput: {
@@ -147,6 +147,7 @@ export const AddBranchProductModal = ({
               color="danger"
               className="h-full text-lg font-bold"
               onClick={handleCancel}
+              isLoading={loading}
             >
               Cancelar
             </Button>

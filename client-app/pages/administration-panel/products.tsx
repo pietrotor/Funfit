@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Button, Image, useDisclosure } from '@nextui-org/react'
+import { Image, useDisclosure } from '@nextui-org/react'
 import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
 import Table from '@/components/organisms/tableNext/Table'
@@ -21,6 +21,7 @@ import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
+import { AdminButton } from '@/components/atoms/Button/AdminButton'
 
 const Productos = () => {
   const [editProduct, setEditProduct] = useState<TValueProductData>({})
@@ -139,14 +140,13 @@ const Productos = () => {
         <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de productos
         </h2>
-        <Button
+        <AdminButton
           onClick={handleAddProduct.onOpen}
           color="secondary"
-          className="float-right my-4 font-extrabold text-white"
-        >
-          <IconSelector name="Box" />
-          Agregar nuevo producto
-        </Button>
+          text='Agregar nuevo producto'
+          iconName='Box'
+        />
+
         <Table
           tableName="PRODUCTOS"
           isLoading={loading}
@@ -177,7 +177,7 @@ const Productos = () => {
                   idx +
                   1}
               </h3>,
-              <Image alt="image" src={product.image || 'asd'} key={idx} />,
+              <Image alt="image" width={100} src={ product.image === 'null' || !product.image ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' : product.image} key={idx} />,
               <div key={idx} className="text-left text-sm">
                 {product.name}
               </div>,

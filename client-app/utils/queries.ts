@@ -635,31 +635,92 @@ export const GET_BRANCH_PRODUCTS = gql`
 `
 export const GET_BRANCH_PAGINATION = gql`
   query GetBranchesPaginated($paginationInput: PaginationInput!) {
-    getBranchesPaginated(paginationInput: $paginationInput) {
-      errorInput {
-        message
-        field
-      }
-      status
+  getBranchesPaginated(paginationInput: $paginationInput) {
+    errorInput {
       message
-      data {
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
         id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        cash {
+        branchId
+        amount
+        currentTurnId
+        isOpen
+        currentTurn {
           id
+          cashId
+          isOpen
+          amountOfMovents
+          openInfo {
+            amount
+            physicialAmount
+            difference
+            date
+            observation
+            openBy
+            openByInfo {
+              id
+              name
+              lastName
+              email
+              phone
+              lastLogin
+              status
+              createdBy
+              roleId
+              roleInfo {
+                id
+                name
+                code
+                status
+              }
+            }
+          }
+          closeInfo {
+            amount
+            physicialAmount
+            difference
+            date
+            observation
+            closeBy
+            closeByInfo {
+              id
+              name
+              lastName
+              email
+              phone
+              lastLogin
+              status
+              createdBy
+              roleId
+              roleInfo {
+                id
+                name
+                code
+                status
+              }
+            }
+          }
         }
       }
-      totalRecords
-      totalPages
-      rows
-      currentPage
     }
+    totalRecords
+    totalPages
+    rows
+    currentPage
   }
+}
 `
 export const GET_BRANCH_BY_ID = gql`
   query GetBranchById($getBranchByIdId: ObjectId!) {
@@ -681,8 +742,187 @@ export const GET_BRANCH_BY_ID = gql`
       cashId
       cash {
         id
+        branchId
+        amount
+        currentTurnId
+        isOpen
+        currentTurn {
+          id
+          cashId
+          isOpen
+          openInfo {
+            amount
+            physicialAmount
+            difference
+            date
+            observation
+            openBy
+            openByInfo {
+              id
+              name
+              lastName
+              email
+              phone
+              lastLogin
+              status
+              createdBy
+              roleId
+              roleInfo {
+                id
+                name
+                code
+                status
+              }
+            }
+          }
+          closeInfo {
+            amount
+            physicialAmount
+            difference
+            date
+            observation
+            closeBy
+            closeByInfo {
+              id
+              name
+              lastName
+              email
+              phone
+              lastLogin
+              status
+              createdBy
+              roleId
+              roleInfo {
+                id
+                name
+                code
+                status
+              }
+            }
+          }
+        }
       }
     }
+  }
+}
+`
+
+export const GET_CASH_BY_ID = gql`
+query GetCashById($getCashByIdId: ObjectId!) {
+  getCashById(id: $getCashByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      amount
+      currentTurnId
+      isOpen
+      currentTurn {
+        id
+        cashId
+        isOpen
+        amountOfMovents
+        openInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          openBy
+          openByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+        closeInfo {
+          amount
+          physicialAmount
+          difference
+          date
+          observation
+          closeBy
+          closeByInfo {
+            id
+            name
+            lastName
+            email
+            phone
+            lastLogin
+            status
+            createdBy
+            roleId
+            roleInfo {
+              id
+              name
+              code
+              status
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+`
+export const GET_CASH_TURN_MOVEMENTS = gql`
+query GetCashTurnMovements($paginationInput: PaginationInput!, $turnId: ObjectId!) {
+  getCashTurnMovements(paginationInput: $paginationInput, turnId: $turnId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      turnId
+      cashId
+      amount
+      date
+      type
+      concept
+      createdBy
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
   }
 }
 `

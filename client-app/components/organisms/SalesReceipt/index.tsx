@@ -21,6 +21,14 @@ function SalesReceipt({
     setSelectedProducts({ products: [], subTotal: 0, total: 0, discount: 0 })
   }
 
+  const handleChange = (discount: string) => {
+    setSelectedProducts({
+      ...selectedProducts,
+      discount: Number(discount),
+      total: selectedProducts.subTotal - Number(discount)
+    })
+  }
+
   return (
     <>
       <div className="flex h-full w-full flex-col justify-between">
@@ -57,7 +65,7 @@ function SalesReceipt({
                 <input
                   name="discount"
                   className="transition-border ms-2 w-full border-b-2 outline-none delay-100 duration-500 focus:border-secondary"
-                  onChange={e => {}}
+                  onChange={e => handleChange(e.target.value)}
                 />
               </p>
             </div>
@@ -68,6 +76,7 @@ function SalesReceipt({
               className="flex w-full justify-between"
               variant="solid"
               color="secondary"
+              onClick={handleSaleModal.onOpen}
             >
               <p className="text-xl font-bold text-white">Finalizar venta</p>
               <span className="w-1/6 text-xl font-bold text-white">

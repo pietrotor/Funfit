@@ -1,23 +1,57 @@
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
+import Cookies from 'js-cookie'
+import { useRouter } from 'next/router'
 import Sidebar, { TMenuStructure } from './sidebar'
 import ToastComponent from '@/components/atoms/Toast/toasts'
-import { useGetConfigurationLazyQuery } from '@/graphql/graphql-types'
+import { useGetBranchesPaginatedLazyQuery, useGetConfigurationLazyQuery } from '@/graphql/graphql-types'
 import { useAppDispatch, useAppSelector } from '@/store/index'
 import { setBusiness } from '@/store/slices'
 import BackButton from '@/components/atoms/BackButton/intex'
+import { setBranch, setBranches } from '@/store/slices/branches/branchSlice'
+import { DropDown } from '@/components/atoms/DropDown'
 
 type TAdministrationLayoutProps = {
   children: React.ReactNode
   showBackButton?: boolean
+  onSubmit?: () => void
 }
 
 const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
+  onSubmit,
   showBackButton = false,
   children
 }) => {
   const { business } = useAppSelector(state => state.configuration)
+  const { branches, currentBranch } = useAppSelector(state => state.branchReducer)
   const dispatch = useAppDispatch()
+  const [currentId, setCurrentId] = useState<string>('')
+  const [getBranchesPaginated] = useGetBranchesPaginatedLazyQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      paginationInput: {}
+    },
+    onCompleted(data) {
+      if (!data.getBranchesPaginated?.data) {
+        getBranchesPaginated()
+        return
+      }
+      dispatch(setBranches(data.getBranchesPaginated?.data))
+
+      if (currentBranch.id === '') {
+        console.log('entro')
+        data.getBranchesPaginated?.data.forEach(branch => {
+          if (branch.id === currentId) {
+            dispatch(setBranch(branch))
+          }
+        })
+      }
+    },
+    onError(error) {
+      console.log('🚀 ~ file: index.tsx:31 ~ onError ~ error:', error)
+    }
+  })
+
   const [getConfiguration] = useGetConfigurationLazyQuery({
     fetchPolicy: 'cache-first',
     onCompleted(data) {
@@ -25,6 +59,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         getConfiguration()
         return
       }
+      console.log(data.getConfiguration?.data)
       dispatch(setBusiness(data.getConfiguration?.data))
     },
     onError(error) {
@@ -33,6 +68,11 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     }
   })
   const [sidebarOpen, setsidebarOpen] = useState(false)
+  const router = useRouter()
+  const handleLogOut = () => {
+    Cookies.remove('sao-sess')
+    router.push('/administration-panel/login')
+  }
   const menu: TMenuStructure = [
     {
       icon: 'home',
@@ -52,16 +92,33 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           icon: 'Box',
           text: 'Productos',
           link: '/administration-panel/products'
+        }
+      ]
+    },
+    {
+      icon: 'Configuration',
+      text: 'Configuración',
+      subMenu: [
+        {
+          icon: 'Branch',
+          text: 'Sucursales',
+          link: '/administration-panel/branches'
         },
         {
           icon: 'Bussines',
           text: 'Almacenes',
           link: '/administration-panel/warehouses'
-        },
+        }
+      ]
+    },
+    {
+      icon: 'Store',
+      text: 'Ventas',
+      subMenu: [
         {
-          icon: 'Branch',
-          text: 'Sucursales',
-          link: '/administration-panel/branches'
+          icon: 'Cash',
+          text: 'Caja',
+          link: '/administration-panel/cash'
         }
       ]
     },
@@ -69,10 +126,23 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       icon: 'PointOfSale',
       text: 'Punto de venta',
       link: '/administration-panel/point-of-sale'
+    },
+    {
+      icon: 'Logout',
+      text: 'Cerrar sesión',
+      link: '/administration-panel/login',
+      onClick: () => handleLogOut()
     }
   ]
   useEffect(() => {
     if (!business) getConfiguration()
+    if (branches.length === 0) getBranchesPaginated()
+
+    const storedBranchId = localStorage.getItem('branchId')?.replace(/^"|"$/g, '')
+
+    if (storedBranchId !== null && storedBranchId !== undefined && storedBranchId !== '') {
+      setCurrentId(storedBranchId)
+    }
   }, [])
 
   return (
@@ -87,15 +157,23 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           }`}
         >
           <Sidebar
+          onSubmit={onSubmit}
             user={{ name: 'pietro' }}
             menu={menu}
             isSidebarOpen={sidebarOpen}
             setSidebar={setsidebarOpen}
           />
-          <div className="transition-duration-500 w-full ps-10 transition-all">
-            {showBackButton && <BackButton />}
+          <div className="transition-duration-500 w-full ps-10 transition-all flex  justify-around">
+            {showBackButton && (
+              <BackButton/>
+            )}
             {children}
             <ToastComponent />
+            <DropDown
+            label={currentBranch.name}
+            values={['cerrar sesion']}
+            handleClick={() => handleLogOut()}
+            />
           </div>
         </main>
       ) : (

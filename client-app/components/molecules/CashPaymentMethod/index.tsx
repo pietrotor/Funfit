@@ -1,57 +1,121 @@
 import { Button } from '@nextui-org/react'
 import React from 'react'
+import {
+  Control,
+  FieldValues,
+  UseFormReset,
+  UseFormWatch
+} from 'react-hook-form'
+import InputComponent from '@/components/atoms/Input'
+import { TSalePaymentMethodData } from '@/components/atoms/modals/SaleModal'
+import ClientObservationPayment from '@/components/atoms/ClientObservationsPayment'
 
 type CashPaymentMethodProps = {
   total: number
-  cash: number
-  change: number
-  setCash: (cash: number) => void
-  setChange: (change: number) => void
+  payment: TSalePaymentMethodData
+  setPayment: (payment: TSalePaymentMethodData) => void
+  control: Control<any>
+  watch: UseFormWatch<FieldValues>
+  reset: UseFormReset<FieldValues>
 }
 
 function CashPaymentMethod({
   total,
-  cash,
-  change,
-  setCash,
-  setChange
+  payment,
+  setPayment,
+  control,
+  watch,
+  reset
 }: CashPaymentMethodProps) {
-  const handleCash = (cash: number) => {
-    if (cash >= total) {
-      setChange(cash - total)
+  const handleCash = (cash: string) => {
+    if (parseFloat(cash)) {
+      setPayment({
+        paymentMethod: 'cash',
+        cash: parseFloat(cash),
+        change:
+          parseFloat(cash) > total ? parseFloat(cash) - total : total - parseFloat(cash)
+      })
     } else {
-      setCash(cash)
+      setPayment({
+        paymentMethod: 'cash',
+        cash: 0,
+        change: 0
+      })
     }
-    console.log('Cash', cash)
+  }
+
+  const handleMultipleOfFive = (number: number) => {
+    return (number + 1) % 5 === 0 ? number + 1 : number + (5 - (number % 5))
   }
 
   return (
-    <section className="p-4">
-      <div className="flex justify-between">
-        <p className="text-lg">{cash >= total ? 'Cambio' : 'Por pagar'}</p>
+    <section className="h-full p-4">
+      <div className="flex items-center justify-between ">
+        <p className="text-lg text-gray-500 ">
+          {payment.cash > total ? 'Cambio' : 'Por pagar'}
+        </p>
+        <hr className="mx-4  flex-grow border-1 border-gray-200" />
         <p className="text-lg text-primary">
-          Bs. {cash >= total ? change : cash - total}
+          Bs. {payment.cash > 0 ? payment.change : total - payment.cash}
         </p>
       </div>
-      <div>
-        <div className="flex justify-between">
-          <p className="text-lg">Efectivo</p>
-          <input
-            name="cash"
-            className="transition-border ms-2 w-full border-b-2 outline-none delay-100 duration-500 focus:border-secondary"
-            onChange={e => handleCash(parseFloat(e.target.value))}
-          />
-        </div>
-        <div>
-          <p className="text-lg">Opciones rápidas</p>
-          <div className="flex justify-between">
-            <Button className="w-1/2 rounded-md bg-secondary text-white">
-              Bs. 100
-            </Button>
-            <Button className="w-1/2 rounded-md bg-secondary text-white">
-              Bs. 200
-            </Button>
+      <div className="flex h-full w-full pt-2">
+        <div className="border-r-gray flex w-1/2 flex-col border-r-1 px-2">
+          <div className="flex flex-col">
+            <p className="font-thin text-gray-500">Efectivo</p>
+            <InputComponent
+              control={control}
+              name="cash"
+              placeholder="Bs."
+              type="text"
+              rules={{
+                required: {
+                  value: payment.paymentMethod === 'cash',
+                  message: 'Este campo es obligatorio'
+                },
+                pattern: {
+                  value: /^[0-9]+$/i,
+                  message: 'Solo se permiten números'
+                }
+              }}
+              onValueChange={value => handleCash(value)}
+            />
+
+            <p className="font-thin text-gray-500">Opciones rápidas</p>
+            <div className="ga grid grid-cols-3 gap-3">
+              <Button
+                variant="flat"
+                color="default"
+                className="border-2 border-gray-300 text-lg text-gray-500"
+                onClick={() => handleCash(total.toString())}
+              >
+                {total}
+              </Button>
+              <Button
+                variant="flat"
+                color="default"
+                className="border-2 border-gray-300 text-lg text-gray-500"
+                onClick={() =>
+                  handleCash(handleMultipleOfFive(total).toString())
+                }
+              >
+                {handleMultipleOfFive(total)}
+              </Button>
+              <Button
+                variant="flat"
+                color="default"
+                className="border-2 border-gray-300 text-lg text-gray-500"
+                onClick={() =>
+                  handleCash((handleMultipleOfFive(total) + 5).toString())
+                }
+              >
+                {handleMultipleOfFive(total) + 5}
+              </Button>
+            </div>
           </div>
+        </div>
+        <div className="w-1/2 px-2">
+          <ClientObservationPayment control={control} />
         </div>
       </div>
     </section>

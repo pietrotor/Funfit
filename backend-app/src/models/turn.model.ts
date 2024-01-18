@@ -5,12 +5,13 @@ export interface ITurn extends Document, IGeneric {
   id: objectId;
   cashId: objectId;
   isOpen: boolean;
+  amountOfMovents: number;
   openInfo: {
     amount: number;
     physicialAmount: number;
     difference: number;
     date: Date;
-    observation: string;
+    observation?: string | null;
     openBy: objectId;
   };
   closeInfo: {
@@ -18,7 +19,7 @@ export interface ITurn extends Document, IGeneric {
     physicialAmount: number;
     difference: number;
     date: Date;
-    observation: string;
+    observation?: string | null;
     closeBy: objectId;
   } | null;
 }
@@ -31,6 +32,10 @@ const turnSchema = new Schema<ITurn>(
       ref: 'Cash'
     },
     isOpen: { type: Boolean, default: false },
+    amountOfMovents: {
+      type: Number,
+      default: 0
+    },
     openInfo: {
       _id: false,
       amount: {
@@ -57,26 +62,28 @@ const turnSchema = new Schema<ITurn>(
       }
     },
     closeInfo: {
-      _id: false,
-      amount: {
-        type: Number
+      type: {
+        amount: {
+          type: Number
+        },
+        physicialAmount: {
+          type: Number
+        },
+        difference: {
+          type: Number
+        },
+        date: {
+          type: Date
+        },
+        observation: {
+          type: String
+        },
+        closeBy: {
+          type: Schema.Types.ObjectId,
+          ref: 'User'
+        }
       },
-      physicialAmount: {
-        type: Number
-      },
-      difference: {
-        type: Number
-      },
-      date: {
-        type: Date
-      },
-      observation: {
-        type: String
-      },
-      closeBy: {
-        type: Schema.Types.ObjectId,
-        ref: 'User'
-      }
+      default: null
     },
     // Generic Types
     status: { type: Boolean, default: true },

@@ -5,6 +5,7 @@ import AdministrationLayout from '@/components/templates/layouts'
 import SalesReceipt from '@/components/organisms/SalesReceipt'
 import { useGetBranchProductPOSQuery } from '@/hooks/UseBranchQuery'
 import { TProductBranchData } from '@/interfaces/TData'
+import { useAppSelector } from '@/store/index'
 
 export type TPointOfSaleData = {
   products: TProductBranchData[]
@@ -14,9 +15,8 @@ export type TPointOfSaleData = {
 }
 
 function PointOfSale() {
-  const { loading, data } = useGetBranchProductPOSQuery(
-    '65958700468e7c077c4f0b03'
-  )
+  const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
+  const { loading, data } = useGetBranchProductPOSQuery(branchId)
   const [selectedProducts, setSelectedProducts] = useState<TPointOfSaleData>()
 
   const handleSelected = (id: string) => {
@@ -28,10 +28,13 @@ function PointOfSale() {
       setSelectedProducts((prevProducts: TPointOfSaleData | undefined) => {
         return {
           products: [
-            ...(prevProducts?.products ?? []).filter(item => item.productId !== id),
+            ...(prevProducts?.products ?? []).filter(
+              item => item.productId !== id
+            ),
             {
               ...existingProduct,
-              quantity: existingProduct?.quantity! + 1
+              quantity: existingProduct?.quantity! + 1,
+              total: existingProduct.quantity! * existingProduct.price
             }
           ],
           subTotal: (prevProducts?.subTotal || 0) + existingProduct.price,
@@ -47,7 +50,10 @@ function PointOfSale() {
       if (newProduct) {
         setSelectedProducts((prevProducts: TPointOfSaleData | undefined) => {
           return {
-            products: [...(prevProducts?.products ?? []), { ...newProduct as TProductBranchData, quantity: 1 }],
+            products: [
+              ...(prevProducts?.products ?? []),
+              { ...(newProduct as TProductBranchData), quantity: 1, total: newProduct.price }
+            ],
             subTotal: (prevProducts?.subTotal || 0) + newProduct.price,
             total: (prevProducts?.total || 0) + newProduct.price,
             discount: 0

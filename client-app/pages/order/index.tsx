@@ -1,8 +1,8 @@
 import OrderLayout from '@/components/templates/OrderLayout/orderLayout'
 import ClientLayout from '@/components/templates/ClientLayout/ClientLayout'
-import { useAppSelector } from '@/components/redux/hooks'
 
 import InformationCard from '@/components/molecules/Card/InformationCard'
+import { useAppSelector } from '@/store/index'
 
 function Order() {
   const cartItems = useAppSelector(

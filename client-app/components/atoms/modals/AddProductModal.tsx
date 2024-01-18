@@ -20,7 +20,7 @@ export const AddProductModal = ({
   onAdd
 }: AddProductModalProps) => {
   const { handleSubmit, watch, control, reset } = useForm()
-  const [createProduct] = useCreateProductMutation()
+  const [createProduct, { loading }] = useCreateProductMutation()
   const onSubmit = () => {
     createProduct({
       variables: {
@@ -79,10 +79,6 @@ export const AddProductModal = ({
                 required: {
                   value: true,
                   message: 'Este campo es obligatorio'
-                },
-                pattern: {
-                  value: /^[a-zA-Z\s]+$/i,
-                  message: 'Solo se permiten letras'
                 }
               }}
             />
@@ -154,11 +150,20 @@ export const AddProductModal = ({
           />
           <DropZone />
           <div className="grid h-12 grid-cols-2 gap-3 ">
-            <Button type="submit" color="secondary" className="h-full text-lg font-bold">
+            <Button
+              isLoading={loading}
+              type="submit"
+              color="secondary"
+              className="h-full text-lg font-bold"
+            >
               Agregar
             </Button>
-            <Button variant="flat"
-                color="danger"className="h-full font-bold text-lg" onClick={handleCancel}>
+            <Button
+              variant="flat"
+              color="danger"
+              className="h-full text-lg font-bold"
+              onClick={handleCancel}
+            >
               Cancelar
             </Button>
           </div>

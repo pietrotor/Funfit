@@ -1,5 +1,4 @@
 module.exports = {
-  plugins: ['prettier-plugin-tailwindcss'],
   singleQuote: true,
   trailingComma: 'es5',
   tabWidth: 2,
@@ -19,7 +18,6 @@ module.exports = {
     }
   ],
   trailingComma: 'none',
-  importOrder: ['^components/(.*)$', '^[./]'],
   importOrderSeparation: true,
   importOrderSortSpecifiers: true,
   singleQuote: true
