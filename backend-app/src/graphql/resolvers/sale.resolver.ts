@@ -34,11 +34,11 @@ const getSaleById = async (
 }
 const getSalesPaginated = async (
   _: any,
-  args: { salesPaginationInputd: SalesPaginationInput }
+  args: { salesPaginationInput: SalesPaginationInput }
 ): Promise<SalesResponse> => {
   try {
-    const { salesPaginationInputd } = args
-    return await saleCore.getSalesPaginated(salesPaginationInputd)
+    const { salesPaginationInput } = args
+    return await saleCore.getSalesPaginated(salesPaginationInput)
   } catch (error) {
     console.log(error)
     return errorHandler(error)
