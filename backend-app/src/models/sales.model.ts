@@ -40,7 +40,7 @@ const saleSchema = new Schema<ISale>(
     products: [
       {
         _id: false,
-        id: {
+        productId: {
           type: Schema.Types.ObjectId,
           ref: 'Product'
         },
