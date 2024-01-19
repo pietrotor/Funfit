@@ -3,16 +3,21 @@ import { Button } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import { MyModal } from './MyModal'
 import IconSelector from '../IconSelector'
+import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
 import SalePaymentMethod from '@/components/molecules/SalePaymentMethod'
 import CashPaymentMethod from '@/components/molecules/CashPaymentMethod'
 import CardPaymentMethod from '@/components/molecules/CardPaymentMethod'
 import CombinedPaymentMethod from '@/components/molecules/CombinedPaymentMethod'
 import QrPaymentMethod from '@/components/molecules/QrPaymentMethod'
+import { useCreateSaleQuery } from '@/hooks/UseSaleQuery'
+import { useAppSelector } from '@/store/index'
+import { PaymentMethodEnum } from '@/graphql/graphql-types'
 
 interface SaleModalProps {
   isOpen: boolean
   onClose: () => void
-  total: number
+  selectedProducts: TPointOfSaleData
+  setSelectedProducts: (products: TPointOfSaleData) => void
 }
 
 export type TSalePaymentMethodData = {
@@ -21,8 +26,17 @@ export type TSalePaymentMethodData = {
   change: number
 }
 
-function SaleModal({ isOpen, onClose, total }: SaleModalProps) {
-  const { handleSubmit, control, watch, reset } = useForm()
+function SaleModal({
+  isOpen,
+  onClose,
+  selectedProducts,
+  setSelectedProducts
+}: SaleModalProps) {
+  const { handleSubmit, control, watch, reset, setValue } = useForm()
+  const branchIdSelected = useAppSelector(
+    state => state.branchReducer.currentBranch.id
+  )
+  const { handleCreateSale } = useCreateSaleQuery()
   const [payment, setPayment] = useState<TSalePaymentMethodData>({
     paymentMethod: 'options',
     cash: 0,
@@ -30,7 +44,28 @@ function SaleModal({ isOpen, onClose, total }: SaleModalProps) {
   })
 
   const onSubmit = () => {
-    console.log('hola mundo')
+    handleCreateSale({
+      amountRecibed: payment.cash,
+      branchId: branchIdSelected,
+      change: payment.change - selectedProducts.discount,
+      client: watch('client'),
+      date: new Date().toISOString(),
+      discount: selectedProducts.discount,
+      observations: watch('observations') || '',
+      products: selectedProducts.products.map(item => ({
+        productId: item?.productId || '',
+        qty: item?.quantity || 0,
+        price: item?.price || 0,
+        total: item.total || 0
+      })),
+      paymentMethod:
+        payment.paymentMethod === 'cash' ? PaymentMethodEnum.CASH : payment.paymentMethod === 'card' ? PaymentMethodEnum.CARD : PaymentMethodEnum.QR_TRANSFER,
+      total: selectedProducts.total + selectedProducts.discount
+    })
+    reset()
+    onClose()
+    setSelectedProducts({ products: [], subTotal: 0, total: 0, discount: 0 })
+    setPayment({ paymentMethod: 'options', cash: 0, change: 0 })
   }
 
   const handleCancel = () => {
@@ -39,7 +74,6 @@ function SaleModal({ isOpen, onClose, total }: SaleModalProps) {
   }
 
   const handleBack = () => {
-    console.log('entra al método')
     if (payment.paymentMethod === 'options') {
       reset()
       onClose()
@@ -68,26 +102,33 @@ function SaleModal({ isOpen, onClose, total }: SaleModalProps) {
           <h1 className="p-4 text-xl text-gray-500">Recibo de venta</h1>
         </div>
 
-        <div className={`flex-grow ${payment.paymentMethod === 'combined' ? 'overflow-y-scroll' : 'overflow-hidden'}`}>
+        <div
+          className={`flex-grow ${
+            payment.paymentMethod === 'combined' ? 'overflow-y-scroll' : 'overflow-hidden'
+          }`}
+        >
           <div className="flex h-1/6 items-center justify-center space-x-3 py-3">
             <h2 className="text-xl text-gray-500">Total:</h2>
-            <h3 className="text-2xl font-thin text-gray-500">Bs. {total}</h3>
+            <h3 className="text-2xl font-thin text-gray-500">
+              Bs. {selectedProducts.total}
+            </h3>
           </div>
           <div className="h-5/6">
             {payment.paymentMethod === 'options' ? (
               <SalePaymentMethod setPayment={setPayment} />
             ) : payment.paymentMethod === 'cash' ? (
               <CashPaymentMethod
-                total={total}
+                total={selectedProducts.total}
                 payment={payment}
                 setPayment={setPayment}
                 control={control}
                 watch={watch}
                 reset={reset}
+                setValue={setValue}
               />
             ) : payment.paymentMethod === 'card' ? (
               <CardPaymentMethod
-                total={total}
+                total={selectedProducts.total}
                 payment={payment}
                 setPayment={setPayment}
                 control={control}
@@ -96,7 +137,7 @@ function SaleModal({ isOpen, onClose, total }: SaleModalProps) {
               />
             ) : payment.paymentMethod === 'qr' ? (
               <QrPaymentMethod
-                total={total}
+                total={selectedProducts.total}
                 payment={payment}
                 setPayment={setPayment}
                 control={control}
@@ -105,7 +146,7 @@ function SaleModal({ isOpen, onClose, total }: SaleModalProps) {
               />
             ) : (
               <CombinedPaymentMethod
-                total={total}
+                total={selectedProducts.total}
                 payment={payment}
                 setPayment={setPayment}
                 control={control}

@@ -37,7 +37,7 @@ function CardPaymentMethod({
           <p className="font-thin text-gray-500">Monto</p>
           <InputComponent
             control={control}
-            name="cash"
+            name="amountRecibed"
             placeholder="Bs."
             type="text"
             rules={{

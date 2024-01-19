@@ -19,8 +19,8 @@ function SelectedProductItem({
         if (item.productId === id) {
           return {
             ...item,
-            quantity: item.quantity! + 1,
-            total: (item.quantity! + 1) * item.price
+            quantity: (item.quantity || 0) + 1,
+            total: ((item.quantity || 0) + 1) * item.price
           }
         }
         return item
@@ -29,33 +29,32 @@ function SelectedProductItem({
       total: selectedProducts.total + item.price,
       discount: selectedProducts.discount
     })
+    console.log(selectedProducts)
   }
 
   const decrement = (id: string) => {
-    if (item.quantity && item.quantity > 1) {
-      setSelectedProducts({
-        products: selectedProducts.products.map(item => {
-          if (item.productId === id) {
-            return {
-              ...item,
-              quantity: item.quantity! - 1,
-              total: (item.quantity! - 1) * item.price
-            }
+    setSelectedProducts({
+      products: selectedProducts.products.map(item => {
+        if (item.productId === id) {
+          return {
+            ...item,
+            quantity: (item.quantity || 0) - 1,
+            total: ((item.quantity || 0) - 1) * item.price
           }
-          return item
-        }),
-        subTotal: selectedProducts.subTotal - item.price,
-        total: selectedProducts.total - item.price,
-        discount: selectedProducts.discount
-      })
-    }
+        }
+        return item
+      }),
+      subTotal: selectedProducts.subTotal - item.price,
+      total: selectedProducts.total - item.price,
+      discount: selectedProducts.discount
+    })
   }
 
   const handleDelete = (id: string) => {
     setSelectedProducts({
       products: selectedProducts.products.filter(item => item.productId !== id),
-      subTotal: selectedProducts.subTotal - item.price * item.quantity!,
-      total: selectedProducts.total - item.price * item.quantity!,
+      subTotal: selectedProducts.subTotal - (item.price * (item.quantity || 0)),
+      total: selectedProducts.total - (item.price * (item.quantity || 0)),
       discount: selectedProducts.discount
     })
   }
@@ -72,13 +71,13 @@ function SelectedProductItem({
       <div className="flex w-2/3 justify-center">
         <Counter
           productId={item.productId}
-          quantity={item.quantity!}
+          quantity={item.quantity || 0}
           decrement={() => increment(item.productId)}
           increment={() => decrement(item.productId)}
         />
       </div>
       <div className="flex h-full w-1/6 flex-col items-center justify-between">
-        <p className="font-semibold">Bs. {item.total}</p>
+        <p className="font-semibold">Bs. {item.price * (item.quantity || 0)}</p>
         <span
           className=" rounded-full px-1 transition hover:bg-gray-200 hover:text-danger hover:duration-300"
           onClick={() => handleDelete(item.productId)}

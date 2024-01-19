@@ -66,6 +66,7 @@ function SalesReceipt({
                   name="discount"
                   className="transition-border ms-2 w-full border-b-2 outline-none delay-100 duration-500 focus:border-secondary"
                   onChange={e => handleChange(e.target.value)}
+                  value={selectedProducts.discount}
                 />
               </p>
             </div>
@@ -101,7 +102,8 @@ function SalesReceipt({
       <SaleModal
         isOpen={handleSaleModal.isOpen}
         onClose={handleSaleModal.onClose}
-        total={selectedProducts.total}
+        selectedProducts={selectedProducts}
+        setSelectedProducts={setSelectedProducts}
       />
     </>
   )

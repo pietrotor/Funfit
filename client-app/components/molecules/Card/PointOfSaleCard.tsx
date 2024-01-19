@@ -11,19 +11,21 @@ import { TProductBranchData } from '@/interfaces/TData'
 
 export type TPointOfSaleCardProps = {
   product: TProductBranchData
+  quantity: number
   isLoading?: boolean
   handleSelected: (id: string) => void
 }
 
 function PointOfSaleCard({
   product,
+  quantity,
   isLoading = false,
   handleSelected
 }: TPointOfSaleCardProps) {
   return (
     <>
       {!isLoading ? (
-        <Badge content={5}>
+        <Badge content={quantity} color='secondary' size='lg' variant='shadow'>
           <div className="h-full w-full">
             <Card
               key={product.id}

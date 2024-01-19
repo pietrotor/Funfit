@@ -4,6 +4,7 @@ import {
   Control,
   FieldValues,
   UseFormReset,
+  UseFormSetValue,
   UseFormWatch
 } from 'react-hook-form'
 import InputComponent from '@/components/atoms/Input'
@@ -17,6 +18,7 @@ type CashPaymentMethodProps = {
   control: Control<any>
   watch: UseFormWatch<FieldValues>
   reset: UseFormReset<FieldValues>
+  setValue: UseFormSetValue<FieldValues>
 }
 
 function CashPaymentMethod({
@@ -25,7 +27,8 @@ function CashPaymentMethod({
   setPayment,
   control,
   watch,
-  reset
+  reset,
+  setValue
 }: CashPaymentMethodProps) {
   const handleCash = (cash: string) => {
     if (parseFloat(cash)) {
@@ -35,6 +38,7 @@ function CashPaymentMethod({
         change:
           parseFloat(cash) > total ? parseFloat(cash) - total : total - parseFloat(cash)
       })
+      setValue('amountRecibed', cash)
     } else {
       setPayment({
         paymentMethod: 'cash',
@@ -65,7 +69,7 @@ function CashPaymentMethod({
             <p className="font-thin text-gray-500">Efectivo</p>
             <InputComponent
               control={control}
-              name="cash"
+              name="amountRecibed"
               placeholder="Bs."
               type="text"
               rules={{
@@ -76,6 +80,11 @@ function CashPaymentMethod({
                 pattern: {
                   value: /^[0-9]+$/i,
                   message: 'Solo se permiten números'
+                },
+                validate: {
+                  value: value =>
+                    parseFloat(value) >= total ||
+                    'El efectivo debe ser mayor o igual al total'
                 }
               }}
               onValueChange={value => handleCash(value)}
@@ -85,16 +94,16 @@ function CashPaymentMethod({
             <div className="ga grid grid-cols-3 gap-3">
               <Button
                 variant="flat"
-                color="default"
-                className="border-2 border-gray-300 text-lg text-gray-500"
+                color="secondary"
+                className="border-2 hover:border-secondary text-lg text-gray-500"
                 onClick={() => handleCash(total.toString())}
               >
                 {total}
               </Button>
               <Button
                 variant="flat"
-                color="default"
-                className="border-2 border-gray-300 text-lg text-gray-500"
+                color="secondary"
+                className="border-2 hover:border-secondary text-lg text-gray-500"
                 onClick={() =>
                   handleCash(handleMultipleOfFive(total).toString())
                 }
@@ -103,8 +112,8 @@ function CashPaymentMethod({
               </Button>
               <Button
                 variant="flat"
-                color="default"
-                className="border-2 border-gray-300 text-lg text-gray-500"
+                color="secondary"
+                className="border-2 hover:border-secondary text-lg text-gray-500"
                 onClick={() =>
                   handleCash((handleMultipleOfFive(total) + 5).toString())
                 }

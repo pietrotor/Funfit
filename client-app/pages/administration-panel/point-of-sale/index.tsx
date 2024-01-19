@@ -33,8 +33,9 @@ function PointOfSale() {
             ),
             {
               ...existingProduct,
-              quantity: existingProduct?.quantity! + 1,
-              total: existingProduct.quantity! * existingProduct.price
+              quantity: (existingProduct.quantity || 1) + 1,
+              total:
+                ((existingProduct.quantity || 1) + 1) * existingProduct.price
             }
           ],
           subTotal: (prevProducts?.subTotal || 0) + existingProduct.price,
@@ -52,7 +53,11 @@ function PointOfSale() {
           return {
             products: [
               ...(prevProducts?.products ?? []),
-              { ...(newProduct as TProductBranchData), quantity: 1, total: newProduct.price }
+              {
+                ...(newProduct as TProductBranchData),
+                quantity: 1,
+                total: newProduct.price
+              }
             ],
             subTotal: (prevProducts?.subTotal || 0) + newProduct.price,
             total: (prevProducts?.total || 0) + newProduct.price,
@@ -75,6 +80,11 @@ function PointOfSale() {
               <PointOfSaleCard
                 key={item.id}
                 product={item as TProductBranchData}
+                quantity={
+                  selectedProducts?.products?.find(
+                    product => product.productId === item.productId
+                  )?.quantity || 0
+                }
                 isLoading={loading}
                 handleSelected={() => handleSelected(item.productId)}
               />
