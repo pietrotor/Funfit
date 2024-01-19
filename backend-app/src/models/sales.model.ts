@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import IGeneric from '@/interfaces/generic.interface'
-import { Schema, Model, model } from 'mongoose'
+import { Schema, Model, model, Document } from 'mongoose'
 
 enum PaymentMethodEnum {
   QR_TRANSFER = 'QR_TRANSFER',
@@ -18,6 +18,7 @@ export interface ISale extends Document, IGeneric {
     total: number
   }[]
   paymentMethod: PaymentMethodEnum
+  subTotal: number
   total: number
   discount: number
   date: Date
@@ -61,6 +62,10 @@ const saleSchema = new Schema<ISale>(
     paymentMethod: {
       type: String,
       enum: PaymentMethodEnum
+    },
+    subTotal: {
+      type: Number,
+      required: [true, 'Sub total de venta es requerido']
     },
     total: {
       type: Number,

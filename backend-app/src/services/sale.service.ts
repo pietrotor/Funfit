@@ -1,12 +1,67 @@
-import { CreateSaleInput, PaymentMethodEnum } from '@/graphql/graphql_types'
+import {
+  CreateSaleInput,
+  PaymentMethodEnum,
+  SalesPaginationInput
+} from '@/graphql/graphql_types'
 import { SalesRepository } from '../repositories'
 import { BadRequestError } from '@/lib/graphqlerrors'
 import { saleUseCase } from 'useCase'
 import { branchCore, cashCore, productCore, turnMovementCore } from '.'
 import { TurnMovementTypeEnum } from '../models'
-import Sale from '@/models/sales.model'
+import Sale, { IModelSale, ISale } from '@/models/sales.model'
+import { getInstancesPagination } from './generic.service'
 
 export class SalesService extends SalesRepository<objectId> {
+  async getSaleById(id: objectId) {
+    const saleInstance = await Sale.findOne({
+      _id: id,
+      deleted: false
+    })
+    if (!saleInstance) throw new BadRequestError('No se encontro la venta')
+    return saleInstance
+  }
+
+  async getSaleByIdInstance(id: objectId) {
+    return await Sale.findOne({
+      _id: id,
+      deleted: false
+    })
+  }
+
+  async getSalesPaginated(salesPaginationInput: SalesPaginationInput) {
+    const {
+      filter,
+      branchIds,
+      endDate,
+      initialDate,
+      saleBy,
+      ...paginationInput
+    } = salesPaginationInput
+    const branchesFilter =
+      branchIds.length > 0
+        ? {
+            branchId: {
+              $in: branchIds
+            }
+          }
+        : {}
+    if (filter) {
+      const filterArgs = {
+        $or: [{ name: { $regex: filter, $options: 'i' } }]
+      }
+      return await getInstancesPagination<ISale, IModelSale>(
+        Sale,
+        paginationInput,
+        { ...branchesFilter, ...filterArgs }
+      )
+    }
+    return await getInstancesPagination<ISale, IModelSale>(
+      Sale,
+      paginationInput,
+      branchesFilter
+    )
+  }
+
   async createSale(createSaleInput: CreateSaleInput, createdBy?: objectId) {
     const {
       amountRecibed,
@@ -18,6 +73,7 @@ export class SalesService extends SalesRepository<objectId> {
       products,
       total,
       client,
+      subTotal,
       observations
     } = createSaleInput
     if (total < 0) throw new BadRequestError('El total no puede ser negativo')
@@ -31,8 +87,12 @@ export class SalesService extends SalesRepository<objectId> {
 
     products.forEach(product => saleUseCase.validateSaleSubTotal(product))
 
-    const isTotalOk = saleUseCase.validateSaleTotal(products, total)
+    const isTotalOk = saleUseCase.validateSaleTotal(products, total, discount)
     if (!isTotalOk) throw new BadRequestError('El total no es correcto')
+
+    if (subTotal - discount !== total) {
+      throw new BadRequestError('El sub total no es correcto')
+    }
 
     await Promise.all(
       products.map(async product => {
@@ -41,9 +101,12 @@ export class SalesService extends SalesRepository<objectId> {
     )
 
     const branchInstance = await branchCore.getBranchById(branchId)
-    const cashInstance = await cashCore.getCashById(branchInstance.cashId)
 
-    const isCashOpen = await cashCore.isCashOpen(cashInstance._id)
+    const [cashInstance, isCashOpen] = await Promise.all([
+      cashCore.getCashById(branchInstance.cashId),
+      cashCore.isCashOpen(branchInstance.cashId)
+    ])
+
     if (!isCashOpen) {
       throw new BadRequestError('La caja no se encuentra abierta')
     }
@@ -83,6 +146,7 @@ export class SalesService extends SalesRepository<objectId> {
       total,
       discount,
       date,
+      subTotal,
       code,
       client,
       amountRecibed,

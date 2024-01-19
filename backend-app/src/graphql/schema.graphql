@@ -60,13 +60,20 @@ type Query {
   # BRANCHES ===============================
   getBranchesPaginated(paginationInput: PaginationInput!): BranchsResponse
   getBranchById(id: ObjectId!): BranchResponse
-  getBranchProductsPaginated(paginationInput: PaginationInput!, branchId: ObjectId!): BranchProductsResponse
+  getBranchProductsPaginated(
+    paginationInput: PaginationInput!
+    branchId: ObjectId!
+  ): BranchProductsResponse
   getBranchProductById(id: ObjectId!): BranchProductResponse
   # CASH ==================================
   getCashById(id: ObjectId!): CashResponse
-  getCashTurnMovements(paginationInput: PaginationInput!, turnId: ObjectId!): CashTurnMovementsResponse
+  getCashTurnMovements(
+    paginationInput: PaginationInput!
+    turnId: ObjectId!
+  ): CashTurnMovementsResponse
   # SALES =================================
-  getSales(salesPaginationInput: SalesPaginationInput!): SalesResponse
+  getSaleById(id: ObjectId!): SaleResponse
+  getSalesPaginated(salesPaginationInput: SalesPaginationInput!): SalesResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(paginationInput: PaginationInput!): ProductsResponse
 }
@@ -102,13 +109,19 @@ type Mutation {
   createBranch(createBranchInput: CreateBranchInput!): BranchResponse
   updateBranch(updateBranchInput: UpdateBranchInput!): BranchResponse
   deleteBranch(id: ObjectId!): BranchResponse
-  createBranchProduct(createBranchProductInput: CreateBranchProductInput!): BranchProductResponse
-  updateBranchProduct(updateBranchProductInput: UpdateBranchProductInput!): BranchProductResponse
+  createBranchProduct(
+    createBranchProductInput: CreateBranchProductInput!
+  ): BranchProductResponse
+  updateBranchProduct(
+    updateBranchProductInput: UpdateBranchProductInput!
+  ): BranchProductResponse
   deleteBranchProduct(id: ObjectId!): BranchProductResponse
   # CASH ==================================
   openCash(createTurnInput: CreateTurnInput!): CashResponse
   closeCash(closeTurnInput: CloseTurnInput!): CashResponse
-  createCashMovement(createTurnMovementInput: CreateTurnMovementInput!): CashTurnMovementResponse
+  createCashMovement(
+    createTurnMovementInput: CreateTurnMovementInput!
+  ): CashTurnMovementResponse
   # SALES =================================
   createSale(createSaleInput: CreateSaleInput!): SaleResponse
 }
@@ -277,6 +290,7 @@ type Sale {
   branchId: ObjectId!
   products: [SaleItem!]!
   paymentMethod: PaymentMethodEnum!
+  subTotal: Float!
   total: Float!
   discount: Float!
   date: Date!
@@ -288,6 +302,10 @@ type Sale {
   canceled: Boolean
   reason: String
   canceledAt: Date
+  createdBy: ObjectId
+  # Fields Resolvers
+  branch: Branch
+  createdByInfo: User
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -635,6 +653,7 @@ input CreateSaleInput {
   branchId: ObjectId!
   products: [SaleItemInput!]!
   paymentMethod: PaymentMethodEnum!
+  subTotal: Float!
   total: Float!
   discount: Float!
   date: Date!

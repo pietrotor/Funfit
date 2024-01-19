@@ -201,6 +201,7 @@ export type CreateSaleInput = {
   observations?: InputMaybe<Scalars['String']['input']>;
   paymentMethod: PaymentMethodEnum;
   products: Array<SaleItemInput>;
+  subTotal: Scalars['Float']['input'];
   total: Scalars['Float']['input'];
 };
 
@@ -472,7 +473,8 @@ export type Query = {
   getProductsOutOfWarehouse?: Maybe<ProductsResponse>;
   getPublicProducts?: Maybe<ProductsResponse>;
   getRoles?: Maybe<RolesResponse>;
-  getSales?: Maybe<SalesResponse>;
+  getSaleById?: Maybe<SaleResponse>;
+  getSalesPaginated?: Maybe<SalesResponse>;
   getStockById?: Maybe<StockResponse>;
   getStockHistory?: Maybe<StocksHistoryResponse>;
   getStocksPaginated?: Maybe<StocksResponse>;
@@ -550,7 +552,12 @@ export type QueryGetRolesArgs = {
 };
 
 
-export type QueryGetSalesArgs = {
+export type QueryGetSaleByIdArgs = {
+  id: Scalars['ObjectId']['input'];
+};
+
+
+export type QueryGetSalesPaginatedArgs = {
   salesPaginationInput: SalesPaginationInput;
 };
 
@@ -638,12 +645,15 @@ export type RolesResponse = ResponseBase & {
 export type Sale = {
   __typename?: 'Sale';
   amountRecibed: Scalars['Float']['output'];
+  branch?: Maybe<Branch>;
   branchId: Scalars['ObjectId']['output'];
   canceled?: Maybe<Scalars['Boolean']['output']>;
   canceledAt?: Maybe<Scalars['Date']['output']>;
   change: Scalars['Float']['output'];
   client?: Maybe<Scalars['String']['output']>;
   code: Scalars['String']['output'];
+  createdBy?: Maybe<Scalars['ObjectId']['output']>;
+  createdByInfo?: Maybe<User>;
   date: Scalars['Date']['output'];
   discount: Scalars['Float']['output'];
   id: Scalars['ObjectId']['output'];
@@ -651,6 +661,7 @@ export type Sale = {
   paymentMethod: PaymentMethodEnum;
   products: Array<SaleItem>;
   reason?: Maybe<Scalars['String']['output']>;
+  subTotal: Scalars['Float']['output'];
   total: Scalars['Float']['output'];
 };
 
@@ -1419,7 +1430,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getProductsOutOfWarehouse?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsOutOfWarehouseArgs, 'paginationInput' | 'warehouseId'>>;
   getPublicProducts?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetPublicProductsArgs, 'paginationInput'>>;
   getRoles?: Resolver<Maybe<ResolversTypes['RolesResponse']>, ParentType, ContextType, RequireFields<QueryGetRolesArgs, 'paginationInput'>>;
-  getSales?: Resolver<Maybe<ResolversTypes['SalesResponse']>, ParentType, ContextType, RequireFields<QueryGetSalesArgs, 'salesPaginationInput'>>;
+  getSaleById?: Resolver<Maybe<ResolversTypes['SaleResponse']>, ParentType, ContextType, RequireFields<QueryGetSaleByIdArgs, 'id'>>;
+  getSalesPaginated?: Resolver<Maybe<ResolversTypes['SalesResponse']>, ParentType, ContextType, RequireFields<QueryGetSalesPaginatedArgs, 'salesPaginationInput'>>;
   getStockById?: Resolver<Maybe<ResolversTypes['StockResponse']>, ParentType, ContextType, RequireFields<QueryGetStockByIdArgs, 'id'>>;
   getStockHistory?: Resolver<Maybe<ResolversTypes['StocksHistoryResponse']>, ParentType, ContextType, RequireFields<QueryGetStockHistoryArgs, 'paginationInput' | 'stockId'>>;
   getStocksPaginated?: Resolver<Maybe<ResolversTypes['StocksResponse']>, ParentType, ContextType, RequireFields<QueryGetStocksPaginatedArgs, 'paginationInput'>>;
@@ -1464,12 +1476,15 @@ export type RolesResponseResolvers<ContextType = any, ParentType extends Resolve
 
 export type SaleResolvers<ContextType = any, ParentType extends ResolversParentTypes['Sale'] = ResolversParentTypes['Sale']> = {
   amountRecibed?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  branch?: Resolver<Maybe<ResolversTypes['Branch']>, ParentType, ContextType>;
   branchId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   canceled?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   canceledAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   change?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   client?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  createdBy?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
+  createdByInfo?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   date?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   discount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
@@ -1477,6 +1492,7 @@ export type SaleResolvers<ContextType = any, ParentType extends ResolversParentT
   paymentMethod?: Resolver<ResolversTypes['PaymentMethodEnum'], ParentType, ContextType>;
   products?: Resolver<Array<ResolversTypes['SaleItem']>, ParentType, ContextType>;
   reason?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  subTotal?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   total?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
