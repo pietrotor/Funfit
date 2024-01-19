@@ -290,6 +290,7 @@ type Sale {
   branchId: ObjectId!
   products: [SaleItem!]!
   paymentMethod: PaymentMethodEnum!
+  subTotal: Float!
   total: Float!
   discount: Float!
   date: Date!
@@ -652,6 +653,7 @@ input CreateSaleInput {
   branchId: ObjectId!
   products: [SaleItemInput!]!
   paymentMethod: PaymentMethodEnum!
+  subTotal: Float!
   total: Float!
   discount: Float!
   date: Date!

@@ -73,6 +73,7 @@ export class SalesService extends SalesRepository<objectId> {
       products,
       total,
       client,
+      subTotal,
       observations
     } = createSaleInput
     if (total < 0) throw new BadRequestError('El total no puede ser negativo')
@@ -86,8 +87,12 @@ export class SalesService extends SalesRepository<objectId> {
 
     products.forEach(product => saleUseCase.validateSaleSubTotal(product))
 
-    const isTotalOk = saleUseCase.validateSaleTotal(products, total)
+    const isTotalOk = saleUseCase.validateSaleTotal(products, total, discount)
     if (!isTotalOk) throw new BadRequestError('El total no es correcto')
+
+    if (subTotal - discount !== total) {
+      throw new BadRequestError('El sub total no es correcto')
+    }
 
     await Promise.all(
       products.map(async product => {
@@ -141,6 +146,7 @@ export class SalesService extends SalesRepository<objectId> {
       total,
       discount,
       date,
+      subTotal,
       code,
       client,
       amountRecibed,

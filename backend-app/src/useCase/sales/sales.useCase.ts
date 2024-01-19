@@ -4,15 +4,20 @@ import { cashCore } from '@/services/index'
 
 export class SalesUseCase {
   isOkProductSubTotal(product: SaleItem) {
-    return (product.price * product.qty) === product.total
+    return product.price * product.qty === product.total
   }
 
   validateSaleSubTotal(product: SaleItem) {
-    if (!this.isOkProductSubTotal(product)) throw new BadRequestError('El total de uno de los productos no es correcto')
+    if (!this.isOkProductSubTotal(product)) {
+      throw new BadRequestError(
+        'El total de uno de los productos no es correcto'
+      )
+    }
   }
 
-  validateSaleTotal(products: SaleItem[], total: number) {
-    const calculatedTotal = products.reduce((total, product) => total + product.total, 0)
+  validateSaleTotal(products: SaleItem[], total: number, discount: number) {
+    const calculatedTotal =
+      products.reduce((total, product) => total + product.total, 0) - discount
     return calculatedTotal === total
   }
 
@@ -20,7 +25,9 @@ export class SalesUseCase {
     const cashInstance = await cashCore.getCashById(cashId)
   }
 
-  async executePayment(total: number, paymentMethod: PaymentMethodEnum, createdBy?: objectId) {
-
-  }
+  async executePayment(
+    total: number,
+    paymentMethod: PaymentMethodEnum,
+    createdBy?: objectId
+  ) {}
 }

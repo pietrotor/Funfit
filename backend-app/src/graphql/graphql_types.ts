@@ -201,6 +201,7 @@ export type CreateSaleInput = {
   observations?: InputMaybe<Scalars['String']['input']>;
   paymentMethod: PaymentMethodEnum;
   products: Array<SaleItemInput>;
+  subTotal: Scalars['Float']['input'];
   total: Scalars['Float']['input'];
 };
 
@@ -660,6 +661,7 @@ export type Sale = {
   paymentMethod: PaymentMethodEnum;
   products: Array<SaleItem>;
   reason?: Maybe<Scalars['String']['output']>;
+  subTotal: Scalars['Float']['output'];
   total: Scalars['Float']['output'];
 };
 
@@ -1490,6 +1492,7 @@ export type SaleResolvers<ContextType = any, ParentType extends ResolversParentT
   paymentMethod?: Resolver<ResolversTypes['PaymentMethodEnum'], ParentType, ContextType>;
   products?: Resolver<Array<ResolversTypes['SaleItem']>, ParentType, ContextType>;
   reason?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  subTotal?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   total?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };

@@ -18,6 +18,7 @@ export interface ISale extends Document, IGeneric {
     total: number
   }[]
   paymentMethod: PaymentMethodEnum
+  subTotal: number
   total: number
   discount: number
   date: Date
@@ -61,6 +62,10 @@ const saleSchema = new Schema<ISale>(
     paymentMethod: {
       type: String,
       enum: PaymentMethodEnum
+    },
+    subTotal: {
+      type: Number,
+      required: [true, 'Sub total de venta es requerido']
     },
     total: {
       type: Number,
