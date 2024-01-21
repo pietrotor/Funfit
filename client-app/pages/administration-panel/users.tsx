@@ -13,13 +13,13 @@ import {
   useGetUsersQuery,
   useUpdateUserMutation
 } from '@/graphql/graphql-types'
-import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import Table from '@/components/organisms/tableNext/Table'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 function CreateUserForm() {
   const handleAddUser = useDisclosure()
@@ -204,6 +204,9 @@ function CreateUserForm() {
       </div>
 
       <EditModal
+      color='warning'
+      title='Editar usuario'
+      message='Ingrese los nuevos datos del usuario'
         isOpen={handleEditModal.isOpen}
         onClose={handleEditModal.onClose}
         values={edit}
@@ -211,15 +214,21 @@ function CreateUserForm() {
       />
 
       <ConfirmModal
+        cancelText='Cancelar'
+        color='error'
+        confirmText='Eliminar'
+        name='trash'
         onClose={handleDeleteModal.onClose}
         onConfirm={handleConfirmDeleteUser}
         isOpen={handleDeleteModal.isOpen}
         title={'Mensaje de confirmación'}
         message={`¿Esta seguro de eliminar a ${edit.name} ?`}
-        onCancel={handleDeleteModal.onClose}
       />
 
       <AddUserModal
+      title='Agregar nuevo usuario'
+      color='success'
+      message='Ingrese los datos del nuevo usuario'
         onAddUser={refetch}
         isOpen={handleAddUser.isOpen}
         onClose={handleAddUser.onClose}

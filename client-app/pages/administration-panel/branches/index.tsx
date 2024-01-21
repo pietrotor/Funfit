@@ -5,7 +5,6 @@ import { useRouter } from 'next/router'
 
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
-import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -17,6 +16,7 @@ import { EditBranchModal } from '@/components/atoms/modals/EditBranchModal'
 import { TDataBranch } from '@/interfaces/TData'
 import useCustomGetBranchesQuery from '@/services/UseBranches'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 function Branches() {
   const [edit, setEdit] = useState<TDataBranch>({} as TDataBranch)
@@ -207,7 +207,10 @@ function Branches() {
         <ConfirmModal
           isOpen={handleConfirmModal.isOpen}
           onClose={handleConfirmModal.onClose}
-          onCancel={handleConfirmModal.onClose}
+          cancelText='Cancelar'
+          confirmText='Eliminar'
+          color='error'
+          name='trash'
           title="Eliminar sucursal"
           message={`¿Esta seguro de eliminar a ${edit?.name}?`}
           onConfirm={handleConfirmDelete}

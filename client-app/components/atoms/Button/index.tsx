@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { Tooltip } from '@nextui-org/react'
+import { Button, Tooltip } from '@nextui-org/react'
 
 type typeButtons = 'edit' | 'delete' | 'submit' | 'history' | 'eye' | 'default'
 
@@ -12,15 +12,19 @@ type TButtonProps = {
   className?: string
   showTooltip?: boolean
   tooltipText?: string
+  isLoading?: boolean
+  typeOf?: 'button' | 'submit' | 'reset' | undefined
 }
 
 const ButtonComponent = ({
   children,
   onClick,
   type = 'default',
+  typeOf,
   disabled,
   className,
   showTooltip = true,
+  isLoading = false,
   tooltipText = ''
 }: TButtonProps) => {
   const getTooltipId = () => {
@@ -57,14 +61,16 @@ const ButtonComponent = ({
           </button>
         </Tooltip>
       ) : (
-        <button
+        < Button
+          type={typeOf}
+          isLoading={isLoading}
           id={getTooltipId()}
           className={`rounded bg-gray-100 p-1 ${className} `}
           onClick={onClick}
           disabled={disabled}
         >
           {children}
-        </button>
+        </Button>
       )}
     </>
   )

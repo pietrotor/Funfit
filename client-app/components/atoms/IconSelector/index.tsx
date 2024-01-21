@@ -43,6 +43,8 @@ export type TSvgNames =
   | 'Store'
   | 'Configuration'
   | 'Logout'
+  | 'Recipe'
+  | 'TrunkAndBox'
 type TIconSelectorProps = {
   name: TSvgNames
   color?: string
@@ -618,9 +620,34 @@ const IconSelector: React.FC<TIconSelectorProps> = ({
           height="14"
           width="14"
           viewBox="0 0 512 512"
-          className={`${width} ${height} ${color} ${className} ${fill} transform rotate-180`}
+          className={`${width} ${height} ${color} ${className} ${fill} rotate-180 transform`}
         >
           <path d="M502.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-128-128c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L402.7 224 192 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l210.7 0-73.4 73.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l128-128zM160 96c17.7 0 32-14.3 32-32s-14.3-32-32-32L96 32C43 32 0 75 0 128L0 384c0 53 43 96 96 96l64 0c17.7 0 32-14.3 32-32s-14.3-32-32-32l-64 0c-17.7 0-32-14.3-32-32l0-256c0-17.7 14.3-32 32-32l64 0z" />
+        </svg>
+      )
+    case 'Recipe':
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          className={`${width} ${height} ${color} ${className} ${fill}`}
+        >
+          <path d="M21 5c0-1.103-.897-2-2-2H5c-1.103 0-2 .897-2 2v14c0 1.103.897 2 2 2h14c1.103 0 2-.897 2-2V5zM5 19V5h14l.002 14H5z"></path>
+          <path d="M7 7h1.998v2H7zm4 0h6v2h-6zm-4 4h1.998v2H7zm4 0h6v2h-6zm-4 4h1.998v2H7zm4 0h6v2h-6z"></path>
+        </svg>
+      )
+    case 'TrunkAndBox':
+      return (
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          height="16"
+          width="20"
+          viewBox="0 0 640 512"
+          className={`${width} ${height} ${color} ${className} ${fill}`}
+        >
+          <path d="M640 0V400c0 61.9-50.1 112-112 112c-61 0-110.5-48.7-112-109.3L48.4 502.9c-17.1 4.6-34.6-5.4-39.3-22.5s5.4-34.6 22.5-39.3L352 353.8V64c0-35.3 28.7-64 64-64H640zM576 400a48 48 0 1 0 -96 0 48 48 0 1 0 96 0zM23.1 207.7c-4.6-17.1 5.6-34.6 22.6-39.2l46.4-12.4 20.7 77.3c2.3 8.5 11.1 13.6 19.6 11.3l30.9-8.3c8.5-2.3 13.6-11.1 11.3-19.6l-20.7-77.3 46.4-12.4c17.1-4.6 34.6 5.6 39.2 22.6l41.4 154.5c4.6 17.1-5.6 34.6-22.6 39.2L103.7 384.9c-17.1 4.6-34.6-5.6-39.2-22.6L23.1 207.7z" />
         </svg>
       )
     default:

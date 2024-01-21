@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import { Button, Checkbox } from '@nextui-org/react'
+import { Checkbox } from '@nextui-org/react'
 import { MyModal } from './MyModal'
 import { showSuccessToast } from '../Toast/toasts'
 import InputComponent from '../Input'
@@ -57,14 +57,27 @@ export const CloseCashRegister = ({
   }
   const handleDiference = () => {
     return (
-      parseInt(watch('physicialAmount')) - data?.getCashById?.data?.amount! || 0
+      (data?.getCashById?.data?.amount! || 0) -
+      parseInt(watch('physicialAmount') || 0)
     ).toString()
   }
   return (
-    <MyModal isOpen={isOpen} onClose={onClose} size="lg">
+    <MyModal
+      isOpen={isOpen}
+      onClose={onClose}
+      size="lg"
+      title="Cerrar caja"
+      message="Ingrese los datos para cerrar la caja"
+      control={control}
+      loading={loading}
+      handleCancel={onClose}
+      handleSubmit={handleSubmit}
+      onSubmit={onSubmit}
+      reset={reset}
+    >
       <section className="p-6 text-lg font-semibold">
         <h2 className=" mb-4 text-center ">Cerrar caja</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <div>
           <div className="flex flex-col space-y-3">
             <div className="flex justify-between">
               <div className="3/5">Dinero en caja</div>
@@ -74,12 +87,17 @@ export const CloseCashRegister = ({
               <div>Dinero fisico</div>
               <div className="flex w-20 items-baseline">
                 <InputComponent
+                  required={false}
+                  size="sm"
                   defaultValue={'0'}
                   customeClassName=""
                   height={'h-3'}
                   control={control}
                   name="physicialAmount"
                   variant="underlined"
+                  rules={{
+                    required: { value: true, message: 'Campo requerido' }
+                  }}
                 />{' '}
                 Bs
               </div>
@@ -99,27 +117,7 @@ export const CloseCashRegister = ({
           >
             Actualizar estado en caja
           </Checkbox>
-          <div className="mt-6 grid h-12 w-full grid-cols-2 gap-3 ">
-            <Button
-              isLoading={loading}
-              type="submit"
-              color="secondary"
-              className="h-full text-lg font-bold"
-            >
-              Cerrar caja
-            </Button>
-            <Button
-                          isLoading={loading}
-
-              variant="flat"
-              color="danger"
-              className="h-full text-lg font-bold"
-              onClick={onClose}
-            >
-              Cancelar
-            </Button>
-          </div>
-        </form>
+        </div>
       </section>
     </MyModal>
   )

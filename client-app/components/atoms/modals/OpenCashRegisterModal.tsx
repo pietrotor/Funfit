@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { Button, Checkbox } from '@nextui-org/react'
+import { Checkbox } from '@nextui-org/react'
 import { useState } from 'react'
 import { MyModal } from './MyModal'
 import InputComponent from '../Input'
@@ -57,63 +57,61 @@ export const OpenCashRegister = ({
     console.log('submit')
   }
   const handleDiference = () => {
-    return (((data?.getCashById?.data?.amount!) - parseInt(watch('physicialAmount'))) || 0).toString()
+    return (
+      data?.getCashById?.data?.amount! - parseInt(watch('physicialAmount')) || 0
+    ).toString()
   }
 
   return (
-    <MyModal isOpen={isOpen} onClose={onClose} size="lg">
-      <section className="p-6 text-lg font-semibold">
-        <h2 className=" mb-4 text-center ">Abrir caja</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col space-y-3">
-            <div className="flex justify-between">
-              <div className="3/5">Dinero en caja</div>
-              {data?.getCashById?.data?.amount} Bs
+    <MyModal
+      title="Abrir caja"
+      message="Agregar dinero fisico a la caja"
+      handleCancel={onClose}
+      color="success"
+      loading={loading}
+      isOpen={isOpen}
+      onClose={onClose}
+      size="lg"
+      control={control}
+      handleSubmit={handleSubmit}
+      onSubmit={onSubmit}
+>
+      <div className="px-8">
+        <div className="flex flex-col space-y-3">
+          <div className="flex justify-between">
+            <div className="3/5">Dinero en caja</div>
+            {data?.getCashById?.data?.amount} Bs
+          </div>
+          <div className="flex justify-between">
+            <div>Dinero fisico</div>
+            <div className="flex w-20 items-baseline">
+              <InputComponent
+                defaultValue={'0'}
+                customeClassName=""
+                height={'h-3'}
+                control={control}
+                name="physicialAmount"
+                variant="underlined"
+              />{' '}
+              Bs
             </div>
-            <div className="flex justify-between">
-              <div>Dinero fisico</div>
-              <div className="flex w-20 items-baseline">
-                <InputComponent
-                  defaultValue={'0'}
-                  customeClassName=""
-                  height={'h-3'}
-                  control={control}
-                  name="physicialAmount"
-                  variant="underlined"
-                />{' '}
-                Bs
-              </div>
-            </div>
           </div>
-          <hr />
-          <div className="my-4 flex justify-between">
-            <div>Diferencia</div>
-            <div> { handleDiference() }</div>
-          </div>
-          <InputComponent name="details" control={control} type="textArea" />
-          <Checkbox isSelected={updateAmount} onClick={() => setUpdateAmount(!updateAmount)} defaultSelected size="sm">
-            Actualizar estado en caja
-          </Checkbox>
-          <div className="mt-6 grid h-12 w-full grid-cols-2 gap-3 ">
-            <Button
-              isLoading={loading}
-              type="submit"
-              color="secondary"
-              className="h-full text-lg font-bold"
-            >
-              Abrir caja
-            </Button>
-            <Button
-              variant="flat"
-              color="danger"
-              className="h-full text-lg font-bold"
-              onClick={onClose}
-            >
-              Cancelar
-            </Button>
-          </div>
-        </form>
-      </section>
+        </div>
+        <hr />
+        <div className="my-4 flex justify-between">
+          <div>Diferencia</div>
+          <div> {handleDiference()}</div>
+        </div>
+        <InputComponent name="details" control={control} type="textArea" />
+        <Checkbox
+          isSelected={updateAmount}
+          onClick={() => setUpdateAmount(!updateAmount)}
+          defaultSelected
+          size="sm"
+        >
+          Actualizar estado en caja
+        </Checkbox>
+      </div>
     </MyModal>
   )
 }

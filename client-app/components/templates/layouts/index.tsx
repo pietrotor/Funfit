@@ -119,6 +119,22 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           icon: 'Cash',
           text: 'Caja',
           link: '/administration-panel/cash'
+        },
+        {
+          icon: 'Admin',
+          text: 'Reporte de ventas',
+          link: '/administration-panel/sales'
+        }
+      ]
+    },
+    {
+      icon: 'TrunkAndBox',
+      text: 'Produccion',
+      subMenu: [
+        {
+          icon: 'Recipe',
+          text: 'Recetas',
+          link: '/administration-panel/recipies'
         }
       ]
     },
@@ -165,7 +181,8 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
             {children}
             <ToastComponent />
             <DropDown
-            label={currentBranch.name}
+            IconButtonName='user'
+            label={ 'Pietro' }
             values={['cerrar sesion']}
             handleClick={() => handleLogOut()}
             />

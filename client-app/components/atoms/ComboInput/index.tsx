@@ -20,6 +20,7 @@ interface ComboInputProps {
   value?: string
   onChange: (value: string) => void
   onClick: () => void
+  defaultValue?: string
 }
 
 const ComboInput: React.FC<ComboInputProps> = ({
@@ -29,6 +30,7 @@ const ComboInput: React.FC<ComboInputProps> = ({
   label,
   options,
   value,
+  defaultValue,
   onChange,
   onClick
 }) => {
@@ -47,6 +49,7 @@ const ComboInput: React.FC<ComboInputProps> = ({
             label={label}
             className={`${value ? 'border-gray-900' : 'border-gray-300'} w-full`}
             radius='sm'
+            defaultSelectedKey={defaultValue}
             onClick={onClick}
             list="options"
             onInputChange={e => {

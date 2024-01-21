@@ -1,5 +1,4 @@
 import { useForm } from 'react-hook-form'
-import { Button } from '@nextui-org/react'
 
 import { MyModal } from './MyModal'
 import Input from '../Input'
@@ -58,117 +57,102 @@ export const AddProductModal = ({
   }
 
   return (
-    <MyModal isOpen={isOpen} onClose={onClose}>
-      <section>
-        <h1 className="mt-5 text-center text-3xl font-bold text-gray-500">
-          Agregar Producto
-        </h1>
-        <form
-          action=""
-          onSubmit={handleSubmit(onSubmit)}
-          className="p-4 text-gray-500 md:p-8"
-        >
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              control={control}
-              name="name"
-              label="Nombre"
-              placeholder="Nombre"
-              type="text"
-              rules={{
-                required: {
-                  value: true,
-                  message: 'Este campo es obligatorio'
-                }
-              }}
-            />
-            <Input
-              control={control}
-              name="suggetedPrice"
-              label="Precio sugerido"
-              placeholder="Precio sugerido"
-              type="text"
-              rules={{
-                required: {
-                  value: true,
-                  message: 'Este campo es obligatorio'
-                },
-                pattern: {
-                  value: /^[0-9]+$/i,
-                  message: 'Solo se permiten números'
-                }
-              }}
-            />
-            <Input
-              control={control}
-              name="cost"
-              label="Costo"
-              placeholder="Costo"
-              type="text"
-              rules={{
-                required: {
-                  value: true,
-                  message: 'Este campo es obligatorio'
-                },
-                pattern: {
-                  value: /^[0-9]+$/i,
-                  message: 'Solo se permiten números'
-                }
-              }}
-            />
-            <Input
-              name="code"
-              control={control}
-              label="Código"
-              placeholder="Código"
-              type="text"
-              rules={{
-                required: {
-                  value: true,
-                  message: 'Este campo es obligatorio'
-                }
-              }}
-            />
-          </div>
+    <MyModal
+      handleCancel={handleCancel}
+      title="Agregar producto"
+      message="Ingrese los datos del nuevo producto"
+      color="success"
+      loading={loading}
+      isOpen={isOpen}
+      onClose={onClose}
+      control={control}
+      handleSubmit={handleSubmit}
+      onSubmit={onSubmit}
+      reset={reset}
+    >
+      <div className="p-4 text-gray-500 md:p-8">
+        <div className="grid grid-cols-2 gap-3 pb-2">
           <Input
-            customeClassName="h-20 "
             control={control}
-            name="description"
-            label="Descripción"
-            placeholder="Descripción"
-            type="textArea"
+            name="name"
+            label="Nombre"
+            placeholder="Nombre"
+            type="text"
+            rules={{
+              required: {
+                value: true,
+                message: 'Este campo es obligatorio'
+              }
+            }}
+          />
+          <Input
+            control={control}
+            name="suggetedPrice"
+            label="Precio sugerido"
+            placeholder="Precio sugerido"
+            type="text"
             rules={{
               required: {
                 value: true,
                 message: 'Este campo es obligatorio'
               },
               pattern: {
-                value: /^[a-zA-Z\s]+$/i,
-                message: 'Solo se permiten letras'
+                value: /^[0-9]+$/i,
+                message: 'Solo se permiten números'
               }
             }}
           />
-          <DropZone />
-          <div className="grid h-12 grid-cols-2 gap-3 ">
-            <Button
-              isLoading={loading}
-              type="submit"
-              color="secondary"
-              className="h-full text-lg font-bold"
-            >
-              Agregar
-            </Button>
-            <Button
-              variant="flat"
-              color="danger"
-              className="h-full text-lg font-bold"
-              onClick={handleCancel}
-            >
-              Cancelar
-            </Button>
-          </div>
-        </form>
-      </section>
+          <Input
+            control={control}
+            name="cost"
+            label="Costo"
+            placeholder="Costo"
+            type="text"
+            rules={{
+              required: {
+                value: true,
+                message: 'Este campo es obligatorio'
+              },
+              pattern: {
+                value: /^[0-9]+$/i,
+                message: 'Solo se permiten números'
+              }
+            }}
+          />
+          <Input
+            name="code"
+            control={control}
+            label="Código"
+            placeholder="Código"
+            type="text"
+            rules={{
+              required: {
+                value: true,
+                message: 'Este campo es obligatorio'
+              }
+            }}
+          />
+        </div>
+        <Input
+          customeClassName="h-20 "
+          control={control}
+          name="description"
+          label="Descripción"
+          placeholder="Descripción"
+          type="textArea"
+          rules={{
+            required: {
+              value: true,
+              message: 'Este campo es obligatorio'
+            },
+            pattern: {
+              value: /^[a-zA-Z\s]+$/i,
+              message: 'Solo se permiten letras'
+            }
+          }}
+        />
+        <DropZone />
+      </div>
     </MyModal>
   )
 }

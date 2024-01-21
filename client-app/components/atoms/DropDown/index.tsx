@@ -5,19 +5,22 @@ import {
   DropdownMenu,
   DropdownTrigger
 } from '@nextui-org/react'
-import IconSelector from '../IconSelector'
+import IconSelector, { TSvgNames } from '../IconSelector'
 
 type DropDownProps = {
   label: string
   values: string[]
   handleClick: () => void
+  IconButtonName : TSvgNames
 }
-export const DropDown = ({ label, values, handleClick }: DropDownProps) => {
+export const DropDown = ({ label, values, handleClick, IconButtonName }: DropDownProps) => {
   return (
     <div className="mt-8 md:me-4 ">
       <Dropdown >
         <DropdownTrigger>
-          <Button color='primary' variant="bordered">{label}</Button>
+          <Button color='primary' variant="bordered"> <IconSelector
+          name={IconButtonName}
+          /> {label}</Button>
         </DropdownTrigger>
         <DropdownMenu color='primary' aria-label="Static Actions">
           {values.map((value, index) => (
