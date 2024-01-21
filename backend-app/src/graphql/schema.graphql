@@ -15,6 +15,11 @@ enum TurnMovementTypeEnum {
   WITHDRAW
   ADJUST
 }
+enum PaymentMethodEnum {
+  QR_TRANSFER
+  CARD
+  CASH
+}
 type Query {
   # CONFIGURATION ====================================
   getConfiguration: ConfigurationResponse
@@ -55,11 +60,20 @@ type Query {
   # BRANCHES ===============================
   getBranchesPaginated(paginationInput: PaginationInput!): BranchsResponse
   getBranchById(id: ObjectId!): BranchResponse
-  getBranchProductsPaginated(paginationInput: PaginationInput!, branchId: ObjectId!): BranchProductsResponse
+  getBranchProductsPaginated(
+    paginationInput: PaginationInput!
+    branchId: ObjectId!
+  ): BranchProductsResponse
   getBranchProductById(id: ObjectId!): BranchProductResponse
   # CASH ==================================
   getCashById(id: ObjectId!): CashResponse
-  getCashTurnMovements(paginationInput: PaginationInput!, turnId: ObjectId!): CashTurnMovementsResponse
+  getCashTurnMovements(
+    paginationInput: PaginationInput!
+    turnId: ObjectId!
+  ): CashTurnMovementsResponse
+  # SALES =================================
+  getSaleById(id: ObjectId!): SaleResponse
+  getSalesPaginated(salesPaginationInput: SalesPaginationInput!): SalesResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(paginationInput: PaginationInput!): ProductsResponse
 }
@@ -95,13 +109,21 @@ type Mutation {
   createBranch(createBranchInput: CreateBranchInput!): BranchResponse
   updateBranch(updateBranchInput: UpdateBranchInput!): BranchResponse
   deleteBranch(id: ObjectId!): BranchResponse
-  createBranchProduct(createBranchProductInput: CreateBranchProductInput!): BranchProductResponse
-  updateBranchProduct(updateBranchProductInput: UpdateBranchProductInput!): BranchProductResponse
+  createBranchProduct(
+    createBranchProductInput: CreateBranchProductInput!
+  ): BranchProductResponse
+  updateBranchProduct(
+    updateBranchProductInput: UpdateBranchProductInput!
+  ): BranchProductResponse
   deleteBranchProduct(id: ObjectId!): BranchProductResponse
   # CASH ==================================
   openCash(createTurnInput: CreateTurnInput!): CashResponse
   closeCash(closeTurnInput: CloseTurnInput!): CashResponse
-  createCashMovement(createTurnMovementInput: CreateTurnMovementInput!): CashTurnMovementResponse
+  createCashMovement(
+    createTurnMovementInput: CreateTurnMovementInput!
+  ): CashTurnMovementResponse
+  # SALES =================================
+  createSale(createSaleInput: CreateSaleInput!): SaleResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type MeasurementUnits {
@@ -253,6 +275,36 @@ type TurnMovements {
   concept: String
   createdBy: ObjectId
   # Fields Resolvers
+  createdByInfo: User
+}
+type SaleItem {
+  productId: ObjectId!
+  price: Float!
+  qty: Int!
+  total: Float!
+  # Fields Resolvers
+  product: Product
+}
+type Sale {
+  id: ObjectId!
+  branchId: ObjectId!
+  products: [SaleItem!]!
+  paymentMethod: PaymentMethodEnum!
+  subTotal: Float!
+  total: Float!
+  discount: Float!
+  date: Date!
+  code: String!
+  client: String
+  amountRecibed: Float!
+  change: Float!
+  observations: String
+  canceled: Boolean
+  reason: String
+  canceledAt: Date
+  createdBy: ObjectId
+  # Fields Resolvers
+  branch: Branch
   createdByInfo: User
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
@@ -416,6 +468,22 @@ type CashTurnMovementResponse implements ResponseBase {
   message: String
   data: TurnMovements
 }
+type SalesResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Sale!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type SaleResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Sale
+}
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
   name: String!
@@ -564,4 +632,33 @@ input CreateTurnMovementInput {
   date: Date!
   type: TurnMovementTypeEnum
   concept: String
+}
+input SalesPaginationInput {
+  rows: Int
+  page: Int
+  # Filter by sale code
+  filter: String
+  branchIds: [ObjectId!]!
+  initialDate: Date
+  endDate: Date
+  saleBy: ObjectId
+}
+input SaleItemInput {
+  productId: ObjectId!
+  price: Float!
+  qty: Int!
+  total: Float!
+}
+input CreateSaleInput {
+  branchId: ObjectId!
+  products: [SaleItemInput!]!
+  paymentMethod: PaymentMethodEnum!
+  subTotal: Float!
+  total: Float!
+  discount: Float!
+  date: Date!
+  client: String
+  amountRecibed: Float!
+  change: Float!
+  observations: String
 }

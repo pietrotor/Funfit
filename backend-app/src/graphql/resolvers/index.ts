@@ -22,21 +22,14 @@ import {
   stockHistoryQuery,
   stockHistoryType
 } from './stockHistory.resolver'
-import {
-  branchMutation,
-  branchQuery,
-  branchType
-} from './branch.resolver'
+import { branchMutation, branchQuery, branchType } from './branch.resolver'
 import {
   branchProductMutation,
   branchProductQuery,
   branchProductType
 } from './branchProduct.resolver'
-import {
-  cashMutation,
-  cashQuery,
-  cashType
-} from './cash.resolver'
+import { cashMutation, cashQuery, cashType } from './cash.resolver'
+import { saleMutation, saleQuery, saleType } from './sale.resolver'
 
 const resolvers: Resolvers<ContextGraphQl> = {
   Date: dateTimeScalar,
@@ -51,6 +44,7 @@ const resolvers: Resolvers<ContextGraphQl> = {
   ...branchType,
   ...branchProductType,
   ...cashType,
+  ...saleType,
   Query: {
     ...userQuery,
     ...roleQuery,
@@ -61,7 +55,8 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...stockHistoryQuery,
     ...branchQuery,
     ...branchProductQuery,
-    ...cashQuery
+    ...cashQuery,
+    ...saleQuery
   },
   Mutation: {
     ...userMutation,
@@ -72,7 +67,8 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...stockHistoryMutation,
     ...branchMutation,
     ...branchProductMutation,
-    ...cashMutation
+    ...cashMutation,
+    ...saleMutation
   }
 }
 

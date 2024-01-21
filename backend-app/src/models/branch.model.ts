@@ -9,19 +9,10 @@ export interface IBranch extends Document, IGeneric {
   direction: string;
   phone?: string;
   nit?: string;
-  // productStock: {
-  //   id: objectId;
-  //   oldStock: number;
-  //   qty: number;
-  //   securityQty: number;
-  //   price: number;
-  //   isVisibleOnMenu: boolean;
-  //   units: string;
-  //   updatedAt: Date;
-  // }[]
   cashId: objectId;
+  productsIds: objectId[];
 }
-export interface IModelBranch extends Model<IBranch> {}
+export interface IModelBranch extends Model<IBranch> { }
 
 const branchSchema = new Schema<IBranch>(
   {
@@ -54,6 +45,13 @@ const branchSchema = new Schema<IBranch>(
       type: Schema.Types.ObjectId,
       ref: 'Cash'
     },
+    productsIds: [
+      {
+        type: Schema.Types.ObjectId,
+        default: [],
+        ref: 'Product'
+      }
+    ],
     // Generic Types
     status: { type: Boolean, default: true },
     createdBy: {
