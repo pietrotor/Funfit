@@ -6,7 +6,13 @@ import {
 import { SalesRepository } from '../repositories'
 import { BadRequestError } from '@/lib/graphqlerrors'
 import { saleUseCase } from 'useCase'
-import { branchCore, cashCore, productCore, turnMovementCore } from '.'
+import {
+  branchCore,
+  branchProductCore,
+  cashCore,
+  productCore,
+  turnMovementCore
+} from '.'
 import { TurnMovementTypeEnum } from '../models'
 import Sale, { IModelSale, ISale } from '@/models/sales.model'
 import { getInstancesPagination } from './generic.service'
@@ -94,12 +100,6 @@ export class SalesService extends SalesRepository<objectId> {
       throw new BadRequestError('El sub total no es correcto')
     }
 
-    await Promise.all(
-      products.map(async product => {
-        return await productCore.getProductById(product.productId)
-      })
-    )
-
     const branchInstance = await branchCore.getBranchById(branchId)
 
     const [cashInstance, isCashOpen] = await Promise.all([
@@ -111,19 +111,22 @@ export class SalesService extends SalesRepository<objectId> {
       throw new BadRequestError('La caja no se encuentra abierta')
     }
 
-    if (paymentMethod === PaymentMethodEnum.CASH) {
-      turnMovementCore.createMovement(
-        {
-          amount: total,
-          cashId: cashInstance._id,
-          date,
-          turnId: cashInstance.currentTurnId!,
-          concept: 'Venta realizada',
-          type: TurnMovementTypeEnum.ADD
-        },
-        createdBy
-      )
-    }
+    const branchProductInstances = await Promise.all(
+      products.map(async product => {
+        const branchProductInstance =
+          await branchProductCore.getBranchProductById(product.branchProductId)
+        if (product.qty > branchProductInstance.stock) {
+          const productInstance = await productCore.getProductById(
+            product.productId
+          )
+          throw new BadRequestError(
+            'El stock de ' + productInstance.name + ' es menor al requerido'
+          )
+        }
+        return branchProductInstance
+      })
+    )
+
     function generateCode(): string {
       const characters: string =
         'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -139,6 +142,34 @@ export class SalesService extends SalesRepository<objectId> {
       return code
     }
     const code = generateCode()
+
+    if (paymentMethod === PaymentMethodEnum.CASH) {
+      turnMovementCore.createMovement(
+        {
+          amount: total,
+          cashId: cashInstance._id,
+          date,
+          turnId: cashInstance.currentTurnId!,
+          concept: 'Venta realizada, código: ' + code,
+          type: TurnMovementTypeEnum.ADD
+        },
+        createdBy
+      )
+    }
+
+    await Promise.all(
+      products.map(async product => {
+        const branchProductInstance = branchProductInstances.find(
+          branchProduct =>
+            branchProduct._id.toString() === product.branchProductId.toString()
+        )
+        if (branchProductInstance) {
+          branchProductInstance.stock -= product.qty
+          await branchProductInstance.save()
+        }
+      })
+    )
+
     const saleInstance = new Sale({
       branchId,
       products,

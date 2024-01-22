@@ -12,6 +12,7 @@ export interface ISale extends Document, IGeneric {
   id: objectId
   branchId: objectId
   products: {
+    branchProductId: objectId
     productId: objectId
     price: number
     qty: number

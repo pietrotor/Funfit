@@ -7,7 +7,8 @@ import {
   UpdateBranchProductInput,
   BranchProduct,
   Product,
-  Branch
+  Branch,
+  CreateBranchProductStockMovementInput
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
@@ -16,11 +17,14 @@ import { branchCore, branchProductCore, productCore } from '@/services/index'
 // ========================================== Queries ====================================================
 const getBranchProductsPaginated = async (
   _: any,
-  args: { paginationInput: PaginationInput, branchId: objectId },
+  args: { paginationInput: PaginationInput; branchId: objectId }
 ): Promise<BranchProductsResponse> => {
   try {
     const { paginationInput, branchId } = args
-    return await branchProductCore.getBranchesProductsPaginated(paginationInput, branchId)
+    return await branchProductCore.getBranchesProductsPaginated(
+      paginationInput,
+      branchId
+    )
   } catch (error) {
     console.log(error)
     return errorHandler(error)
@@ -28,7 +32,7 @@ const getBranchProductsPaginated = async (
 }
 const getBranchProductById = async (
   _: any,
-  args: { id: objectId },
+  args: { id: objectId }
 ): Promise<BranchProductResponse> => {
   try {
     const { id } = args
@@ -107,6 +111,31 @@ const deleteBranchProduct = async (
   }
 }
 
+const createBranchStockMovement = async (
+  _: any,
+  args: {
+    createBranchStockMovementInput: CreateBranchProductStockMovementInput
+  },
+  context: ContextGraphQl
+): Promise<BranchProductResponse> => {
+  try {
+    const { createBranchStockMovementInput } = args
+    const branchProductInstance =
+      await branchProductCore.createBranchProductStockMovement(
+        createBranchStockMovementInput,
+        context.req.currentUser?.id
+      )
+    return {
+      status: StatusEnum.OK,
+      message: 'Producto actualizado su stock Correctamente',
+      data: branchProductInstance
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
+
 export const branchProductQuery = {
   getBranchProductsPaginated,
   getBranchProductById
@@ -114,24 +143,35 @@ export const branchProductQuery = {
 export const branchProductMutation = {
   createBranchProduct,
   updateBranchProduct,
-  deleteBranchProduct
+  deleteBranchProduct,
+  createBranchStockMovement
 }
 
 export const branchProductType = {
   BranchProduct: {
-    async product(parent: BranchProduct, _: any, __: any): Promise<Product | null> {
+    async product(
+      parent: BranchProduct,
+      _: any,
+      __: any
+    ): Promise<Product | null> {
       if (parent.productId) {
-        const product = await productCore.getProductByIdInstance(parent.productId);
-        return product;
+        const product = await productCore.getProductByIdInstance(
+          parent.productId
+        )
+        return product
       }
-      return null;
+      return null
     },
-    async branch(parent: BranchProduct, _: any, __: any): Promise<Branch | null> {
+    async branch(
+      parent: BranchProduct,
+      _: any,
+      __: any
+    ): Promise<Branch | null> {
       if (parent.branchId) {
-        const branch = await branchCore.getBranchByIdInstance(parent.branchId);
-        return branch;
+        const branch = await branchCore.getBranchByIdInstance(parent.branchId)
+        return branch
       }
-      return null;
-    },
+      return null
+    }
   }
 }

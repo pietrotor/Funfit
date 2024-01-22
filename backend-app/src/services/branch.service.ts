@@ -1,4 +1,8 @@
-import { CreateBranchInput, PaginationInput, UpdateBranchInput } from '@/graphql/graphql_types'
+import {
+  CreateBranchInput,
+  PaginationInput,
+  UpdateBranchInput
+} from '@/graphql/graphql_types'
 import { BadRequestError } from '@/lib/graphqlerrors'
 import { updateGenericInstance } from '@/lib/updateInstance'
 import { getInstancesPagination } from './generic.service'
@@ -10,9 +14,7 @@ export class BranchService extends BranchRepository<objectId> {
     const { filter } = paginationInput
     if (filter) {
       const filterArgs = {
-        $or: [
-          { name: { $regex: filter, $options: 'i' } }
-        ]
+        $or: [{ name: { $regex: filter, $options: 'i' } }]
       }
       return await getInstancesPagination<IBranch, IModelBranch>(
         Branch,
@@ -42,7 +44,10 @@ export class BranchService extends BranchRepository<objectId> {
     })
   }
 
-  async createBranch(createBranchInput: CreateBranchInput, createdBy?: objectId) {
+  async createBranch(
+    createBranchInput: CreateBranchInput,
+    createdBy?: objectId
+  ) {
     const branchInstance = new Branch({ ...createBranchInput, createdBy })
     // TODO: Create a service for this
     const cashInstance = new Cash({
