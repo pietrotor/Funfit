@@ -41,6 +41,7 @@ export type BranchProduct = {
   price: Scalars['Float'];
   product?: Maybe<Product>;
   productId: Scalars['ObjectId'];
+  stock: Scalars['Float'];
 };
 
 export type BranchProductResponse = ResponseBase & {
@@ -180,6 +181,16 @@ export type CreateBranchProductInput = {
   productId: Scalars['ObjectId'];
 };
 
+export type CreateBranchProductStockMovementInput = {
+  branchId: Scalars['ObjectId'];
+  branchProductId: Scalars['ObjectId'];
+  date: Scalars['Date'];
+  observation?: InputMaybe<Scalars['String']>;
+  qty: Scalars['Float'];
+  stockId?: InputMaybe<Scalars['ObjectId']>;
+  type: StockMovementTypeEnum;
+};
+
 export type CreateProductInput = {
   code: Scalars['String'];
   cost?: InputMaybe<Scalars['Float']>;
@@ -274,6 +285,7 @@ export type Mutation = {
   creatStockMovement?: Maybe<StockResponse>;
   createBranch?: Maybe<BranchResponse>;
   createBranchProduct?: Maybe<BranchProductResponse>;
+  createBranchStockMovement?: Maybe<BranchProductResponse>;
   createCashMovement?: Maybe<CashTurnMovementResponse>;
   createProduct?: Maybe<ProductResponse>;
   createSale?: Maybe<SaleResponse>;
@@ -311,6 +323,11 @@ export type MutationCreateBranchArgs = {
 
 export type MutationCreateBranchProductArgs = {
   createBranchProductInput: CreateBranchProductInput;
+};
+
+
+export type MutationCreateBranchStockMovementArgs = {
+  createBranchProductStockMovementInput: CreateBranchProductStockMovementInput;
 };
 
 
@@ -665,6 +682,7 @@ export type Sale = {
 
 export type SaleItem = {
   __typename?: 'SaleItem';
+  branchProductId: Scalars['ObjectId'];
   price: Scalars['Float'];
   product?: Maybe<Product>;
   productId: Scalars['ObjectId'];
@@ -673,6 +691,7 @@ export type SaleItem = {
 };
 
 export type SaleItemInput = {
+  branchProductId: Scalars['ObjectId'];
   price: Scalars['Float'];
   productId: Scalars['ObjectId'];
   qty: Scalars['Int'];

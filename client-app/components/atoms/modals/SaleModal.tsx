@@ -53,6 +53,7 @@ function SaleModal({
       discount: selectedProducts.discount,
       observations: watch('observations') || '',
       products: selectedProducts.products.map(item => ({
+        branchProductId: item.id || '',
         productId: item?.productId || '',
         qty: item?.quantity || 0,
         price: item?.price || 0,
