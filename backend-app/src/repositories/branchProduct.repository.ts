@@ -1,5 +1,6 @@
 import {
   CreateBranchProductInput,
+  CreateBranchProductStockMovementInput,
   PaginationInput,
   UpdateBranchProductInput
 } from '@/graphql/graphql_types'
@@ -12,23 +13,30 @@ export abstract class BranchProductRepository<T> {
   abstract getBranchesProductsPaginated(
     paginationInput: PaginationInput,
     branchId: T
-  ): Promise<IPaginatedResponse<IBranchProduct[]> | OutErrorResponse>;
+  ): Promise<IPaginatedResponse<IBranchProduct[]> | OutErrorResponse>
 
-  abstract getBranchProductById(id: T): Promise<IBranchProduct | OutErrorResponse>;
+  abstract getBranchProductById(
+    id: T
+  ): Promise<IBranchProduct | OutErrorResponse>
 
-  abstract getBranchProductByIdInstance(id: T): Promise<IBranchProduct | null>;
+  abstract getBranchProductByIdInstance(id: T): Promise<IBranchProduct | null>
 
   abstract createBranchProduct(
     createBranchProductInput: CreateBranchProductInput,
     createdBy?: T | null
-  ): Promise<IBranchProduct | OutErrorResponse>;
+  ): Promise<IBranchProduct | OutErrorResponse>
 
   abstract updateBranchProduct(
     updateBranchProductInput: UpdateBranchProductInput
-  ): Promise<IBranchProduct | OutErrorResponse>;
+  ): Promise<IBranchProduct | OutErrorResponse>
 
   abstract deleteBranchProdcut(
     id: T,
     deletedBy?: T | null
-  ): Promise<IBranchProduct | OutErrorResponse>;
+  ): Promise<IBranchProduct | OutErrorResponse>
+
+  abstract createBranchProductStockMovement(
+    createBranchProductStockMovementInput: CreateBranchProductStockMovementInput,
+    createdBy?: objectId
+  ): Promise<IBranchProduct | OutErrorResponse>
 }

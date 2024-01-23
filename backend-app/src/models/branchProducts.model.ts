@@ -2,12 +2,13 @@ import IGeneric from '@/interfaces/generic.interface'
 import { Document, Model, Schema, model } from 'mongoose'
 
 export interface IBranchProduct extends Document, IGeneric {
-  id: objectId;
-  branchId: objectId;
-  productId: objectId;
-  price: number;
-  isVisibleOnWeb: boolean;
-  isVisibleOnMenu: boolean;
+  id: objectId
+  branchId: objectId
+  productId: objectId
+  stock: number
+  price: number
+  isVisibleOnWeb: boolean
+  isVisibleOnMenu: boolean
 }
 export interface IModelBranchProduct extends Model<IBranchProduct> {}
 
@@ -20,6 +21,11 @@ const branchProductSchema = new Schema<IBranchProduct>(
     productId: {
       type: Schema.Types.ObjectId,
       ref: 'Product'
+    },
+    stock: {
+      type: Number,
+      required: true,
+      default: 0
     },
     price: {
       type: Number,
@@ -43,4 +49,8 @@ const branchProductSchema = new Schema<IBranchProduct>(
   { timestamps: true }
 )
 
-export const BranchProduct = model<IBranchProduct, IModelBranchProduct>('BranchProduct', branchProductSchema, 'branchProduct')
+export const BranchProduct = model<IBranchProduct, IModelBranchProduct>(
+  'BranchProduct',
+  branchProductSchema,
+  'branchProduct'
+)

@@ -116,6 +116,9 @@ type Mutation {
     updateBranchProductInput: UpdateBranchProductInput!
   ): BranchProductResponse
   deleteBranchProduct(id: ObjectId!): BranchProductResponse
+  createBranchStockMovement(
+    createBranchProductStockMovementInput: CreateBranchProductStockMovementInput!
+  ): BranchProductResponse
   # CASH ==================================
   openCash(createTurnInput: CreateTurnInput!): CashResponse
   closeCash(closeTurnInput: CloseTurnInput!): CashResponse
@@ -222,6 +225,7 @@ type BranchProduct {
   branchId: ObjectId!
   productId: ObjectId!
   price: Float!
+  stock: Float!
   isVisibleOnWeb: Boolean!
   isVisibleOnMenu: Boolean!
   # Fields Resolvers
@@ -278,6 +282,7 @@ type TurnMovements {
   createdByInfo: User
 }
 type SaleItem {
+  branchProductId: ObjectId!
   productId: ObjectId!
   price: Float!
   qty: Int!
@@ -608,6 +613,16 @@ input UpdateBranchProductInput {
   isVisibleOnWeb: Boolean
   isVisibleOnMenu: Boolean
 }
+input CreateBranchProductStockMovementInput {
+  branchId: ObjectId!
+  branchProductId: ObjectId!
+  type: StockMovementTypeEnum!
+  qty: Float!
+  # Optional on OutPuts
+  stockId: ObjectId
+  observation: String
+  date: Date!
+}
 input CreateTurnInput {
   cashId: ObjectId!
   amount: Float!
@@ -644,6 +659,7 @@ input SalesPaginationInput {
   saleBy: ObjectId
 }
 input SaleItemInput {
+  branchProductId: ObjectId!
   productId: ObjectId!
   price: Float!
   qty: Int!
