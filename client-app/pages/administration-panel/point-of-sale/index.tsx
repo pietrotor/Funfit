@@ -16,7 +16,7 @@ export type TPointOfSaleData = {
 
 function PointOfSale() {
   const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
-  const { loading, data } = useGetBranchProductPOSQuery(branchId)
+  const { loading, data, setFilter } = useGetBranchProductPOSQuery(branchId)
   const [selectedProducts, setSelectedProducts] = useState<TPointOfSaleData>()
 
   const handleSelected = (id: string) => {
@@ -73,7 +73,7 @@ function PointOfSale() {
       <section className="flex h-full w-full ">
         <div className="w-2/3 border-1 border-secondary/30 bg-secondary/10 p-4">
           <div className="flex w-full">
-            <Search onChange={() => {}} />
+            <Search setFilter={setFilter} />
           </div>
           <div className="grid grid-cols-3 gap-4 p-4">
             {data?.getBranchProductsPaginated?.data?.map(item => (

@@ -199,6 +199,7 @@ export type CreateSaleInput = {
   observations?: InputMaybe<Scalars['String']>;
   paymentMethod: PaymentMethodEnum;
   products: Array<SaleItemInput>;
+  subTotal: Scalars['Float'];
   total: Scalars['Float'];
 };
 
@@ -470,7 +471,8 @@ export type Query = {
   getProductsOutOfWarehouse?: Maybe<ProductsResponse>;
   getPublicProducts?: Maybe<ProductsResponse>;
   getRoles?: Maybe<RolesResponse>;
-  getSales?: Maybe<SalesResponse>;
+  getSaleById?: Maybe<SaleResponse>;
+  getSalesPaginated?: Maybe<SalesResponse>;
   getStockById?: Maybe<StockResponse>;
   getStockHistory?: Maybe<StocksHistoryResponse>;
   getStocksPaginated?: Maybe<StocksResponse>;
@@ -548,7 +550,12 @@ export type QueryGetRolesArgs = {
 };
 
 
-export type QueryGetSalesArgs = {
+export type QueryGetSaleByIdArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetSalesPaginatedArgs = {
   salesPaginationInput: SalesPaginationInput;
 };
 
@@ -636,12 +643,15 @@ export type RolesResponse = ResponseBase & {
 export type Sale = {
   __typename?: 'Sale';
   amountRecibed: Scalars['Float'];
+  branch?: Maybe<Branch>;
   branchId: Scalars['ObjectId'];
   canceled?: Maybe<Scalars['Boolean']>;
   canceledAt?: Maybe<Scalars['Date']>;
   change: Scalars['Float'];
   client?: Maybe<Scalars['String']>;
   code: Scalars['String'];
+  createdBy?: Maybe<Scalars['ObjectId']>;
+  createdByInfo?: Maybe<User>;
   date: Scalars['Date'];
   discount: Scalars['Float'];
   id: Scalars['ObjectId'];
@@ -649,6 +659,7 @@ export type Sale = {
   paymentMethod: PaymentMethodEnum;
   products: Array<SaleItem>;
   reason?: Maybe<Scalars['String']>;
+  subTotal: Scalars['Float'];
   total: Scalars['Float'];
 };
 
@@ -1046,6 +1057,13 @@ export type CreateCashMovementMutationVariables = Exact<{
 
 export type CreateCashMovementMutation = { __typename?: 'Mutation', createCashMovement?: { __typename?: 'CashTurnMovementResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'TurnMovements', id: any, turnId: any, cashId: any, amount: number, date: any, type?: TurnMovementTypeEnum | null, concept?: string | null, createdBy?: any | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null };
 
+export type CreateSaleMutationVariables = Exact<{
+  createSaleInput: CreateSaleInput;
+}>;
+
+
+export type CreateSaleMutation = { __typename?: 'Mutation', createSale?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }> } | null } | null };
+
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1207,13 +1225,6 @@ export type GetCashTurnMovementsQueryVariables = Exact<{
 
 
 export type GetCashTurnMovementsQuery = { __typename?: 'Query', getCashTurnMovements?: { __typename?: 'CashTurnMovementsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'TurnMovements', id: any, turnId: any, cashId: any, amount: number, date: any, type?: TurnMovementTypeEnum | null, concept?: string | null, createdBy?: any | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }> | null } | null };
-
-export type CreateSaleMutationVariables = Exact<{
-  createSaleInput: CreateSaleInput;
-}>;
-
-
-export type CreateSaleMutation = { __typename?: 'Mutation', createSale?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }> } | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -2118,6 +2129,76 @@ export function useCreateCashMovementMutation(baseOptions?: Apollo.MutationHookO
 export type CreateCashMovementMutationHookResult = ReturnType<typeof useCreateCashMovementMutation>;
 export type CreateCashMovementMutationResult = Apollo.MutationResult<CreateCashMovementMutation>;
 export type CreateCashMovementMutationOptions = Apollo.BaseMutationOptions<CreateCashMovementMutation, CreateCashMovementMutationVariables>;
+export const CreateSaleDocument = gql`
+    mutation CreateSale($createSaleInput: CreateSaleInput!) {
+  createSale(createSaleInput: $createSaleInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      products {
+        productId
+        price
+        qty
+        total
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          description
+          cost
+          image
+          warehouses
+        }
+      }
+      paymentMethod
+      total
+      discount
+      date
+      code
+      client
+      amountRecibed
+      change
+      observations
+      canceled
+      reason
+      canceledAt
+    }
+  }
+}
+    `;
+export type CreateSaleMutationFn = Apollo.MutationFunction<CreateSaleMutation, CreateSaleMutationVariables>;
+
+/**
+ * __useCreateSaleMutation__
+ *
+ * To run a mutation, you first call `useCreateSaleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateSaleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createSaleMutation, { data, loading, error }] = useCreateSaleMutation({
+ *   variables: {
+ *      createSaleInput: // value for 'createSaleInput'
+ *   },
+ * });
+ */
+export function useCreateSaleMutation(baseOptions?: Apollo.MutationHookOptions<CreateSaleMutation, CreateSaleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateSaleMutation, CreateSaleMutationVariables>(CreateSaleDocument, options);
+      }
+export type CreateSaleMutationHookResult = ReturnType<typeof useCreateSaleMutation>;
+export type CreateSaleMutationResult = Apollo.MutationResult<CreateSaleMutation>;
+export type CreateSaleMutationOptions = Apollo.BaseMutationOptions<CreateSaleMutation, CreateSaleMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {
@@ -3662,74 +3743,3 @@ export function useGetCashTurnMovementsLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type GetCashTurnMovementsQueryHookResult = ReturnType<typeof useGetCashTurnMovementsQuery>;
 export type GetCashTurnMovementsLazyQueryHookResult = ReturnType<typeof useGetCashTurnMovementsLazyQuery>;
 export type GetCashTurnMovementsQueryResult = Apollo.QueryResult<GetCashTurnMovementsQuery, GetCashTurnMovementsQueryVariables>;
-export const CreateSaleDocument = gql`
-    mutation CreateSale($createSaleInput: CreateSaleInput!) {
-  createSale(createSaleInput: $createSaleInput) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-      id
-      branchId
-      products {
-        productId
-        price
-        qty
-        total
-        product {
-          id
-          name
-          suggetedPrice
-          code
-          internalCode
-          description
-          cost
-          image
-          warehouses
-        }
-      }
-      paymentMethod
-      total
-      discount
-      date
-      code
-      client
-      amountRecibed
-      change
-      observations
-      canceled
-      reason
-      canceledAt
-    }
-  }
-}
-    `;
-export type CreateSaleMutationFn = Apollo.MutationFunction<CreateSaleMutation, CreateSaleMutationVariables>;
-
-/**
- * __useCreateSaleMutation__
- *
- * To run a mutation, you first call `useCreateSaleMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateSaleMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createSaleMutation, { data, loading, error }] = useCreateSaleMutation({
- *   variables: {
- *      createSaleInput: // value for 'createSaleInput'
- *   },
- * });
- */
-export function useCreateSaleMutation(baseOptions?: Apollo.MutationHookOptions<CreateSaleMutation, CreateSaleMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateSaleMutation, CreateSaleMutationVariables>(CreateSaleDocument, options);
-      }
-export type CreateSaleMutationHookResult = ReturnType<typeof useCreateSaleMutation>;
-export type CreateSaleMutationResult = Apollo.MutationResult<CreateSaleMutation>;
-export type CreateSaleMutationOptions = Apollo.BaseMutationOptions<CreateSaleMutation, CreateSaleMutationVariables>;

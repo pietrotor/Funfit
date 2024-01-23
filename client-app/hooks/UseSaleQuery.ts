@@ -13,16 +13,7 @@ export const useCreateSaleQuery = () => {
     createSale({
       variables: {
         createSaleInput: {
-          amountRecibed: data.amountRecibed,
-          branchId: data.branchId,
-          change: data.change + data.discount,
-          client: data.client,
-          date: data.date,
-          discount: data.discount,
-          observations: data.observations,
-          products: data.products,
-          paymentMethod: data.paymentMethod,
-          total: data.total + data.discount
+          ...data
         }
       },
       onCompleted: result => {

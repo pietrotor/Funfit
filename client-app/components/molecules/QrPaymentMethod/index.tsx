@@ -7,8 +7,9 @@ import {
 import { Button, Image } from '@nextui-org/react'
 import { TSalePaymentMethodData } from '@/components/atoms/modals/SaleModal'
 import ClientObservationPayment from '@/components/atoms/ClientObservationsPayment'
+import IconSelector from '@/components/atoms/IconSelector'
 
-type CardPaymentMethodProps = {
+type QrPaymentMethodProps = {
   total: number
   payment: TSalePaymentMethodData
   setPayment: (payment: TSalePaymentMethodData) => void
@@ -17,29 +18,21 @@ type CardPaymentMethodProps = {
   reset: UseFormReset<FieldValues>
 }
 
-function CardPaymentMethod({
+function QrPayment({
   total,
   payment,
   setPayment,
   control,
   watch,
   reset
-}: CardPaymentMethodProps) {
+}: QrPaymentMethodProps) {
   const handleCash = (cash: string) => {
-    if (parseFloat(cash)) {
-      setPayment({
-        paymentMethod: 'qr',
-        cash: parseFloat(cash),
-        change:
-          parseFloat(cash) > total ? parseFloat(cash) - total : total - parseFloat(cash)
-      })
-    } else {
-      setPayment({
-        paymentMethod: 'qr',
-        cash: 0,
-        change: 0
-      })
-    }
+    setPayment({
+      ...payment,
+      paymentMethod: 'qr',
+      cash: parseFloat(cash),
+      change: parseFloat(cash) - total
+    })
   }
   return (
     <section className="h-full p-4">
@@ -60,8 +53,17 @@ function CardPaymentMethod({
               className="w-1/2 text-center"
             />
           </div>
-          <Button className="w-full" onClick={() => handleCash(total.toString())}>
-            Pago confirmado
+          <Button
+          variant="flat"
+          color="secondary"
+          className="border-2 hover:border-secondary text-md text-gray-500 flex justify-between"
+            onClick={() => handleCash(total.toString())}
+          >
+            {payment.cash > 0 ? 'Pago confirmado' : 'Confirmar pago'}
+            <IconSelector
+              name="check"
+              className={`text-secondary ${payment.cash > 0 ? 'block' : 'hidden'}`}
+            />
           </Button>
         </div>
         <div className="w-1/2 px-2">
@@ -72,4 +74,4 @@ function CardPaymentMethod({
   )
 }
 
-export default CardPaymentMethod
+export default QrPayment

@@ -45,9 +45,9 @@ function SaleModal({
 
   const onSubmit = () => {
     handleCreateSale({
-      amountRecibed: payment.cash,
+      amountRecibed: payment.cash || parseFloat(watch('amountRecibed')),
       branchId: branchIdSelected,
-      change: payment.change - selectedProducts.discount,
+      change: payment.change,
       client: watch('client'),
       date: new Date().toISOString(),
       discount: selectedProducts.discount,
@@ -60,7 +60,8 @@ function SaleModal({
       })),
       paymentMethod:
         payment.paymentMethod === 'cash' ? PaymentMethodEnum.CASH : payment.paymentMethod === 'card' ? PaymentMethodEnum.CARD : PaymentMethodEnum.QR_TRANSFER,
-      total: selectedProducts.total + selectedProducts.discount
+      total: selectedProducts.total,
+      subTotal: selectedProducts.subTotal
     })
     reset()
     onClose()
@@ -71,6 +72,7 @@ function SaleModal({
   const handleCancel = () => {
     reset()
     onClose()
+    setPayment({ paymentMethod: 'options', cash: 0, change: 0 })
   }
 
   const handleBack = () => {

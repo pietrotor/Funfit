@@ -528,46 +528,45 @@ export const CREATE_CASH_MOVEMENT = gql`
 
 export const CREATE_SALE = gql`
   mutation CreateSale($createSaleInput: CreateSaleInput!) {
-    createSale(createSaleInput: $createSaleInput) {
-      errorInput {
-        message
-        field
-      }
-      status
+  createSale(createSaleInput: $createSaleInput) {
+    errorInput {
       message
-      data {
-        id
-        branchId
-        products {
-          productId
-          price
-          qty
-          total
-          product {
-            id
-            name
-            suggetedPrice
-            code
-            internalCode
-            description
-            cost
-            image
-            warehouses
-          }
-        }
-        paymentMethod
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      products {
+        productId
+        price
+        qty
         total
-        discount
-        date
-        code
-        client
-        amountRecibed
-        change
-        observations
-        canceled
-        reason
-        canceledAt
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          description
+          cost
+          image
+          warehouses
+        }
       }
+      paymentMethod
+      total
+      discount
+      date
+      code
+      client
+      amountRecibed
+      change
+      observations
+      canceled
+      reason
+      canceledAt
     }
   }
+}
 `
