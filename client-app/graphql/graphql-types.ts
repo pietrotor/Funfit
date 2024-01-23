@@ -189,6 +189,20 @@ export type CreateProductInput = {
   suggetedPrice: Scalars['Float'];
 };
 
+export type CreateSaleInput = {
+  amountRecibed: Scalars['Float'];
+  branchId: Scalars['ObjectId'];
+  change: Scalars['Float'];
+  client?: InputMaybe<Scalars['String']>;
+  date: Scalars['Date'];
+  discount: Scalars['Float'];
+  observations?: InputMaybe<Scalars['String']>;
+  paymentMethod: PaymentMethodEnum;
+  products: Array<SaleItemInput>;
+  subTotal: Scalars['Float'];
+  total: Scalars['Float'];
+};
+
 export type CreateStockInput = {
   productId: Scalars['ObjectId'];
   quantity: Scalars['Int'];
@@ -262,6 +276,7 @@ export type Mutation = {
   createBranchProduct?: Maybe<BranchProductResponse>;
   createCashMovement?: Maybe<CashTurnMovementResponse>;
   createProduct?: Maybe<ProductResponse>;
+  createSale?: Maybe<SaleResponse>;
   createStock?: Maybe<StockResponse>;
   createUser?: Maybe<UserResponse>;
   createWarehouse?: Maybe<WarehouseResponse>;
@@ -306,6 +321,11 @@ export type MutationCreateCashMovementArgs = {
 
 export type MutationCreateProductArgs = {
   createProductInput: CreateProductInput;
+};
+
+
+export type MutationCreateSaleArgs = {
+  createSaleInput: CreateSaleInput;
 };
 
 
@@ -396,6 +416,12 @@ export type PaginationInput = {
   rows?: InputMaybe<Scalars['Int']>;
 };
 
+export enum PaymentMethodEnum {
+  CARD = 'CARD',
+  CASH = 'CASH',
+  QR_TRANSFER = 'QR_TRANSFER'
+}
+
 export type Product = {
   __typename?: 'Product';
   code: Scalars['String'];
@@ -445,6 +471,8 @@ export type Query = {
   getProductsOutOfWarehouse?: Maybe<ProductsResponse>;
   getPublicProducts?: Maybe<ProductsResponse>;
   getRoles?: Maybe<RolesResponse>;
+  getSaleById?: Maybe<SaleResponse>;
+  getSalesPaginated?: Maybe<SalesResponse>;
   getStockById?: Maybe<StockResponse>;
   getStockHistory?: Maybe<StocksHistoryResponse>;
   getStocksPaginated?: Maybe<StocksResponse>;
@@ -519,6 +547,16 @@ export type QueryGetPublicProductsArgs = {
 
 export type QueryGetRolesArgs = {
   paginationInput: PaginationInput;
+};
+
+
+export type QueryGetSaleByIdArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetSalesPaginatedArgs = {
+  salesPaginationInput: SalesPaginationInput;
 };
 
 
@@ -600,6 +638,75 @@ export type RolesResponse = ResponseBase & {
   errorInput?: Maybe<Array<ErrorInput>>;
   message?: Maybe<Scalars['String']>;
   status: StatusEnum;
+};
+
+export type Sale = {
+  __typename?: 'Sale';
+  amountRecibed: Scalars['Float'];
+  branch?: Maybe<Branch>;
+  branchId: Scalars['ObjectId'];
+  canceled?: Maybe<Scalars['Boolean']>;
+  canceledAt?: Maybe<Scalars['Date']>;
+  change: Scalars['Float'];
+  client?: Maybe<Scalars['String']>;
+  code: Scalars['String'];
+  createdBy?: Maybe<Scalars['ObjectId']>;
+  createdByInfo?: Maybe<User>;
+  date: Scalars['Date'];
+  discount: Scalars['Float'];
+  id: Scalars['ObjectId'];
+  observations?: Maybe<Scalars['String']>;
+  paymentMethod: PaymentMethodEnum;
+  products: Array<SaleItem>;
+  reason?: Maybe<Scalars['String']>;
+  subTotal: Scalars['Float'];
+  total: Scalars['Float'];
+};
+
+export type SaleItem = {
+  __typename?: 'SaleItem';
+  price: Scalars['Float'];
+  product?: Maybe<Product>;
+  productId: Scalars['ObjectId'];
+  qty: Scalars['Int'];
+  total: Scalars['Float'];
+};
+
+export type SaleItemInput = {
+  price: Scalars['Float'];
+  productId: Scalars['ObjectId'];
+  qty: Scalars['Int'];
+  total: Scalars['Float'];
+};
+
+export type SaleResponse = ResponseBase & {
+  __typename?: 'SaleResponse';
+  data?: Maybe<Sale>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type SalesPaginationInput = {
+  branchIds: Array<Scalars['ObjectId']>;
+  endDate?: InputMaybe<Scalars['Date']>;
+  filter?: InputMaybe<Scalars['String']>;
+  initialDate?: InputMaybe<Scalars['Date']>;
+  page?: InputMaybe<Scalars['Int']>;
+  rows?: InputMaybe<Scalars['Int']>;
+  saleBy?: InputMaybe<Scalars['ObjectId']>;
+};
+
+export type SalesResponse = ResponseBase & {
+  __typename?: 'SalesResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Sale>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
 };
 
 export enum StatusEnum {
@@ -1111,6 +1218,13 @@ export type GetCashTurnMovementsQueryVariables = Exact<{
 
 
 export type GetCashTurnMovementsQuery = { __typename?: 'Query', getCashTurnMovements?: { __typename?: 'CashTurnMovementsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'TurnMovements', id: any, turnId: any, cashId: any, amount: number, date: any, type?: TurnMovementTypeEnum | null, concept?: string | null, createdBy?: any | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }> | null } | null };
+
+export type GetSalesPaginatedQueryVariables = Exact<{
+  salesPaginationInput: SalesPaginationInput;
+}>;
+
+
+export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -3559,3 +3673,172 @@ export function useGetCashTurnMovementsLazyQuery(baseOptions?: Apollo.LazyQueryH
 export type GetCashTurnMovementsQueryHookResult = ReturnType<typeof useGetCashTurnMovementsQuery>;
 export type GetCashTurnMovementsLazyQueryHookResult = ReturnType<typeof useGetCashTurnMovementsLazyQuery>;
 export type GetCashTurnMovementsQueryResult = Apollo.QueryResult<GetCashTurnMovementsQuery, GetCashTurnMovementsQueryVariables>;
+export const GetSalesPaginatedDocument = gql`
+    query GetSalesPaginated($salesPaginationInput: SalesPaginationInput!) {
+  getSalesPaginated(salesPaginationInput: $salesPaginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      products {
+        productId
+        price
+        qty
+        total
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          internalCode
+          description
+          cost
+          image
+          warehouses
+        }
+      }
+      paymentMethod
+      subTotal
+      total
+      discount
+      date
+      code
+      client
+      amountRecibed
+      change
+      observations
+      canceled
+      reason
+      canceledAt
+      createdBy
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cashId
+        cash {
+          id
+          branchId
+          amount
+          currentTurnId
+          isOpen
+          currentTurn {
+            id
+            cashId
+            isOpen
+            amountOfMovents
+            openInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              openBy
+              openByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+            closeInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              closeBy
+              closeByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+          }
+        }
+      }
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetSalesPaginatedQuery__
+ *
+ * To run a query within a React component, call `useGetSalesPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSalesPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSalesPaginatedQuery({
+ *   variables: {
+ *      salesPaginationInput: // value for 'salesPaginationInput'
+ *   },
+ * });
+ */
+export function useGetSalesPaginatedQuery(baseOptions: Apollo.QueryHookOptions<GetSalesPaginatedQuery, GetSalesPaginatedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSalesPaginatedQuery, GetSalesPaginatedQueryVariables>(GetSalesPaginatedDocument, options);
+      }
+export function useGetSalesPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSalesPaginatedQuery, GetSalesPaginatedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSalesPaginatedQuery, GetSalesPaginatedQueryVariables>(GetSalesPaginatedDocument, options);
+        }
+export type GetSalesPaginatedQueryHookResult = ReturnType<typeof useGetSalesPaginatedQuery>;
+export type GetSalesPaginatedLazyQueryHookResult = ReturnType<typeof useGetSalesPaginatedLazyQuery>;
+export type GetSalesPaginatedQueryResult = Apollo.QueryResult<GetSalesPaginatedQuery, GetSalesPaginatedQueryVariables>;

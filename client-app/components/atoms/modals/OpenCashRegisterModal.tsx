@@ -51,7 +51,7 @@ export const OpenCashRegister = ({
       },
       onError: error => {
         console.log(error)
-        showSuccessToast('Error al crear un usuario', 'warning')
+        showSuccessToast('Error al recibir datos', 'warning')
       }
     })
     console.log('submit')

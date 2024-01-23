@@ -18,7 +18,6 @@ import { authUserHeader } from '@/utils/verificationUser'
 //   useGetWarehousesQuery,
 //   useUpdateWarehouseMutation
 // } from '@/graphql/graphql-types'
-import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 // import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
@@ -26,6 +25,8 @@ import { ShowRecipeListModal } from '@/components/atoms/modals/ShowRecipeListMod
 import { EditRecipeModal } from '@/components/atoms/modals/EditRecipeModal'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import { TDataRecipes } from '@/interfaces/TData'
+import UseGetCustomSalesPaginated from '@/services/UseGetCustomSalesPaginated'
+import { useAppSelector } from '@/store/index'
 
 function Sales() {
   const [edit, setEdit] = useState<TDataRecipes>({
@@ -49,12 +50,16 @@ function Sales() {
       }
     ]
   })
-  const [variables, setVariables] = useState<PaginationInterfaceState>({})
+
+  // const [variables, setVariables] = useState<PaginationInterfaceState>({})
   // const [filter, setFilter] = useState<string>('')
   // const filtroDebounced = UseDebouncedValue(filter, 2000)
   const handleConfirmModal = useDisclosure()
   const handleEditModal = useDisclosure()
   const handleShowRecipeModal = useDisclosure()
+  const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
+
+  const { data, setVariables, variables } = UseGetCustomSalesPaginated(branchId)
 
   const dataRecipies: TDataRecipes[] = [
     {
@@ -279,7 +284,7 @@ function Sales() {
             { name: 'Vendedor' },
             { name: 'Acciones' }
           ]}
-          items={(dataRecipies || []).map((warehouse, idx) => ({
+          items={(data?.getSalesPaginated?.data || []).map((warehouse, idx) => ({
             content: [
               <h3 key={idx} className="text-sm">
                 {' '}
