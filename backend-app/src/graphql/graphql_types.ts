@@ -43,6 +43,7 @@ export type BranchProduct = {
   price: Scalars['Float']['output'];
   product?: Maybe<Product>;
   productId: Scalars['ObjectId']['output'];
+  stock: Scalars['Float']['output'];
 };
 
 export type BranchProductResponse = ResponseBase & {
@@ -182,6 +183,16 @@ export type CreateBranchProductInput = {
   productId: Scalars['ObjectId']['input'];
 };
 
+export type CreateBranchProductStockMovementInput = {
+  branchId: Scalars['ObjectId']['input'];
+  branchProductId: Scalars['ObjectId']['input'];
+  date: Scalars['Date']['input'];
+  observation?: InputMaybe<Scalars['String']['input']>;
+  qty: Scalars['Float']['input'];
+  stockId?: InputMaybe<Scalars['ObjectId']['input']>;
+  type: StockMovementTypeEnum;
+};
+
 export type CreateProductInput = {
   code: Scalars['String']['input'];
   cost?: InputMaybe<Scalars['Float']['input']>;
@@ -276,6 +287,7 @@ export type Mutation = {
   creatStockMovement?: Maybe<StockResponse>;
   createBranch?: Maybe<BranchResponse>;
   createBranchProduct?: Maybe<BranchProductResponse>;
+  createBranchStockMovement?: Maybe<BranchProductResponse>;
   createCashMovement?: Maybe<CashTurnMovementResponse>;
   createProduct?: Maybe<ProductResponse>;
   createSale?: Maybe<SaleResponse>;
@@ -313,6 +325,11 @@ export type MutationCreateBranchArgs = {
 
 export type MutationCreateBranchProductArgs = {
   createBranchProductInput: CreateBranchProductInput;
+};
+
+
+export type MutationCreateBranchStockMovementArgs = {
+  createBranchProductStockMovementInput: CreateBranchProductStockMovementInput;
 };
 
 
@@ -667,6 +684,7 @@ export type Sale = {
 
 export type SaleItem = {
   __typename?: 'SaleItem';
+  branchProductId: Scalars['ObjectId']['output'];
   price: Scalars['Float']['output'];
   product?: Maybe<Product>;
   productId: Scalars['ObjectId']['output'];
@@ -675,6 +693,7 @@ export type SaleItem = {
 };
 
 export type SaleItemInput = {
+  branchProductId: Scalars['ObjectId']['input'];
   price: Scalars['Float']['input'];
   productId: Scalars['ObjectId']['input'];
   qty: Scalars['Int']['input'];
@@ -1045,6 +1064,7 @@ export type ResolversTypes = {
   ConfigurationResponse: ResolverTypeWrapper<ConfigurationResponse>;
   CreateBranchInput: CreateBranchInput;
   CreateBranchProductInput: CreateBranchProductInput;
+  CreateBranchProductStockMovementInput: CreateBranchProductStockMovementInput;
   CreateProductInput: CreateProductInput;
   CreateSaleInput: CreateSaleInput;
   CreateStockInput: CreateStockInput;
@@ -1126,6 +1146,7 @@ export type ResolversParentTypes = {
   ConfigurationResponse: ConfigurationResponse;
   CreateBranchInput: CreateBranchInput;
   CreateBranchProductInput: CreateBranchProductInput;
+  CreateBranchProductStockMovementInput: CreateBranchProductStockMovementInput;
   CreateProductInput: CreateProductInput;
   CreateSaleInput: CreateSaleInput;
   CreateStockInput: CreateStockInput;
@@ -1206,6 +1227,7 @@ export type BranchProductResolvers<ContextType = any, ParentType extends Resolve
   price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
   productId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  stock?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
@@ -1348,6 +1370,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   creatStockMovement?: Resolver<Maybe<ResolversTypes['StockResponse']>, ParentType, ContextType, RequireFields<MutationCreatStockMovementArgs, 'createStockMovementInput'>>;
   createBranch?: Resolver<Maybe<ResolversTypes['BranchResponse']>, ParentType, ContextType, RequireFields<MutationCreateBranchArgs, 'createBranchInput'>>;
   createBranchProduct?: Resolver<Maybe<ResolversTypes['BranchProductResponse']>, ParentType, ContextType, RequireFields<MutationCreateBranchProductArgs, 'createBranchProductInput'>>;
+  createBranchStockMovement?: Resolver<Maybe<ResolversTypes['BranchProductResponse']>, ParentType, ContextType, RequireFields<MutationCreateBranchStockMovementArgs, 'createBranchProductStockMovementInput'>>;
   createCashMovement?: Resolver<Maybe<ResolversTypes['CashTurnMovementResponse']>, ParentType, ContextType, RequireFields<MutationCreateCashMovementArgs, 'createTurnMovementInput'>>;
   createProduct?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationCreateProductArgs, 'createProductInput'>>;
   createSale?: Resolver<Maybe<ResolversTypes['SaleResponse']>, ParentType, ContextType, RequireFields<MutationCreateSaleArgs, 'createSaleInput'>>;
@@ -1498,6 +1521,7 @@ export type SaleResolvers<ContextType = any, ParentType extends ResolversParentT
 };
 
 export type SaleItemResolvers<ContextType = any, ParentType extends ResolversParentTypes['SaleItem'] = ResolversParentTypes['SaleItem']> = {
+  branchProductId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
   productId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
