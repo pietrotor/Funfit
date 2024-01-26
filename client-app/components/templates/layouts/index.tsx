@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
+import { useRouter } from 'next/router'
 import Sidebar, { TMenuStructure } from './sidebar'
 import ToastComponent from '@/components/atoms/Toast/toasts'
 import { useGetBranchesPaginatedLazyQuery, useGetConfigurationLazyQuery } from '@/graphql/graphql-types'
@@ -8,7 +9,6 @@ import { useAppDispatch, useAppSelector } from '@/store/index'
 import { setBusiness } from '@/store/slices'
 import BackButton from '@/components/atoms/BackButton/intex'
 import { setBranch, setBranches } from '@/store/slices/branches/branchSlice'
-import { useRouter } from 'next/router'
 import { DropDown } from '@/components/atoms/DropDown'
 
 type TAdministrationLayoutProps = {
@@ -121,6 +121,11 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           link: '/administration-panel/cash'
         }
       ]
+    },
+    {
+      icon: 'PointOfSale',
+      text: 'Punto de venta',
+      link: '/administration-panel/point-of-sale'
     },
     {
       icon: 'Logout',
