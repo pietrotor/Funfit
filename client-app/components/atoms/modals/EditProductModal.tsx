@@ -108,7 +108,6 @@ export const EditProductModal = (
       label='Descripción'
       placeholder='Descripción'
       type='textArea'
-      customeClassName='h-20'
       rules={{
         pattern: {
           value: /^[a-zA-Z\s]+$/i,

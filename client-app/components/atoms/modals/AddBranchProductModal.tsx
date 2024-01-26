@@ -7,7 +7,6 @@ import { MyModal } from './MyModal'
 import { TValueProductData } from './EditProductModal'
 import Input from '../Input'
 import ComboInput from '../ComboInput'
-import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { useGetProductsLazyQuery } from '@/graphql/graphql-types'
 import { useCreateBranchProductQuery } from '@/hooks/UseBranchQuery'
 
@@ -24,19 +23,15 @@ export const AddBranchProductModal = ({
 }: AddBranchProductModalProps) => {
   const { handleCreateBranchProduct } = useCreateBranchProductQuery()
   const { handleSubmit, control, watch, reset } = useForm()
-  const [filterProduct] = useState<string>('')
   const [productsData, setProductsData] = useState<TValueProductData>()
   const [isVisibleMenu, setIsVisibleMenu] = useState<boolean>(true)
   const [isVisibleWeb, setIsVisibleWeb] = useState<boolean>(true)
   const router = useRouter()
   const { branchId } = router.query
-  const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
   const [getProducts, { data, loading }] = useGetProductsLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
-      paginationInput: {
-        filter: valueFilterProduct
-      }
+      paginationInput: {}
     }
   })
 

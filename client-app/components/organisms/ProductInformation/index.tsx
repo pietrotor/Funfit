@@ -16,6 +16,7 @@ function ProductInformation() {
 
   const [count, setCount] = useState(1)
   const saveData = useRef<TCartItem>({
+    id: data?.getProductById?.data?.id as string,
     productName: data?.getProductById?.data?.name as string,
     quantity: count,
     price: (data?.getProductById?.data?.suggetedPrice as number * count),

@@ -66,14 +66,13 @@ export const AddProductModal = ({
         <form
           action=""
           onSubmit={handleSubmit(onSubmit)}
-          className="p-4 text-gray-500 md:p-8"
+          className="p-4 text-gray-500 md:p-8 space-y-3"
         >
           <div className="grid grid-cols-2 gap-3">
             <Input
               control={control}
               name="name"
               label="Nombre"
-              placeholder="Nombre"
               type="text"
               rules={{
                 required: {
@@ -86,7 +85,6 @@ export const AddProductModal = ({
               control={control}
               name="suggetedPrice"
               label="Precio sugerido"
-              placeholder="Precio sugerido"
               type="text"
               rules={{
                 required: {
@@ -103,7 +101,6 @@ export const AddProductModal = ({
               control={control}
               name="cost"
               label="Costo"
-              placeholder="Costo"
               type="text"
               rules={{
                 required: {
@@ -120,7 +117,6 @@ export const AddProductModal = ({
               name="code"
               control={control}
               label="Código"
-              placeholder="Código"
               type="text"
               rules={{
                 required: {
@@ -131,11 +127,10 @@ export const AddProductModal = ({
             />
           </div>
           <Input
-            customeClassName="h-20 "
+            customeClassName=""
             control={control}
             name="description"
             label="Descripción"
-            placeholder="Descripción"
             type="textArea"
             rules={{
               required: {
