@@ -41,6 +41,7 @@ export type BranchProduct = {
   price: Scalars['Float'];
   product?: Maybe<Product>;
   productId: Scalars['ObjectId'];
+  stock: Scalars['Float'];
 };
 
 export type BranchProductResponse = ResponseBase & {
@@ -180,6 +181,16 @@ export type CreateBranchProductInput = {
   productId: Scalars['ObjectId'];
 };
 
+export type CreateBranchProductStockMovementInput = {
+  branchId: Scalars['ObjectId'];
+  branchProductId: Scalars['ObjectId'];
+  date: Scalars['Date'];
+  observation?: InputMaybe<Scalars['String']>;
+  qty: Scalars['Float'];
+  stockId?: InputMaybe<Scalars['ObjectId']>;
+  type: StockMovementTypeEnum;
+};
+
 export type CreateProductInput = {
   code: Scalars['String'];
   cost?: InputMaybe<Scalars['Float']>;
@@ -274,6 +285,7 @@ export type Mutation = {
   creatStockMovement?: Maybe<StockResponse>;
   createBranch?: Maybe<BranchResponse>;
   createBranchProduct?: Maybe<BranchProductResponse>;
+  createBranchStockMovement?: Maybe<BranchProductResponse>;
   createCashMovement?: Maybe<CashTurnMovementResponse>;
   createProduct?: Maybe<ProductResponse>;
   createSale?: Maybe<SaleResponse>;
@@ -311,6 +323,11 @@ export type MutationCreateBranchArgs = {
 
 export type MutationCreateBranchProductArgs = {
   createBranchProductInput: CreateBranchProductInput;
+};
+
+
+export type MutationCreateBranchStockMovementArgs = {
+  createBranchProductStockMovementInput: CreateBranchProductStockMovementInput;
 };
 
 
@@ -665,6 +682,7 @@ export type Sale = {
 
 export type SaleItem = {
   __typename?: 'SaleItem';
+  branchProductId: Scalars['ObjectId'];
   price: Scalars['Float'];
   product?: Maybe<Product>;
   productId: Scalars['ObjectId'];
@@ -673,6 +691,7 @@ export type SaleItem = {
 };
 
 export type SaleItemInput = {
+  branchProductId: Scalars['ObjectId'];
   price: Scalars['Float'];
   productId: Scalars['ObjectId'];
   qty: Scalars['Int'];
@@ -1225,6 +1244,13 @@ export type GetSalesPaginatedQueryVariables = Exact<{
 
 
 export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }> | null } | null };
+
+export type CreateBranchStockMovementMutationVariables = Exact<{
+  createBranchProductStockMovementInput: CreateBranchProductStockMovementInput;
+}>;
+
+
+export type CreateBranchStockMovementMutation = { __typename?: 'Mutation', createBranchStockMovement?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null } | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -3842,3 +3868,136 @@ export function useGetSalesPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetSalesPaginatedQueryHookResult = ReturnType<typeof useGetSalesPaginatedQuery>;
 export type GetSalesPaginatedLazyQueryHookResult = ReturnType<typeof useGetSalesPaginatedLazyQuery>;
 export type GetSalesPaginatedQueryResult = Apollo.QueryResult<GetSalesPaginatedQuery, GetSalesPaginatedQueryVariables>;
+export const CreateBranchStockMovementDocument = gql`
+    mutation CreateBranchStockMovement($createBranchProductStockMovementInput: CreateBranchProductStockMovementInput!) {
+  createBranchStockMovement(
+    createBranchProductStockMovementInput: $createBranchProductStockMovementInput
+  ) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      productId
+      price
+      stock
+      isVisibleOnWeb
+      isVisibleOnMenu
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        internalCode
+        description
+        cost
+        image
+        warehouses
+      }
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cashId
+        cash {
+          id
+          branchId
+          amount
+          currentTurnId
+          isOpen
+          currentTurn {
+            id
+            cashId
+            isOpen
+            amountOfMovents
+            openInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              openBy
+              openByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+            closeInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              closeBy
+              closeByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+    `;
+export type CreateBranchStockMovementMutationFn = Apollo.MutationFunction<CreateBranchStockMovementMutation, CreateBranchStockMovementMutationVariables>;
+
+/**
+ * __useCreateBranchStockMovementMutation__
+ *
+ * To run a mutation, you first call `useCreateBranchStockMovementMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBranchStockMovementMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBranchStockMovementMutation, { data, loading, error }] = useCreateBranchStockMovementMutation({
+ *   variables: {
+ *      createBranchProductStockMovementInput: // value for 'createBranchProductStockMovementInput'
+ *   },
+ * });
+ */
+export function useCreateBranchStockMovementMutation(baseOptions?: Apollo.MutationHookOptions<CreateBranchStockMovementMutation, CreateBranchStockMovementMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateBranchStockMovementMutation, CreateBranchStockMovementMutationVariables>(CreateBranchStockMovementDocument, options);
+      }
+export type CreateBranchStockMovementMutationHookResult = ReturnType<typeof useCreateBranchStockMovementMutation>;
+export type CreateBranchStockMovementMutationResult = Apollo.MutationResult<CreateBranchStockMovementMutation>;
+export type CreateBranchStockMovementMutationOptions = Apollo.BaseMutationOptions<CreateBranchStockMovementMutation, CreateBranchStockMovementMutationVariables>;

@@ -49,6 +49,7 @@ const InputComponent: React.FC<TInputProps> = ({
   control,
   valueAs = 'string',
   required = true,
+  isRequired = true,
   type = 'text',
   name,
   label = '',
@@ -89,7 +90,7 @@ const InputComponent: React.FC<TInputProps> = ({
                   type={type}
                   variant={'bordered'}
                   radius="sm"
-                  label={label + (required ? '*' : '') }
+                  label={label + (isRequired ? '*' : '') }
                   onChange={event => field.onChange(getTypeOfValue(event))}
                   className={`w-full appearance-none rounded-md bg-gray-100/30 text-black placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
                   placeholder={placeholder}

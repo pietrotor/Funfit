@@ -1,7 +1,9 @@
-import { useDisclosure } from '@nextui-org/react'
+import { Radio, RadioGroup, useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
 
+import { useRouter } from 'next/router'
+import { useForm } from 'react-hook-form'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 // import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
@@ -20,16 +22,18 @@ import { authUserHeader } from '@/utils/verificationUser'
 // } from '@/graphql/graphql-types'
 // import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import ButtonComponent from '@/components/atoms/Button'
-import { AdminButton } from '@/components/atoms/Button/AdminButton'
+// import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { ShowRecipeListModal } from '@/components/atoms/modals/ShowRecipeListModal'
 import { EditRecipeModal } from '@/components/atoms/modals/EditRecipeModal'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import { TDataRecipes } from '@/interfaces/TData'
 import UseGetCustomSalesPaginated from '@/services/UseGetCustomSalesPaginated'
 import { useAppSelector } from '@/store/index'
+import InformationCard from '@/components/molecules/Card/InformationCard'
+import InputComponent from '@/components/atoms/Input'
 
 function Sales() {
-  const [edit, setEdit] = useState<TDataRecipes>({
+  const [edit] = useState<TDataRecipes>({
     id: 4,
     name: 'Receta 4',
     ingredients: [
@@ -57,9 +61,16 @@ function Sales() {
   const handleConfirmModal = useDisclosure()
   const handleEditModal = useDisclosure()
   const handleShowRecipeModal = useDisclosure()
-  const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
+  const router = useRouter()
+  const { branches, currentBranch } = useAppSelector(
+    state => state.branchReducer
+  )
+  const { control } = useForm()
+  const [selected, setSelected] = useState<string>(currentBranch.name)
 
-  const { data, setVariables, variables } = UseGetCustomSalesPaginated(branchId)
+  const { setVariables, variables } = UseGetCustomSalesPaginated(
+    currentBranch.id
+  )
 
   const dataRecipies: TDataRecipes[] = [
     {
@@ -148,10 +159,10 @@ function Sales() {
     }
   ]
 
-  const handleShowRecipe = (id: number) => {
-    setEdit(dataRecipies.find(recipe => recipe.id === id) as TDataRecipes)
-    handleShowRecipeModal.onOpen()
-  }
+  // const handleShowRecipe = (id: number) => {
+  //   setEdit(dataRecipies.find(recipe => recipe.id === id) as TDataRecipes)
+  //   handleShowRecipeModal.onOpen()
+  // }
 
   // const [UpdateWarehousesMutationVariables] = useUpdateWarehouseMutation()
   // const [DeleteteWarehouseMutation] = useDeleteWarehouseMutation()
@@ -257,12 +268,109 @@ function Sales() {
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Reporte de ventas
         </h3>
-        <AdminButton
-          pathname="/administration-panel/recipies/AddRecipe"
-          color="secondary"
-          text="Crear nueva receta"
-          iconName="Recipe"
-        />
+        <InformationCard className="mt-4 p-4 ">
+          <h3>Sucursales</h3>
+          <RadioGroup
+            value={selected}
+            onValueChange={value => setSelected(value)}
+            className='mt-2'
+          >
+            <div className="grid grid-cols-5 gap-x-4 gap-y-2 ">
+              {branches.map(branch => (
+                <Radio key={branch.id} value={branch.name}>
+                  {branch.name}
+                </Radio>
+              ))}
+            </div>
+          </RadioGroup>
+        </InformationCard>
+
+        <div className='grid grid-cols-6 gap-4 mt-5'>
+            <InputComponent
+            isRequired = {false}
+            name='initialDate'
+            label='Fecha inicial'
+            type='date'
+            className='mt-4 bg-white rounded-md'
+            control={control}
+            />
+            <InputComponent
+            isRequired = {false}
+            name='finalDate'
+            label='Fecha final'
+            type='date'
+            className='mt-4 bg-white rounded-md'
+            control={control}
+
+            />
+          </div>
+
+        <section className="my-4 grid  gap-3 pt-6 md:gap-4 lg:grid-cols-2 xl:grid-cols-4 mb-8">
+          <InformationCard className="h-full bg-slate-200 px-3 py-6">
+            <div className="flex items-center justify-between">
+              <div className="text-lg font-bold">
+                <div className="text-xl">Total en ventas</div>
+                <div className="text-center">200 Bs</div>
+              </div>
+              <span className="rounded-full bg-secondary p-3 ">
+                <IconSelector
+                  name="Coins"
+                  className=" rounded-md text-white"
+                  height="h-6"
+                  width="w-6"
+                />
+              </span>
+            </div>
+          </InformationCard>
+          <InformationCard className="h-full bg-slate-200 px-3 py-6">
+            <div className="flex items-center justify-between">
+              <div className="text-lg font-bold">
+                <div className="text-xl">Ventas en efectivo</div>
+                <div className="text-center">1999 Bs</div>
+              </div>
+              <span className="rounded-full bg-secondary p-3 ">
+                <IconSelector
+                  name="Cash"
+                  className=" rounded-md text-white"
+                  height="h-6"
+                  width="w-6"
+                />
+              </span>
+            </div>
+          </InformationCard>
+          <InformationCard className="h-full bg-slate-200 px-3 py-6">
+            <div className="flex items-center justify-between">
+              <div className="text-lg font-bold">
+                <div className="text-xl"> Ventas por QR</div>
+                <div className="text-center">3190 Bs</div>
+              </div>
+              <span className="rounded-full bg-secondary p-3 ">
+                <IconSelector
+                  name="QrCode"
+                  className=" rounded-md text-white"
+                  height="h-6"
+                  width="w-6"
+                />
+              </span>
+            </div>
+          </InformationCard>
+          <InformationCard className="h-full bg-slate-200 px-3 py-6">
+            <div className="flex items-center justify-between">
+              <div className="text-lg font-bold">
+                <div className="text-xl">Ventas por tarjeta</div>
+                <div className="text-center">100 Bs</div>
+              </div>
+              <span className="rounded-full bg-secondary p-3 ">
+                <IconSelector
+                  name="CreditCard"
+                  className=" rounded-md text-white"
+                  height="h-6"
+                  width="w-6"
+                />
+              </span>
+            </div>
+          </InformationCard>
+        </section>
         <Table
           onChangeRow={row => console.log(row)}
           tableName="Lista de ventas"
@@ -284,7 +392,7 @@ function Sales() {
             { name: 'Vendedor' },
             { name: 'Acciones' }
           ]}
-          items={(data?.getSalesPaginated?.data || []).map((warehouse, idx) => ({
+          items={(dataRecipies || []).map((warehouse, idx) => ({
             content: [
               <h3 key={idx} className="text-sm">
                 {' '}
@@ -308,10 +416,12 @@ function Sales() {
               <div key={idx}>
                 <div className="space-x-1">
                   <ButtonComponent
-                    onClick={() => handleShowRecipe(warehouse.id)}
+                    onClick={() =>
+                      router.push(`/administration-panel/sales/${warehouse.id}`)
+                    }
                     type="edit"
                     showTooltip
-                    tooltipText="Mostrar todos los ingredientes"
+                    tooltipText="Ver detalles de venta"
                     className="px-3"
                   >
                     <IconSelector

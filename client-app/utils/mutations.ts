@@ -517,3 +517,108 @@ mutation CreateCashMovement($createTurnMovementInput: CreateTurnMovementInput!) 
   }
 }
 `
+export const CREATE_BRANCH_STOCK_MOVEMENT = gql`
+mutation CreateBranchStockMovement($createBranchProductStockMovementInput: CreateBranchProductStockMovementInput!) {
+  createBranchStockMovement(createBranchProductStockMovementInput: $createBranchProductStockMovementInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      productId
+      price
+      stock
+      isVisibleOnWeb
+      isVisibleOnMenu
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        internalCode
+        description
+        cost
+        image
+        warehouses
+      }
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cashId
+        cash {
+          id
+          branchId
+          amount
+          currentTurnId
+          isOpen
+          currentTurn {
+            id
+            cashId
+            isOpen
+            amountOfMovents
+            openInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              openBy
+              openByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+            closeInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              closeBy
+              closeByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+`

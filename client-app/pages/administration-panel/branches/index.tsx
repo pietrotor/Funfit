@@ -20,7 +20,6 @@ import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 function Branches() {
   const [edit, setEdit] = useState<TDataBranch>({} as TDataBranch)
-
   const handleConfirmModal = useDisclosure()
   const handleEditModal = useDisclosure()
   const handleAddBranch = useDisclosure()
