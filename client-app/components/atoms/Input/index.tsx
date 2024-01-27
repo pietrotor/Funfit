@@ -10,12 +10,17 @@ type TLabelProps = {
   labelColor?: string
 }
 
-const Label = ({ label, children, required, labelColor = 'text-white' }: TLabelProps) => {
+const Label = ({
+  label,
+  children,
+  required,
+  labelColor = 'text-white'
+}: TLabelProps) => {
   if (!label) {
     return <>{children}</>
   }
   return (
-    <label className="w-full mt-2">
+    <label className="mt-2 w-full">
       <p className={`mb-2 font-bold ${labelColor}`}>
         {label} {required ? '*' : ''}
       </p>
@@ -82,7 +87,11 @@ const InputComponent: React.FC<TInputProps> = ({
       <Controller
         name={name}
         control={control}
-        defaultValue={ type === 'date' ? new Date().toISOString().split('T')[0] : defaultValue}
+        defaultValue={
+          type === 'date'
+            ? new Date().toISOString().split('T')[0]
+            : defaultValue
+        }
         rules={rules}
         render={({ field, formState: { errors } }) => (
           <div className="w-full ">
@@ -94,7 +103,7 @@ const InputComponent: React.FC<TInputProps> = ({
                   type={type}
                   variant={'bordered'}
                   radius="sm"
-                  label={label + (isRequired ? '*' : '') }
+                  label={label + (isRequired ? '*' : '')}
                   onChange={event => field.onChange(getTypeOfValue(event))}
                   className={`w-full appearance-none rounded-md bg-gray-100/30 text-black placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
                   placeholder={placeholder}

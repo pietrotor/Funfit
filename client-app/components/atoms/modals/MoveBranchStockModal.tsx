@@ -4,13 +4,14 @@ import { MyModal } from './MyModal'
 import { TValuesWarehouses } from './EditWarehouseModal'
 import Selector from '../InputSelector'
 import InputComponent from '../Input'
+import { showSuccessToast } from '../Toast/toasts'
 import ComboInput from '../ComboInput'
-import { StockMovementTypeEnum, useGetWarehousesLazyQuery } from '@/graphql/graphql-types'
-import { BranchProductData } from '@/hooks/UseBranchQuery'
+import { StockMovementTypeEnum, useGetStocksPaginatedLazyQuery, useGetWarehousesLazyQuery } from '@/graphql/graphql-types'
 import { useCreateBranchProductStockMovement } from '@/hooks/UseStockMovementQuery'
 import { useAppSelector } from '@/store/index'
+import { TProductBranchData } from '@/interfaces/TData'
 type ModalProps = {
-  productBranch: BranchProductData
+  productBranch: TProductBranchData
   isOpen: boolean
   onClose: () => void
 }
@@ -19,12 +20,33 @@ export const MoveBranchStockModal = ({
   onClose,
   productBranch
 }: ModalProps) => {
+  const [warehouseData, setWarehouseData] = useState<TValuesWarehouses>()
+  const branchIdSelected = useAppSelector(state => state.branchReducer.currentBranch.id)
+
   const { control, handleSubmit, watch } = useForm()
   const [getWarehouses, { data }] = useGetWarehousesLazyQuery()
-  const [productsData, setProductsData] = useState<TValuesWarehouses>()
+  const [getStockWarehouse, { data: stockData }] = useGetStocksPaginatedLazyQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      paginationInput: {}
+    },
+    onCompleted: data => {
+      if (data.getStocksPaginated?.status === 'ERROR') {
+        showSuccessToast(
+          data.getStocksPaginated?.message || 'Error al cargar los productos',
+          'error'
+        )
+      }
+    },
+    onError: error => {
+      showSuccessToast(
+        error.message || 'Error al cargar los productos',
+        'error'
+      )
+    }
+  })
   const { handleCreateBranchStockMovement } =
     useCreateBranchProductStockMovement()
-  const branchIdSelected = useAppSelector(state => state.branchReducer.currentBranch.id)
   const handleCancel = () => {
     onClose()
   }
@@ -37,14 +59,19 @@ export const MoveBranchStockModal = ({
     })
   }
   const onSubmit = () => {
-    console.log('submit')
+    console.log(stockData?.getStocksPaginated?.data?.find(
+      stock => stock.product?.id === productBranch.id
+    )?.id)
     handleCreateBranchStockMovement({
       branchProductId: productBranch.id,
       branchId: branchIdSelected,
       qty: parseInt(watch('quantity')),
       type: watch('movementType'),
       date: watch('date'),
-      observation: watch('observation')
+      observation: watch('observation'),
+      stockId: stockData?.getStocksPaginated?.data?.find(
+        stock => stock.productId === productBranch.productId
+      )?.id
     })
   }
   return (
@@ -64,14 +91,16 @@ export const MoveBranchStockModal = ({
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-3">
             <ComboInput
-              value={productsData?.name || ''}
+              value={warehouseData?.name || ''}
               onChange={value => {
-                setProductsData(
+                setWarehouseData(
                   data?.getWarehouses?.data?.find(
                     product => product.name === value
                   ) as TValuesWarehouses
                 )
-              }}
+                getStockWarehouse()
+              }
+            }
               control={control}
               options={
                 data?.getWarehouses?.data?.map(warehouse => ({

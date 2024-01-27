@@ -570,9 +570,9 @@ export const CREATE_SALE = gql`
   }
 }
 `
-export const CREATE_BRANCH_STOCK_MOVEMENT = gql`
-mutation CreateBranchStockMovement($createBranchProductStockMovementInput: CreateBranchProductStockMovementInput!) {
-  createBranchStockMovement(createBranchProductStockMovementInput: $createBranchProductStockMovementInput) {
+export const CREATE_BRANCH_PRODUCT_STOCK_MOVEMENT = gql`
+mutation CreateBranchProductStockMovement($createBranchProductStockMovementInput: CreateBranchProductStockMovementInput!) {
+  createBranchProductStockMovement(createBranchProductStockMovementInput: $createBranchProductStockMovementInput) {
     errorInput {
       message
       field
@@ -589,6 +589,15 @@ mutation CreateBranchStockMovement($createBranchProductStockMovementInput: Creat
       isVisibleOnMenu
       product {
         id
+        id
+        name
+        suggetedPrice
+        code
+        internalCode
+        description
+        cost
+        image
+        warehouses
         name
         suggetedPrice
         code

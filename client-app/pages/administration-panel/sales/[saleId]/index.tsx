@@ -7,10 +7,12 @@ import Table from '@/components/organisms/tableNext/Table'
 import InformationCard from '@/components/molecules/Card/InformationCard'
 import Images from '@/components/atoms/Image/Image'
 import useCustomGetSaleById from '@/services/UseGetCustomSaleById'
+import { useAppSelector } from '@/store/index'
 
 function SaleDetail() {
   const router = useRouter()
   const { data } = useCustomGetSaleById(router.query.saleId as string)
+  const { currentBranch } = useAppSelector(state => state.branchReducer)
   return (
     <AdministrationLayout showBackButton={true}>
       <div className="m-auto mt-16 w-5/6 ">
@@ -53,8 +55,8 @@ function SaleDetail() {
           <InformationCard className="h-full bg-slate-200 px-3 py-6">
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
-                <div className="text-xl">Sucursal</div>
-                <div className="text-center">{}</div>
+                <div className="text-xl">Sucursal:</div>
+                <div className="text-center">{currentBranch.name}</div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
                 <IconSelector

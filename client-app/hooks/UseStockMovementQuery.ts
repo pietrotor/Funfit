@@ -1,12 +1,12 @@
 import { useState } from 'react'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
-import { CreateBranchProductStockMovementInput, StatusEnum, useCreateBranchStockMovementMutation } from '@/graphql/graphql-types'
+import { CreateBranchProductStockMovementInput, StatusEnum, useCreateBranchProductStockMovementMutation } from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 
 export const useCreateBranchProductStockMovement = () => {
   const [variables, setVariables] = useState<PaginationInterfaceState>()
 
-  const [createBranchStockMovement] = useCreateBranchStockMovementMutation()
+  const [createBranchStockMovement] = useCreateBranchProductStockMovementMutation()
 
   const handleCreateBranchStockMovement = (data: CreateBranchProductStockMovementInput) => {
     createBranchStockMovement({
@@ -22,13 +22,13 @@ export const useCreateBranchProductStockMovement = () => {
         }
       },
       onCompleted: result => {
-        if (result.createBranchStockMovement?.status === StatusEnum.ERROR) {
+        if (result.createBranchProductStockMovement?.status === StatusEnum.ERROR) {
           showSuccessToast(
-            result.createBranchStockMovement.message || 'Error al registrar el movimiento de stock',
+            result.createBranchProductStockMovement.message || 'Error al registrar el movimiento de stock',
             'error'
           )
         }
-        if (result.createBranchStockMovement?.status === StatusEnum.OK) {
+        if (result.createBranchProductStockMovement?.status === StatusEnum.OK) {
           showSuccessToast('Producto creado correctamente', 'success')
         }
       }

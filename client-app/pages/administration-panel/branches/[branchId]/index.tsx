@@ -6,16 +6,17 @@ import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { AddBranchProductModal } from '@/components/atoms/modals/AddBranchProductModal'
 import InformationCard from '@/components/molecules/Card/InformationCard'
-import { BranchProductData, useGetBranchProductQuery, useUpdateBranchProductQuery } from '@/hooks/UseBranchQuery'
+import { useGetBranchProductQuery, useUpdateBranchProductQuery } from '@/hooks/UseBranchQuery'
 import Table from '@/components/organisms/tableNext/Table'
 import { UseGetBranchByIdQuery } from '@/hooks/UseBranchByIdQuery'
 import ButtonComponent from '@/components/atoms/Button'
 import { MoveBranchStockModal } from '@/components/atoms/modals/MoveBranchStockModal'
+import { TProductBranchData } from '@/interfaces/TData'
 
 function ProductOnBranch() {
   const router = useRouter()
   const { branchId } = router.query
-  const [editProduct, setEditProduct] = useState<BranchProductData>()
+  const [editProduct, setEditProduct] = useState<TProductBranchData>()
   const handleAddBranchProduct = useDisclosure()
   const handleMoveStock = useDisclosure()
   const { loading, data, refetch, variables, setVariables, setFilter } =
@@ -28,11 +29,11 @@ function ProductOnBranch() {
     setVariables({ ...variables, rows: row, currentPage: 1 })
   }
 
-  const handleSwitchChange = (productBranch: BranchProductData, field: string) => {
+  const handleSwitchChange = (productBranch: TProductBranchData, field: string) => {
     console.log(productBranch, field)
     handleUpdateBranchProduct(productBranch, field)
   }
-  const handleEdit = (productBranch: BranchProductData) => () => {
+  const handleEdit = (productBranch: TProductBranchData) => () => {
     setEditProduct(productBranch)
     handleMoveStock.onOpen()
   }
@@ -162,7 +163,7 @@ function ProductOnBranch() {
         onAdd={() => refetch()}
       />
       <MoveBranchStockModal
-      productBranch={editProduct}
+      productBranch={editProduct as TProductBranchData }
       isOpen={handleMoveStock.isOpen}
       onClose={handleMoveStock.onClose}/>
     </AdministrationLayout>
