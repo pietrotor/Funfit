@@ -111,7 +111,7 @@ const deleteBranchProduct = async (
   }
 }
 
-const createBranchStockMovement = async (
+const createBranchProductStockMovement = async (
   _: any,
   args: {
     createBranchProductStockMovementInput: CreateBranchProductStockMovementInput
@@ -144,7 +144,7 @@ export const branchProductMutation = {
   createBranchProduct,
   updateBranchProduct,
   deleteBranchProduct,
-  createBranchStockMovement
+  createBranchProductStockMovement
 }
 
 export const branchProductType = {
