@@ -32,7 +32,7 @@ export const DropZone = () => {
 
   return (
       <section className="container my-6">
-        <div {...getRootProps({ className: ' border-dashed border-gray-300 border-2 p-5 rounded-md items-center cursor-pointer ' })}>
+        <div {...getRootProps({ className: ' border-dashed border-gray-300 hover:border-gray-500 border-2 p-5 rounded-md items-center cursor-pointer ' })}>
           <input {...getInputProps()} />
           <p>Arrastra y suelta tu imagen aquí o haz click para cargar una imagen</p>
           <em>(Solo imagenes *.jpeg y *.png serán aceptadas)</em>

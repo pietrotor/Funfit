@@ -5,6 +5,7 @@ import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-s
 import EmptySale from '@/components/atoms/EmptySale'
 // import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import SaleModal from '@/components/atoms/modals/SaleModal'
+import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 
 type SalesReceiptProps = {
   selectedProducts: TPointOfSaleData
@@ -27,6 +28,14 @@ function SalesReceipt({
       discount: Number(discount),
       total: selectedProducts.subTotal - Number(discount)
     })
+  }
+
+  const handleSale = () => {
+    if (selectedProducts.products.length === 0) {
+      showSuccessToast('No hay productos seleccionados', 'error')
+    } else {
+      handleSaleModal.onOpen()
+    }
   }
 
   return (
@@ -55,7 +64,9 @@ function SalesReceipt({
           <div className="flex flex-col justify-between space-y-2 text-gray-500">
             <div className="flex justify-between">
               <p>Subtotal</p>
-              <p className=" w-1/6 text-left">Bs. {selectedProducts.subTotal}</p>
+              <p className=" w-1/6 text-left">
+                Bs. {selectedProducts.subTotal}
+              </p>
             </div>
             <tr className="border-1 border-dashed" />
             <div className="flex justify-between">
@@ -77,7 +88,7 @@ function SalesReceipt({
               className="flex w-full justify-between"
               variant="solid"
               color="secondary"
-              onClick={handleSaleModal.onOpen}
+              onClick={handleSale}
             >
               <p className="text-xl font-bold text-white">Finalizar venta</p>
               <span className="w-1/6 text-xl font-bold text-white">

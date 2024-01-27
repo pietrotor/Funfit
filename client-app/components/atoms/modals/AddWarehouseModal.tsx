@@ -68,7 +68,6 @@ export const AddWarehouseModal = ({
             name="name"
             type="text"
             label="Nombre"
-            placeholder="Nombre"
             rules={{
               required: {
                 value: true,
@@ -81,7 +80,6 @@ export const AddWarehouseModal = ({
             name="address"
             type="text"
             label="Calle"
-            placeholder="Calle"
             rules={{
               required: {
                 value: true,
@@ -98,8 +96,6 @@ export const AddWarehouseModal = ({
             name="description"
             type="textArea"
             label="Descripción"
-            customeClassName="h-16"
-            placeholder="Descripción"
             rules={{
               required: { value: true, message: 'Este campo es obligatorio' },
               pattern: {
