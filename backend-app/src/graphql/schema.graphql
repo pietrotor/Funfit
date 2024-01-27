@@ -116,7 +116,7 @@ type Mutation {
     updateBranchProductInput: UpdateBranchProductInput!
   ): BranchProductResponse
   deleteBranchProduct(id: ObjectId!): BranchProductResponse
-  createBranchStockMovement(
+  createBranchProductStockMovement(
     createBranchProductStockMovementInput: CreateBranchProductStockMovementInput!
   ): BranchProductResponse
   # CASH ==================================
