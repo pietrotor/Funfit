@@ -70,7 +70,7 @@ export const useGetBranchProductQuery = (branchId: string) => {
       paginationInput: {
         filter: filterDebounced,
         page: variables?.currentPage || 1,
-        rows: 5
+        rows: variables?.rows || 5
       },
       branchId
     },
@@ -102,6 +102,35 @@ export const useGetBranchProductQuery = (branchId: string) => {
     refetch,
     variables,
     setVariables,
+    setFilter
+  }
+}
+
+export const useGetBranchProductPOSQuery = (branchId: string) => {
+  const [filter, setFilter] = useState<string>()
+  const filterDebounced = UseDebouncedValue(filter, 2000)
+  const { data, loading } = useGetBranchProductsPaginatedQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      paginationInput: {
+        filter: filterDebounced
+      },
+      branchId
+    },
+    onCompleted: result => {
+      if (result.getBranchProductsPaginated?.status === StatusEnum.ERROR) {
+        showSuccessToast(
+          result.getBranchProductsPaginated?.message ||
+            'Error al cargar los productos',
+          'error'
+        )
+      }
+    }
+  })
+
+  return {
+    data,
+    loading,
     setFilter
   }
 }
