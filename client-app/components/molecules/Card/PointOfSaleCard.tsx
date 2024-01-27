@@ -49,7 +49,7 @@ function PointOfSaleCard({
                 className="absolute left-1/2 top-52 z-10 -translate-x-1/2 -translate-y-1/4 transform bg-secondary/80 text-white"
                 variant="solid"
               >
-                Inv. {5}
+                Inv. {product.stock}
               </Chip>
               <CardFooter className="flex h-32 flex-col justify-around rounded-large">
                 <p className="w-full text-left text-xl font-bold text-secondary">
