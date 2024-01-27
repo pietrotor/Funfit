@@ -26,6 +26,7 @@ function ProductInformation() {
   const addProduct = (units: number) => {
     showSuccessToast('Producto añadido exitosamente', 'success')
     saveData.current = {
+      id: data?.getProductById?.data?.id as string,
       productName: data?.getProductById?.data?.name as string,
       quantity: units,
       price: data?.getProductById?.data?.suggetedPrice as number * units,

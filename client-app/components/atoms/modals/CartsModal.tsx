@@ -36,7 +36,7 @@ const CartModal: React.FC<TProps> = ({
   const [showTextArea, setShowTextArea] = useState(false)
   const [actualDetails, setActualDetails] = useState('')
   const cartItems = useAppSelector(
-    state => state.cartReducer.initialState.cartItems
+    state => state.cartReducer.cartItems
   )
   const dispatch = useAppDispatch()
   const totalPrice = cartItems.reduce((total, item) => total + item.price, 0)

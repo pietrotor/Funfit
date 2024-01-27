@@ -21,37 +21,33 @@ const initialState: TCart = {
 
 export const cartSlice = createSlice({
   name: 'cart',
-  initialState: { initialState },
+  initialState,
   reducers: {
     addToCart(state, action) {
       const item = action.payload
-      const existItem = initialState.cartItems.find(
-        x => x.id === item.id
-      )
+      const existItem = state.cartItems.find((x) => x.productName === item.productName)
 
       if (existItem) {
-        state.initialState.cartItems = state.initialState.cartItems.map(x => {
-          if (x.id === existItem.id) {
-            return {
-              ...x,
-              quantity: x.quantity + item.quantity,
-              price: x.price + item.price
-            }
-          } else {
-            return x
-          }
-        })
+        state.cartItems = state.cartItems.map((x) =>
+          x.productName === existItem.productName ? {
+            ...x,
+            quantity: x.quantity + item.quantity,
+            price: x.price + item.price
+          } : x
+        )
       } else {
-        state.initialState.cartItems.push(item)
+        state.cartItems.push(item)
       }
+
+      state.cartSubTotal = state.cartItems.reduce((acc, item) => acc + item.price, 0)
     },
     decreaseCart(state, action) {
       const item = action.payload
-      const existItem = state.initialState.cartItems.find(
+      const existItem = state.cartItems.find(
         x => x.productName === item.productName
       )
       if (existItem) {
-        state.initialState.cartItems = state.initialState.cartItems.map(x => {
+        state.cartItems = state.cartItems.map(x => {
           if (x.productName === existItem.productName) {
             if (x.quantity > 1) {
               return {
@@ -66,7 +62,7 @@ export const cartSlice = createSlice({
             return x
           }
         })
-        state.initialState.cartSubTotal = state.initialState.cartItems.reduce(
+        state.cartSubTotal = state.cartItems.reduce(
           (acc, item) => acc + item.price,
           0
         )
@@ -74,11 +70,11 @@ export const cartSlice = createSlice({
     },
     increaseCart(state, action) {
       const item = action.payload
-      const existItem = state.initialState.cartItems.find(
+      const existItem = state.cartItems.find(
         x => x.productName === item.productName
       )
       if (existItem) {
-        state.initialState.cartItems = state.initialState.cartItems.map(x => {
+        state.cartItems = state.cartItems.map(x => {
           if (x.productName === existItem.productName) {
             if (x.quantity < 100) {
               return {
@@ -93,7 +89,7 @@ export const cartSlice = createSlice({
             return x
           }
         })
-        state.initialState.cartSubTotal = state.initialState.cartItems.reduce(
+        state.cartSubTotal = state.cartItems.reduce(
           (acc, item) => acc + item.price,
           0
         )
@@ -101,18 +97,18 @@ export const cartSlice = createSlice({
     },
     removeFromCart(state, action) {
       const item = action.payload
-      state.initialState.cartItems = state.initialState.cartItems.filter(
+      state.cartItems = state.cartItems.filter(
         x => x.productName !== item.productName
       )
     },
     clearCart(state) {
-      state.initialState.cartItems = []
+      state.cartItems = []
     },
     updateCartDetails: (state, action) => {
-      state.initialState.cartDetails = action.payload
+      state.cartDetails = action.payload
     },
     updateCartSubTotal: (state, action) => {
-      state.initialState.cartSubTotal = action.payload
+      state.cartSubTotal = action.payload
     }
   }
 })
