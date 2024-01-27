@@ -1,5 +1,5 @@
 import { ErrorMessage } from '@hookform/error-message'
-import { Input, InputProps } from '@nextui-org/react'
+import { Input, InputProps, Textarea } from '@nextui-org/react'
 import React from 'react'
 import { Control, Controller, RegisterOptions } from 'react-hook-form'
 
@@ -28,9 +28,11 @@ type TInputProps = InputProps & {
   name: string
   control?: Control<any>
   type?: 'text' | 'number' | 'date' | 'textArea' | 'email' | 'password'
+  variant?: 'bordered' | 'flat' | 'faded' | 'underlined'
   valueAs?: 'number' | 'date' | 'string'
   placeholder?: string
   label?: string
+  size?: 'sm' | 'md' | 'lg'
   onChange?: () => void
   value?: any
   disabled?: boolean
@@ -51,8 +53,10 @@ const InputComponent: React.FC<TInputProps> = ({
   required = true,
   isRequired = true,
   type = 'text',
+  variant = 'bordered',
   name,
   label = '',
+  size = 'md',
   placeholder = '',
   onChange,
   value,
@@ -109,7 +113,7 @@ const InputComponent: React.FC<TInputProps> = ({
               </>
             ) : (
               <>
-                <Input
+                <Textarea
                   {...field}
                   type={type}
                   variant={'bordered'}
@@ -139,7 +143,13 @@ const InputComponent: React.FC<TInputProps> = ({
       <Input
         disabled={disabled}
         type={type}
+        variant={variant}
+        radius="none"
+        label={label}
+        size={size}
+        className={`w-full appearance-none rounded-md bg-gray-100/30 text-black placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
         value={value}
+        placeholder={placeholder}
         {...props}
       />
     </Label>

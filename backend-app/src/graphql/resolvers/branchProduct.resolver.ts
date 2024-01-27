@@ -114,15 +114,15 @@ const deleteBranchProduct = async (
 const createBranchStockMovement = async (
   _: any,
   args: {
-    createBranchStockMovementInput: CreateBranchProductStockMovementInput
+    createBranchProductStockMovementInput: CreateBranchProductStockMovementInput
   },
   context: ContextGraphQl
 ): Promise<BranchProductResponse> => {
   try {
-    const { createBranchStockMovementInput } = args
+    const { createBranchProductStockMovementInput } = args
     const branchProductInstance =
       await branchProductCore.createBranchProductStockMovement(
-        createBranchStockMovementInput,
+        createBranchProductStockMovementInput,
         context.req.currentUser?.id
       )
     return {

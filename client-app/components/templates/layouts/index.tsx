@@ -144,6 +144,11 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       ]
     },
     {
+      icon: 'PointOfSale',
+      text: 'Punto de venta',
+      link: '/administration-panel/point-of-sale'
+    },
+    {
       icon: 'Logout',
       text: 'Cerrar sesión',
       link: '/administration-panel/login',

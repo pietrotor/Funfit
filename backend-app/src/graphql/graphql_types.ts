@@ -287,7 +287,7 @@ export type Mutation = {
   creatStockMovement?: Maybe<StockResponse>;
   createBranch?: Maybe<BranchResponse>;
   createBranchProduct?: Maybe<BranchProductResponse>;
-  createBranchStockMovement?: Maybe<BranchProductResponse>;
+  createBranchProductStockMovement?: Maybe<BranchProductResponse>;
   createCashMovement?: Maybe<CashTurnMovementResponse>;
   createProduct?: Maybe<ProductResponse>;
   createSale?: Maybe<SaleResponse>;
@@ -328,7 +328,7 @@ export type MutationCreateBranchProductArgs = {
 };
 
 
-export type MutationCreateBranchStockMovementArgs = {
+export type MutationCreateBranchProductStockMovementArgs = {
   createBranchProductStockMovementInput: CreateBranchProductStockMovementInput;
 };
 
@@ -1370,7 +1370,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   creatStockMovement?: Resolver<Maybe<ResolversTypes['StockResponse']>, ParentType, ContextType, RequireFields<MutationCreatStockMovementArgs, 'createStockMovementInput'>>;
   createBranch?: Resolver<Maybe<ResolversTypes['BranchResponse']>, ParentType, ContextType, RequireFields<MutationCreateBranchArgs, 'createBranchInput'>>;
   createBranchProduct?: Resolver<Maybe<ResolversTypes['BranchProductResponse']>, ParentType, ContextType, RequireFields<MutationCreateBranchProductArgs, 'createBranchProductInput'>>;
-  createBranchStockMovement?: Resolver<Maybe<ResolversTypes['BranchProductResponse']>, ParentType, ContextType, RequireFields<MutationCreateBranchStockMovementArgs, 'createBranchProductStockMovementInput'>>;
+  createBranchProductStockMovement?: Resolver<Maybe<ResolversTypes['BranchProductResponse']>, ParentType, ContextType, RequireFields<MutationCreateBranchProductStockMovementArgs, 'createBranchProductStockMovementInput'>>;
   createCashMovement?: Resolver<Maybe<ResolversTypes['CashTurnMovementResponse']>, ParentType, ContextType, RequireFields<MutationCreateCashMovementArgs, 'createTurnMovementInput'>>;
   createProduct?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationCreateProductArgs, 'createProductInput'>>;
   createSale?: Resolver<Maybe<ResolversTypes['SaleResponse']>, ParentType, ContextType, RequireFields<MutationCreateSaleArgs, 'createSaleInput'>>;

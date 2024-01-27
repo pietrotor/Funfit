@@ -10,6 +10,8 @@ export type TValueProductData = {
   suggetedPrice?: number
   image?: string
   code?: string
+  internalCode?: string
+  warehouses?: string[]
 }
 interface EditProductModalProps {
   isOpen: boolean
