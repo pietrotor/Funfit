@@ -42,6 +42,10 @@ const saleSchema = new Schema<ISale>(
     products: [
       {
         _id: false,
+        branchProductId: {
+          type: Schema.Types.ObjectId,
+          ref: 'BranchProduct'
+        },
         productId: {
           type: Schema.Types.ObjectId,
           ref: 'Product'

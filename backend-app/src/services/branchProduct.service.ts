@@ -45,8 +45,9 @@ export class BranchProductService extends BranchProductRepository<objectId> {
       _id: id,
       deleted: false
     })
-    if (!branchInstance)
+    if (!branchInstance) {
       throw new BadRequestError('No se encontro el producto en la sucursal')
+    }
     return branchInstance
   }
 
@@ -70,17 +71,19 @@ export class BranchProductService extends BranchProductRepository<objectId> {
     const existsProductOnBranch = branchInstance.productsIds.some(
       branchProductId => branchProductId.toString() === productId.toString()
     )
-    if (existsProductOnBranch)
+    if (existsProductOnBranch) {
       throw new BadRequestError(
         'El producto ya se encuentra registrado en la sucursal'
       )
+    }
     const existsBranchOnProduct = productInstance.branchesIds.some(
       productBranchId => productBranchId.toString() === branchId.toString()
     )
-    if (existsBranchOnProduct)
+    if (existsBranchOnProduct) {
       throw new BadRequestError(
         'El producto ya se encuentra registrado en la sucursal'
       )
+    }
     const branchProductInstance = new BranchProduct({
       ...createBranchProductInput,
       createdBy
@@ -96,8 +99,9 @@ export class BranchProductService extends BranchProductRepository<objectId> {
     const { id, price } = updateBranchProductInput
     const branchProductInstance = await this.getBranchProductById(id)
     if (typeof price === 'number') {
-      if (price < 0)
+      if (price < 0) {
         throw new BadRequestError('El precio no puede ser negativo')
+      }
     }
     updateGenericInstance(branchProductInstance, updateBranchProductInput)
 
@@ -113,25 +117,27 @@ export class BranchProductService extends BranchProductRepository<objectId> {
   }
 
   async createBranchProductStockMovement(
-    createBranchProductStockMovement: CreateBranchProductStockMovementInput,
+    createBranchProductStockMovementInput: CreateBranchProductStockMovementInput,
     createdBy?: objectId
   ) {
     const { branchId, type, stockId, branchProductId } =
-      createBranchProductStockMovement
+      createBranchProductStockMovementInput
 
-    if (stockId && type !== StockMovementTypeEnum.INWARD)
+    if (stockId && type !== StockMovementTypeEnum.INWARD) {
       throw new BadRequestError(
         'Stock innecesario en un tipo de movimiento de salida'
       )
-    if (!stockId && type === StockMovementTypeEnum.INWARD)
+    }
+    if (!stockId && type === StockMovementTypeEnum.INWARD) {
       throw new BadRequestError(
         'Es necesario el stock para un movimiento de ingreso'
       )
+    }
 
     await branchCore.getBranchById(branchId)
 
     await branchUseCaseCore.stockUpdate(
-      createBranchProductStockMovement,
+      createBranchProductStockMovementInput,
       createdBy
     )
 
