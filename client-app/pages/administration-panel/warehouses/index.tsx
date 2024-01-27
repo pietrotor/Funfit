@@ -182,12 +182,11 @@ function Warehouses() {
               >
                 <ButtonComponent
                   onClick={() => router.push(`/administration-panel/warehouses/${warehouse.id}`)}
-                  type="edit"
+                  type="eye"
                   showTooltip
-                  tooltipText="Editar"
-                  className='px-3'
+                  tooltipText="Ver Almacén"
                 >
-                  <IconSelector name="eye" color="text-primary" width="w-8" />
+                  <IconSelector name="eye" color="text-secondary" width="w-8" />
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() => handleUpdateWarehouse(warehouse.id)}

@@ -1,8 +1,6 @@
 import { useState } from 'react'
-import { Button } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import { MyModal } from './MyModal'
-import IconSelector from '../IconSelector'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
 import SalePaymentMethod from '@/components/molecules/SalePaymentMethod'
 import CashPaymentMethod from '@/components/molecules/CashPaymentMethod'
@@ -95,15 +93,29 @@ function SaleModal({
       isOpen={isOpen}
       onClose={onClose}
       hideCloseButton={false}
-      size="2xl"
+      size="3xl"
+      isForm
+      title='Recibo de venta'
+      message='Ingrese los datos de la venta'
+      onSubmit={onSubmit}
+      control={control}
+      handleCancel={handleCancel}
+      handleSubmit={handleSubmit}
+      reset={reset}
+      color='secondary'
+      textBackButton='Atrás'
+      textCancelButton='Cancelar'
+      textSuccessButton='Generar recibo'
+      handleBack={handleBack}
+      backButtonDisabled={payment.paymentMethod === 'options'}
+      successButtonDisabled={payment.paymentMethod === 'options'}
     >
-      <form
-        onSubmit={handleSubmit(() => onSubmit())}
+      <div
         className="flex h-[30rem] flex-col"
       >
-        <div className="border-b-gray min-h-[1/7] w-full border-b-1">
+        {/* <div className="border-b-gray min-h-[1/7] w-full border-b-1">
           <h1 className="p-4 text-xl text-gray-500">Recibo de venta</h1>
-        </div>
+        </div> */}
 
         <div
           className={`flex-grow ${
@@ -160,7 +172,7 @@ function SaleModal({
           </div>
         </div>
 
-        <div className="border-t-gray mt-3 flex min-h-[1/7] justify-between border-t-1 p-4">
+        {/* <div className="border-t-gray mt-3 flex min-h-[1/7] justify-between border-t-1 p-4">
           <Button
             variant="flat"
             color="default"
@@ -191,8 +203,8 @@ function SaleModal({
               Generar recibo
             </Button>
           </div>
-        </div>
-      </form>
+        </div> */}
+      </div>
     </MyModal>
   )
 }

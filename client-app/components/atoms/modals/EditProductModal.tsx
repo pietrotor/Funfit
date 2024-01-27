@@ -127,6 +127,20 @@ export const EditProductModal = ({
             }
           }}
         />
+      <Input
+      defaultValue={values.description}
+      control={control}
+      name='description'
+      label='Descripción'
+      placeholder='Descripción'
+      type='textArea'
+      rules={{
+        pattern: {
+          value: /^[a-zA-Z\s]+$/i,
+          message: 'Solo se permiten letras'
+        }
+      }}
+      />
 
         <DropZone />
       </div>

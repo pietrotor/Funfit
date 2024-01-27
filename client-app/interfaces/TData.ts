@@ -96,6 +96,7 @@ export type TProductBranchData = {
   product?: TValueProductData
   warehouses?: string[]
   quantity?: number
+  stock?: number
   total?: number
 }
 

@@ -83,9 +83,7 @@ function CreateStock() {
       <div className="absolute top-20 ms-5 mt-5 flex h-[75%] w-[90%] transform flex-col items-start justify-center bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center">
         <div
           className={`${
-            productsData
-              ? 'absolute right-0 h-full w-[60%] bg-gray-700 opacity-60'
-              : ''
+            productsData ? 'absolute right-0 h-full w-[60%] bg-gray-700 opacity-60' : ''
           }`}
         />
         <form
@@ -191,11 +189,12 @@ function CreateStock() {
             <Input
               required={false}
               value={productsData?.description || ''}
+              variant='bordered'
               type="textArea"
               name="description"
               label="Descripción del producto"
               disabled={true}
-              customeClassName="cursor-not-allowed mb-2"
+              customeClassName=" mb-2"
             />
             <div className="grid grid-cols-2 gap-2">
               <Input

@@ -20,7 +20,7 @@ const UsersNavBar: React.FC<TSubMenuLinkProps> = ({ menu }) => {
   const router = useRouter()
   const [isNavOpen, setIsNavOpen] = useState(false)
   const cartItems = useAppSelector(
-    state => state.cartReducer.initialState.cartItems
+    state => state.cartReducer.cartItems
   )
 
   return (

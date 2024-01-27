@@ -127,9 +127,11 @@ const InputComponent: React.FC<TInputProps> = ({
                   type={type}
                   variant={'bordered'}
                   label={label}
+                  placeholder={placeholder}
+                  size='sm'
                   radius="sm"
                   onChange={event => field.onChange(getTypeOfValue(event))}
-                  className={`w-full appearance-none rounded-md  border-gray-500 bg-gray-100/30 text-black outline-none  transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+                  className={`w-full appearance-none rounded-md bg-gray-100/30 text-black placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
                 />
                 <ErrorMessage
                   errors={errors}
@@ -149,18 +151,31 @@ const InputComponent: React.FC<TInputProps> = ({
   }
   return (
     <Label required={required} label={label}>
-      <Input
-        disabled={disabled}
-        type={type}
-        variant={variant}
-        radius="none"
-        label={label}
-        size={size}
-        className={`w-full appearance-none rounded-md bg-gray-100/30 text-black placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
-        value={value}
-        placeholder={placeholder}
-        {...props}
-      />
+      {type !== 'textArea' ? (
+        <Input
+          disabled={disabled}
+          type={type}
+          variant={variant}
+          radius="sm"
+          label={label}
+          size={size}
+          className={`w-full appearance-none rounded-md bg-white/40 text-gray placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+          value={value}
+          placeholder={placeholder}
+          {...props}
+        />
+      ) : (
+        <Textarea
+          type={type}
+          variant={variant}
+          label={label}
+          placeholder={placeholder}
+          radius="sm"
+          size='sm'
+          className={`w-full appearance-none rounded-md bg-white/40 text-gray placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}` }
+          value={value}
+        />
+      )}
     </Label>
   )
 }

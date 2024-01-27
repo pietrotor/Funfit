@@ -65,7 +65,7 @@ const ButtonComponent = ({
           type={typeOf}
           isLoading={isLoading}
           id={getTooltipId()}
-          className={`rounded bg-gray-100 p-1 ${className} `}
+          className={`rounded bg-gray-100 p-1 ${className} ${disabled && 'cursor-not-allowed'} `}
           onClick={onClick}
           disabled={disabled}
         >

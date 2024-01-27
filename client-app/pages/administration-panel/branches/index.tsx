@@ -96,7 +96,7 @@ function Branches() {
         </div>
         <Table
           onChangeRow={row => handleChangeRow(row)}
-          tableName="ALMACENES"
+          tableName="SUCURSALES"
           onChangePage={page =>
             setVariables({ ...variables, currentPage: page })
           }
