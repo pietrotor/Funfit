@@ -2,15 +2,18 @@ import { useEffect, useState } from 'react'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import { StatusEnum, useGetSalesPaginatedQuery } from '@/graphql/graphql-types'
 import { filterPaginationInterfaceState } from '@/interfaces/paginationInterfaces'
+import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 
 const UseGetCustomSalesPaginated = (branchId: string) => {
   const [variables, setVariables] = useState <filterPaginationInterfaceState>()
+  const [filter, setFilter] = useState <string>()
+  const filtroDebounced = UseDebouncedValue(filter, 2000)
 
   const { data, loading, refetch } = useGetSalesPaginatedQuery({
     fetchPolicy: 'network-only',
     variables: {
       salesPaginationInput: {
-        filter: variables?.filter,
+        filter: filtroDebounced,
         page: variables?.currentPage,
         rows: variables?.rows,
         branchIds: [branchId],
@@ -49,7 +52,8 @@ const UseGetCustomSalesPaginated = (branchId: string) => {
     loading,
     refetch,
     variables,
-    setVariables
+    setVariables,
+    setFilter
   }
 }
 

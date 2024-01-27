@@ -124,6 +124,11 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           icon: 'Admin',
           text: 'Reportes',
           link: '/administration-panel/sales'
+        },
+        {
+          icon: 'Admin',
+          text: 'Ventas diarias',
+          link: '/administration-panel/dailySale'
         }
       ]
     },

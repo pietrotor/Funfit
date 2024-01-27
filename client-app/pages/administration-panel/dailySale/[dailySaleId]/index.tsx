@@ -16,7 +16,6 @@ import InformationCard from '@/components/molecules/Card/InformationCard'
 import InputComponent from '@/components/atoms/Input'
 import ComboInput from '@/components/atoms/ComboInput'
 // import { useGetUsersLazyQuery } from '@/graphql/graphql-types'
-import DateConverter from '@/components/atoms/DateConverter'
 
 function Sales() {
   const router = useRouter()
@@ -26,12 +25,12 @@ function Sales() {
   const { control } = useForm()
   const [branchSelected, setSelected] = useState<TDataBranch>(currentBranch)
 
-  // const [getUsers, { data: users }] = useGetUsersLazyQuery({
-  //   fetchPolicy: 'network-only',
-  //   variables: {
-  //     paginationInput: {}
-  //   }
-  // })
+  //   const [getUsers, { data: users }] = useGetUsersLazyQuery({
+  //     fetchPolicy: 'network-only',
+  //     variables: {
+  //       paginationInput: {}
+  //     }
+  //   })
   const { data, setVariables, variables, setFilter } =
     UseGetCustomSalesPaginated(branchSelected.id)
 
@@ -86,7 +85,7 @@ function Sales() {
             onValueChange={e => setVariables({ ...variables, endDate: e })}
           />
           <div className="col-start-5 rounded-md bg-white ">
-          <ComboInput
+            <ComboInput
               label="Vendedor"
               name="seller"
               control={control}
@@ -191,7 +190,7 @@ function Sales() {
                 {idx + 1}
               </h3>,
               <div key={idx} className="text-sm">
-                <DateConverter dateString={sale.date}/>
+                {sale.date}
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm">{sale.total}</div>

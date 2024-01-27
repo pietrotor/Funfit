@@ -213,7 +213,7 @@ const Productos = () => {
       </div>
 
       <AddProductModal
-      title='Nuevo producto'
+      title='Nuev o producto'
       color='success'
       message='Agregue los datos del producto'
         isOpen={handleAddProduct.isOpen}

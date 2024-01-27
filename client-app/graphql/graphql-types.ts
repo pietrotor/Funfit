@@ -1252,6 +1252,13 @@ export type CreateBranchStockMovementMutationVariables = Exact<{
 
 export type CreateBranchStockMovementMutation = { __typename?: 'Mutation', createBranchStockMovement?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null } | null } | null };
 
+export type GetSaleByIdQueryVariables = Exact<{
+  getSaleByIdId: Scalars['ObjectId'];
+}>;
+
+
+export type GetSaleByIdQuery = { __typename?: 'Query', getSaleById?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null };
+
 
 export const CreateUserDocument = gql`
     mutation CreateUser($userInput: UserInput!) {
@@ -4001,3 +4008,168 @@ export function useCreateBranchStockMovementMutation(baseOptions?: Apollo.Mutati
 export type CreateBranchStockMovementMutationHookResult = ReturnType<typeof useCreateBranchStockMovementMutation>;
 export type CreateBranchStockMovementMutationResult = Apollo.MutationResult<CreateBranchStockMovementMutation>;
 export type CreateBranchStockMovementMutationOptions = Apollo.BaseMutationOptions<CreateBranchStockMovementMutation, CreateBranchStockMovementMutationVariables>;
+export const GetSaleByIdDocument = gql`
+    query GetSaleById($getSaleByIdId: ObjectId!) {
+  getSaleById(id: $getSaleByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      products {
+        productId
+        price
+        qty
+        total
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          internalCode
+          description
+          cost
+          image
+          warehouses
+        }
+      }
+      paymentMethod
+      subTotal
+      total
+      discount
+      date
+      code
+      client
+      amountRecibed
+      change
+      observations
+      canceled
+      reason
+      canceledAt
+      createdBy
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cashId
+        cash {
+          id
+          branchId
+          amount
+          currentTurnId
+          isOpen
+          currentTurn {
+            id
+            cashId
+            isOpen
+            amountOfMovents
+            openInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              openBy
+              openByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+            closeInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              closeBy
+              closeByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+          }
+        }
+      }
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetSaleByIdQuery__
+ *
+ * To run a query within a React component, call `useGetSaleByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSaleByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSaleByIdQuery({
+ *   variables: {
+ *      getSaleByIdId: // value for 'getSaleByIdId'
+ *   },
+ * });
+ */
+export function useGetSaleByIdQuery(baseOptions: Apollo.QueryHookOptions<GetSaleByIdQuery, GetSaleByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSaleByIdQuery, GetSaleByIdQueryVariables>(GetSaleByIdDocument, options);
+      }
+export function useGetSaleByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSaleByIdQuery, GetSaleByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSaleByIdQuery, GetSaleByIdQueryVariables>(GetSaleByIdDocument, options);
+        }
+export type GetSaleByIdQueryHookResult = ReturnType<typeof useGetSaleByIdQuery>;
+export type GetSaleByIdLazyQueryHookResult = ReturnType<typeof useGetSaleByIdLazyQuery>;
+export type GetSaleByIdQueryResult = Apollo.QueryResult<GetSaleByIdQuery, GetSaleByIdQueryVariables>;
