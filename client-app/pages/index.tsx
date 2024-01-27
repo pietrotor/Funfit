@@ -8,12 +8,12 @@ import HeroShot from '@/components/atoms/FrontPage/heroShot'
 
 const Index: NextPage = () => {
   return (
-      <ClientLayout>
-        <HeroShot />
-        <Container>
-          <UserProducts />
-        </Container>
-      </ClientLayout>
+    <ClientLayout>
+      <HeroShot/>
+      <Container>
+        <UserProducts />
+      </Container>
+    </ClientLayout>
   )
 }
 

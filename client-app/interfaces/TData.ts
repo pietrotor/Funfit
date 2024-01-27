@@ -99,3 +99,23 @@ export type TProductBranchData = {
   stock?: number
   total?: number
 }
+
+export type TDataRecipes = {
+  id: number
+  name: string
+  ingredients: {
+    id: number
+    name: string
+    quantity: number
+  }[]
+}
+
+export type TDataSale = {
+  saleDate: string
+  id: number
+  name: string
+  totalAmount: number
+  discount: number
+  products: TValueProductData[]
+  saleMakedBy: string
+}

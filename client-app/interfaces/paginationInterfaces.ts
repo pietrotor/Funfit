@@ -13,3 +13,9 @@ export interface PaginationInterfaceState {
   currentPage?: number
   totalRecords?: number
 }
+export interface filterPaginationInterfaceState extends PaginationInterfaceState{
+  branchIds?: string[]
+  endDate?: string
+  initialDate?: string
+  saleBy?: string
+}

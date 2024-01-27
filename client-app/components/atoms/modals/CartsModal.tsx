@@ -12,7 +12,14 @@ import Images from '../Image/Image'
 import IconSelector from '../IconSelector'
 
 import { useAppDispatch, useAppSelector } from '@/store/index'
-import { clearCart, decreaseCart, increaseCart, removeFromCart, updateCartDetails, updateCartSubTotal } from '@/store/slices'
+import {
+  clearCart,
+  decreaseCart,
+  increaseCart,
+  removeFromCart,
+  updateCartDetails,
+  updateCartSubTotal
+} from '@/store/slices'
 
 type TProps = {
   onOpen: () => void
@@ -125,7 +132,9 @@ const CartModal: React.FC<TProps> = ({
                           setActualDetails(e.target.value)
                         }}
                         className={`transition-all ${
-                          showTextArea ? 'h-24 w-full border-2 p-2 shadow-lg' : 'h-0 w-full'
+                          showTextArea
+                            ? 'h-24 w-full border-2 p-2 shadow-lg'
+                            : 'h-0 w-full'
                         }   resize-none overflow-hidden duration-700 ease-in-out focus:outline-none`}
                         placeholder="Describa las especificaciones para su producto (espacio no obligatorio)"
                       ></textarea>

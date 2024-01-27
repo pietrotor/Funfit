@@ -1,18 +1,24 @@
 import { Button, Chip, Image, Switch, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
+import { useState } from 'react'
 
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { AddBranchProductModal } from '@/components/atoms/modals/AddBranchProductModal'
 import InformationCard from '@/components/molecules/Card/InformationCard'
-import { BranchProductData, useGetBranchProductQuery, useUpdateBranchProductQuery } from '@/hooks/UseBranchQuery'
+import { useGetBranchProductQuery, useUpdateBranchProductQuery } from '@/hooks/UseBranchQuery'
 import Table from '@/components/organisms/tableNext/Table'
 import { UseGetBranchByIdQuery } from '@/hooks/UseBranchByIdQuery'
+import ButtonComponent from '@/components/atoms/Button'
+import { MoveBranchStockModal } from '@/components/atoms/modals/MoveBranchStockModal'
+import { TProductBranchData } from '@/interfaces/TData'
 
 function ProductOnBranch() {
   const router = useRouter()
   const { branchId } = router.query
+  const [editProduct, setEditProduct] = useState<TProductBranchData>()
   const handleAddBranchProduct = useDisclosure()
+  const handleMoveStock = useDisclosure()
   const { loading, data, refetch, variables, setVariables, setFilter } =
     useGetBranchProductQuery(branchId as string)
   const { handleUpdateBranchProduct } = useUpdateBranchProductQuery()
@@ -23,8 +29,13 @@ function ProductOnBranch() {
     setVariables({ ...variables, rows: row, currentPage: 1 })
   }
 
-  const handleSwitchChange = (productBranch: BranchProductData, field: string) => {
+  const handleSwitchChange = (productBranch: TProductBranchData, field: string) => {
+    console.log(productBranch, field)
     handleUpdateBranchProduct(productBranch, field)
+  }
+  const handleEdit = (productBranch: TProductBranchData) => () => {
+    setEditProduct(productBranch)
+    handleMoveStock.onOpen()
   }
 
   return (
@@ -83,7 +94,8 @@ function ProductOnBranch() {
             { name: 'Producto' },
             { name: 'Precio' },
             { name: 'Visible en la página' },
-            { name: 'Visible en la web' }
+            { name: 'Visible en la web' },
+            { name: 'Acciones' }
           ]}
           items={(data?.getBranchProductsPaginated?.data || []).map(
             (productBranch, idx) => ({
@@ -113,7 +125,21 @@ function ProductOnBranch() {
                   onChange={() => handleSwitchChange(productBranch, 'web')}
                 >
                   {productBranch.isVisibleOnWeb ? 'Sí' : 'No'}
-                </Switch>
+                </Switch>,
+                <ButtonComponent key={idx}
+                  onClick={ handleEdit(productBranch)
+                  }
+                  type="eye"
+                  showTooltip
+                  tooltipText="Mover Stock"
+                  className="px-3"
+                >
+                  <IconSelector
+                    name="Stock"
+                    color="text-secondary"
+                    width="w-5"
+                  />
+                </ButtonComponent>
               ]
             })
           )}
@@ -136,6 +162,10 @@ function ProductOnBranch() {
         onClose={handleAddBranchProduct.onClose}
         onAdd={() => refetch()}
       />
+      <MoveBranchStockModal
+      productBranch={editProduct as TProductBranchData }
+      isOpen={handleMoveStock.isOpen}
+      onClose={handleMoveStock.onClose}/>
     </AdministrationLayout>
   )
 }

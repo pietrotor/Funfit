@@ -1,4 +1,3 @@
-import { Button } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import { MyModal } from './MyModal'
 import Input from '../Input'
@@ -34,18 +33,26 @@ export const EditModal = ({
     })
   }
   return (
-    <MyModal isOpen={isOpen} size="2xl" onClose={onClose} hideCloseButton = {false} >
-      <h1 className="mb-10 mt-10 text-center text-3xl font-bold text-gray-500">
-        Editar Usuario
-      </h1>
-      <form
-        className=" m-auto flex w-5/6 flex-col items-center space-y-4 pb-9 text-gray-500"
-        onSubmit={handleSubmit(onSubmit)}
-      >
+    <MyModal
+      title="Editar usuario"
+      message="Por favor ingrese los datos del usuario a editar"
+      handleCancel={onClose}
+      color="warning"
+      loading={false}
+      isOpen={isOpen}
+      size="2xl"
+      onClose={onClose}
+      hideCloseButton={false}
+      control={control}
+      watch={watch}
+      onSubmit={onSubmit}
+      handleSubmit={handleSubmit}
+    >
+      <div className=" m-auto flex w-5/6 flex-col items-center space-y-4 pb-9 text-gray-500">
         <Input
           control={control}
           name="name"
-          type='text'
+          type="text"
           placeholder="Nombre"
           label={'Nombre'}
           required={false}
@@ -60,7 +67,7 @@ export const EditModal = ({
         <Input
           control={control}
           name="lastName"
-          type='text'
+          type="text"
           placeholder="Apellido"
           label={'Apellido'}
           defaultValue={values.lastName}
@@ -75,7 +82,7 @@ export const EditModal = ({
         <Input
           control={control}
           name="email"
-          type='email'
+          type="email"
           placeholder="Email"
           label={'Email'}
           defaultValue={values.email}
@@ -90,7 +97,7 @@ export const EditModal = ({
         <Input
           control={control}
           name="phone"
-          type='text'
+          type="text"
           placeholder="Celular"
           label={'Celular'}
           defaultValue={values.phone}
@@ -102,13 +109,7 @@ export const EditModal = ({
             }
           }}
         />
-        <div className="grid h-12 grid-cols-2 gap-3 w-full ">
-          <Button type="submit" color="secondary" className="h-full text-lg font-bold text">
-            Guardar
-          </Button>
-          <Button onClick={ onClose } color="warning" className="h-full text-lg text-white font-bold">Cancelar</Button>
-        </div>
-      </form>
+      </div>
     </MyModal>
   )
 }

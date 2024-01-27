@@ -22,7 +22,7 @@ export default function InformationCard({
   const router = useRouter()
   return (
     <div
-      className={`bg-white ${className} max-w-xl self-center rounded-lg border-2 text-gray-500 shadow-xl md:max-w-full`}
+      className={`bg-white ${className} max-w-xl self-center rounded-lg border-2 text-gray-500 shadow-lg md:max-w-full`}
     >
       {title && (
         <h1 className="mb-3 text-center text-2xl font-extrabold">{title}</h1>

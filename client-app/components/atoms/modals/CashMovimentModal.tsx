@@ -1,12 +1,16 @@
 import { useForm } from 'react-hook-form'
-import { Button, Checkbox } from '@nextui-org/react'
+import { Checkbox } from '@nextui-org/react'
 
 import { MyModal } from './MyModal'
 import Selector from '../InputSelector'
 import InputComponent from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
 import useGetCashById from '@/services/UseGetCashById'
-import { StatusEnum, TurnMovementTypeEnum, useCreateCashMovementMutation } from '@/graphql/graphql-types'
+import {
+  StatusEnum,
+  TurnMovementTypeEnum,
+  useCreateCashMovementMutation
+} from '@/graphql/graphql-types'
 
 type ModalProps = {
   isOpen: boolean
@@ -46,7 +50,8 @@ export const CashMovimentModal = ({
           )
         } else {
           showSuccessToast(
-            data.createCashMovement?.message || 'Movimiento guardado correctamente',
+            data.createCashMovement?.message ||
+              'Movimiento guardado correctamente',
             'success'
           )
           onClose()
@@ -65,25 +70,40 @@ export const CashMovimentModal = ({
       console.log(watch('movement'))
 
       return (
-        parseInt(watch('physicialAmount')) + data?.getCashById?.data?.amount! || 0
+        parseInt(watch('physicialAmount')) + data?.getCashById?.data?.amount! ||
+        0
       ).toString()
     }
-    if (watch('movement') === TurnMovementTypeEnum.WITHDRAW || watch('movement') === TurnMovementTypeEnum.ADJUST) {
+    if (
+      watch('movement') === TurnMovementTypeEnum.WITHDRAW ||
+      watch('movement') === TurnMovementTypeEnum.ADJUST
+    ) {
       console.log('value')
 
       return (
-        (data?.getCashById?.data?.amount! || 0) - parseInt(watch('physicialAmount'))
+        (data?.getCashById?.data?.amount! || 0) -
+        parseInt(watch('physicialAmount'))
       ).toString()
     }
     console.log(watch('movement'))
   }
 
   return (
-    <MyModal isOpen={isOpen} onClose={onClose} size="lg">
+    <MyModal
+      title="Agregar movimiento"
+      message="Agrega un movimiento a la caja"
+      control={control}
+      loading={loading}
+      handleSubmit={handleSubmit}
+      onSubmit={onSubmit}
+      handleCancel={handleCancel}
+      isOpen={isOpen}
+      onClose={onClose}
+      size="lg"
+    >
       <section className="p-6 text-lg font-semibold">
-        <h2 className=" mb-4 text-center ">Agregar movimiento</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
-          <div className="flex flex-col space-y-3 mb-3">
+        <div>
+          <div className="mb-3 flex flex-col space-y-3">
             <div className="flex justify-between">
               <div className="3/5">Tipo de movimiento</div>
               <div className="w-2/5">
@@ -107,21 +127,21 @@ export const CashMovimentModal = ({
             <div className="flex justify-between ">
               <div>Monto del movimiento</div>
               <div className="flex w-20 items-baseline">
-                <div className='h-2'>
-                <InputComponent
-                  defaultValue={'0'}
-                  customeClassName=""
-                  control={control}
-                  name="physicialAmount"
-                  height={'h-full'}
-                  variant="underlined"
-                  rules={{
-                    required: {
-                      value: true,
-                      message: 'Este campo es obligatorio'
-                    }
-                  }}
-                />
+                <div className="h-2">
+                  <InputComponent
+                    defaultValue={'0'}
+                    customeClassName=""
+                    control={control}
+                    name="physicialAmount"
+                    height={'h-full'}
+                    variant="underlined"
+                    rules={{
+                      required: {
+                        value: true,
+                        message: 'Este campo es obligatorio'
+                      }
+                    }}
+                  />
                 </div>
                 Bs
               </div>
@@ -132,27 +152,11 @@ export const CashMovimentModal = ({
             <div>Diferencia</div>
             <div> {handleChangeValue()} Bs</div>
           </div>
-          <InputComponent name="details" control={control} type="textArea"/>
-          <Checkbox defaultSelected size="sm">Actualizar movimiento caja</Checkbox>
-          <div className="mt-6 grid h-12 w-full grid-cols-2 gap-3 ">
-            <Button
-              isLoading={loading}
-              type="submit"
-              color="secondary"
-              className="h-full text-lg font-bold"
-            >
-              Agregar
-            </Button>
-            <Button
-              variant="flat"
-              color="danger"
-              className="h-full text-lg font-bold"
-              onClick={() => handleCancel() }
-            >
-              Cancelar
-            </Button>
-          </div>
-        </form>
+          <InputComponent name="details" control={control} type="textArea" />
+          <Checkbox defaultSelected size="sm">
+            Actualizar movimiento caja
+          </Checkbox>
+        </div>
       </section>
     </MyModal>
   )

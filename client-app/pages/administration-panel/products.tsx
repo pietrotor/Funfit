@@ -9,7 +9,6 @@ import {
   EditProductModal,
   TValueProductData
 } from '@/components/atoms/modals/EditProductModal'
-import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import {
   StatusEnum,
   useDeleteProductMutation,
@@ -22,6 +21,7 @@ import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 const Productos = () => {
   const [editProduct, setEditProduct] = useState<TValueProductData>({})
@@ -213,12 +213,18 @@ const Productos = () => {
       </div>
 
       <AddProductModal
+      title='Nuev o producto'
+      color='success'
+      message='Agregue los datos del producto'
         isOpen={handleAddProduct.isOpen}
         onClose={handleAddProduct.onClose}
         onAdd={refetch}
       />
 
       <EditProductModal
+        title='Editar producto'
+        message='Edite los datos del producto'
+        color='warning'
         isOpen={handleEditProduct.isOpen}
         onClose={handleEditProduct.onClose}
         handleSendUpdateUser={handleSendUpdateUser}
@@ -226,7 +232,10 @@ const Productos = () => {
       />
 
       <ConfirmModal
-        onCancel={() => console.log()}
+        cancelText='Cancelar'
+        color='error'
+        confirmText='Eliminar'
+        name='trash'
         title="Eliminar producto"
         onConfirm={handleConfirmDelete}
         message={`¿Esta seguro de eliminar a ${editProduct.name} ?`}

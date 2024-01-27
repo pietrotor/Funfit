@@ -56,6 +56,7 @@ const InputComponent: React.FC<TInputProps> = ({
   control,
   valueAs = 'string',
   required = true,
+  isRequired = true,
   type = 'text',
   variant = 'bordered',
   name,
@@ -87,7 +88,9 @@ const InputComponent: React.FC<TInputProps> = ({
         name={name}
         control={control}
         defaultValue={
-          type === 'date' ? new Date().toISOString().split('T')[0] : defaultValue
+          type === 'date'
+            ? new Date().toISOString().split('T')[0]
+            : defaultValue
         }
         rules={rules}
         render={({ field, formState: { errors } }) => (
@@ -100,8 +103,7 @@ const InputComponent: React.FC<TInputProps> = ({
                   type={type}
                   variant={'bordered'}
                   radius="sm"
-                  label={label}
-                  size={size}
+                  label={label + (isRequired ? '*' : '')}
                   onChange={event => field.onChange(getTypeOfValue(event))}
                   className={`w-full appearance-none rounded-md bg-gray-100/30 text-black placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
                   placeholder={placeholder}
@@ -170,7 +172,7 @@ const InputComponent: React.FC<TInputProps> = ({
           placeholder={placeholder}
           radius="sm"
           size='sm'
-          className={`w-full appearance-none rounded-md bg-white/40 text-gray placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+          className={`w-full appearance-none rounded-md bg-white/40 text-gray placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}` }
           value={value}
         />
       )}

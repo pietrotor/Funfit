@@ -29,7 +29,7 @@ function CreateStock() {
     state => state.configuration.business?.measurementUnits
   )
   console.log(units, 'units')
-  const [CreateStock] = useCreateStockMutation()
+  const [CreateStock, { loading }] = useCreateStockMutation()
   const { control, handleSubmit, watch, reset } = useForm()
   const router = useRouter()
   const { warehouseId } = router.query
@@ -79,10 +79,11 @@ function CreateStock() {
   }, [productsData])
   return (
     <AdministrationLayout showBackButton={true}>
-      <div className="absolute ms-5 mt-5 flex h-[75%] w-[90%] transform flex-col items-start justify-center bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center">
+      <div className="w-full"></div>
+      <div className="absolute top-20 ms-5 mt-5 flex h-[75%] w-[90%] transform flex-col items-start justify-center bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center">
         <div
           className={`${
-            productsData ? 'absolute right-0 h-full w-[60%] bg-gray-900 opacity-60' : ''
+            productsData ? 'absolute right-0 h-full w-[60%] bg-gray-700 opacity-60' : ''
           }`}
         />
         <form
@@ -171,6 +172,7 @@ function CreateStock() {
             </div>
           </div>
           <Button
+            isLoading={loading}
             className="my-6  h-12 w-4/5 rounded-md bg-secondary/80 px-5 text-xl text-white transition duration-300 hover:bg-secondary"
             type="submit"
             onClick={() => {}}
@@ -192,7 +194,7 @@ function CreateStock() {
               name="description"
               label="Descripción del producto"
               disabled={true}
-              customeClassName="cursor-not-allowed mb-2"
+              customeClassName=" mb-2"
             />
             <div className="grid grid-cols-2 gap-2">
               <Input

@@ -5,7 +5,6 @@ import { useRouter } from 'next/router'
 
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
-import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import {
   EditWarehouseModal,
   TValuesWarehouses
@@ -24,6 +23,7 @@ import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 function Warehouses() {
   const [edit, setEdit] = useState<TValuesWarehouses>({})
@@ -225,11 +225,14 @@ function Warehouses() {
         <ConfirmModal
           isOpen={handleConfirmModal.isOpen}
           onClose={handleConfirmModal.onClose}
-          onCancel={handleConfirmModal.onClose}
           title="Eliminar almacén"
           message={`¿Esta seguro de eliminar a ${edit?.name}?`}
           onConfirm={handleConfirmDelete}
-        />
+          cancelText='Cancelar'
+          color='error'
+          confirmText='Eliminar'
+          name='trash'
+          />
       </div>
     </AdministrationLayout>
   )

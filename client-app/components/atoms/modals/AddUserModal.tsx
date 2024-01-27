@@ -1,4 +1,3 @@
-import { Button } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import { MyModal } from './MyModal'
 import Input from '../Input'
@@ -53,14 +52,20 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
   }
   return (
     <MyModal
+      title="Agregar usuario"
+      message="Agrega un nuevo usuario"
+      color="success"
+      loading={loading}
+      handleCancel={handleCancel}
       isOpen={isOpen}
-      size="4xl"
+      size="3xl"
       onClose={onClose}
       hideCloseButton={false}
+      control={control}
+      reset={reset}
+      handleSubmit={handleSubmit}
+      onSubmit={onSubmit}
     >
-      <h1 className="mb-4 mt-10 text-center text-3xl font-bold text-gray-500">
-        Agregar un nuevo usuario
-      </h1>
       <form
         className="flex w-full flex-col items-center p-9 text-gray-500"
         onSubmit={handleSubmit(onSubmit)}
@@ -71,7 +76,7 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
             name="name"
             type="text"
             label="Nombre"
-            placeholder="Nombre"
+            size="sm"
             rules={{
               required: {
                 value: true,
@@ -86,9 +91,9 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
           <Input
             control={control}
             name="lastName"
+            size="sm"
             type="text"
             label="Apellido"
-            placeholder="Apellido"
             rules={{
               required: { value: true, message: 'Este campo es obligatorio' },
               pattern: {
@@ -101,8 +106,8 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
             control={control}
             name="email"
             type="email"
+            size="sm"
             label="Email"
-            placeholder="email"
             rules={{
               required: {
                 value: true,
@@ -113,9 +118,9 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
           <Input
             control={control}
             name="phone"
+            size="sm"
             type="number"
             label="Teléfono"
-            placeholder="Teléfono"
             rules={{
               required: {
                 value: true,
@@ -130,9 +135,9 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
           <Input
             control={control}
             name="password"
+            size="sm"
             type="password"
             label="Contraseña"
-            placeholder="Contraseña"
             rules={{
               required: {
                 value: true,
@@ -143,9 +148,9 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
           <Input
             control={control}
             name="confirmPassword"
+            size="sm"
             type="password"
             label="Confirma la contraseña"
-            placeholder="Confirma la contraseña"
             rules={{
               required: {
                 value: true,
@@ -155,16 +160,6 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
                 value === watch('password') || 'Las contraseñas no coinciden'
             }}
           />
-        </div>
-        <div className="grid h-12 grid-cols-2 gap-3 w-full mt-4">
-          <Button
-              isLoading={loading}
-          type="submit" color="secondary" className="h-full font-bold text-lg">
-            Agregar
-          </Button>
-          <Button variant="flat" color="danger" className="h-full font-bold text-lg" onClick={handleCancel}>
-            Cancelar
-          </Button>
         </div>
       </form>
     </MyModal>

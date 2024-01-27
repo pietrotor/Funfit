@@ -926,3 +926,282 @@ query GetCashTurnMovements($paginationInput: PaginationInput!, $turnId: ObjectId
   }
 }
 `
+export const GET_SALES_PAGINATED = gql`
+query GetSalesPaginated($salesPaginationInput: SalesPaginationInput!) {
+  getSalesPaginated(salesPaginationInput: $salesPaginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      products {
+        productId
+        price
+        qty
+        total
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          internalCode
+          description
+          cost
+          image
+          warehouses
+        }
+      }
+      paymentMethod
+      subTotal
+      total
+      discount
+      date
+      code
+      client
+      amountRecibed
+      change
+      observations
+      canceled
+      reason
+      canceledAt
+      createdBy
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cashId
+        cash {
+          id
+          branchId
+          amount
+          currentTurnId
+          isOpen
+          currentTurn {
+            id
+            cashId
+            isOpen
+            amountOfMovents
+            openInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              openBy
+              openByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+            closeInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              closeBy
+              closeByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+          }
+        }
+      }
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+`
+export const GET_SALES_BY_ID = gql`
+query GetSaleById($getSaleByIdId: ObjectId!) {
+  getSaleById(id: $getSaleByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      products {
+        
+        productId
+        price
+        qty
+        total
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          internalCode
+          description
+          cost
+          image
+          warehouses
+        }
+      }
+      paymentMethod
+      subTotal
+      total
+      discount
+      date
+      code
+      client
+      amountRecibed
+      change
+      observations
+      canceled
+      reason
+      canceledAt
+      createdBy
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cashId
+        cash {
+          id
+          branchId
+          amount
+          currentTurnId
+          isOpen
+          currentTurn {
+            id
+            cashId
+            isOpen
+            amountOfMovents
+            openInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              openBy
+              openByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+            closeInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              closeBy
+              closeByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+          }
+        }
+      }
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
+      }
+    }
+  }
+}
+`

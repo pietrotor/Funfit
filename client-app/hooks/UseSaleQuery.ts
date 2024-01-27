@@ -4,12 +4,12 @@ import {
   StatusEnum,
   useCreateSaleMutation
 } from '@/graphql/graphql-types'
+import { on } from 'events'
 
 export const useCreateSaleQuery = () => {
   const [createSale] = useCreateSaleMutation()
 
   const handleCreateSale = (data: CreateSaleInput) => {
-    console.log(data)
     createSale({
       variables: {
         createSaleInput: {
@@ -27,7 +27,8 @@ export const useCreateSaleQuery = () => {
           showSuccessToast('Venta registrada correctamente', 'success')
         }
       }
-    })
+    }
+    )
   }
 
   return { handleCreateSale }

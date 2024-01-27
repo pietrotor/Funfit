@@ -1,4 +1,3 @@
-import { Button } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import { MyModal } from './MyModal'
 
@@ -40,7 +39,6 @@ export const AddWarehouseModal = ({
           data.createWarehouse?.message || 'Usuario creado correctamente',
           'success'
         )
-        console.log(data, 'data')
         onAddWarehouse()
         onClose()
         reset()
@@ -54,77 +52,67 @@ export const AddWarehouseModal = ({
     onClose()
   }
   return (
-    <MyModal isOpen={isOpen} onClose={onClose} size="3xl">
-      <h1 className=" mt-10 text-center text-3xl font-bold text-gray-500">
-        Agregar Almacén
-      </h1>
-      <article className="mt-4 flex min-w-full items-center justify-center p-8 text-gray-500">
-        <form
-          className="flex w-full flex-col items-center space-y-3"
-          onSubmit={handleSubmit(onSubmit)}
-        >
-          <Input
-            control={control}
-            name="name"
-            type="text"
-            label="Nombre"
-            rules={{
-              required: {
-                value: true,
-                message: 'Este campo es obligatorio'
-              }
-            }}
-          />
-          <Input
-            control={control}
-            name="address"
-            type="text"
-            label="Calle"
-            rules={{
-              required: {
-                value: true,
-                message: 'Este campo es obligatorio'
-              },
-              pattern: {
-                value: /^[a-zA-Z\s]+$/i,
-                message: 'Solo se permiten letras'
-              }
-            }}
-          />
-          <Input
-            control={control}
-            name="description"
-            type="textArea"
-            label="Descripción"
-            rules={{
-              required: { value: true, message: 'Este campo es obligatorio' },
-              pattern: {
-                value: /^[a-zA-Z\s]+$/i,
-                message: 'Solo se permiten letras'
-              }
-            }}
-          />
-          <div className="mt-6 grid h-12 w-full grid-cols-2 gap-3 ">
-            <Button
-              isLoading={loading}
-
-              type="submit"
-              color="secondary"
-              className="h-full text-lg font-bold"
-            >
-              Agregar
-            </Button>
-            <Button
-              variant="flat"
-              color="danger"
-              className="h-full text-lg font-bold"
-              onClick={handleCancel}
-            >
-              Cancelar
-            </Button>
-          </div>
-        </form>
-      </article>
+    <MyModal
+      title="Agregar almacén"
+      message="Ingrese los datos del almacén"
+      color="success"
+      handleCancel={handleCancel}
+      loading={loading}
+      isOpen={isOpen}
+      onClose={onClose}
+      size="xl"
+      control={control}
+      handleSubmit={handleSubmit}
+      onSubmit={onSubmit}
+      reset={reset}
+    >
+      <div className="flex w-full flex-col items-center space-y-3 px-6 py-2">
+        <Input
+          control={control}
+          name="name"
+          type="text"
+          label="Nombre"
+          placeholder="Nombre"
+          rules={{
+            required: {
+              value: true,
+              message: 'Este campo es obligatorio'
+            }
+          }}
+        />
+        <Input
+          control={control}
+          name="address"
+          type="text"
+          label="Calle"
+          placeholder="Calle"
+          rules={{
+            required: {
+              value: true,
+              message: 'Este campo es obligatorio'
+            },
+            pattern: {
+              value: /^[a-zA-Z\s]+$/i,
+              message: 'Solo se permiten letras'
+            }
+          }}
+        />
+        <Input
+          control={control}
+          name="description"
+          type="textArea"
+          label="Descripción"
+          customeClassName="h-16"
+          placeholder="Descripción"
+          rules={{
+            required: { value: true, message: 'Este campo es obligatorio' },
+            pattern: {
+              value: /^[a-zA-Z\s]+$/i,
+              message: 'Solo se permiten letras'
+            }
+          }}
+        />
+      </div>
     </MyModal>
   )
 }
