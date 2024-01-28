@@ -76,8 +76,14 @@ function RegisterForm({ goToStep, currentStepIndex }: Props) {
               control={control}
               rules={{
                 required: true,
-                maxLength: 8,
-                minLength: 8,
+                maxLength: {
+                  value: 8,
+                  message: 'Debe tener 8 dígitos'
+                },
+                minLength: {
+                  value: 8,
+                  message: 'Debe tener 8 dígitos'
+                },
                 pattern: /^[0-9]*$/
               }}
               render={({ field, formState: { errors } }) => (

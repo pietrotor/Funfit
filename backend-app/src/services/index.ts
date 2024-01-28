@@ -11,10 +11,12 @@ import { CashService } from './cash.service'
 import { TurnService } from './turn.service'
 import { TurnMovementService } from './turnMovement.service'
 import { SalesService } from './sale.service'
+import { CategoryService } from './category.service'
 
 export const configurationCore = new ConfigurationService()
 export const userCore = new UserService()
 export const roleCore = new RoleService()
+export const categoryCore = new CategoryService()
 export const productCore = new ProductService()
 export const warehouseCore = new WarehouseService()
 export const stockCore = new StocksService()

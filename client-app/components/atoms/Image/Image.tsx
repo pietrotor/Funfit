@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Image } from '@nextui-org/react'
+import { onImagePreviewError } from '@/helpers/image.helper'
 
 type TSizes = 'sm' | 'md' | 'lg' | 'none' | 'full'
 
@@ -18,13 +19,15 @@ const Images: React.FC<TImageProps> = ({
   className = '',
   radius = 'none'
 }) => {
+  const [imgSrc, setImgSrc] = useState(src)
   return (
     <Image
       alt={`${alt}`}
       className={`${className}`}
       removeWrapper={removeWrapper}
-      src={`${src}`}
+      src={`${imgSrc}`}
       radius={`${radius}`}
+      onErrorCapture={e => setImgSrc(onImagePreviewError(e as any))}
     />
   )
 }

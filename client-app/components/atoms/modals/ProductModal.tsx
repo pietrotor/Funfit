@@ -55,6 +55,7 @@ const ProductModal: React.FC<TProps> = ({
       pictureUrl: images[0]
     }
     dispatch(addToCart(data.current))
+    onClose()
   }
   return (
     <>

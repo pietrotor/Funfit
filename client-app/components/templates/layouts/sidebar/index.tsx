@@ -72,7 +72,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
       {/* backdrop (mobile) */}
       <div
         onClick={() => setSidebar(false)}
-        className={`fixed inset-0 z-40  bg-opacity-50 transition-opacity duration-200 lg:z-auto lg:hidden ${
+        className={`fixed inset-0 z-50 bg-white  bg-opacity-50 transition-opacity duration-200 lg:z-auto lg:hidden ${
           isSidebarOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
         aria-hidden="true"
@@ -124,17 +124,17 @@ const Sidebar: React.FC<TSidebarProps> = ({
             </div>
           </div>
           <div>
-          <div className="mb-1  flex w-full justify-center bg-secondary py-5  text-white">
-            <IconSelector name="Store" width="w-6" height="h-6" />
-          </div>
-          <div className="flex w-full justify-center bg-secondary py-5  text-white">
-            <IconSelector name="user" width="w-8" height="h-8" />
-          </div>
+            <div className=" flex w-full justify-center bg-secondary pt-5  text-white">
+              <IconSelector name="Store" width="w-6" height="h-6" />
+            </div>
+            <div className="flex w-full justify-center bg-secondary py-5  text-white">
+              <IconSelector name="user" width="w-8" height="h-8" />
+            </div>
           </div>
         </div>
         {/* Detail sidebar */}
         <div
-          className={`flex h-full flex-col justify-between overflow-hidden shadow-2xl transition-all duration-300 ${
+          className={`z-50 flex h-full flex-col justify-between overflow-hidden bg-white shadow-2xl transition-all duration-300 ${
             isSidebarOpen ? 'w-80' : 'w-0'
           }`}
         >
@@ -183,7 +183,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
                 getBranch()
                 handleChangeBranch.onOpen()
               }}
-              className="mb-1 flex w-full cursor-pointer items-center gap-3 overflow-hidden bg-secondary px-10 py-5 text-tertiary"
+              className="flex w-full cursor-pointer items-center gap-3 overflow-hidden bg-secondary px-10 pt-5 text-tertiary"
             >
               <IconSelector
                 name="Store"

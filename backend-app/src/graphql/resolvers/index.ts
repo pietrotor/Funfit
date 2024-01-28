@@ -30,6 +30,11 @@ import {
 } from './branchProduct.resolver'
 import { cashMutation, cashQuery, cashType } from './cash.resolver'
 import { saleMutation, saleQuery, saleType } from './sale.resolver'
+import {
+  categoryMutation,
+  categoryQuery,
+  categoryType
+} from './category.resolver'
 
 const resolvers: Resolvers<ContextGraphQl> = {
   Date: dateTimeScalar,
@@ -45,6 +50,7 @@ const resolvers: Resolvers<ContextGraphQl> = {
   ...branchProductType,
   ...cashType,
   ...saleType,
+  ...categoryType,
   Query: {
     ...userQuery,
     ...roleQuery,
@@ -56,7 +62,8 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...branchQuery,
     ...branchProductQuery,
     ...cashQuery,
-    ...saleQuery
+    ...saleQuery,
+    ...categoryQuery
   },
   Mutation: {
     ...userMutation,
@@ -68,7 +75,8 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...branchMutation,
     ...branchProductMutation,
     ...cashMutation,
-    ...saleMutation
+    ...saleMutation,
+    ...categoryMutation
   }
 }
 

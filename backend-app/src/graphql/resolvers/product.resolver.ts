@@ -4,11 +4,13 @@ import {
   ProductsResponse,
   ProductResponse,
   CreateProductInput,
-  UpdateProductInput
+  UpdateProductInput,
+  Product,
+  Category
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
-import { productCore } from '@/services/index'
+import { categoryCore, productCore } from '@/services/index'
 
 // ========================================== Mutations ====================================================
 const getPublicProducts = async (
@@ -140,4 +142,16 @@ export const productMutation = {
   deleteProduct
 }
 
-export const productType = {}
+export const productType = {
+  Product: {
+    async category(parent: Product, _: any, __: any): Promise<Category | null> {
+      if (parent.categoryId) {
+        const category = await categoryCore.getCategoryByIdInstance(
+          parent.categoryId
+        )
+        return category
+      }
+      return null
+    }
+  }
+}

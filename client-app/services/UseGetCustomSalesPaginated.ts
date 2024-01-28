@@ -5,9 +5,9 @@ import { filterPaginationInterfaceState } from '@/interfaces/paginationInterface
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 
 const UseGetCustomSalesPaginated = (branchId: string) => {
-  const [variables, setVariables] = useState <filterPaginationInterfaceState>()
-  const [filter, setFilter] = useState <string>()
-  const filtroDebounced = UseDebouncedValue(filter, 2000)
+  const [variables, setVariables] = useState<filterPaginationInterfaceState>()
+  const [filter, setFilter] = useState<string>()
+  const filtroDebounced = UseDebouncedValue(filter, 500)
 
   const { data, loading, refetch } = useGetSalesPaginatedQuery({
     fetchPolicy: 'network-only',
@@ -22,7 +22,7 @@ const UseGetCustomSalesPaginated = (branchId: string) => {
         saleBy: variables?.saleBy
       }
     },
-    onCompleted: (result) => {
+    onCompleted: result => {
       if (result.getSalesPaginated?.status === StatusEnum.ERROR) {
         showSuccessToast(
           result.getSalesPaginated?.message || 'Error al cargar los productos',

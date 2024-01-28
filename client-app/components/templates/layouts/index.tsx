@@ -4,7 +4,10 @@ import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import Sidebar, { TMenuStructure } from './sidebar'
 import ToastComponent from '@/components/atoms/Toast/toasts'
-import { useGetBranchesPaginatedLazyQuery, useGetConfigurationLazyQuery } from '@/graphql/graphql-types'
+import {
+  useGetBranchesPaginatedLazyQuery,
+  useGetConfigurationLazyQuery
+} from '@/graphql/graphql-types'
 import { useAppDispatch, useAppSelector } from '@/store/index'
 import { setBusiness } from '@/store/slices'
 import BackButton from '@/components/atoms/BackButton/intex'
@@ -15,15 +18,19 @@ type TAdministrationLayoutProps = {
   children: React.ReactNode
   showBackButton?: boolean
   onSubmit?: () => void
+  profileButton?: boolean
 }
 
 const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   onSubmit,
   showBackButton = false,
-  children
+  children,
+  profileButton = true
 }) => {
   const { business } = useAppSelector(state => state.configuration)
-  const { branches, currentBranch } = useAppSelector(state => state.branchReducer)
+  const { branches, currentBranch } = useAppSelector(
+    state => state.branchReducer
+  )
   const dispatch = useAppDispatch()
   const [currentId, setCurrentId] = useState<string>('')
   const [getBranchesPaginated] = useGetBranchesPaginatedLazyQuery({
@@ -159,9 +166,15 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     if (!business) getConfiguration()
     if (branches.length === 0) getBranchesPaginated()
 
-    const storedBranchId = localStorage.getItem('branchId')?.replace(/^"|"$/g, '')
+    const storedBranchId = localStorage
+      .getItem('branchId')
+      ?.replace(/^"|"$/g, '')
 
-    if (storedBranchId !== null && storedBranchId !== undefined && storedBranchId !== '') {
+    if (
+      storedBranchId !== null &&
+      storedBranchId !== undefined &&
+      storedBranchId !== ''
+    ) {
       setCurrentId(storedBranchId)
     }
   }, [])
@@ -178,24 +191,28 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           }`}
         >
           <Sidebar
-          onSubmit={onSubmit}
+            onSubmit={onSubmit}
             user={{ name: 'pietro' }}
             menu={menu}
             isSidebarOpen={sidebarOpen}
             setSidebar={setsidebarOpen}
           />
-          <div className="transition-duration-500 w-full ps-10 transition-all flex  justify-around">
-            {showBackButton && (
-              <BackButton/>
-            )}
+          <div
+            className={`transition-duration-500 flex w-full justify-around ${
+              sidebarOpen ? 'ps-7' : 'ps-2'
+            } transition-all`}
+          >
+            {showBackButton && <BackButton />}
             {children}
             <ToastComponent />
-            <DropDown
-            IconButtonName='user'
-            label={ 'Pietro' }
-            values={['cerrar sesion']}
-            handleClick={() => handleLogOut()}
-            />
+            {profileButton && (
+              <DropDown
+                IconButtonName="user"
+                label={'Pietro'}
+                values={['cerrar sesion']}
+                handleClick={() => handleLogOut()}
+              />
+            )}
           </div>
         </main>
       ) : (

@@ -19,9 +19,7 @@ const UsersNavBar: React.FC<TSubMenuLinkProps> = ({ menu }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
   const [isNavOpen, setIsNavOpen] = useState(false)
-  const cartItems = useAppSelector(
-    state => state.cartReducer.cartItems
-  )
+  const cartItems = useAppSelector(state => state.cartReducer.cartItems)
 
   return (
     <header className={`${isNavOpen ? 'relative h-16' : 'h-16'}`}>
