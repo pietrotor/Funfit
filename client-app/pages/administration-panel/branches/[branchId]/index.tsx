@@ -153,7 +153,10 @@ function ProductOnBranch() {
           totalPages={variables?.totalPages}
           isLoading={loading}
           enablePagination={true}
-          onSearch={value => setFilter(value)}
+          onSearch={value => {
+            setFilter(value)
+            setVariables({ ...variables, currentPage: 1 })
+          }}
           totalItems={variables?.totalRecords}
         />
       </div>

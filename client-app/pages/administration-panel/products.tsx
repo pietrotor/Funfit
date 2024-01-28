@@ -136,7 +136,7 @@ const Productos = () => {
 
   return (
     <AdministrationLayout>
-      <div className="m-auto mt-16 w-5/6 ">
+      <div className="m-auto mt-8 w-5/6 ">
         <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de productos
         </h2>
@@ -155,7 +155,10 @@ const Productos = () => {
           totalPages={variables.totalPages}
           itemsPerPage={variables.rows}
           enablePagination={true}
-          onSearch={value => setFilter(value)}
+          onSearch={value => {
+            setFilter(value)
+            setVariables({ ...variables, filter: value, currentPage: 1 })
+          }}
           onChangeRow={row => handleChangeRow(row)}
           onChangePage={page =>
             setVariables({ ...variables, currentPage: page })
@@ -213,18 +216,12 @@ const Productos = () => {
       </div>
 
       <AddProductModal
-      title='Nuev o producto'
-      color='success'
-      message='Agregue los datos del producto'
         isOpen={handleAddProduct.isOpen}
         onClose={handleAddProduct.onClose}
         onAdd={refetch}
       />
 
       <EditProductModal
-        title='Editar producto'
-        message='Edite los datos del producto'
-        color='warning'
         isOpen={handleEditProduct.isOpen}
         onClose={handleEditProduct.onClose}
         handleSendUpdateUser={handleSendUpdateUser}

@@ -45,10 +45,7 @@ export const SelectBranchModal = ({
       message='Selecciona la sucursal a la que deseas ingresar'
       title='Seleccionar Sucursal'
     >
-      <section className=" px-8 text-center  ">
-        <h3 className="py-2 text-2xl font-bold text-gray-500">
-          Seleccionar Sucursal
-        </h3>
+      <section className=" px-8 mt-3 text-center  ">
         <div>
           <RadioGroup
             value={selected}

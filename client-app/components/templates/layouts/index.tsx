@@ -4,7 +4,10 @@ import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import Sidebar, { TMenuStructure } from './sidebar'
 import ToastComponent from '@/components/atoms/Toast/toasts'
-import { useGetBranchesPaginatedLazyQuery, useGetConfigurationLazyQuery } from '@/graphql/graphql-types'
+import {
+  useGetBranchesPaginatedLazyQuery,
+  useGetConfigurationLazyQuery
+} from '@/graphql/graphql-types'
 import { useAppDispatch, useAppSelector } from '@/store/index'
 import { setBusiness } from '@/store/slices'
 import BackButton from '@/components/atoms/BackButton/intex'
@@ -23,7 +26,9 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   children
 }) => {
   const { business } = useAppSelector(state => state.configuration)
-  const { branches, currentBranch } = useAppSelector(state => state.branchReducer)
+  const { branches, currentBranch } = useAppSelector(
+    state => state.branchReducer
+  )
   const dispatch = useAppDispatch()
   const [currentId, setCurrentId] = useState<string>('')
   const [getBranchesPaginated] = useGetBranchesPaginatedLazyQuery({
@@ -59,7 +64,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         getConfiguration()
         return
       }
-      console.log(data.getConfiguration?.data)
       dispatch(setBusiness(data.getConfiguration?.data))
     },
     onError(error) {
@@ -147,21 +151,21 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       icon: 'PointOfSale',
       text: 'Punto de venta',
       link: '/administration-panel/point-of-sale'
-    },
-    {
-      icon: 'Logout',
-      text: 'Cerrar sesión',
-      link: '/administration-panel/login',
-      onClick: () => handleLogOut()
     }
   ]
   useEffect(() => {
     if (!business) getConfiguration()
     if (branches.length === 0) getBranchesPaginated()
 
-    const storedBranchId = localStorage.getItem('branchId')?.replace(/^"|"$/g, '')
+    const storedBranchId = localStorage
+      .getItem('branchId')
+      ?.replace(/^"|"$/g, '')
 
-    if (storedBranchId !== null && storedBranchId !== undefined && storedBranchId !== '') {
+    if (
+      storedBranchId !== null &&
+      storedBranchId !== undefined &&
+      storedBranchId !== ''
+    ) {
       setCurrentId(storedBranchId)
     }
   }, [])
@@ -178,24 +182,38 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           }`}
         >
           <Sidebar
-          onSubmit={onSubmit}
+            onSubmit={onSubmit}
             user={{ name: 'pietro' }}
             menu={menu}
             isSidebarOpen={sidebarOpen}
             setSidebar={setsidebarOpen}
           />
-          <div className="transition-duration-500 w-full ps-10 transition-all flex  justify-around">
-            {showBackButton && (
-              <BackButton/>
-            )}
-            {children}
-            <ToastComponent />
-            <DropDown
-            IconButtonName='user'
-            label={ 'Pietro' }
-            values={['cerrar sesion']}
-            handleClick={() => handleLogOut()}
-            />
+          <div className="w-full">
+            <div className="transition-duration-500 flex w-full justify-between ps-10  transition-all">
+              {showBackButton && <BackButton />}
+              <ToastComponent />
+              <DropDown
+                IconButtonName="user"
+                label={'Pietro'}
+                values={[
+                  {
+                    label: 'Notificaciones',
+                    value: 'notifications',
+                    icon: 'Notifications',
+                    handleClick: () => console.log('profile'),
+                    counter: 2
+                  },
+                  {
+                    label: 'Cerrar sesión',
+                    value: 'logout',
+                    icon: 'Logout',
+                    handleClick: () => handleLogOut(),
+                    counter: 0
+                  }
+                ]}
+              />
+            </div>
+            <div className="w-full ps-5">{children}</div>
           </div>
         </main>
       ) : (

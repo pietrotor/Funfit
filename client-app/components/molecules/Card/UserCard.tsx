@@ -37,8 +37,9 @@ export default function UserCard({
               removeWrapper
               src={image as string}
             />
+            <div onClick={() => router.push('/producto/' + id)} className='cursor-pointer'>
             <CardFooter className="group absolute bottom-1  z-10 ml-1 grid min-h-[6rem] w-[calc(100%_-_8px)] grid-cols-3 gap-2 overflow-hidden rounded-large border-1 border-white/20 bg-gray-500/60 py-1 shadow-small before:rounded-xl">
-              <div onClick={() => router.push('/producto/' + id)} className="col-start-1 cursor-pointer col-end-3 flex flex-col">
+              <div className="col-start-1  col-end-3 flex flex-col">
                 <h4 className="text-white drop-shadow-2xl">{name}</h4>
                 <p
                   className={`min-h-[3rem] text-base text-white ${'group-hover:line-clamp-none'} line-clamp-2`}
@@ -78,6 +79,7 @@ export default function UserCard({
                 />
               </div>
             </CardFooter>
+            </div>
           </Card>
         </div>
       ) : (

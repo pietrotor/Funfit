@@ -134,15 +134,15 @@ function CreateUserForm() {
 
   return (
     <AdministrationLayout>
-      <div className="m-auto mt-16 w-5/6 ">
+      <div className="m-auto mt-8 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de usuarios
         </h3>
         <AdminButton
           onClick={handleAddUser.onOpen}
           color="secondary"
-          iconName='addUser'
-          text='Agregar nuevo usuario'
+          iconName="addUser"
+          text="Agregar nuevo usuario"
         />
         <Table
           titles={[
@@ -198,15 +198,15 @@ function CreateUserForm() {
           totalPages={variables?.totalPages}
           isLoading={loading}
           enablePagination={true}
-          onSearch={value => setFilter(value)}
+          onSearch={value => {
+            setFilter(value)
+            setVariables({ ...variables, currentPage: 1 })
+          }}
           totalItems={variables?.totalRecords}
         />
       </div>
 
       <EditModal
-      color='warning'
-      title='Editar usuario'
-      message='Ingrese los nuevos datos del usuario'
         isOpen={handleEditModal.isOpen}
         onClose={handleEditModal.onClose}
         values={edit}
@@ -214,10 +214,10 @@ function CreateUserForm() {
       />
 
       <ConfirmModal
-        cancelText='Cancelar'
-        color='error'
-        confirmText='Eliminar'
-        name='trash'
+        cancelText="Cancelar"
+        color="error"
+        confirmText="Eliminar"
+        name="trash"
         onClose={handleDeleteModal.onClose}
         onConfirm={handleConfirmDeleteUser}
         isOpen={handleDeleteModal.isOpen}
@@ -226,9 +226,6 @@ function CreateUserForm() {
       />
 
       <AddUserModal
-      title='Agregar nuevo usuario'
-      color='success'
-      message='Ingrese los datos del nuevo usuario'
         onAddUser={refetch}
         isOpen={handleAddUser.isOpen}
         onClose={handleAddUser.onClose}

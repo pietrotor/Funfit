@@ -62,7 +62,7 @@ function Cash() {
   }
   return (
     <AdministrationLayout onSubmit={currentBranch.refetch}>
-      <div className="m-auto mt-16 w-5/6 ">
+      <div className="m-auto mt-8 w-5/6 ">
         <h2 className="mb-2 text-center text-4xl font-extrabold text-gray-500 ">
           Administración de caja
         </h2>

@@ -30,7 +30,7 @@ function DailySale() {
   }, [])
   return (
     <AdministrationLayout>
-      <div className="m-auto mt-16 w-5/6 ">
+      <div className="m-auto mt-8 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Ventas del día
         </h3>

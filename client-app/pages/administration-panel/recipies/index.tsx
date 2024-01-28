@@ -27,7 +27,7 @@ import { EditRecipeModal } from '@/components/atoms/modals/EditRecipeModal'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import { TDataRecipes } from '@/interfaces/TData'
 
-function Warehouses() {
+function Recipe() {
   const [edit, setEdit] = useState<TDataRecipes>({
     id: 4,
     name: 'Receta 4',
@@ -143,7 +143,7 @@ function Warehouses() {
     }
   ]
 
-  const handleShowRecipe = (id:number) => {
+  const handleShowRecipe = (id: number) => {
     setEdit(dataRecipies.find(recipe => recipe.id === id) as TDataRecipes)
     handleShowRecipeModal.onOpen()
   }
@@ -248,7 +248,7 @@ function Warehouses() {
 
   return (
     <AdministrationLayout>
-      <div className="m-auto mt-16 w-5/6 ">
+      <div className="m-auto mt-8 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de recetas
         </h3>
@@ -268,10 +268,14 @@ function Warehouses() {
           currentPage={variables?.currentPage}
           totalPages={variables?.totalPages}
           enablePagination={true}
-          onSearch={value => /** setFilter(value) */
-            console.log(value)}
+          onSearch={(value /** setFilter(value) */) => console.log(value)}
           totalItems={variables?.totalRecords}
-          titles={[{ name: '#' }, { name: 'Nombre' }, { name: 'Ingredientes' }, { name: 'Acciones' }]}
+          titles={[
+            { name: '#' },
+            { name: 'Nombre' },
+            { name: 'Ingredientes' },
+            { name: 'Acciones' }
+          ]}
           items={(dataRecipies || []).map((warehouse, idx) => ({
             content: [
               <h3 key={idx} className="text-sm">
@@ -282,8 +286,12 @@ function Warehouses() {
                 {warehouse.name}
               </div>,
               <div key={idx} className="flex justify-between  ">
-                <p className='flex space-x-3'>{warehouse.ingredients.map(ingredient => (<div key={ingredient.id}>{ingredient.name + '  '}</div>))}</p>
-                </div>,
+                <p className="flex space-x-3">
+                  {warehouse.ingredients.map(ingredient => (
+                    <div key={ingredient.id}>{ingredient.name + '  '}</div>
+                  ))}
+                </p>
+              </div>,
               <div key={idx}>
                 <div className="space-x-1">
                   <ButtonComponent
@@ -293,7 +301,11 @@ function Warehouses() {
                     tooltipText="Mostrar todos los ingredientes"
                     className="px-3"
                   >
-                    <IconSelector name="Recipe" color="text-primary" width="w-8" />
+                    <IconSelector
+                      name="Recipe"
+                      color="text-primary"
+                      width="w-8"
+                    />
                   </ButtonComponent>
                   <ButtonComponent
                     onClick={() => handleUpdateWarehouse(warehouse.id)}
@@ -340,18 +352,18 @@ function Warehouses() {
           isOpen={handleConfirmModal.isOpen}
           onClose={handleConfirmModal.onClose}
           title="Eliminar receta"
-          name='trash'
-          color='error'
+          name="trash"
+          color="error"
           message={`¿Esta seguro de eliminar ${edit?.name}?`}
-          cancelText='Cancelar'
-          confirmText='Eliminar'
+          cancelText="Cancelar"
+          confirmText="Eliminar"
           onConfirm={handleConfirmDelete}
         />
       </div>
     </AdministrationLayout>
   )
 }
-export default Warehouses
+export default Recipe
 
 export const getServerSideProps: GetServerSideProps = async ctx =>
   await authUserHeader(ctx)
