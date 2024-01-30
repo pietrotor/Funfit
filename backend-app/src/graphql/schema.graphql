@@ -578,6 +578,7 @@ input CreateProductInput {
   # TODO: Change to pricelist
   suggetedPrice: Float!
   description: String!
+  categoryId: ObjectId
   cost: Float
   image: String
 }
@@ -588,6 +589,7 @@ input UpdateProductInput {
   # TODO: Change to PriceList
   suggetedPrice: Float
   description: String
+  categoryId: ObjectId
   cost: Float
   image: String
 }

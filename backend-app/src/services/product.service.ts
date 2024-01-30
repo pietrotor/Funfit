@@ -9,7 +9,6 @@ import { getInstancesPagination } from './generic.service'
 import { BadRequestError } from '@/lib/graphqlerrors'
 import { updateGenericInstance } from '@/lib/updateInstance'
 import { internalCodeGenerator } from '@/lib/codeGenerator'
-import { generateProductCode } from 'helpers'
 
 export class ProductService extends ProductRepository<objectId> {
   async getProductsPaginated(paginationInput: PaginationInput) {
@@ -93,10 +92,6 @@ export class ProductService extends ProductRepository<objectId> {
       )
     }
     const interanlCode = internalCodeGenerator(name)
-    console.log(
-      '🚀 ~ file: product.service.ts:93 ~ ProductService ~ interanlCode:',
-      interanlCode
-    )
     const productInstance = new Product({
       ...createProductInput,
       interanlCode,
