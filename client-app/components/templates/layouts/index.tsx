@@ -192,7 +192,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
             setSidebar={setsidebarOpen}
           />
           <div className="w-full">
-            <div className={`transition-duration-500 flex justify-between ps-10  fixed  ${sidebarOpen ? 'w-[86%]' : 'w-[95%]'} `}>
+            <div className={`transition-duration-500 flex justify-between ps-10   fixed z-10 ${sidebarOpen ? 'w-[86%]' : 'w-[95%]'} `}>
               {showBackButton && <BackButton />}
               <ToastComponent />
               <div className="flex items-center">
