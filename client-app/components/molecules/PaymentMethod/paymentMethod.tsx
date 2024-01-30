@@ -1,14 +1,21 @@
 import React, { useState } from 'react'
 import { Accordion, AccordionItem, Button, Image } from '@nextui-org/react'
 import Link from 'next/link'
+import IconSelector from '@/components/atoms/IconSelector'
+import { useAppSelector } from '@/store/index'
+import { TUserInfo } from '@/components/templates/OrderLayout/orderLayout'
 
 type Props = {
   goToStep: (e: number) => void
   currentStepIndex: number
+  userInfo: TUserInfo
+  activeDirection: { lat: number; lng: number }
 }
 
-function PaymentMethod({ goToStep, currentStepIndex }: Props) {
+function PaymentMethod({ goToStep, currentStepIndex, userInfo, activeDirection }: Props) {
   const [selectedKeys, setSelectedKeys] = useState(false)
+  const cartItems = useAppSelector(state => state.cartReducer.cartItems)
+  const subTotal = useAppSelector(state => state.cartReducer.cartSubTotal)
 
   const download = (filename: string, content: any) => {
     try {
@@ -30,6 +37,22 @@ function PaymentMethod({ goToStep, currentStepIndex }: Props) {
     } catch (error) {
       console.error(error)
     }
+  }
+
+  const handleNotification = () => {
+    const message = `El pedido consta de:\n${cartItems
+      .map(
+        item =>
+          ` ${item.quantity} unidades de ${item.productName} a ${
+            item.price
+          } Bs. con un total de ${item.price * item.quantity}`
+      )
+      .join('\n')}\n\nSubtotal: ${subTotal} Bs.\n\nInformación de contacto:\n* Cliente: ${userInfo.name} ${userInfo.lastName}\n* Teléfono: ${userInfo.phone}\n* Correo: ${userInfo.email}\nUbicación:\nhttps://maps.google.com/?q=${activeDirection.lat},${activeDirection.lng}`
+
+    const whatsappLink = `https://api.whatsapp.com/send?phone=76475010&text=${encodeURIComponent(
+      message
+    )}`
+    window.open(whatsappLink, '_blank')
   }
 
   return (
@@ -84,12 +107,17 @@ function PaymentMethod({ goToStep, currentStepIndex }: Props) {
         >
           Atrás
         </Button>
-        <Link
-          href="/gratitudePage"
-          className="w-1/4 rounded-xl bg-primary py-2 text-white"
-        >
-          Finalizar
-        </Link>
+        <div className="flex w-1/6 justify-between">
+          <Link
+            href="/gratitudePage"
+            className="w-1/2 rounded-xl bg-primary py-2 text-white"
+          >
+            Finalizar
+          </Link>
+          <Button color="secondary" isIconOnly onClick={handleNotification}>
+            <IconSelector name="whatsapp" />
+          </Button>
+        </div>
       </div>
     </div>
   )

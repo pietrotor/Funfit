@@ -11,15 +11,13 @@ import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 type Props = {
   goToStep: (e: number) => void
   currentStepIndex: number
+  activeDirection: { lat: number; lng: number }
+  setActiveDirection: (p: { lat: number; lng: number }) => void
 }
 
-function SendOrder({ goToStep, currentStepIndex }: Props) {
+function SendOrder({ goToStep, currentStepIndex, activeDirection, setActiveDirection }: Props) {
   const [selectedKeys, setSelectedKeys] = useState(new Set(['0']))
   const [showAlert, setShowAlert] = useState(false)
-  const [activeDirection, setActiveDirection] = useState({
-    lat: -17.414,
-    lng: -66.1653
-  })
   const send = useRef({
     type: '',
     address: ''
@@ -61,9 +59,7 @@ function SendOrder({ goToStep, currentStepIndex }: Props) {
   const handlePlace = (e: any) => {
     send.current = {
       type:
-        e.target.name === 'Entrega a domicilio'
-          ? 'Entrega a domicilio'
-          : 'Recoger de la sucursal',
+        e.target.name === 'Entrega a domicilio' ? 'Entrega a domicilio' : 'Recoger de la sucursal',
       address: e.target.value
     }
   }
