@@ -10,7 +10,7 @@ export interface IProduct extends Document, IGeneric {
   description: string
   cost: number | null
   image?: string
-  categoryId: objectId
+  categoryId?: objectId
   warehouses: objectId[]
   branchesIds: objectId[]
 }
