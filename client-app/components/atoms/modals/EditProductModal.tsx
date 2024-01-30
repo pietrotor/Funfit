@@ -1,7 +1,9 @@
 import { useForm } from 'react-hook-form'
 import { MyModal } from './MyModal'
 import Input from '../Input'
+import Selector from '../InputSelector'
 import { DropZone } from '@/components/molecules/DropZone'
+import { useGetCategoriesLazyQuery } from '@/graphql/graphql-types'
 export type TValueProductData = {
   id?: any
   name?: string
@@ -27,6 +29,12 @@ export const EditProductModal = ({
   handleSendUpdateUser
 }: EditProductModalProps) => {
   const { handleSubmit, watch, control, reset } = useForm()
+  const [getProducts, { data }] = useGetCategoriesLazyQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      paginationInput: {}
+    }
+  })
   const onSubmit = () => {
     handleSendUpdateUser({
       id: values.id,
@@ -110,38 +118,34 @@ export const EditProductModal = ({
             placeholder="Código"
             type="text"
           />
+          <Input
+            defaultValue={values.description}
+            control={control}
+            name="description"
+            label="Descripción"
+            placeholder="Descripción"
+            type="textArea"
+            customeClassName="h-20"
+            rules={{
+              pattern: {
+                value: /^[a-zA-Z\s]+$/i,
+                message: 'Solo se permiten letras'
+              }
+            }}
+          />
+          <Selector
+            control={control}
+            name="categories"
+            label="Categoría"
+            onClick={() => getProducts()}
+            options={
+            data?.getCategories?.data?.map(category => ({
+              label: category.name,
+              value: category.name
+            })) || [{ label: 'Cargando..', value: 'Cargando..' }]
+          }
+          />
         </div>
-
-        <Input
-          defaultValue={values.description}
-          control={control}
-          name="description"
-          label="Descripción"
-          placeholder="Descripción"
-          type="textArea"
-          customeClassName="h-20"
-          rules={{
-            pattern: {
-              value: /^[a-zA-Z\s]+$/i,
-              message: 'Solo se permiten letras'
-            }
-          }}
-        />
-      <Input
-      defaultValue={values.description}
-      control={control}
-      name='description'
-      label='Descripción'
-      placeholder='Descripción'
-      type='textArea'
-      rules={{
-        pattern: {
-          value: /^[a-zA-Z\s]+$/i,
-          message: 'Solo se permiten letras'
-        }
-      }}
-      />
-
         <DropZone />
       </div>
     </MyModal>

@@ -30,8 +30,8 @@ export const CREATE_PRODUCT = gql`
   mutation CreateProduct($createProductInput: CreateProductInput!) {
     createProduct(createProductInput: $createProductInput) {
       errorInput {
-        field
         message
+        field
       }
       status
       message
@@ -40,10 +40,17 @@ export const CREATE_PRODUCT = gql`
         name
         suggetedPrice
         code
+        internalCode
         description
+        categoryId
         cost
         image
         warehouses
+        category {
+          id
+          name
+          code
+        }
       }
     }
   }
@@ -51,22 +58,29 @@ export const CREATE_PRODUCT = gql`
 export const UPDATE_PRODUCT = gql`
   mutation UpdateProduct($updateProductInput: UpdateProductInput!) {
     updateProduct(updateProductInput: $updateProductInput) {
+      status
+      message
+      errorInput {
+        message
+        field
+      }
       data {
         id
         name
         suggetedPrice
         code
+        internalCode
         description
+        categoryId
         cost
         image
         warehouses
+        category {
+          id
+          name
+          code
+        }
       }
-      errorInput {
-        message
-        field
-      }
-      message
-      status
     }
   }
 `
@@ -74,22 +88,29 @@ export const UPDATE_PRODUCT = gql`
 export const DELETE_PRODUCT = gql`
   mutation DeleteProduct($deleteProductId: ObjectId!) {
     deleteProduct(id: $deleteProductId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
       data {
         id
         name
         suggetedPrice
         code
+        internalCode
         description
+        categoryId
         cost
         image
         warehouses
+        category {
+          id
+          name
+          code
+        }
       }
-      errorInput {
-        message
-        field
-      }
-      message
-      status
     }
   }
 `
@@ -528,152 +549,157 @@ export const CREATE_CASH_MOVEMENT = gql`
 
 export const CREATE_SALE = gql`
   mutation CreateSale($createSaleInput: CreateSaleInput!) {
-  createSale(createSaleInput: $createSaleInput) {
-    errorInput {
+    createSale(createSaleInput: $createSaleInput) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
+      data {
+        id
+        branchId
+        products {
+          productId
+          price
+          qty
+          total
+          product {
+            id
+            name
+            suggetedPrice
+            code
+            description
+            cost
+            image
+            warehouses
+          }
+        }
+        paymentMethod
+        total
+        discount
+        date
+        code
+        client
+        amountRecibed
+        change
+        observations
+        canceled
+        reason
+        canceledAt
+      }
     }
-    status
-    message
-    data {
-      id
-      branchId
-      products {
+  }
+`
+export const CREATE_BRANCH_PRODUCT_STOCK_MOVEMENT = gql`
+  mutation CreateBranchProductStockMovement(
+    $createBranchProductStockMovementInput: CreateBranchProductStockMovementInput!
+  ) {
+    createBranchProductStockMovement(
+      createBranchProductStockMovementInput: $createBranchProductStockMovementInput
+    ) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        branchId
         productId
         price
-        qty
-        total
+        stock
+        isVisibleOnWeb
+        isVisibleOnMenu
         product {
+          id
           id
           name
           suggetedPrice
           code
+          internalCode
+          description
+          cost
+          image
+          warehouses
+          name
+          suggetedPrice
+          code
+          internalCode
           description
           cost
           image
           warehouses
         }
-      }
-      paymentMethod
-      total
-      discount
-      date
-      code
-      client
-      amountRecibed
-      change
-      observations
-      canceled
-      reason
-      canceledAt
-    }
-  }
-}
-`
-export const CREATE_BRANCH_PRODUCT_STOCK_MOVEMENT = gql`
-mutation CreateBranchProductStockMovement($createBranchProductStockMovementInput: CreateBranchProductStockMovementInput!) {
-  createBranchProductStockMovement(createBranchProductStockMovementInput: $createBranchProductStockMovementInput) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-      id
-      branchId
-      productId
-      price
-      stock
-      isVisibleOnWeb
-      isVisibleOnMenu
-      product {
-        id
-        id
-        name
-        suggetedPrice
-        code
-        internalCode
-        description
-        cost
-        image
-        warehouses
-        name
-        suggetedPrice
-        code
-        internalCode
-        description
-        cost
-        image
-        warehouses
-      }
-      branch {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        cashId
-        cash {
+        branch {
           id
-          branchId
-          amount
-          currentTurnId
-          isOpen
-          currentTurn {
+          name
+          code
+          city
+          direction
+          phone
+          nit
+          cashId
+          cash {
             id
-            cashId
+            branchId
+            amount
+            currentTurnId
             isOpen
-            amountOfMovents
-            openInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              openBy
-              openByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
+            currentTurn {
+              id
+              cashId
+              isOpen
+              amountOfMovents
+              openInfo {
+                amount
+                physicialAmount
+                difference
+                date
+                observation
+                openBy
+                openByInfo {
                   id
                   name
-                  code
+                  lastName
+                  email
+                  phone
+                  lastLogin
                   status
+                  createdBy
+                  roleId
+                  roleInfo {
+                    id
+                    name
+                    code
+                    status
+                  }
                 }
               }
-            }
-            closeInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              closeBy
-              closeByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
+              closeInfo {
+                amount
+                physicialAmount
+                difference
+                date
+                observation
+                closeBy
+                closeByInfo {
                   id
                   name
-                  code
+                  lastName
+                  email
+                  phone
+                  lastLogin
                   status
+                  createdBy
+                  roleId
+                  roleInfo {
+                    id
+                    name
+                    code
+                    status
+                  }
                 }
               }
             }
@@ -682,5 +708,58 @@ mutation CreateBranchProductStockMovement($createBranchProductStockMovementInput
       }
     }
   }
-}
+`
+
+export const CREATE_CATEGORY = gql`
+  mutation CreateCategory($createCategoryInput: CreateCategoryInput!) {
+    createCategory(createCategoryInput: $createCategoryInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        code
+      }
+    }
+  }
+`
+
+export const UPDATE_CATEGORY = gql`
+  mutation UpdateCategory($updateCategoryInput: UpdateCategoryInput!) {
+    updateCategory(updateCategoryInput: $updateCategoryInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        code
+      }
+    }
+  }
+`
+
+export const DELETE_CATEGORY = gql`
+  mutation DeleteCategory($deleteCategoryId: ObjectId!) {
+    deleteCategory(id: $deleteCategoryId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        code
+      }
+    }
+  }
 `

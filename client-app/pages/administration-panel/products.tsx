@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Image, useDisclosure } from '@nextui-org/react'
+import { Chip, Image, useDisclosure } from '@nextui-org/react'
 import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
 import Table from '@/components/organisms/tableNext/Table'
@@ -143,8 +143,8 @@ const Productos = () => {
         <AdminButton
           onClick={handleAddProduct.onOpen}
           color="secondary"
-          text='Agregar nuevo producto'
-          iconName='Box'
+          text="Agregar nuevo producto"
+          iconName="Box"
         />
 
         <Table
@@ -164,6 +164,7 @@ const Productos = () => {
             { name: '#' },
             { name: 'Imagen' },
             { name: 'Nombre' },
+            { name: 'Categoría' },
             { name: 'Precio' },
             { name: 'Costo' },
             { name: 'Código' },
@@ -177,10 +178,22 @@ const Productos = () => {
                   idx +
                   1}
               </h3>,
-              <Image alt="image" width={100} src={ product.image === 'null' || !product.image ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' : product.image} key={idx} />,
+              <Image
+                alt="image"
+                width={100}
+                src={
+                  product.image === 'null' || !product.image
+                    ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
+                    : product.image
+                }
+                key={idx}
+              />,
               <div key={idx} className="text-left text-sm">
                 {product.name}
               </div>,
+              <Chip key={idx} className="text-left text-sm" variant='flat' color={`${product.category?.name === undefined ? 'default' : 'success'}`}>
+                {product.category?.name || 'Sin categoría'}
+              </Chip>,
               product.suggetedPrice + ' Bs.',
               product.cost + ' Bs.',
               <div key={idx} className="text-left text-sm">
@@ -213,18 +226,18 @@ const Productos = () => {
       </div>
 
       <AddProductModal
-      title='Nuev o producto'
-      color='success'
-      message='Agregue los datos del producto'
+        title="Nuevo producto"
+        color="success"
+        message="Agregue los datos del producto"
         isOpen={handleAddProduct.isOpen}
         onClose={handleAddProduct.onClose}
         onAdd={refetch}
       />
 
       <EditProductModal
-        title='Editar producto'
-        message='Edite los datos del producto'
-        color='warning'
+        title="Editar producto"
+        message="Edite los datos del producto"
+        color="warning"
         isOpen={handleEditProduct.isOpen}
         onClose={handleEditProduct.onClose}
         handleSendUpdateUser={handleSendUpdateUser}
@@ -232,10 +245,10 @@ const Productos = () => {
       />
 
       <ConfirmModal
-        cancelText='Cancelar'
-        color='error'
-        confirmText='Eliminar'
-        name='trash'
+        cancelText="Cancelar"
+        color="error"
+        confirmText="Eliminar"
+        name="trash"
         title="Eliminar producto"
         onConfirm={handleConfirmDelete}
         message={`¿Esta seguro de eliminar a ${editProduct.name} ?`}
