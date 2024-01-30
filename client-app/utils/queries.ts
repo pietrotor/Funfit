@@ -111,9 +111,15 @@ export const GET_PRODUCTS = gql`
         suggetedPrice
         code
         description
+        categoryId
         cost
         image
         warehouses
+        category {
+          id
+          name
+          code
+        }
       }
       totalRecords
       totalPages
@@ -1203,6 +1209,45 @@ export const GET_SALES_BY_ID = gql`
             status
           }
         }
+      }
+    }
+  }
+`
+export const GET_CATEGORIES = gql`
+  query GetCategories($paginationInput: PaginationInput!) {
+    getCategories(paginationInput: $paginationInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        code
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+
+export const GET_CATEGORY_BY_ID = gql`
+  query GetCategoryById($getCategoryByIdId: ObjectId!) {
+    getCategoryById(id: $getCategoryByIdId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        code
       }
     }
   }

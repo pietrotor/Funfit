@@ -1,7 +1,10 @@
 import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
+import Selector from '../InputSelector'
 import { DropZone } from '@/components/molecules/DropZone'
+import { useGetCategoriesLazyQuery } from '@/graphql/graphql-types'
 export type TValueProductData = {
   id?: any
   name?: string
@@ -12,6 +15,7 @@ export type TValueProductData = {
   code?: string
   internalCode?: string
   warehouses?: string[]
+  categoryId: string
 }
 interface EditProductModalProps {
   isOpen: boolean
@@ -27,6 +31,12 @@ export const EditProductModal = ({
   handleSendUpdateUser
 }: EditProductModalProps) => {
   const { handleSubmit, watch, control, reset } = useForm()
+  const [getProducts, { data }] = useGetCategoriesLazyQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      paginationInput: {}
+    }
+  })
   const onSubmit = () => {
     handleSendUpdateUser({
       id: values.id,
@@ -35,13 +45,19 @@ export const EditProductModal = ({
       cost: parseFloat(watch('cost')),
       code: watch('code') === values.code ? undefined : watch('code'),
       image: watch('image'),
-      suggetedPrice: parseFloat(watch('suggetedPrice'))
+      suggetedPrice: parseFloat(watch('suggetedPrice')),
+      categoryId: watch('categories')
     })
   }
   const handleCancel = () => {
     onClose()
     reset()
   }
+
+  useEffect(() => {
+    getProducts()
+  }, [])
+
   return (
     <MyModal
       title="Editar producto"
@@ -110,38 +126,35 @@ export const EditProductModal = ({
             placeholder="Código"
             type="text"
           />
-        </div>
-
-        <Input
-          defaultValue={values.description}
-          control={control}
-          name="description"
-          label="Descripción"
-          placeholder="Descripción"
-          type="textArea"
-          customeClassName="h-20"
-          rules={{
-            pattern: {
-              value: /^[a-zA-Z\s]+$/i,
-              message: 'Solo se permiten letras'
+          <Input
+            defaultValue={values.description}
+            control={control}
+            name="description"
+            label="Descripción"
+            placeholder="Descripción"
+            type="textArea"
+            customeClassName="h-20"
+            rules={{
+              pattern: {
+                value: /^[a-zA-Z\s]+$/i,
+                message: 'Solo se permiten letras'
+              }
+            }}
+          />
+          <Selector
+            control={control}
+            name="categories"
+            label="Categoría"
+            size="lg"
+            defaultValue={values.categoryId}
+            options={
+              data?.getCategories?.data?.map(category => ({
+                label: category.name,
+                value: category.id
+              })) || [{ label: 'Cargando..', value: 'Cargando..' }]
             }
-          }}
-        />
-      <Input
-      defaultValue={values.description}
-      control={control}
-      name='description'
-      label='Descripción'
-      placeholder='Descripción'
-      type='textArea'
-      rules={{
-        pattern: {
-          value: /^[a-zA-Z\s]+$/i,
-          message: 'Solo se permiten letras'
-        }
-      }}
-      />
-
+          />
+        </div>
         <DropZone />
       </div>
     </MyModal>
