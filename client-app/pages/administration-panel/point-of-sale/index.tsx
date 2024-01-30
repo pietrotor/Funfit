@@ -71,11 +71,11 @@ function PointOfSale() {
   return (
     <AdministrationLayout profileButton={false}>
       <section className="flex h-full w-full ">
-        <div className="w-2/3 border-1 border-secondary/30 bg-secondary/10 p-4">
+        <div className="w-2/3 border-1 border-secondary/30  bg-secondary/10 p-4">
           <div className="flex w-full">
             <Search setFilter={setFilter} />
           </div>
-          <div className="grid grid-cols-3 gap-4 p-4">
+          <div className="grid grid-cols-3 gap-4 p-4 max-h-[39rem] overflow-y-auto ">
             {data?.getBranchProductsPaginated?.data?.map(item => (
               <PointOfSaleCard
                 key={item.id}
