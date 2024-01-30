@@ -31,6 +31,7 @@ export type Branch = {
   name: Scalars['String']['output'];
   nit?: Maybe<Scalars['String']['output']>;
   phone?: Maybe<Scalars['String']['output']>;
+  visibleOnWeb: Scalars['Boolean']['output'];
 };
 
 export type BranchProduct = {
@@ -225,6 +226,7 @@ export type CreateCategoryInput = {
 };
 
 export type CreateProductInput = {
+  categoryId?: InputMaybe<Scalars['ObjectId']['input']>;
   code: Scalars['String']['input'];
   cost?: InputMaybe<Scalars['Float']['input']>;
   description: Scalars['String']['input'];
@@ -935,6 +937,7 @@ export type UpdateMeasurementUnitsInput = {
 };
 
 export type UpdateProductInput = {
+  categoryId?: InputMaybe<Scalars['ObjectId']['input']>;
   code?: InputMaybe<Scalars['String']['input']>;
   cost?: InputMaybe<Scalars['Float']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
@@ -1293,6 +1296,7 @@ export type BranchResolvers<ContextType = any, ParentType extends ResolversParen
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   nit?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   phone?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  visibleOnWeb?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
