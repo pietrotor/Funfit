@@ -8,6 +8,7 @@ import {
   useGetBranchesPaginatedLazyQuery,
   useGetConfigurationLazyQuery
 } from '@/graphql/graphql-types'
+
 import { useAppDispatch, useAppSelector } from '@/store/index'
 import { setBusiness } from '@/store/slices'
 import BackButton from '@/components/atoms/BackButton/intex'
@@ -18,12 +19,14 @@ type TAdministrationLayoutProps = {
   children: React.ReactNode
   showBackButton?: boolean
   onSubmit?: () => void
+  profileButton?: boolean
 }
 
 const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   onSubmit,
   showBackButton = false,
-  children
+  children,
+  profileButton = true
 }) => {
   const { business } = useAppSelector(state => state.configuration)
   const { branches, currentBranch } = useAppSelector(
@@ -192,26 +195,35 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
             <div className="transition-duration-500 flex w-full justify-between ps-10  transition-all">
               {showBackButton && <BackButton />}
               <ToastComponent />
-              <DropDown
-                IconButtonName="user"
-                label={'Pietro'}
-                values={[
-                  {
-                    label: 'Notificaciones',
-                    value: 'notifications',
-                    icon: 'Notifications',
-                    handleClick: () => console.log('profile'),
-                    counter: 2
-                  },
-                  {
-                    label: 'Cerrar sesión',
-                    value: 'logout',
-                    icon: 'Logout',
-                    handleClick: () => handleLogOut(),
-                    counter: 0
-                  }
-                ]}
-              />
+              <div className="flex items-center">
+                <DropDown
+                  IconButtonName="Notifications"
+                  values={[]}
+                  counter={0}
+                  avatar="https://static.vecteezy.com/system/resources/previews/000/376/699/original/notification-vector-icon.jpg"
+                />
+                <DropDown
+                  IconButtonName="user"
+                  label={'Pietro'}
+                  user='https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png'
+                  values={[
+                    {
+                      label: 'Notificaciones',
+                      value: 'notifications',
+                      icon: 'Notifications',
+                      handleClick: () => console.log('profile'),
+                      counter: 2
+                    },
+                    {
+                      label: 'Cerrar sesión',
+                      value: 'logout',
+                      icon: 'Logout',
+                      handleClick: () => handleLogOut(),
+                      counter: 0
+                    }
+                  ]}
+                />
+              </div>
             </div>
             <div className="w-full ps-5">{children}</div>
           </div>

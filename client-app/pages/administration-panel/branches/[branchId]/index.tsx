@@ -6,7 +6,10 @@ import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { AddBranchProductModal } from '@/components/atoms/modals/AddBranchProductModal'
 import InformationCard from '@/components/molecules/Card/InformationCard'
-import { useGetBranchProductQuery, useUpdateBranchProductQuery } from '@/hooks/UseBranchQuery'
+import {
+  useGetBranchProductQuery,
+  useUpdateBranchProductQuery
+} from '@/hooks/UseBranchQuery'
 import Table from '@/components/organisms/tableNext/Table'
 import { UseGetBranchByIdQuery } from '@/hooks/UseBranchByIdQuery'
 import ButtonComponent from '@/components/atoms/Button'
@@ -29,7 +32,10 @@ function ProductOnBranch() {
     setVariables({ ...variables, rows: row, currentPage: 1 })
   }
 
-  const handleSwitchChange = (productBranch: TProductBranchData, field: string) => {
+  const handleSwitchChange = (
+    productBranch: TProductBranchData,
+    field: string
+  ) => {
     console.log(productBranch, field)
     handleUpdateBranchProduct(productBranch, field)
   }
@@ -93,6 +99,7 @@ function ProductOnBranch() {
             { name: '#' },
             { name: 'Producto' },
             { name: 'Precio' },
+            { name: 'Stock' },
             { name: 'Visible en la página' },
             { name: 'Visible en la web' },
             { name: 'Acciones' }
@@ -106,8 +113,9 @@ function ProductOnBranch() {
                     idx +
                     1}
                 </h3>,
-                productBranch.product?.name,
-                productBranch.price,
+                <p key={idx}>{productBranch.product?.name}</p>,
+                <p key={idx}>{productBranch.price}</p>,
+                <p key={idx}>{productBranch.stock}</p>,
                 <Switch
                   key={idx}
                   size="sm"
@@ -126,9 +134,9 @@ function ProductOnBranch() {
                 >
                   {productBranch.isVisibleOnWeb ? 'Sí' : 'No'}
                 </Switch>,
-                <ButtonComponent key={idx}
-                  onClick={ handleEdit(productBranch)
-                  }
+                <ButtonComponent
+                  key={idx}
+                  onClick={handleEdit(productBranch)}
                   type="eye"
                   showTooltip
                   tooltipText="Mover Stock"
@@ -166,9 +174,10 @@ function ProductOnBranch() {
         onAdd={() => refetch()}
       />
       <MoveBranchStockModal
-      productBranch={editProduct as TProductBranchData }
-      isOpen={handleMoveStock.isOpen}
-      onClose={handleMoveStock.onClose}/>
+        productBranch={editProduct as TProductBranchData}
+        isOpen={handleMoveStock.isOpen}
+        onClose={handleMoveStock.onClose}
+      />
     </AdministrationLayout>
   )
 }

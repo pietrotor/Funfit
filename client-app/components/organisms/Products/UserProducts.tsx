@@ -5,7 +5,7 @@ export function UserProducts() {
 
   return (
     <div>
-      <div className="grid w-full gap-4 gap-y-5 py-8 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid w-full gap-6 py-8 md:grid-cols-2 xl:grid-cols-3">
         {(data?.getPublicProducts?.data || []).map(product => (
           <UserCard
             isLoading={loading}

@@ -80,15 +80,15 @@ function CreateStock() {
   return (
     <AdministrationLayout showBackButton={true}>
       <div className="w-full"></div>
-      <div className="absolute top-20 ms-5 mt-5 flex h-[75%] w-[90%] transform flex-col items-start justify-center bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center">
+      <div className="absolute top-20 ms-5 mt-5 flex h-[75%] w-[90%] transform flex-col items-start justify-center lg:right-0 right-5 bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center">
         <div
           className={`${
-            productsData ? 'absolute right-0 h-full w-[60%] bg-gray-700 opacity-60' : ''
+            productsData ? 'absolute md:right-0  h-full w-[60%] bg-gray-700 opacity-60' : ''
           }`}
         />
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className={` relative z-30 flex h-full  w-[43%] flex-col items-center justify-center border bg-slate-50/100  px-16 py-9 transition-all duration-700  ${
+          className={` relative z-30 flex h-full  w-full md:w-[43%] flex-col items-center justify-center border bg-slate-50/100  px-16 py-9  transition-all duration-700  ${
             productsData ? '' : ''
           }`}
         >
@@ -182,14 +182,14 @@ function CreateStock() {
         </form>
         <div
           className={`absolute  grid grid-cols-2 place-items-center gap-x-2 py-6 ps-4 transition-all duration-300 ${
-            !productsData ? 'invisible left-1 ' : 'left-unit-9xl '
+            !productsData ? 'invisible md:left-1 ' : 'md:left-unit-9xl '
           }`}
         >
           <div className="">
             <Input
               required={false}
               value={productsData?.description || ''}
-              variant='bordered'
+              variant="bordered"
               type="textArea"
               name="description"
               label="Descripción del producto"

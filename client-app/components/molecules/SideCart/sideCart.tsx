@@ -15,14 +15,10 @@ import {
 
 function SideCart() {
   const dispatch = useAppDispatch()
-  const cartItems = useAppSelector(
-    state => state.cartReducer.initialState.cartItems
-  )
-  const details = useAppSelector(
-    state => state.cartReducer.initialState.cartDetails
-  )
+  const cartItems = useAppSelector(state => state.cartReducer.cartItems)
+  const details = useAppSelector(state => state.cartReducer.cartDetails)
   const totalPrice = useRef<number>(
-    useAppSelector(state => state.cartReducer.initialState.cartSubTotal)
+    useAppSelector(state => state.cartReducer.cartSubTotal)
   )
   const [newDetails, setNewDetails] = useState(details)
   const [showTextArea, setShowTextArea] = useState(false)
@@ -48,7 +44,6 @@ function SideCart() {
     dispatch(updateCartSubTotal(totalPrice.current))
   }
 
-  // console.log(cartItems)
   return (
     <>
       {cartItems.map((item, index) => (
@@ -69,12 +64,12 @@ function SideCart() {
               <section className=" flex w-full items-center justify-between">
                 <div className="flex w-full flex-col justify-between px-5">
                   <p className="flex justify-between font-semibold">
-                    <div>P/U </div>
-                    <div>{item.price / item.quantity} Bs</div>
+                    <p>P/U:</p>
+                    <p>{item.price / item.quantity} Bs</p>
                   </p>
-                  <p className="flex justify-between font-semibold">
-                    <div>Total</div>
-                    <div>{item.price} Bs</div>
+                  <p className="flex justify-between font-bold">
+                    <p>Total:</p>
+                    <p>{item.price} Bs</p>
                   </p>
                 </div>
                 <div
@@ -150,8 +145,8 @@ function SideCart() {
               </div>
             )}
             <div className="flex items-center justify-between pt-2">
-              <p className="text-lg font-bold">sub Total</p>
-              <p className="text-lg font-bold">
+              <p className="text-2xl font-bold">Sub Total</p>
+              <p className="text-2xl font-bold">
                 {cartItems.reduce((total, item) => total + item.price, 0)} Bs
               </p>
             </div>

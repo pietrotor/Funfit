@@ -136,7 +136,7 @@ const Productos = () => {
 
   return (
     <AdministrationLayout>
-      <div className="m-auto mt-8 w-5/6 ">
+      <div className="m-auto mt-7  w-5/6 ">
         <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de productos
         </h2>

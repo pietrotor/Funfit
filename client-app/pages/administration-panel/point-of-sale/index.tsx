@@ -69,7 +69,7 @@ function PointOfSale() {
   }
 
   return (
-    <AdministrationLayout>
+    <AdministrationLayout profileButton={false}>
       <section className="flex h-full w-full ">
         <div className="w-2/3 border-1 border-secondary/30 bg-secondary/10 p-4">
           <div className="flex w-full">

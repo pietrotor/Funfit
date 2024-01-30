@@ -71,10 +71,13 @@ export class BranchUseCase {
           observation,
           createdBy
         )
+        break
       case StockMovementTypeEnum.OUTWARD:
         await this.createOutWardMovement(branchProductId, qty)
+        break
       case StockMovementTypeEnum.DISPOSE:
         await this.createOutWardMovement(branchProductId, qty)
+        break
     }
   }
 }

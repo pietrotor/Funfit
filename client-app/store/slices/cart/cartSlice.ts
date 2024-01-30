@@ -23,13 +23,30 @@ export const cartSlice = createSlice({
   name: 'cart',
   initialState,
   reducers: {
-    addToCart(state, action) {
+    updateCart(state, action) {
       const item = action.payload
-      const existItem = state.cartItems.find((x) => x.productName === item.productName)
+      const existItem = state.cartItems.find((x) => x.id === item.id)
 
       if (existItem) {
         state.cartItems = state.cartItems.map((x) =>
-          x.productName === existItem.productName ? {
+          x.id === existItem.id ? {
+            ...x,
+            quantity: item.quantity,
+            price: item.price
+          } : x
+        )
+      } else {
+        state.cartItems.push(item)
+      }
+      state.cartSubTotal = state.cartItems.reduce((acc, item) => acc + item.price, 0)
+    },
+    addToLocalSrotageCart(state, action) {
+      const item = action.payload
+      const existItem = state.cartItems.find((x) => x.id === item.id)
+
+      if (existItem) {
+        state.cartItems = state.cartItems.map((x) =>
+          x.id === existItem.id ? {
             ...x,
             quantity: x.quantity + item.quantity,
             price: x.price + item.price
@@ -38,10 +55,29 @@ export const cartSlice = createSlice({
       } else {
         state.cartItems.push(item)
       }
-
       state.cartSubTotal = state.cartItems.reduce((acc, item) => acc + item.price, 0)
     },
+    addToCart(state, action) {
+      localStorage.removeItem('cartItems')
+      const item = action.payload
+      const existItem = state.cartItems.find((x) => x.id === item.id)
+
+      if (existItem) {
+        state.cartItems = state.cartItems.map((x) =>
+          x.id === existItem.id ? {
+            ...x,
+            quantity: x.quantity + item.quantity,
+            price: x.price + item.price
+          } : x
+        )
+      } else {
+        state.cartItems.push(item)
+      }
+      state.cartSubTotal = state.cartItems.reduce((acc, item) => acc + item.price, 0)
+      localStorage.setItem('cartItems', JSON.stringify(state.cartItems))
+    },
     decreaseCart(state, action) {
+      localStorage.removeItem('cartItems')
       const item = action.payload
       const existItem = state.cartItems.find(
         x => x.productName === item.productName
@@ -67,8 +103,10 @@ export const cartSlice = createSlice({
           0
         )
       }
+      localStorage.setItem('cartItems', JSON.stringify(state.cartItems))
     },
     increaseCart(state, action) {
+      localStorage.removeItem('cartItems')
       const item = action.payload
       const existItem = state.cartItems.find(
         x => x.productName === item.productName
@@ -94,21 +132,35 @@ export const cartSlice = createSlice({
           0
         )
       }
+      localStorage.setItem('cartItems', JSON.stringify(state.cartItems))
     },
     removeFromCart(state, action) {
+      localStorage.removeItem('cartItems')
       const item = action.payload
       state.cartItems = state.cartItems.filter(
         x => x.productName !== item.productName
       )
+      localStorage.setItem('cartItems', JSON.stringify(state.cartItems))
     },
     clearCart(state) {
+      localStorage.removeItem('cartItems')
       state.cartItems = []
     },
-    updateCartDetails: (state, action) => {
+    updateLocalStorageCartDetails(state, action) {
       state.cartDetails = action.payload
     },
-    updateCartSubTotal: (state, action) => {
+    updateCartDetails: (state, action) => {
+      localStorage.removeItem('cartDetails')
+      state.cartDetails = action.payload
+      localStorage.setItem('cartDetails', JSON.stringify(state.cartDetails))
+    },
+    updateLocalStorageCartSubTotal(state, action) {
       state.cartSubTotal = action.payload
+    },
+    updateCartSubTotal: (state, action) => {
+      localStorage.removeItem('cartSubTotal')
+      state.cartSubTotal = action.payload
+      localStorage.setItem('cartSubTotal', JSON.stringify(state.cartSubTotal))
     }
   }
 })
@@ -119,5 +171,9 @@ export const {
   decreaseCart,
   increaseCart,
   updateCartDetails,
-  updateCartSubTotal
+  updateCartSubTotal,
+  addToLocalSrotageCart,
+  updateLocalStorageCartDetails,
+  updateLocalStorageCartSubTotal,
+  updateCart
 } = cartSlice.actions

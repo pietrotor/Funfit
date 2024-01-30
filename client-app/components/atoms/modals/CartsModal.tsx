@@ -42,9 +42,7 @@ const CartModal: React.FC<TProps> = ({
 }) => {
   const [showTextArea, setShowTextArea] = useState(false)
   const [actualDetails, setActualDetails] = useState('')
-  const cartItems = useAppSelector(
-    state => state.cartReducer.cartItems
-  )
+  const cartItems = useAppSelector(state => state.cartReducer.cartItems)
   const dispatch = useAppDispatch()
   const totalPrice = cartItems.reduce((total, item) => total + item.price, 0)
   const router = useRouter()
@@ -77,18 +75,18 @@ const CartModal: React.FC<TProps> = ({
                           src={`${item.pictureUrl}`}
                           radius="md"
                           alt="Banner de la empresa"
-                          className="h-20 w-1/4"
+                          className="h-20 w-1/4 object-cover"
                           removeWrapper={true}
                         />
                         <section className="flex w-3/4 items-center justify-between">
                           <div className="flex flex-col justify-between ps-3">
                             <p className="font-bold">{item.productName}</p>
                             <p className="my-1 font-semibold">
-                              Precio unitario {item.price / item.quantity} Bs
+                              Precio Unitario: {item.price / item.quantity} Bs
                             </p>
                             <p className="flex justify-between font-semibold">
-                              <div>Precio total</div>
-                              <div>{item.price} Bs</div>
+                              <p>Precio total:</p>
+                              <p>{item.price} Bs</p>
                             </p>
                           </div>
                           <div className="my-2 flex h-full flex-col items-center justify-around rounded-md">
@@ -149,22 +147,22 @@ const CartModal: React.FC<TProps> = ({
               </div>
 
               <ModalFooter className="flex w-full flex-col md:flex-row">
-                <Button
-                  onPress={() => dispatch(clearCart())}
-                  color="warning"
-                  className=" text-white shadow-md transition-all duration-500"
-                  isDisabled={cartItems.length <= 0}
+                <button
+                  onClick={() => dispatch(clearCart())}
+                  type="button"
+                  className="appearance-none border-none outline-none"
+                  disabled={cartItems.length <= 0}
                 >
-                  <IconSelector name="trash" />
-                </Button>
+                  <IconSelector name="trash" color="text-red-500" />
+                </button>
                 <Button
                   color="primary"
                   onPress={() => reserveOrder()}
-                  className="flex w-full justify-between text-white shadow-md transition-all duration-500 hover:text-gray-500"
+                  className="flex h-fit w-full justify-between py-3 text-white shadow-md transition-all duration-500"
                   isDisabled={cartItems.length <= 0}
                 >
-                  <p className="text-lg font-bold">Reservar pedido</p>
-                  <p className="text-lg font-semibold">
+                  <p className="text-xl font-bold">Reservar pedido</p>
+                  <p className="text-xl font-bold">
                     SubTotal: {totalPrice} Bs.
                   </p>
                 </Button>

@@ -29,6 +29,9 @@ type Query {
   getRoles(paginationInput: PaginationInput!): RolesResponse
   getUsers(paginationInput: PaginationInput!): UsersResponse
   getUserById(id: ObjectId!): UserResponse
+  # CATEGORIES ==========================================
+  getCategories(paginationInput: PaginationInput!): CategoriesResponse
+  getCategoryById(id: ObjectId!): CategoryResponse
   # PRODUCTS ==========================================
   getProducts(paginationInput: PaginationInput!): ProductsResponse
   getProductById(id: ObjectId!): ProductResponse
@@ -88,6 +91,10 @@ type Mutation {
     updateUserInput: UpdateUserInput!
     deleteInput: Boolean = false
   ): UserResponse
+  # CATEGORIES ==========================================
+  createCategory(createCategoryInput: CreateCategoryInput!): CategoryResponse
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): CategoryResponse
+  deleteCategory(id: ObjectId!): CategoryResponse
   # PRODUCTS ==========================================
   createProduct(createProductInput: CreateProductInput!): ProductResponse
   updateProduct(updateProductInput: UpdateProductInput!): ProductResponse
@@ -163,6 +170,11 @@ type User {
   # resolvers
   roleInfo: Role
 }
+type Category {
+  id: ObjectId!
+  name: String!
+  code: String!
+}
 type Product {
   id: ObjectId!
   name: String!
@@ -171,9 +183,12 @@ type Product {
   code: String!
   internalCode: String!
   description: String!
+  categoryId: ObjectId
   cost: Float
   image: String
   warehouses: [ObjectId!]!
+  # FieldsResolvers
+  category: Category
 }
 type Warehouse {
   id: ObjectId!
@@ -216,6 +231,7 @@ type Branch {
   direction: String!
   phone: String
   nit: String
+  visibleOnWeb: Boolean!
   cashId: ObjectId!
   # Fields Resolvers
   cash: Cash
@@ -360,6 +376,22 @@ type UserResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: User
+}
+type CategoriesResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Category!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type CategoryResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Category
 }
 type ProductsResponse implements ResponseBase {
   errorInput: [ErrorInput!]
@@ -532,6 +564,13 @@ input UpdateUserInput {
   phone: String
   roleId: ObjectId
   status: Boolean
+}
+input CreateCategoryInput {
+  name: String!
+}
+input UpdateCategoryInput {
+  id: ObjectId!
+  name: String
 }
 input CreateProductInput {
   name: String!

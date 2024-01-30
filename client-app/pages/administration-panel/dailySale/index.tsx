@@ -14,11 +14,9 @@ import DateConverter from '@/components/atoms/DateConverter'
 
 function DailySale() {
   const router = useRouter()
-  const { currentBranch } = useAppSelector(
-    state => state.branchReducer
-  )
+  const { currentBranch } = useAppSelector(state => state.branchReducer)
 
-  const { data, setVariables, variables, setFilter } =
+  const { data, setVariables, variables, setFilter, loading } =
     UseGetCustomSalesPaginated(currentBranch.id)
 
   const handleChangeRow = (row: number) => {
@@ -26,11 +24,15 @@ function DailySale() {
   }
 
   useEffect(() => {
-    setVariables({ ...variables, initialDate: new Date().toISOString().split('T')[0], endDate: new Date().toISOString().split('T')[0] })
+    setVariables({
+      ...variables,
+      initialDate: new Date().toISOString().split('T')[0],
+      endDate: new Date().toISOString().split('T')[0]
+    })
   }, [])
   return (
     <AdministrationLayout>
-      <div className="m-auto mt-8 w-5/6 ">
+      <div className="m-auto mt-7 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Ventas del día
         </h3>
@@ -112,8 +114,10 @@ function DailySale() {
           enablePagination={true}
           onSearch={value => setFilter(value)}
           totalItems={variables?.totalRecords}
+          isLoading={loading}
           titles={[
             { name: '#' },
+            { name: 'Código de venta' },
             { name: 'Fecha de venta' },
             { name: 'Monto total' },
             { name: 'Descuento' },
@@ -127,19 +131,30 @@ function DailySale() {
                 {' '}
                 {idx + 1}
               </h3>,
+              <p key={idx} className="text-sm">
+                {sale.code}
+              </p>,
               <div key={idx} className="text-sm">
-                <DateConverter dateString={sale.date}/>
+                <DateConverter showTime dateString={sale.date} />
               </div>,
               <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm">{sale.total}</div>
-              </div>,
-              <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm">{sale.discount}</div>
+                <div className="text-sm">{sale.total} Bs</div>
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm">
-                  {sale.products.map(product => <>{product.product?.name}</>) ||
-                    ''}{' '}
+                  {sale.discount ? sale.discount + 'Bs' : '-'}
+                </div>
+              </div>,
+              <div key={idx} className=" flex justify-center  ">
+                <div className="text-sm">
+                  {sale.products.map((product, idx) => (
+                    <p
+                      key={idx}
+                      className="m-auto w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                    >
+                      {product.product?.name}
+                    </p>
+                  ))}
                 </div>
               </div>,
               <div key={idx} className=" flex justify-center  ">
