@@ -90,7 +90,7 @@ export const CashMovimentModal = ({
 
   return (
     <MyModal
-      title="Agregar movimiento"
+      title="Realizar movimiento"
       message="Agrega un movimiento a la caja"
       control={control}
       loading={loading}
@@ -129,12 +129,14 @@ export const CashMovimentModal = ({
               <div className="flex w-20 items-baseline">
                 <div className="h-2">
                   <InputComponent
+                    size="sm"
                     defaultValue={'0'}
                     customeClassName=""
                     control={control}
                     name="physicialAmount"
                     height={'h-full'}
                     variant="underlined"
+                    isRequired={false}
                     rules={{
                       required: {
                         value: true,

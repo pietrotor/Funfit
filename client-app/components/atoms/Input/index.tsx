@@ -101,7 +101,7 @@ const InputComponent: React.FC<TInputProps> = ({
                   {...field}
                   defaultValue={defaultValue}
                   type={type}
-                  variant={'bordered'}
+                  variant={variant}
                   radius="sm"
                   label={label + (isRequired ? '*' : '')}
                   onChange={event => field.onChange(getTypeOfValue(event))}

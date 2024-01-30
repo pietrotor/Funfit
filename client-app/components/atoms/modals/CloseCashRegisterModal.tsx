@@ -89,6 +89,7 @@ export const CloseCashRegister = ({
                 <InputComponent
                   required={false}
                   size="sm"
+                  isRequired={false}
                   defaultValue={'0'}
                   customeClassName=""
                   height={'h-3'}

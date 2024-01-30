@@ -8,6 +8,7 @@ import {
   useGetBranchesPaginatedLazyQuery,
   useGetConfigurationLazyQuery
 } from '@/graphql/graphql-types'
+
 import { useAppDispatch, useAppSelector } from '@/store/index'
 import { setBusiness } from '@/store/slices'
 import BackButton from '@/components/atoms/BackButton/intex'
@@ -66,7 +67,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         getConfiguration()
         return
       }
-      console.log(data.getConfiguration?.data)
       dispatch(setBusiness(data.getConfiguration?.data))
     },
     onError(error) {
@@ -154,12 +154,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       icon: 'PointOfSale',
       text: 'Punto de venta',
       link: '/administration-panel/point-of-sale'
-    },
-    {
-      icon: 'Logout',
-      text: 'Cerrar sesión',
-      link: '/administration-panel/login',
-      onClick: () => handleLogOut()
     }
   ]
   useEffect(() => {
@@ -197,22 +191,41 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
             isSidebarOpen={sidebarOpen}
             setSidebar={setsidebarOpen}
           />
-          <div
-            className={`transition-duration-500 flex w-full justify-around ${
-              sidebarOpen ? 'ps-7' : 'ps-2'
-            } transition-all`}
-          >
-            {showBackButton && <BackButton />}
-            {children}
-            <ToastComponent />
-            {profileButton && (
-              <DropDown
-                IconButtonName="user"
-                label={'Pietro'}
-                values={['cerrar sesion']}
-                handleClick={() => handleLogOut()}
-              />
-            )}
+          <div className="w-full">
+            <div className="transition-duration-500 flex w-full justify-between ps-10  transition-all">
+              {showBackButton && <BackButton />}
+              <ToastComponent />
+              <div className="flex items-center">
+                <DropDown
+                  IconButtonName="Notifications"
+                  values={[]}
+                  counter={0}
+                  avatar="https://static.vecteezy.com/system/resources/previews/000/376/699/original/notification-vector-icon.jpg"
+                />
+                <DropDown
+                  IconButtonName="user"
+                  label={'Pietro'}
+                  user='https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png'
+                  values={[
+                    {
+                      label: 'Notificaciones',
+                      value: 'notifications',
+                      icon: 'Notifications',
+                      handleClick: () => console.log('profile'),
+                      counter: 2
+                    },
+                    {
+                      label: 'Cerrar sesión',
+                      value: 'logout',
+                      icon: 'Logout',
+                      handleClick: () => handleLogOut(),
+                      counter: 0
+                    }
+                  ]}
+                />
+              </div>
+            </div>
+            <div className="w-full ps-5">{children}</div>
           </div>
         </main>
       ) : (
