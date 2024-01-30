@@ -27,7 +27,11 @@ import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 function Warehouses() {
   const [edit, setEdit] = useState<TValuesWarehouses>({})
-  const [variables, setVariables] = useState<PaginationInterfaceState>({})
+  const [variables, setVariables] = useState<PaginationInterfaceState>({
+    rows: 5,
+    filter: '',
+    currentPage: 1
+  })
   const [filter, setFilter] = useState<string>('')
   const filtroDebounced = UseDebouncedValue(filter, 2000)
   const handleConfirmModal = useDisclosure()
@@ -41,7 +45,8 @@ function Warehouses() {
   const { loading, data, refetch } = useGetWarehousesQuery({
     variables: {
       paginationInput: {
-        rows: 5,
+        page: variables?.currentPage,
+        rows: variables?.rows,
         filter: filtroDebounced
       }
     },
@@ -131,7 +136,7 @@ function Warehouses() {
 
   return (
     <AdministrationLayout>
-      <div className="m-auto mt-16 w-5/6 ">
+      <div className="m-auto mt-8 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de Almacenes
         </h3>
@@ -152,7 +157,10 @@ function Warehouses() {
           totalPages={variables?.totalPages}
           isLoading={loading}
           enablePagination={true}
-          onSearch={value => setFilter(value)}
+          onSearch={value => {
+            setFilter(value)
+            setVariables({ ...variables, currentPage: 1 })
+          }}
           totalItems={variables?.totalRecords}
           titles={[
             { name: '#' },
@@ -167,7 +175,7 @@ function Warehouses() {
                 {' '}
                 {idx + 1}
               </h3>,
-              <div key={idx} className="text-sm">
+              <div key={idx} className="text-left text-sm">
                 {warehouse.name}
               </div>,
               <div key={idx} className="text-left text-sm">

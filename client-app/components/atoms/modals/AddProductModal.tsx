@@ -85,12 +85,15 @@ export const AddProductModal = ({
             control={control}
             name="name"
             label="Nombre"
-            placeholder="Nombre"
             type="text"
             rules={{
               required: {
                 value: true,
                 message: 'Este campo es obligatorio'
+              },
+              pattern: {
+                value: /^[a-zA-Z\s]+$/i,
+                message: 'Solo se permiten letras'
               }
             }}
           />
@@ -98,7 +101,6 @@ export const AddProductModal = ({
             control={control}
             name="suggetedPrice"
             label="Precio sugerido"
-            placeholder="Precio sugerido"
             type="text"
             rules={{
               required: {
@@ -115,7 +117,6 @@ export const AddProductModal = ({
             control={control}
             name="cost"
             label="Costo"
-            placeholder="Costo"
             type="text"
             rules={{
               required: {
@@ -132,7 +133,6 @@ export const AddProductModal = ({
             name="code"
             control={control}
             label="Código"
-            placeholder="Código"
             type="text"
             rules={{
               required: {
@@ -146,7 +146,6 @@ export const AddProductModal = ({
           control={control}
           name="description"
           label="Descripción"
-          placeholder="Descripción"
           type="textArea"
           rules={{
             required: {

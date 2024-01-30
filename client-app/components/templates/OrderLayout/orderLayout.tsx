@@ -70,7 +70,7 @@ function OrderLayout() {
         <div className="flex h-24 items-center justify-center border-b-2 bg-white shadow-md ">
           <h3 className="text-gray-500">Tus compras</h3>
         </div>
-        <div className=" overflow-y-auto ">
+        <div className=" overflow-y-auto  max-h-96">
           <SideCart />
         </div>
       </div>

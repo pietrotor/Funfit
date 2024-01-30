@@ -17,6 +17,7 @@ import InputComponent from '@/components/atoms/Input'
 import ComboInput from '@/components/atoms/ComboInput'
 // import { useGetUsersLazyQuery } from '@/graphql/graphql-types'
 import DateConverter from '@/components/atoms/DateConverter'
+import { useGetUsersLazyQuery } from '@/graphql/graphql-types'
 
 function Sales() {
   const router = useRouter()
@@ -26,12 +27,12 @@ function Sales() {
   const { control } = useForm()
   const [branchSelected, setSelected] = useState<TDataBranch>(currentBranch)
 
-  // const [getUsers, { data: users }] = useGetUsersLazyQuery({
-  //   fetchPolicy: 'network-only',
-  //   variables: {
-  //     paginationInput: {}
-  //   }
-  // })
+  const [getUsers, { data: users }] = useGetUsersLazyQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      paginationInput: {}
+    }
+  })
   const { data, setVariables, variables, setFilter } =
     UseGetCustomSalesPaginated(branchSelected.id)
 
@@ -41,7 +42,7 @@ function Sales() {
 
   return (
     <AdministrationLayout>
-      <div className="m-auto mt-16 w-5/6 ">
+      <div className="m-auto mt-7 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Reporte de ventas
         </h3>
@@ -91,8 +92,17 @@ function Sales() {
               name="seller"
               control={control}
               onChange={e => setVariables({ ...variables, saleBy: e })}
-              onClick={() => console.log('')}
-              options={[]}
+              onClick={() => getUsers()}
+              options={ users?.getUsers?.data?.map(user => ({
+                label: user.name,
+                value: user.id
+              })) || [
+                {
+                  label: 'cargando...',
+                  value: ''
+                }
+              ]
+              }
             />
           </div>
         </div>

@@ -15,7 +15,7 @@ function SaleDetail() {
   const { currentBranch } = useAppSelector(state => state.branchReducer)
   return (
     <AdministrationLayout showBackButton={true}>
-      <div className="m-auto mt-16 w-5/6 ">
+      <div className="m-auto mt-8 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Detalle de venta
         </h3>
@@ -86,20 +86,20 @@ function SaleDetail() {
               <div key={idx} className=" flex justify-center ">
                 <Images
                   alt="imagen"
-                  src={sale.product?.image || 'https://picsum.photos/200/300'}
-                  className="h-20 w-20 rounded-md"
+                  src={sale.product?.image || 'https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg'}
+                  className="h-28 w-28 rounded-md"
                 />
               </div>,
-              <div key={idx} className="">
+              <div key={idx} className=" text-sm">
                 {sale.product?.name}
               </div>,
-              <div key={idx} className="flex justify-center space-x-3">
+              <div key={idx} className="flex text-sm justify-center space-x-3">
                 {sale.product?.code}
               </div>,
-              <div key={idx} className="flex justify-center space-x-3">
+              <div key={idx} className="flex text-sm justify-center space-x-3">
                 {sale.qty}
               </div>,
-              <div key={idx} className="flex justify-center space-x-3">
+              <div key={idx} className="flex text-sm justify-center space-x-3">
                 {sale.total}
               </div>
             ]

@@ -23,7 +23,7 @@ export const MoveBranchStockModal = ({
   const [warehouseData, setWarehouseData] = useState<TValuesWarehouses>()
   const branchIdSelected = useAppSelector(state => state.branchReducer.currentBranch.id)
 
-  const { control, handleSubmit, watch } = useForm()
+  const { control, handleSubmit, watch, reset } = useForm()
   const [getWarehouses, { data }] = useGetWarehousesLazyQuery()
   const [getStockWarehouse, { data: stockData }] = useGetStocksPaginatedLazyQuery({
     fetchPolicy: 'network-only',
@@ -49,6 +49,7 @@ export const MoveBranchStockModal = ({
     useCreateBranchProductStockMovement()
   const handleCancel = () => {
     onClose()
+    reset()
   }
   const handleGetWarehouses = () => {
     getWarehouses({
