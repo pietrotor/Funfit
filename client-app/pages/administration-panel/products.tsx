@@ -24,7 +24,7 @@ import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 const Productos = () => {
-  const [editProduct, setEditProduct] = useState<TValueProductData>({})
+  const [editProduct, setEditProduct] = useState<TValueProductData>({} as TValueProductData)
   const [variables, setVariables] = useState<PaginationInterfaceState>({
     rows: 5,
     filter: '',
@@ -77,7 +77,8 @@ const Productos = () => {
           code: values.code,
           cost: values.cost,
           description: values.description,
-          image: values.image
+          image: values.image,
+          categoryId: values.categoryId
         }
       },
       onCompleted: data => {
@@ -182,9 +183,7 @@ const Productos = () => {
                 alt="image"
                 width={100}
                 src={
-                  product.image === 'null' || !product.image
-                    ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
-                    : product.image
+                  product.image === 'null' || !product.image ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' : product.image
                 }
                 key={idx}
               />,

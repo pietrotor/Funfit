@@ -37,7 +37,8 @@ export const AddProductModal = ({
           description: watch('description'),
           image: watch('image'),
           name: watch('name'),
-          suggetedPrice: parseFloat(watch('suggetedPrice'))
+          suggetedPrice: parseFloat(watch('suggetedPrice')),
+          categoryId: watch('category')
         }
       },
       onCompleted: data => {
@@ -167,17 +168,13 @@ export const AddProductModal = ({
             required: {
               value: true,
               message: 'Este campo es obligatorio'
-            },
-            pattern: {
-              value: /^[a-zA-Z\s]+$/i,
-              message: 'Solo se permiten letras'
             }
           }}
           onClick={getProducts}
           options={
             data?.getCategories?.data?.map(category => ({
               label: category.name,
-              value: category.name
+              value: category.id
             })) || [{ label: 'Cargando..', value: 'Cargando..' }]
           }
         />

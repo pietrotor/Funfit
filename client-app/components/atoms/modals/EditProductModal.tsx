@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 import Selector from '../InputSelector'
@@ -14,6 +15,7 @@ export type TValueProductData = {
   code?: string
   internalCode?: string
   warehouses?: string[]
+  categoryId: string
 }
 interface EditProductModalProps {
   isOpen: boolean
@@ -43,13 +45,19 @@ export const EditProductModal = ({
       cost: parseFloat(watch('cost')),
       code: watch('code') === values.code ? undefined : watch('code'),
       image: watch('image'),
-      suggetedPrice: parseFloat(watch('suggetedPrice'))
+      suggetedPrice: parseFloat(watch('suggetedPrice')),
+      categoryId: watch('categories')
     })
   }
   const handleCancel = () => {
     onClose()
     reset()
   }
+
+  useEffect(() => {
+    getProducts()
+  }, [])
+
   return (
     <MyModal
       title="Editar producto"
@@ -137,13 +145,14 @@ export const EditProductModal = ({
             control={control}
             name="categories"
             label="Categoría"
-            onClick={() => getProducts()}
+            size="lg"
+            defaultValue={values.categoryId}
             options={
-            data?.getCategories?.data?.map(category => ({
-              label: category.name,
-              value: category.name
-            })) || [{ label: 'Cargando..', value: 'Cargando..' }]
-          }
+              data?.getCategories?.data?.map(category => ({
+                label: category.name,
+                value: category.id
+              })) || [{ label: 'Cargando..', value: 'Cargando..' }]
+            }
           />
         </div>
         <DropZone />

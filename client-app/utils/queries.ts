@@ -110,7 +110,6 @@ export const GET_PRODUCTS = gql`
         name
         suggetedPrice
         code
-        internalCode
         description
         categoryId
         cost

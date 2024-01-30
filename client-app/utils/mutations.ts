@@ -40,7 +40,6 @@ export const CREATE_PRODUCT = gql`
         name
         suggetedPrice
         code
-        internalCode
         description
         categoryId
         cost
@@ -69,7 +68,6 @@ export const UPDATE_PRODUCT = gql`
         name
         suggetedPrice
         code
-        internalCode
         description
         categoryId
         cost
@@ -99,7 +97,6 @@ export const DELETE_PRODUCT = gql`
         name
         suggetedPrice
         code
-        internalCode
         description
         categoryId
         cost

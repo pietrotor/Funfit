@@ -6,7 +6,8 @@ import {
   useCreateCategoryMutation,
   useDeleteCategoryMutation,
   useGetCategoriesQuery,
-  useGetCategoryByIdQuery
+  useGetCategoryByIdQuery,
+  useUpdateCategoryMutation
 } from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 
@@ -28,12 +29,12 @@ export const UseCustomCreateCategoryMutation = () => {
       onCompleted: result => {
         if (result.createCategory?.status === StatusEnum.ERROR) {
           showSuccessToast(
-            result.createCategory.message || 'Something went wrong',
+            result.createCategory.message || 'Error al crear la categoría',
             'error'
           )
         }
         if (result.createCategory?.status === StatusEnum.OK) {
-          showSuccessToast('Category created correctly', 'success')
+          showSuccessToast('Categoría creada correctamente', 'success')
         }
       }
     })
@@ -53,7 +54,7 @@ export const UseCustomGetCategories = () => {
     fetchPolicy: 'network-only',
     variables: {
       paginationInput: {
-        filter: filterDebounced,
+        filter: filterDebounced || '',
         page: variables?.currentPage || 1,
         rows: variables?.rows || 5
       }
@@ -97,31 +98,31 @@ export const UseCustomeGetCategoriesById = (categoryId: string) => {
 }
 
 export const UseCustomeUpdateCategory = () => {
-  const [updateCategory, { loading }] = useCreateCategoryMutation()
+  const [updateCategory] = useUpdateCategoryMutation()
 
   const handleUpdateCategory = (data: TCategories) => {
     updateCategory({
       variables: {
-        createCategoryInput: {
+        updateCategoryInput: {
+          id: data.id,
           name: data.name
         }
       },
       onCompleted: result => {
-        if (result.createCategory?.status === StatusEnum.ERROR) {
+        if (result.updateCategory?.status === StatusEnum.ERROR) {
           showSuccessToast(
-            result.createCategory.message || 'Error al actualizar categoría',
+            result.updateCategory.message || 'Error al actualizar categoría',
             'error'
           )
         }
-        if (result.createCategory?.status === StatusEnum.OK) {
+        if (result.updateCategory?.status === StatusEnum.OK) {
           showSuccessToast('Categoría actualizada correctamente', 'success')
         }
       }
     })
   }
   return {
-    handleUpdateCategory,
-    loading
+    handleUpdateCategory
   }
 }
 

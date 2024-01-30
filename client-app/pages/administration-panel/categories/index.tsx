@@ -54,8 +54,8 @@ function Categories() {
 
   const handleConfirmDelete = () => {
     handleDeleteC(edit?.id)
-    handleConfirmModal.onClose()
     refetch()
+    handleConfirmModal.onClose()
   }
 
   return (
