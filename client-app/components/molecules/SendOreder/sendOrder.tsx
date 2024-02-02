@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   Accordion,
   AccordionItem,
@@ -7,21 +7,29 @@ import {
   RadioGroup
 } from '@nextui-org/react'
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
+import { useForm } from 'react-hook-form'
+import { activeDirection } from '../PaymentMethod/paymentMethod'
+import InputComponent from '@/components/atoms/Input'
 
 type Props = {
   goToStep: (e: number) => void
   currentStepIndex: number
   activeDirection: { lat: number; lng: number }
-  setActiveDirection: (p: { lat: number; lng: number }) => void
+  changeDirection: (p: activeDirection) => void
+  send: any
 }
 
-function SendOrder({ goToStep, currentStepIndex, activeDirection, setActiveDirection }: Props) {
+function SendOrder({
+  goToStep,
+  currentStepIndex,
+  activeDirection,
+  changeDirection,
+  send
+}: Props) {
   const [selectedKeys, setSelectedKeys] = useState(new Set(['0']))
+  const [selectedPlace, setSelectedPlace] = useState('')
   const [showAlert, setShowAlert] = useState(false)
-  const send = useRef({
-    type: '',
-    address: ''
-  })
+  const { handleSubmit, control, watch } = useForm()
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: 'AIzaSyDcrnsyWSi4kyUOyUujyL0zhmuOfyubZ9U' || ''
@@ -29,9 +37,12 @@ function SendOrder({ goToStep, currentStepIndex, activeDirection, setActiveDirec
 
   const onSetDirection = (marker: any) => {
     const { lat, lng } = marker.latLng
-    setActiveDirection({
-      lat: lat(),
-      lng: lng()
+    changeDirection({
+      location: {
+        lat: lat(),
+        lng: lng()
+      },
+      address: watch('address')
     })
   }
 
@@ -41,8 +52,8 @@ function SendOrder({ goToStep, currentStepIndex, activeDirection, setActiveDirec
     console.log('Coordenadas actualizadas:', activeDirection)
   }, [activeDirection])
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = () => {
+    console.log(send.current)
     if (send.current.type.trim() === '' || send.current.address.trim() === '') {
       setShowAlert(true)
       return
@@ -50,22 +61,25 @@ function SendOrder({ goToStep, currentStepIndex, activeDirection, setActiveDirec
     console.log('Formulario enviado')
     setShowAlert(false)
     handleNext()
+    console.log(send.current)
   }
 
   const handleNext = () => {
     goToStep(currentStepIndex + 1)
   }
-
-  const handlePlace = (e: any) => {
+  const handlePlace = (place: string, type: string) => {
+    setSelectedPlace(type === 'Entrega a domicilio' ? 'Entrega a domicilio' : place)
     send.current = {
-      type:
-        e.target.name === 'Entrega a domicilio' ? 'Entrega a domicilio' : 'Recoger de la sucursal',
-      address: e.target.value
+      type,
+      address: place
     }
   }
 
   return (
-    <div className="flex h-full w-full flex-col justify-between space-y-5 p-5 text-center ">
+    <form
+      className="flex h-full w-full flex-col justify-between space-y-5 p-5 text-center"
+      onSubmit={handleSubmit(onSubmit)}
+    >
       <div className="overflow-y-auto px-8">
         <h2 className="text-gray-500 md:pb-6">Datos de ubicación</h2>
         <Accordion
@@ -77,7 +91,14 @@ function SendOrder({ goToStep, currentStepIndex, activeDirection, setActiveDirec
             aria-label="Recoger de la sucursal"
             title="Recoger de la sucursal"
           >
-            <RadioGroup onChange={e => handlePlace(e)} color="secondary">
+            <RadioGroup
+              name="branch"
+              onValueChange={value =>
+                handlePlace(value, 'Recoger de la sucursal')
+              }
+              value={selectedPlace}
+              color="secondary"
+            >
               <Radio value="Sucursal América">Sucursal América</Radio>
               <Radio value="Sucursal Circunvalación">
                 Sucursal Circunvalación
@@ -90,17 +111,45 @@ function SendOrder({ goToStep, currentStepIndex, activeDirection, setActiveDirec
             aria-label="Entrega a domicilio"
             title="Entrega a domicilio"
           >
-            <div className="h-96 w-full">
-              {isLoaded && (
-                <GoogleMap
-                  onClick={onSetDirection}
-                  center={activeDirection}
-                  zoom={17}
-                  mapContainerStyle={{ width: '100%', height: '100%' }}
-                >
-                  <Marker position={activeDirection} />
-                </GoogleMap>
-              )}
+            <div className="flex flex-col space-y-3">
+              <RadioGroup
+                color="secondary"
+                name="delivery"
+                onValueChange={value => handlePlace(value, 'Entrega a domicilio')}
+                value={selectedPlace}
+              >
+                <Radio value="Entrega a domicilio">Entrega a domicilio</Radio>
+              </RadioGroup>
+
+              <div className="h-96 w-full">
+                {isLoaded && (
+                  <GoogleMap
+                    onClick={onSetDirection}
+                    center={activeDirection}
+                    zoom={17}
+                    mapContainerStyle={{ width: '100%', height: '100%' }}
+                  >
+                    <Marker position={activeDirection} />
+                  </GoogleMap>
+                )}
+              </div>
+
+              <InputComponent
+                name="address"
+                control={control}
+                type="text"
+                placeholder="Descripción de la dirección"
+                isRequired
+                onValueChange={value =>
+                  handlePlace(value, 'Entrega a domicilio')
+                }
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Este campo es requerido'
+                  }
+                }}
+              />
             </div>
           </AccordionItem>
         </Accordion>
@@ -118,15 +167,11 @@ function SendOrder({ goToStep, currentStepIndex, activeDirection, setActiveDirec
         >
           Atrás
         </Button>
-        <Button
-          onClick={e => handleSubmit(e)}
-          color="primary"
-          className="w-1/4"
-        >
+        <Button color="primary" className="w-1/4" type="submit">
           Siguiente
         </Button>
       </div>
-    </div>
+    </form>
   )
 }
 
