@@ -70,13 +70,15 @@ export class StocksService extends StockRepository<objectId> {
 
   async getStocksByProductId(
     paginationInput: PaginationInput,
-    productId: objectId
+    productId: objectId,
+    warehouseId?: objectId
   ) {
-    const warehousesFilter = { productId }
+    const warehouseFilter = warehouseId ? { warehouseId } : {}
+    const filters = { productId, ...warehouseFilter }
     return await getInstancesPagination<IStock, IModelStock>(
       Stock,
       paginationInput,
-      warehousesFilter
+      filters
     )
   }
 
