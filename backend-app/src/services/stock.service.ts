@@ -108,7 +108,7 @@ export class StocksService extends StockRepository<objectId> {
     const warehouseInstance = await warehouseCore.getWarehouseById(warehouseId)
     const stockInstance = new Stock({ ...createStockInput, createdBy })
     productInstance.warehouses.push(createStockInput.warehouseId)
-    warehouseInstance.productsIds.push(productInstance._id)
+    warehouseInstance.productsIds.push(productId)
     const [stockResponse] = await Promise.all([
       stockInstance.save(),
       stockHistoryUseCase.createStockHistory(
