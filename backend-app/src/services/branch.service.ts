@@ -62,9 +62,13 @@ export class BranchService extends BranchRepository<objectId> {
   }
 
   async updateBranch(updateBranchInput: UpdateBranchInput) {
-    const { id } = updateBranchInput
+    const { id, visibleOnWeb } = updateBranchInput
     const branchInstance = await this.getBranchById(id)
-    updateGenericInstance(branchInstance, updateBranchInput)
+    updateGenericInstance(branchInstance, updateBranchInput, ['visibleOnWeb'])
+
+    if (typeof visibleOnWeb === 'boolean') {
+      branchInstance.visibleOnWeb = visibleOnWeb
+    }
 
     return await branchInstance.save()
   }

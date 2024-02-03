@@ -51,6 +51,7 @@ export class SalesService extends SalesRepository<objectId> {
             }
           }
         : {}
+    const salesByFilter = saleBy ? { createdBy: saleBy } : {}
     if (filter) {
       const filterArgs = {
         $or: [{ name: { $regex: filter, $options: 'i' } }]
@@ -58,13 +59,13 @@ export class SalesService extends SalesRepository<objectId> {
       return await getInstancesPagination<ISale, IModelSale>(
         Sale,
         paginationInput,
-        { ...branchesFilter, ...filterArgs }
+        { ...branchesFilter, ...filterArgs, ...salesByFilter }
       )
     }
     return await getInstancesPagination<ISale, IModelSale>(
       Sale,
       paginationInput,
-      branchesFilter
+      { ...branchesFilter, ...salesByFilter }
     )
   }
 
