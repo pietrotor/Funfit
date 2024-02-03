@@ -121,7 +121,7 @@ function ProductOnBranch() {
                   size="sm"
                   className="text-xs"
                   isSelected={productBranch.isVisibleOnMenu}
-                  onChange={() => handleSwitchChange(productBranch, 'menu')}
+                  onChange={() => handleSwitchChange(productBranch as TProductBranchData, 'menu')}
                 >
                   {productBranch.isVisibleOnMenu ? 'Sí' : 'No'}
                 </Switch>,
