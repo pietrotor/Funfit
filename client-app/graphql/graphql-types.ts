@@ -29,6 +29,7 @@ export type Branch = {
   name: Scalars['String'];
   nit?: Maybe<Scalars['String']>;
   phone?: Maybe<Scalars['String']>;
+  visibleOnWeb: Scalars['Boolean'];
 };
 
 export type BranchProduct = {
@@ -122,6 +123,33 @@ export type CashTurnMovementsResponse = ResponseBase & {
   totalRecords?: Maybe<Scalars['Int']>;
 };
 
+export type CategoriesResponse = ResponseBase & {
+  __typename?: 'CategoriesResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Category>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
+};
+
+export type Category = {
+  __typename?: 'Category';
+  code: Scalars['String'];
+  id: Scalars['ObjectId'];
+  name: Scalars['String'];
+};
+
+export type CategoryResponse = ResponseBase & {
+  __typename?: 'CategoryResponse';
+  data?: Maybe<Category>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
 export type CloseTurnInfo = {
   __typename?: 'CloseTurnInfo';
   amount: Scalars['Float'];
@@ -191,7 +219,12 @@ export type CreateBranchProductStockMovementInput = {
   type: StockMovementTypeEnum;
 };
 
+export type CreateCategoryInput = {
+  name: Scalars['String'];
+};
+
 export type CreateProductInput = {
+  categoryId?: InputMaybe<Scalars['ObjectId']>;
   code: Scalars['String'];
   cost?: InputMaybe<Scalars['Float']>;
   description: Scalars['String'];
@@ -287,6 +320,7 @@ export type Mutation = {
   createBranchProduct?: Maybe<BranchProductResponse>;
   createBranchProductStockMovement?: Maybe<BranchProductResponse>;
   createCashMovement?: Maybe<CashTurnMovementResponse>;
+  createCategory?: Maybe<CategoryResponse>;
   createProduct?: Maybe<ProductResponse>;
   createSale?: Maybe<SaleResponse>;
   createStock?: Maybe<StockResponse>;
@@ -294,11 +328,13 @@ export type Mutation = {
   createWarehouse?: Maybe<WarehouseResponse>;
   deleteBranch?: Maybe<BranchResponse>;
   deleteBranchProduct?: Maybe<BranchProductResponse>;
+  deleteCategory?: Maybe<CategoryResponse>;
   deleteProduct?: Maybe<ProductResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
   openCash?: Maybe<CashResponse>;
   updateBranch?: Maybe<BranchResponse>;
   updateBranchProduct?: Maybe<BranchProductResponse>;
+  updateCategory?: Maybe<CategoryResponse>;
   updateConfiguration?: Maybe<ConfigurationResponse>;
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
@@ -333,6 +369,11 @@ export type MutationCreateBranchProductStockMovementArgs = {
 
 export type MutationCreateCashMovementArgs = {
   createTurnMovementInput: CreateTurnMovementInput;
+};
+
+
+export type MutationCreateCategoryArgs = {
+  createCategoryInput: CreateCategoryInput;
 };
 
 
@@ -371,6 +412,11 @@ export type MutationDeleteBranchProductArgs = {
 };
 
 
+export type MutationDeleteCategoryArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
 export type MutationDeleteProductArgs = {
   id: Scalars['ObjectId'];
 };
@@ -393,6 +439,11 @@ export type MutationUpdateBranchArgs = {
 
 export type MutationUpdateBranchProductArgs = {
   updateBranchProductInput: UpdateBranchProductInput;
+};
+
+
+export type MutationUpdateCategoryArgs = {
+  updateCategoryInput: UpdateCategoryInput;
 };
 
 
@@ -441,6 +492,8 @@ export enum PaymentMethodEnum {
 
 export type Product = {
   __typename?: 'Product';
+  category?: Maybe<Category>;
+  categoryId?: Maybe<Scalars['ObjectId']>;
   code: Scalars['String'];
   cost?: Maybe<Scalars['Float']>;
   description: Scalars['String'];
@@ -481,6 +534,8 @@ export type Query = {
   getBranchesPaginated?: Maybe<BranchsResponse>;
   getCashById?: Maybe<CashResponse>;
   getCashTurnMovements?: Maybe<CashTurnMovementsResponse>;
+  getCategories?: Maybe<CategoriesResponse>;
+  getCategoryById?: Maybe<CategoryResponse>;
   getConfiguration?: Maybe<ConfigurationResponse>;
   getProductById?: Maybe<ProductResponse>;
   getProductStock?: Maybe<StocksResponse>;
@@ -532,6 +587,16 @@ export type QueryGetCashByIdArgs = {
 export type QueryGetCashTurnMovementsArgs = {
   paginationInput: PaginationInput;
   turnId: Scalars['ObjectId'];
+};
+
+
+export type QueryGetCategoriesArgs = {
+  paginationInput: PaginationInput;
+};
+
+
+export type QueryGetCategoryByIdArgs = {
+  id: Scalars['ObjectId'];
 };
 
 
@@ -846,6 +911,11 @@ export type UpdateBranchProductInput = {
   price?: InputMaybe<Scalars['Float']>;
 };
 
+export type UpdateCategoryInput = {
+  id: Scalars['ObjectId'];
+  name?: InputMaybe<Scalars['String']>;
+};
+
 export type UpdateConfigurationInput = {
   address?: InputMaybe<Scalars['String']>;
   businessName?: InputMaybe<Scalars['String']>;
@@ -865,6 +935,7 @@ export type UpdateMeasurementUnitsInput = {
 };
 
 export type UpdateProductInput = {
+  categoryId?: InputMaybe<Scalars['ObjectId']>;
   code?: InputMaybe<Scalars['String']>;
   cost?: InputMaybe<Scalars['Float']>;
   description?: InputMaybe<Scalars['String']>;
@@ -1228,7 +1299,7 @@ export type GetBranchesPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetBranchesPaginatedQuery = { __typename?: 'Query', getBranchesPaginated?: { __typename?: 'BranchsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null }> | null } | null };
+export type GetBranchesPaginatedQuery = { __typename?: 'Query', getBranchesPaginated?: { __typename?: 'BranchsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, visibleOnWeb: boolean, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null }> | null } | null };
 
 export type GetBranchByIdQueryVariables = Exact<{
   getBranchByIdId: Scalars['ObjectId'];
@@ -3539,6 +3610,7 @@ export const GetBranchesPaginatedDocument = gql`
       direction
       phone
       nit
+      visibleOnWeb
       cashId
       cash {
         id

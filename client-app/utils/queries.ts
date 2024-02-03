@@ -636,92 +636,93 @@ export const GET_BRANCH_PRODUCTS = gql`
 `
 export const GET_BRANCH_PAGINATION = gql`
   query GetBranchesPaginated($paginationInput: PaginationInput!) {
-    getBranchesPaginated(paginationInput: $paginationInput) {
-      errorInput {
-        message
-        field
-      }
-      status
+  getBranchesPaginated(paginationInput: $paginationInput) {
+    errorInput {
       message
-      data {
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      visibleOnWeb
+      cashId
+      cash {
         id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        cashId
-        cash {
+        branchId
+        amount
+        currentTurnId
+        isOpen
+        currentTurn {
           id
-          branchId
-          amount
-          currentTurnId
+          cashId
           isOpen
-          currentTurn {
-            id
-            cashId
-            isOpen
-            amountOfMovents
-            openInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              openBy
-              openByInfo {
+          amountOfMovents
+          openInfo {
+            amount
+            physicialAmount
+            difference
+            date
+            observation
+            openBy
+            openByInfo {
+              id
+              name
+              lastName
+              email
+              phone
+              lastLogin
+              status
+              createdBy
+              roleId
+              roleInfo {
                 id
                 name
-                lastName
-                email
-                phone
-                lastLogin
+                code
                 status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
               }
             }
-            closeInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              closeBy
-              closeByInfo {
+          }
+          closeInfo {
+            amount
+            physicialAmount
+            difference
+            date
+            observation
+            closeBy
+            closeByInfo {
+              id
+              name
+              lastName
+              email
+              phone
+              lastLogin
+              status
+              createdBy
+              roleId
+              roleInfo {
                 id
                 name
-                lastName
-                email
-                phone
-                lastLogin
+                code
                 status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
               }
             }
           }
         }
       }
-      totalRecords
-      totalPages
-      rows
-      currentPage
     }
+    totalRecords
+    totalPages
+    rows
+    currentPage
   }
+}
 `
 export const GET_BRANCH_BY_ID = gql`
   query GetBranchById($getBranchByIdId: ObjectId!) {

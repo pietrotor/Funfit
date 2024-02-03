@@ -53,7 +53,7 @@ function Cash() {
     })
   }, [])
 
-  const { loading, data, variables, setVariables, setFilter, refetch } =
+  const { loading, data, variables, setVariables, refetch } =
     useCustomGetCashTurnMovementQuery(
       cash.data?.getCashById?.data?.currentTurn?.id
     )
@@ -192,7 +192,6 @@ function Cash() {
             totalPages={variables?.totalPages}
             isLoading={loading}
             enablePagination={true}
-            onSearch={value => setFilter(value)}
             totalItems={variables?.totalRecords}
             titles={[
               { name: '#' },

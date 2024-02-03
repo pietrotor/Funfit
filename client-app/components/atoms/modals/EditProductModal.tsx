@@ -12,6 +12,7 @@ export type TValueProductData = {
   code?: string
   internalCode?: string
   warehouses?: string[]
+  categoryId?: string
 }
 interface EditProductModalProps {
   isOpen: boolean
