@@ -9,7 +9,7 @@ const Nav: React.FC<NavProps> = ({ menu }) => {
   return (
     <nav className="mx-9 flex flex-col md:flex-row md:items-center md:space-x-5  ">
       {menu.map((menuItem, idx) => (
-        <div key={idx}>
+        <div key={idx} onClick={ menuItem.onClick}>
           <a
             href="#"
             className="text-xl font-bold text-primary hover:text-orange-300"

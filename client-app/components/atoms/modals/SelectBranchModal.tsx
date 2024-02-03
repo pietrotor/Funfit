@@ -31,6 +31,7 @@ export const SelectBranchModal = ({
   }
   useEffect(() => {
     setSelected(currentBranch.name)
+    console.log('currentBranch', currentBranch)
   }, [currentBranch])
 
   return (

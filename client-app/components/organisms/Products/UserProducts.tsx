@@ -1,8 +1,10 @@
 import UserCard from '@/components/molecules/Card/UserCard'
-import useCustomPublicProductsQuery from '@/services/UseProducts'
-export function UserProducts() {
-  const { data, loading } = useCustomPublicProductsQuery()
-
+import { TProductBranchData } from '@/interfaces/TData'
+type TProps = {
+  data : TProductBranchData[]
+  loading: boolean
+}
+export function UserProducts({ data, loading }: TProps) {
   return (
     <div>
       <div className='w-full mt-4'>
@@ -12,16 +14,16 @@ export function UserProducts() {
         <div className='border-2 bg-primary border-primary mt-4'></div>
       </div>
       <div className="grid w-full gap-6 py-8 md:grid-cols-2 xl:grid-cols-3">
-        {(data?.getPublicProducts?.data || []).map(product => (
+        {(data || []).map(product => (
           <UserCard
             isLoading={loading}
             id={product.id}
             key={product.id}
-            name={product.name}
-            description={product.description}
-            price={product?.suggetedPrice}
-            image={product?.image as string}
-            images={[product.image as string]}
+            name={product?.product?.name || ''}
+            description={product.product?.description || ''}
+            price={product.product?.suggetedPrice || 0}
+            image={product?.product?.image as string}
+            images={[product.product?.image as string]}
           />
         ))}
       </div>

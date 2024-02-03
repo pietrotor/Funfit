@@ -20,6 +20,7 @@ export type ModalProps = {
   textSuccessButton?: string
   textCancelButton?: string
   textBackButton?: string
+  hideCancelButton?: boolean
   control?: any
   watch?: any
   reset?: any
@@ -64,7 +65,8 @@ export const MyModal = ({
   handleSubmit,
   isForm = true,
   backButtonDisabled = false,
-  successButtonDisabled = false
+  successButtonDisabled = false,
+  hideCancelButton = true
 }: ModalProps) => {
   return (
     <Modal
@@ -176,13 +178,13 @@ export const MyModal = ({
                       >
                         {textSuccessButton}
                       </ButtonComponent>
-                      <ButtonComponent
+                      {hideCancelButton && <ButtonComponent
                         showTooltip={false}
                         onClick={handleCancel}
                         className={`mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base font-medium text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:mt-0 sm:w-auto sm:text-sm ${color === 'success' ? 'hover:bg-green-100 focus:ring-green-500' : color === 'warning' ? 'hover:bg-yellow-100 focus:ring-yellow-500' : color === 'error' ? 'hover:bg-red-100 focus:ring-red-500' : 'hover:bg-blue-100 focus:ring-blue-500'}`}
                       >
                         {textCancelButton}
-                      </ButtonComponent>
+                      </ButtonComponent>}
                     </div>
                   </div>
                 </div>

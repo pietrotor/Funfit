@@ -197,8 +197,10 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
             setSidebar={setsidebarOpen}
           />
           <div className="w-full">
-            <div className="transition-duration-500 flex w-full justify-between ps-10  transition-all">
-              {showBackButton && <BackButton />}
+            <div className={` fixed  z-10 ${sidebarOpen ? 'left-64' : 'lg:left-24 left-10'} `}>
+            {showBackButton && <BackButton />}
+            </div>
+            <div className={` fixed right-5 z-10 ${sidebarOpen ? '' : ''} `}>
               <ToastComponent />
               <div className="flex items-center">
                 <DropDown
@@ -208,6 +210,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
                   avatar="https://static.vecteezy.com/system/resources/previews/000/376/699/original/notification-vector-icon.jpg"
                 />
                 <DropDown
+                  fill
                   IconButtonName="user"
                   label={'Pietro'}
                   user='https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png'
@@ -230,7 +233,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
                 />
               </div>
             </div>
-            <div className="h-full w-full ps-5">{children}</div>
+            <div className="h-full w-full ps-5 lg:pt-5 pt-16">{children}</div>
           </div>
         </main>
       ) : (

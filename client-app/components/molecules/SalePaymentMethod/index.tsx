@@ -34,6 +34,7 @@ function SalePaymentMethod({ setPayment }: SalePaymentMethodProps) {
         >
           <IconSelector name="Card" width="w-8" />
           <h3 className="text-lg font-semibold text-gray-500">Tarjeta</h3>
+          <p className='text-xs'> 2% de descuento</p>
         </span>
         <span
           className="border-gray flex cursor-pointer flex-col items-center justify-center border-2 p-3 text-secondary/80 hover:border-secondary/40 hover:text-secondary"

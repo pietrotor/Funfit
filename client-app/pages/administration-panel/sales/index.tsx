@@ -33,7 +33,7 @@ function Sales() {
       paginationInput: {}
     }
   })
-  const { data, setVariables, variables, setFilter } =
+  const { data, setVariables, variables } =
     UseGetCustomSalesPaginated(branchSelected.id)
 
   const handleChangeRow = (row: number) => {
@@ -183,7 +183,6 @@ function Sales() {
           currentPage={variables?.currentPage}
           totalPages={variables?.totalPages}
           enablePagination={true}
-          onSearch={value => setFilter(value)}
           totalItems={variables?.totalRecords}
           titles={[
             { name: '#' },

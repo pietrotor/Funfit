@@ -1,12 +1,18 @@
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
+import { CircularProgressbar } from 'react-circular-progressbar'
 import { MyModal } from './MyModal'
 import { TValuesWarehouses } from './EditWarehouseModal'
 import Selector from '../InputSelector'
 import InputComponent from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
 import ComboInput from '../ComboInput'
-import { StockMovementTypeEnum, useGetStocksPaginatedLazyQuery, useGetWarehousesLazyQuery } from '@/graphql/graphql-types'
+import {
+  StockMovementTypeEnum,
+  useGetStocksPaginatedLazyQuery,
+  useGetWarehousesLazyQuery
+} from '@/graphql/graphql-types'
+import 'react-circular-progressbar/dist/styles.css'
 import { useCreateBranchProductStockMovement } from '@/hooks/UseStockMovementQuery'
 import { useAppSelector } from '@/store/index'
 import { TProductBranchData } from '@/interfaces/TData'
@@ -21,33 +27,47 @@ export const MoveBranchStockModal = ({
   productBranch
 }: ModalProps) => {
   const [warehouseData, setWarehouseData] = useState<TValuesWarehouses>()
-  const branchIdSelected = useAppSelector(state => state.branchReducer.currentBranch.id)
+  const branchIdSelected = useAppSelector(
+    state => state.branchReducer.currentBranch.id
+  )
 
   const { control, handleSubmit, watch, reset } = useForm()
   const [getWarehouses, { data }] = useGetWarehousesLazyQuery()
-  const [getStockWarehouse, { data: stockData }] = useGetStocksPaginatedLazyQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      paginationInput: {}
-    },
-    onCompleted: data => {
-      if (data.getStocksPaginated?.status === 'ERROR') {
+  const [getStockWarehouse, { data: stockData }] =
+    useGetStocksPaginatedLazyQuery({
+      fetchPolicy: 'network-only',
+      variables: {
+        paginationInput: {}
+      },
+      onCompleted: data => {
+        console.log(productBranch, 'data')
+        console.log(data, 'data')
+
+        console.log(
+          data.getStocksPaginated?.data?.find(
+            stock =>
+              stock.productId === productBranch.productId &&
+              stock.warehouseId === warehouseData?.id
+          )?.quantity
+        )
+        if (data.getStocksPaginated?.status === 'ERROR') {
+          showSuccessToast(
+            data.getStocksPaginated?.message || 'Error al cargar los productos',
+            'error'
+          )
+        }
+      },
+      onError: error => {
         showSuccessToast(
-          data.getStocksPaginated?.message || 'Error al cargar los productos',
+          error.message || 'Error al cargar los productos',
           'error'
         )
       }
-    },
-    onError: error => {
-      showSuccessToast(
-        error.message || 'Error al cargar los productos',
-        'error'
-      )
-    }
-  })
+    })
   const { handleCreateBranchStockMovement } =
     useCreateBranchProductStockMovement()
   const handleCancel = () => {
+    setWarehouseData(undefined)
     onClose()
     reset()
   }
@@ -56,13 +76,46 @@ export const MoveBranchStockModal = ({
       fetchPolicy: 'network-only',
       variables: {
         paginationInput: {}
+      },
+      onCompleted: data => {
+        if (data.getWarehouses?.status === 'ERROR') {
+          showSuccessToast(
+            data.getWarehouses?.message || 'Error al cargar los productos',
+            'error'
+          )
+        }
       }
     })
   }
+  const handlePlusController = () => {
+    const stockD = stockData?.getStocksPaginated?.data?.find(
+      stock =>
+        stock.productId === productBranch.productId &&
+        stock.warehouseId === warehouseData?.id
+    )
+    if (watch('movementType') === StockMovementTypeEnum.OUTWARD) {
+      console.log(stockD?.quantity, parseInt(watch('quantity')))
+      console.log(watch('movementType'))
+      console.log(stockD && stockD.quantity + parseInt(watch('quantity')))
+      return stockD && stockD.quantity + parseInt(watch('quantity'))
+    } else if (
+      watch('movementType') === StockMovementTypeEnum.INWARD ||
+      watch('movementType') === StockMovementTypeEnum.DISPOSE
+    ) {
+      console.log(stockD && stockD.quantity - parseInt(watch('quantity')))
+      console.log(stockD && stockD.quantity, parseInt(watch('quantity')))
+      return stockD && stockD.quantity - parseInt(watch('quantity'))
+    }
+    console.log(watch('date'))
+    return stockD?.quantity
+  }
+
   const onSubmit = () => {
-    console.log(stockData?.getStocksPaginated?.data?.find(
-      stock => stock.product?.id === productBranch.id
-    )?.id)
+    console.log(
+      stockData?.getStocksPaginated?.data?.find(
+        stock => stock.product?.id === productBranch.id
+      )?.id
+    )
     handleCreateBranchStockMovement({
       branchProductId: productBranch.id,
       branchId: branchIdSelected,
@@ -100,8 +153,7 @@ export const MoveBranchStockModal = ({
                   ) as TValuesWarehouses
                 )
                 getStockWarehouse()
-              }
-            }
+              }}
               control={control}
               options={
                 data?.getWarehouses?.data?.map(warehouse => ({
@@ -149,8 +201,6 @@ export const MoveBranchStockModal = ({
                 }
               }}
             />
-          </div>
-          <div className="h-full space-y-3">
             <InputComponent
               type="date"
               name="date"
@@ -182,6 +232,63 @@ export const MoveBranchStockModal = ({
                 }
               }}
             />
+          </div>
+          <div className="h-full space-y-3">
+            <div className="mx-auto w-4/5 p-10 text-center">
+              <CircularProgressbar
+                className="mx-auto w-4/5"
+                value={
+                  handlePlusController() ||
+                  stockData?.getStocksPaginated?.data?.find(
+                    stock =>
+                      stock.productId === productBranch.productId &&
+                      stock.warehouseId === warehouseData?.id
+                  )?.quantity ||
+                  0
+                }
+                maxValue={
+                  stockData?.getStocksPaginated?.data?.find(
+                    stock =>
+                      stock.productId === productBranch.productId &&
+                      stock.warehouseId === warehouseData?.id
+                  )?.quantity
+                }
+                text={`${
+                  stockData?.getStocksPaginated?.data?.find(
+                    stock =>
+                      stock.productId === productBranch.productId &&
+                      stock.warehouseId === warehouseData?.id
+                  )?.quantity || 'No hay stock'
+                }`}
+                styles={{
+                  path: {
+                    stroke: 'rgba(62, 152, 199)',
+                    strokeLinecap: 'butt',
+                    transition: 'stroke-dashoffset 0.5s ease 0s'
+                  },
+                  trail: {
+                    stroke: '#d6d6d6',
+                    strokeLinecap: 'butt'
+                  },
+                  text: {
+                    fill: '#f88',
+                    fontSize: '14px',
+                    fontWeight: 600
+                  }
+                }}
+              />
+              {watch('warehouseId') ? (
+                stockData?.getStocksPaginated?.data?.find(
+                  stock =>
+                    stock.productId === productBranch.productId &&
+                    stock.warehouseId === warehouseData?.id
+                )?.units
+              ) : (
+                <p className="text-center text-red-500">
+                  Seleccione un almacén
+                </p>
+              )}
+            </div>
           </div>
         </div>
         <InputComponent

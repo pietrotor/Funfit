@@ -80,15 +80,15 @@ function CreateStock() {
   return (
     <AdministrationLayout showBackButton={true}>
       <div className="w-full"></div>
-      <div className="absolute top-20 ms-5 mt-5 flex h-[75%] w-[90%] transform flex-col items-start justify-center lg:right-0 right-5 bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center">
+      <div className="absolute right-5 top-20 ms-5 mt-5 flex h-[75%] w-[90%] transform flex-col items-start justify-center bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center lg:right-0">
         <div
           className={`${
-            productsData ? 'absolute md:right-0  h-full w-[60%] bg-gray-700 opacity-60' : ''
+            productsData ? 'absolute h-full  w-[60%] bg-gray-700 opacity-60 md:right-0' : ''
           }`}
         />
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className={` relative z-30 flex h-full  w-full md:w-[43%] flex-col items-center justify-center border bg-slate-50/100  px-16 py-9  transition-all duration-700  ${
+          className={` relative z-30 flex h-full  w-full flex-col items-center justify-center border bg-slate-50/100 px-16  py-9 transition-all  duration-700 md:w-[43%]  ${
             productsData ? '' : ''
           }`}
         >
@@ -135,7 +135,7 @@ function CreateStock() {
                 }
               }}
             />
-            <div className="grid grid-cols-2 gap-2  ">
+            <div className="grid lg:grid-cols-2 gap-2  ">
               <Input
                 control={control}
                 name="quantity"
@@ -182,7 +182,7 @@ function CreateStock() {
         </form>
         <div
           className={`absolute  grid grid-cols-2 place-items-center gap-x-2 py-6 ps-4 transition-all duration-300 ${
-            !productsData ? 'invisible md:left-1 ' : 'md:left-unit-9xl '
+            !productsData ? 'invisible md:left-1 ' : 'xl:left-unit-9xl lg:left-unit-8xl md:left-unit-7xl'
           }`}
         >
           <div className="">
@@ -196,7 +196,7 @@ function CreateStock() {
               disabled={true}
               customeClassName=" mb-2"
             />
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid xl:grid-cols-2 gap-2">
               <Input
                 required={false}
                 name="code"
