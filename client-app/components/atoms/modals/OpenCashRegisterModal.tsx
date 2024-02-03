@@ -75,7 +75,7 @@ export const OpenCashRegister = ({
       control={control}
       handleSubmit={handleSubmit}
       onSubmit={onSubmit}
->
+    >
       <div className="px-8">
         <div className="flex flex-col space-y-3">
           <div className="flex justify-between">

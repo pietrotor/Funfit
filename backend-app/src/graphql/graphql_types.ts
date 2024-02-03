@@ -201,6 +201,7 @@ export type CreateBranchInput = {
   name: Scalars['String']['input'];
   nit?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
+  visibleOnWeb: Scalars['Boolean']['input'];
 };
 
 export type CreateBranchProductInput = {
@@ -904,6 +905,7 @@ export type UpdateBranchInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   nit?: InputMaybe<Scalars['String']['input']>;
   phone?: InputMaybe<Scalars['String']['input']>;
+  visibleOnWeb?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 export type UpdateBranchProductInput = {

@@ -3,9 +3,10 @@ import { useForm } from 'react-hook-form'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
+import Selector from '../InputSelector'
 import { DropZone } from '@/components/molecules/DropZone'
 
-import { StatusEnum, useCreateProductMutation } from '@/graphql/graphql-types'
+import { StatusEnum, useCreateProductMutation, useGetCategoriesLazyQuery } from '@/graphql/graphql-types'
 
 interface AddProductModalProps {
   isOpen: boolean
@@ -20,6 +21,13 @@ export const AddProductModal = ({
 }: AddProductModalProps) => {
   const { handleSubmit, watch, control, reset } = useForm()
   const [createProduct, { loading }] = useCreateProductMutation()
+  const [getProducts, { data }] = useGetCategoriesLazyQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      paginationInput: {}
+    }
+  })
+
   const onSubmit = () => {
     createProduct({
       variables: {
@@ -29,7 +37,8 @@ export const AddProductModal = ({
           description: watch('description'),
           image: watch('image'),
           name: watch('name'),
-          suggetedPrice: parseFloat(watch('suggetedPrice'))
+          suggetedPrice: parseFloat(watch('suggetedPrice')),
+          categoryId: watch('category')
         }
       },
       onCompleted: data => {
@@ -132,8 +141,8 @@ export const AddProductModal = ({
               }
             }}
           />
-        </div>
-        <Input
+          <Input
+          customeClassName="h-20 "
           control={control}
           name="description"
           label="Descripción"
@@ -149,6 +158,26 @@ export const AddProductModal = ({
             }
           }}
         />
+        <Selector
+          control={control}
+          name="category"
+          label="Categoría"
+          placeholder="Categoría"
+          rules={{
+            required: {
+              value: true,
+              message: 'Este campo es obligatorio'
+            }
+          }}
+          onClick={getProducts}
+          options={
+            data?.getCategories?.data?.map(category => ({
+              label: category.name,
+              value: category.id
+            })) || [{ label: 'Cargando..', value: 'Cargando..' }]
+          }
+        />
+        </div>
         <DropZone />
       </div>
     </MyModal>

@@ -2,25 +2,20 @@ import React from 'react'
 import { Button, Input } from '@nextui-org/react'
 import { useRouter } from 'next/router'
 import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { TUserInfo } from '@/components/templates/OrderLayout/orderLayout'
 
 type Props = {
   goToStep: (p: number) => void
   currentStepIndex: number
+  setUserInfo: (p: TUserInfo) => void
 }
 
-type TData = {
-  name: string
-  lastName: string
-  email: string
-  phone: string
-}
-
-function RegisterForm({ goToStep, currentStepIndex }: Props) {
-  const { control, handleSubmit } = useForm<TData>()
+function RegisterForm({ goToStep, currentStepIndex, setUserInfo }: Props) {
+  const { control, handleSubmit } = useForm<TUserInfo>()
   const router = useRouter()
 
-  const onSubmit: SubmitHandler<TData> = data => {
-    console.log(data)
+  const onSubmit: SubmitHandler<TUserInfo> = data => {
+    setUserInfo(data)
     goToStep(currentStepIndex + 1)
   }
 

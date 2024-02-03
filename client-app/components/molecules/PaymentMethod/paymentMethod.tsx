@@ -1,14 +1,28 @@
 import React, { useState } from 'react'
+import { useRouter } from 'next/router'
 import { Accordion, AccordionItem, Button, Image } from '@nextui-org/react'
-import Link from 'next/link'
-
+import { useAppSelector } from '@/store/index'
+import { TUserInfo } from '@/components/templates/OrderLayout/orderLayout'
+export type activeDirection = {
+  location: {
+    lat: number
+    lng: number
+  }
+  address: string
+}
 type Props = {
   goToStep: (e: number) => void
   currentStepIndex: number
+  userInfo: TUserInfo
+  activeDirection: activeDirection
+  send: any
 }
 
-function PaymentMethod({ goToStep, currentStepIndex }: Props) {
+function PaymentMethod({ goToStep, currentStepIndex, userInfo, activeDirection, send }: Props) {
   const [selectedKeys, setSelectedKeys] = useState(false)
+  const cartItems = useAppSelector(state => state.cartReducer.cartItems)
+  const subTotal = useAppSelector(state => state.cartReducer.cartSubTotal)
+  const router = useRouter()
 
   const download = (filename: string, content: any) => {
     try {
@@ -30,6 +44,23 @@ function PaymentMethod({ goToStep, currentStepIndex }: Props) {
     } catch (error) {
       console.error(error)
     }
+  }
+
+  const handleNotification = () => {
+    const message = `El pedido consta de:\n${cartItems
+      .map(
+        item =>
+          ` ${item.quantity} unidades de ${item.productName} a ${
+            item.price
+          } Bs. con un total de ${item.price * item.quantity}`
+      )
+      .join('\n')}\n\nSubtotal: ${subTotal} Bs.\n\nInformación de contacto:\n* Cliente: ${userInfo.name} ${userInfo.lastName}\n* Teléfono: ${userInfo.phone}\n* Correo: ${userInfo.email}\n ${send.current.type !== 'Entrega a domicilio' ? `\nTipo de entrega:\n ${send.current.type}\n Ubicación:\n ${send.current.address} \n\n*Por favor, confirmar la dirección y el pedido. Gracias!` : `\nUbicación: \n https://maps.google.com/?q=${activeDirection.location.lat},${activeDirection.location.lng} \n Detalles: \n ${send.current.address} \n*Por favor, confirmar la dirección y el pedido. Gracias!`}`
+
+    const whatsappLink = `https://api.whatsapp.com/send?phone=76475010&text=${encodeURIComponent(
+      message
+    )}`
+    window.open(whatsappLink, '_blank')
+    router.push('/gratitudePage')
   }
 
   return (
@@ -84,12 +115,11 @@ function PaymentMethod({ goToStep, currentStepIndex }: Props) {
         >
           Atrás
         </Button>
-        <Link
-          href="/gratitudePage"
-          className="w-1/4 rounded-xl bg-primary py-2 text-white"
-        >
+        <div className="flex w-1/6 justify-between">
+          <Button color="primary" onClick={handleNotification} className='w-full'>
           Finalizar
-        </Link>
+          </Button>
+        </div>
       </div>
     </div>
   )

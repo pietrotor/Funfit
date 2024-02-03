@@ -13,6 +13,7 @@ type TSelectorProps = {
     value: any
     label: string
   }[]
+  size?: 'sm' | 'md' | 'lg'
   label?: string
   width?: string
   fontSize?: string
@@ -32,6 +33,7 @@ const Selector: React.FC<TSelectorProps> = ({
   control,
   options,
   name,
+  size = 'md',
   label,
   rules,
   placeholder,
@@ -55,6 +57,7 @@ const Selector: React.FC<TSelectorProps> = ({
                 onClick={onClick}
                 defaultSelectedKeys={[defaultValue]}
                 style={{ border: '1px solid' }}
+                size={size}
               >
                 {options.map((option, idx) => (
                   <SelectItem key={option.value} value={option.value}>

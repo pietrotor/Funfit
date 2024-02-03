@@ -58,7 +58,7 @@ function SideCart() {
                 src={`${item.pictureUrl}`}
                 radius="md"
                 alt="Banner de la empresa"
-                className="w-3/7 h-20"
+                className="w-44 h-20"
                 removeWrapper={true}
               />
               <section className=" flex w-full items-center justify-between">

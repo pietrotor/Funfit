@@ -5,7 +5,7 @@ export const SkeletonCard = () => {
   return (
     <Card className="w-full h-full space-y-5 p-4" radius="lg">
       <Skeleton className="rounded-lg h-4/6">
-        <div className="h-24 rounded-lg bg-default-300"></div>
+        <div className="h-96 rounded-lg bg-default-300"></div>
       </Skeleton>
       <div className="space-y-3">
         <Skeleton className="w-3/5 rounded-lg">

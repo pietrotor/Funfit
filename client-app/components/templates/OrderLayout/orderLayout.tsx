@@ -1,9 +1,16 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import Stepper, { Step } from '@/components/molecules/Stepper/stepper'
 import RegisterForm from '@/components/molecules/RegisterForm/registerForm'
 import SendOrder from '@/components/molecules/SendOreder/sendOrder'
 import PaymentMethod from '@/components/molecules/PaymentMethod/paymentMethod'
 import SideCart from '@/components/molecules/SideCart/sideCart'
+
+export type TUserInfo = {
+  name: string
+  lastName: string
+  email: string
+  phone: string
+}
 
 function OrderLayout() {
   const steps: Step[] = [
@@ -23,6 +30,19 @@ function OrderLayout() {
 
   const [currentStep, setCurrentStep] = useState<Step[]>(steps)
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
+  const [userInfo, setUserInfo] = useState<TUserInfo>({} as TUserInfo)
+  const [activeDirection, setActiveDirection] = useState({
+    location: {
+      lat: -17.414,
+      lng: -66.1653
+    },
+    address: ''
+  })
+  console.log(activeDirection)
+  const send = useRef({
+    type: '',
+    address: ''
+  })
 
   const goToStep = (stepIndex: number) => {
     const updatedSteps = [...currentStep]
@@ -52,16 +72,23 @@ function OrderLayout() {
             <RegisterForm
               goToStep={goToStep}
               currentStepIndex={currentStepIndex}
+              setUserInfo = {setUserInfo}
             />
           ) : currentStep[1].isActive === 'active' ? (
             <SendOrder
               goToStep={goToStep}
               currentStepIndex={currentStepIndex}
+              activeDirection={activeDirection.location}
+              changeDirection={(value) => setActiveDirection(value)}
+              send={send}
             />
           ) : (
             <PaymentMethod
               goToStep={goToStep}
               currentStepIndex={currentStepIndex}
+              userInfo={userInfo}
+              activeDirection={activeDirection}
+              send={send}
             />
           )}
         </div>

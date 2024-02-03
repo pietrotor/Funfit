@@ -42,6 +42,10 @@ type Query {
   # WAREHOUSES =======================================
   getWarehouses(paginationInput: PaginationInput!): WarehousesResponse
   getWarehouseById(id: ObjectId!): WarehouseResponse
+  getWarehousesOfProduct(
+    paginationInput: PaginationInput!
+    productId: ObjectId!
+  ): WarehousesResponse
   # STOCKS =======================================
   getStocksPaginated(paginationInput: PaginationInput!): StocksResponse
   getStockById(id: ObjectId!): StockResponse
@@ -631,6 +635,7 @@ input CreateBranchInput {
   direction: String!
   phone: String
   nit: String
+  visibleOnWeb: Boolean!
 }
 input UpdateBranchInput {
   id: ObjectId!
@@ -640,6 +645,7 @@ input UpdateBranchInput {
   direction: String
   phone: String
   nit: String
+  visibleOnWeb: Boolean
 }
 input CreateBranchProductInput {
   branchId: ObjectId!
