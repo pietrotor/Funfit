@@ -41,7 +41,7 @@ function SalesReceipt({
   return (
     <div className='h-full'>
       <div className="flex w-full flex-col justify-between h-full">
-        <h3 className=" p-4 text-center text-2xl font-bold text-gray-500">
+        <h3 className=" p-4 text-left ms-6 text-2xl font-bold text-gray-500">
           Recibo de venta
         </h3>
         <div className="flex h-4/5 w-full flex-col border-y-1 border-y-secondary/30 ">

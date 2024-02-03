@@ -25,6 +25,8 @@ type DropDownProps = {
   avatar?: string
   user?: string
   counter?: number
+  className?: string
+  fill?: boolean
 }
 export const DropDown = ({
   label,
@@ -32,22 +34,24 @@ export const DropDown = ({
   IconButtonName,
   avatar,
   user,
-  counter
+  counter,
+  className,
+  fill
 }: DropDownProps) => {
   return (
-    <div className="mt-8 md:me-4 ">
+    <div className={` mt-8 md:me-4 ${className}`}>
       <Dropdown placement="bottom-end">
         <DropdownTrigger>
           <div>
             {avatar ? (
               <Badge content={counter} color='primary' size='lg'>
-                <div className=" cursor-pointer p-white rounded-full border-double  border-gray-300   bg-gray-300 p-2">
+                <div className='cursor-pointer p-white rounded-full border-double border-gray-300 bg-gray-300 p-2'>
                 <IconSelector name={IconButtonName} />
               </div>
               </Badge>
             ) : (
               user && (
-                <div className='border-2 rounded-full px-2 py-1 flex items-center'>
+                <div className={` border-2 rounded-full px-2 py-1 flex items-center ${fill && 'bg-white hover:bg-gray-100 transition-all duration-100'} `}>
                   <User
                   as="button"
                   avatarProps={{

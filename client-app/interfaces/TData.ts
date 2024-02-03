@@ -22,6 +22,7 @@ export type TDataBranch = {
     phone?: string | null | undefined;
     nit?: string | null | undefined;
     cashId?: any;
+    visibleOnWeb: boolean;
 }
 
 export type TProductBranchData = {

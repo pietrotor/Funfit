@@ -37,20 +37,16 @@ function CardPaymentMethod({
           <p className="font-thin text-gray-500">Monto</p>
           <InputComponent
             control={control}
-            name="amountRecibed"
+            name="cardAmountRecibed"
             placeholder="Bs."
             type="text"
             rules={{
               required: {
                 value: payment.paymentMethod === 'card',
                 message: 'Este campo es obligatorio'
-              },
-              pattern: {
-                value: /^[0-9]+$/i,
-                message: 'Solo se permiten números'
               }
             }}
-            defaultValue={total.toString()}
+            defaultValue={(total - total * 0.02).toString()}
             isDisabled
           />
         </div>

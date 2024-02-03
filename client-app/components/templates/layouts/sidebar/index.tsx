@@ -79,9 +79,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
       ></div>
       <div
         className={`fixed left-0 top-0 z-50 flex h-screen max-h-screen text-white transition-all duration-700 ${
-          isSidebarOpen
-            ? 'w-80 -translate-x-20'
-            : 'w-16 -translate-x-20 md:-translate-x-0 xl:w-[70px]'
+          isSidebarOpen ? 'w-80 -translate-x-20 ' : 'w-16 -translate-x-20 md:-translate-x-0 xl:w-[70px]'
         }`}
       >
         {/* Simple sidebar */}
@@ -134,7 +132,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
         </div>
         {/* Detail sidebar */}
         <div
-          className={`z-50 flex h-full flex-col justify-between overflow-hidden bg-white shadow-2xl transition-all duration-300 ${
+          className={`z-50 flex h-full flex-col justify-between  overflow-hidden bg-white shadow-2xl transition-all duration-300 overflow-y-auto scrollbar-hide scrollbar-thumb-gray-500 ${
             isSidebarOpen ? 'w-80' : 'w-0'
           }`}
         >
