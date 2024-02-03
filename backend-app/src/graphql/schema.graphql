@@ -82,7 +82,10 @@ type Query {
   getSaleById(id: ObjectId!): SaleResponse
   getSalesPaginated(salesPaginationInput: SalesPaginationInput!): SalesResponse
   # ============================ ECOMMERCE ROUTES ================================
-  getPublicProducts(paginationInput: PaginationInput!): ProductsResponse
+  getPublicProducts(
+    paginationInput: PaginationInput!
+    branchId: ObjectId!
+  ): BranchProductsResponse
 }
 type Mutation {
   # CONFIGURATION ====================================

@@ -6,20 +6,24 @@ import {
   CreateProductInput,
   UpdateProductInput,
   Product,
-  Category
+  Category,
+  BranchProductsResponse
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
-import { categoryCore, productCore } from '@/services/index'
+import { branchProductCore, categoryCore, productCore } from '@/services/index'
 
 // ========================================== Mutations ====================================================
 const getPublicProducts = async (
   _: any,
-  args: { paginationInput: PaginationInput }
-): Promise<ProductsResponse> => {
+  args: { paginationInput: PaginationInput; branchId: objectId }
+): Promise<BranchProductsResponse> => {
   try {
-    const { paginationInput } = args
-    return await productCore.getProductsPaginated(paginationInput)
+    const { paginationInput, branchId } = args
+    return await branchProductCore.getBranchesProductsPaginated(
+      paginationInput,
+      branchId
+    )
   } catch (error) {
     console.log(error)
     return errorHandler(error)
