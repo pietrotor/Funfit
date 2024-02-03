@@ -230,7 +230,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
                 />
               </div>
             </div>
-            <div className="w-full ps-5">{children}</div>
+            <div className="h-full w-full ps-5">{children}</div>
           </div>
         </main>
       ) : (
