@@ -88,7 +88,7 @@ export class StocksService extends StockRepository<objectId> {
   }
 
   async createStock(createStockInput: CreateStockInput, createdBy?: objectId) {
-    const { quantity, warehouseId } = createStockInput
+    const { quantity, warehouseId, productId } = createStockInput
     const productInstance = await productCore.getProductById(
       createStockInput.productId
     )
