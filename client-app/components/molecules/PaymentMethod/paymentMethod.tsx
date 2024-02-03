@@ -1,8 +1,9 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import { Accordion, AccordionItem, Button, Image } from '@nextui-org/react'
-import { useAppSelector } from '@/store/index'
+import { useAppDispatch, useAppSelector } from '@/store/index'
 import { TUserInfo } from '@/components/templates/OrderLayout/orderLayout'
+import { clearCart } from '@/store/slices'
 export type activeDirection = {
   location: {
     lat: number
@@ -23,6 +24,7 @@ function PaymentMethod({ goToStep, currentStepIndex, userInfo, activeDirection, 
   const cartItems = useAppSelector(state => state.cartReducer.cartItems)
   const subTotal = useAppSelector(state => state.cartReducer.cartSubTotal)
   const router = useRouter()
+  const dispatch = useAppDispatch()
 
   const download = (filename: string, content: any) => {
     try {
@@ -47,6 +49,7 @@ function PaymentMethod({ goToStep, currentStepIndex, userInfo, activeDirection, 
   }
 
   const handleNotification = () => {
+    dispatch(clearCart())
     const message = `El pedido consta de:\n${cartItems
       .map(
         item =>

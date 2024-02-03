@@ -40,7 +40,7 @@ export const cartSlice = createSlice({
       }
       state.cartSubTotal = state.cartItems.reduce((acc, item) => acc + item.price, 0)
     },
-    addToLocalSrotageCart(state, action) {
+    addToLocalStorageCart(state, action) {
       const item = action.payload
       const existItem = state.cartItems.find((x) => x.id === item.id)
 
