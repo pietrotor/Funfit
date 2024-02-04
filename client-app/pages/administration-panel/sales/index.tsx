@@ -91,7 +91,7 @@ function Sales() {
               label="Vendedor"
               name="seller"
               control={control}
-              onChange={e => setVariables({ ...variables, saleBy: e })}
+              onSelectionChange={e => setVariables({ ...variables, saleBy: e })}
               onClick={() => getUsers()}
               options={ users?.getUsers?.data?.map(user => ({
                 label: user.name,

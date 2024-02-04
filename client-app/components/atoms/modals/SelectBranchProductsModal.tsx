@@ -44,6 +44,14 @@ export const SelectBranchProductsModal = ({
     setSelected(currentBranchId ? data?.find(branch => branch?.id === currentBranchId) : undefined)
   }, [])
 
+  // useEffect(() => {
+  //   if (data && data.length === 1) {
+  //     sessionStorage.setItem('branchId', JSON.stringify(data[0].id))
+  //     router.reload()
+  //     onClose()
+  //   }
+  // }, [data])
+
   return (
     <MyModal
       isOpen={isOpen}

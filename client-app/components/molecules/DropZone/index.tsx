@@ -14,20 +14,20 @@ export const DropZone = () => {
   })
 
   const acceptedFileItems = acceptedFiles.map(file => (
-      <li key={file.path}>
-        {file.path} - {file.size} bytes
-      </li>
+    <li key={file.name}>
+      {file.name} - {file.size} bytes
+    </li>
   ))
 
   const fileRejectionItems = fileRejections.map(({ file, errors }) => (
-      <li key={file.path}>
-        {file.path} - {file.size} bytes
-        <ul>
-          {errors.map(e => (
-            <li key={e.code}>{e.message}</li>
-          ))}
-        </ul>
-      </li>
+    <li key={file.name}>
+      {file.name} - {file.size} bytes
+      <ul>
+        {errors.map(e => (
+          <li key={e.code}>{e.message}</li>
+        ))}
+      </ul>
+    </li>
   ))
 
   return (

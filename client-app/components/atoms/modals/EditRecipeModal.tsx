@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { MyModal } from './MyModal'
 import ButtonComponent from '../Button'
@@ -20,7 +20,7 @@ export const EditRecipeModal = ({
   values,
   handleSendUpdateRecipe
 }: EditRecipeModalProps) => {
-  const { control, handleSubmit } = useForm()
+  const { control, handleSubmit, reset } = useForm()
   const [rows, setRows] = useState<RecipeFormProps[]>([
     { product: '', quantity: '', units: '' } // Fila por defecto
   ])
@@ -36,6 +36,11 @@ export const EditRecipeModal = ({
   const handleAddRow = () => {
     setRows([...rows, { product: '', quantity: '', units: '' }])
   }
+  useEffect(() => {
+    reset({
+      name: values?.name
+    })
+  }, [values])
 
   return (
     <MyModal

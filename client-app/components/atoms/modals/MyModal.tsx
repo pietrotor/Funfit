@@ -24,7 +24,7 @@ export type ModalProps = {
   hideCancelButton?: boolean
   control?: any
   watch?: any
-  reset?: any
+  reset?: () => void
   handleSubmit?: any
   onSubmit?: any
   isForm?: boolean
