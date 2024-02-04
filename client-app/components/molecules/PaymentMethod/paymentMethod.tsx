@@ -19,10 +19,17 @@ type Props = {
   send: any
 }
 
-function PaymentMethod({ goToStep, currentStepIndex, userInfo, activeDirection, send }: Props) {
+function PaymentMethod({
+  goToStep,
+  currentStepIndex,
+  userInfo,
+  activeDirection,
+  send
+}: Props) {
   const [selectedKeys, setSelectedKeys] = useState(false)
   const cartItems = useAppSelector(state => state.cartReducer.cartItems)
   const subTotal = useAppSelector(state => state.cartReducer.cartSubTotal)
+  const branch = useAppSelector(state => state.ecommerceInformationReducer.name)
   const router = useRouter()
   const dispatch = useAppDispatch()
 
@@ -57,7 +64,15 @@ function PaymentMethod({ goToStep, currentStepIndex, userInfo, activeDirection, 
             item.price
           } Bs. con un total de ${item.price * item.quantity}`
       )
-      .join('\n')}\n\nSubtotal: ${subTotal} Bs.\n\nInformación de contacto:\n* Cliente: ${userInfo.name} ${userInfo.lastName}\n* Teléfono: ${userInfo.phone}\n* Correo: ${userInfo.email}\n ${send.current.type !== 'Entrega a domicilio' ? `\nTipo de entrega:\n ${send.current.type}\n Ubicación:\n ${send.current.address} \n\n*Por favor, confirmar la dirección y el pedido. Gracias!` : `\nUbicación: \n https://maps.google.com/?q=${activeDirection.location.lat},${activeDirection.location.lng} \n Detalles: \n ${send.current.address} \n*Por favor, confirmar la dirección y el pedido. Gracias!`}`
+      .join(
+        '\n'
+      )}\n\nSubtotal: ${subTotal} Bs.\n\nInformación de contacto:\n* Cliente: ${
+      userInfo.name
+    } ${userInfo.lastName}\n* Teléfono: ${userInfo.phone}\n* Correo: ${
+      userInfo.email
+    }\n ${
+      send.current.type !== 'Entrega a domicilio' ? `\nTipo de entrega: 'Recojo en Sucursal'\n Sucursal: ${branch}` : `\nUbicación: \n https://maps.google.com/?q=${activeDirection.location.lat},${activeDirection.location.lng} \n Detalles: \n ${send.current.address}`
+    } `
 
     const whatsappLink = `https://api.whatsapp.com/send?phone=76475010&text=${encodeURIComponent(
       message
@@ -119,8 +134,12 @@ function PaymentMethod({ goToStep, currentStepIndex, userInfo, activeDirection, 
           Atrás
         </Button>
         <div className="flex w-1/6 justify-between">
-          <Button color="primary" onClick={handleNotification} className='w-full'>
-          Finalizar
+          <Button
+            color="primary"
+            onClick={handleNotification}
+            className="w-full"
+          >
+            Finalizar
           </Button>
         </div>
       </div>

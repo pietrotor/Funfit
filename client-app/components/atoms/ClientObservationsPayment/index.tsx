@@ -14,16 +14,7 @@ function ClientObservationPayment({ control }: ClientObservationPaymentProps) {
         name="client"
         size="sm"
         placeholder="Nombre completo"
-        rules={{
-          required: {
-            value: true,
-            message: 'Este campo es obligatorio'
-          },
-          pattern: {
-            value: /^[a-zA-Z\s]+$/i,
-            message: 'Solo se permiten letras'
-          }
-        }}
+        isRequired={false}
       />
       <p className="font-thin text-gray-500">Observaciones</p>
       <InputComponent

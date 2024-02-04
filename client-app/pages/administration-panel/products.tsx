@@ -24,7 +24,7 @@ import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 const Productos = () => {
-  const [editProduct, setEditProduct] = useState<TValueProductData>({} as TValueProductData)
+  const [editProduct, setEditProduct] = useState<TValueProductData>()
   const [variables, setVariables] = useState<PaginationInterfaceState>({
     rows: 5,
     filter: '',
@@ -71,7 +71,7 @@ const Productos = () => {
     UpdateUserMutationVariables({
       variables: {
         updateProductInput: {
-          id: editProduct.id,
+          id: editProduct?.id,
           name: values.name,
           suggetedPrice: values.suggetedPrice,
           code: values.code,
@@ -113,7 +113,7 @@ const Productos = () => {
   const handleConfirmDelete = () => {
     DeleteteProductMutation({
       variables: {
-        deleteProductId: editProduct.id
+        deleteProductId: editProduct?.id
       },
       onCompleted: data => {
         if (data.deleteProduct?.status === StatusEnum.ERROR) {
@@ -237,7 +237,7 @@ const Productos = () => {
         isOpen={handleEditProduct.isOpen}
         onClose={handleEditProduct.onClose}
         handleSendUpdateUser={handleSendUpdateUser}
-        values={editProduct}
+        values={editProduct as TValueProductData}
       />
 
       <ConfirmModal
@@ -247,7 +247,7 @@ const Productos = () => {
         name="trash"
         title="Eliminar producto"
         onConfirm={handleConfirmDelete}
-        message={`¿Esta seguro de eliminar a ${editProduct.name} ?`}
+        message={`¿Esta seguro de eliminar a ${editProduct?.name} ?`}
         isOpen={handleConfirmDeleteProduct.isOpen}
         onClose={handleConfirmDeleteProduct.onClose}
       />

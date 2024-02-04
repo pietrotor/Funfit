@@ -43,12 +43,12 @@ function SaleModal({
 
   const onSubmit = () => {
     handleCreateSale({
-      amountRecibed: payment.cash || parseFloat(watch('amountRecibed')),
+      amountRecibed: payment.paymentMethod === 'card' ? parseFloat(watch('cardAmountRecibed')) : payment.cash || parseFloat(watch('amountRecibed')),
       branchId: branchIdSelected,
       change: payment.change,
       client: watch('client'),
       date: new Date().toISOString(),
-      discount: selectedProducts.discount,
+      discount: payment.paymentMethod === 'card' ? selectedProducts.total * 0.02 + selectedProducts.discount : selectedProducts.discount,
       observations: watch('observations') || '',
       products: selectedProducts.products.map(item => ({
         branchProductId: item.id || '',
@@ -59,7 +59,7 @@ function SaleModal({
       })),
       paymentMethod:
         payment.paymentMethod === 'cash' ? PaymentMethodEnum.CASH : payment.paymentMethod === 'card' ? PaymentMethodEnum.CARD : PaymentMethodEnum.QR_TRANSFER,
-      total: selectedProducts.total,
+      total: payment.paymentMethod === 'card' ? selectedProducts.total - selectedProducts.total * 0.02 : selectedProducts.total,
       subTotal: selectedProducts.subTotal
     })
     reset()
@@ -122,11 +122,19 @@ function SaleModal({
             payment.paymentMethod === 'combined' ? 'overflow-y-scroll' : 'overflow-hidden'
           }`}
         >
-          <div className="flex h-1/6 items-center justify-center space-x-3 py-3">
+          <div className="flex h-1/6 items-center justify-around space-x-3 py-3">
+            <div className='flex space-x-3 items-center'>
             <h2 className="text-xl text-gray-500">Total:</h2>
             <h3 className="text-2xl font-thin text-gray-500">
               Bs. {selectedProducts.total}
             </h3>
+            </div>
+            {payment.paymentMethod === 'card' && <div className='flex space-x-3 items-center' >
+            <h2 className="text-xl text-gray-500">Total con descuento:</h2>
+            <h3 className="text-2xl font-thin text-gray-500">
+              Bs. {selectedProducts.total - selectedProducts.total * 0.02}
+            </h3>
+            </div>}
           </div>
           <div className="h-5/6">
             {payment.paymentMethod === 'options' ? (

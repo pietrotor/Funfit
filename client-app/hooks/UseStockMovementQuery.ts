@@ -31,8 +31,12 @@ export const useCreateBranchProductStockMovement = () => {
         if (result.createBranchProductStockMovement?.status === StatusEnum.OK) {
           showSuccessToast('Producto creado correctamente', 'success')
         }
+      },
+      onError: (error) => {
+        if (error) showSuccessToast(error.message || 'error interno', 'error')
       }
-    })
+    }
+    )
   }
 
   return {

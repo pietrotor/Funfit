@@ -40,23 +40,6 @@ export const cartSlice = createSlice({
       }
       state.cartSubTotal = state.cartItems.reduce((acc, item) => acc + item.price, 0)
     },
-    addToLocalStorageCart(state, action) {
-      const item = action.payload
-      const existItem = state.cartItems.find((x) => x.id === item.id)
-
-      if (existItem) {
-        state.cartItems = state.cartItems.map((x) =>
-          x.id === existItem.id ? {
-            ...x,
-            quantity: x.quantity + item.quantity,
-            price: x.price + item.price
-          } : x
-        )
-      } else {
-        state.cartItems.push(item)
-      }
-      state.cartSubTotal = state.cartItems.reduce((acc, item) => acc + item.price, 0)
-    },
     addToCart(state, action) {
       localStorage.removeItem('cartItems')
       const item = action.payload
@@ -172,7 +155,6 @@ export const {
   increaseCart,
   updateCartDetails,
   updateCartSubTotal,
-  addToLocalSrotageCart,
   updateLocalStorageCartDetails,
   updateLocalStorageCartSubTotal,
   updateCart

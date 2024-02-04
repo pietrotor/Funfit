@@ -2,7 +2,7 @@ import { useForm } from 'react-hook-form'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 export type TValuesWarehouses = {
-  id?: number
+  id?: any
   name?: string
   description?: string
   address?: string

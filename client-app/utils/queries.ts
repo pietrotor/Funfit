@@ -657,6 +657,7 @@ export const GET_BRANCH_PAGINATION = gql`
         direction
         phone
         nit
+        visibleOnWeb
         cashId
         cash {
           id
