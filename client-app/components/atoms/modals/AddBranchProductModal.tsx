@@ -7,7 +7,10 @@ import { MyModal } from './MyModal'
 import { TValueProductData } from './EditProductModal'
 import Input from '../Input'
 import ComboInput from '../ComboInput'
-import { useGetProductsLazyQuery } from '@/graphql/graphql-types'
+import {
+  useGetBranchProductsPaginatedLazyQuery,
+  useGetProductsLazyQuery
+} from '@/graphql/graphql-types'
 import { useCreateBranchProductQuery } from '@/hooks/UseBranchQuery'
 
 interface AddBranchProductModalProps {
@@ -34,6 +37,14 @@ export const AddBranchProductModal = ({
       paginationInput: {}
     }
   })
+  const [getBranchProducts, { data: branchProductData }] =
+    useGetBranchProductsPaginatedLazyQuery({
+      fetchPolicy: 'network-only',
+      variables: {
+        branchId: branchId as string,
+        paginationInput: {}
+      }
+    })
 
   const onSubmit = () => {
     handleCreateBranchProduct({
@@ -51,6 +62,18 @@ export const AddBranchProductModal = ({
   const handleCancel = () => {
     reset()
     onClose()
+  }
+
+  const disabledProducts = () => {
+    const disabledKeys: string[] = []
+    data?.getProducts?.data?.forEach(product => {
+      branchProductData?.getBranchProductsPaginated?.data?.forEach(branchProduct => {
+        if (product.id === branchProduct.productId) {
+          disabledKeys.push(product.name)
+        }
+      })
+    })
+    return disabledKeys
   }
 
   return (
@@ -78,7 +101,11 @@ export const AddBranchProductModal = ({
             }}
             control={control}
             name="product"
-            onClick={getProducts}
+            onClick={() => {
+              getProducts()
+              getBranchProducts()
+            }}
+            disabledKeys={disabledProducts()}
             label="Producto"
             value={productsData?.name || ''}
             onChange={value => {

@@ -10,6 +10,7 @@ import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import { useForm } from 'react-hook-form'
 import { activeDirection } from '../PaymentMethod/paymentMethod'
 import InputComponent from '@/components/atoms/Input'
+import { useAppSelector } from '@/store/index'
 
 type Props = {
   goToStep: (e: number) => void
@@ -29,6 +30,7 @@ function SendOrder({
   const [selectedKeys, setSelectedKeys] = useState(new Set(['0']))
   const [selectedPlace, setSelectedPlace] = useState('')
   const [showAlert, setShowAlert] = useState(false)
+  const branch = useAppSelector(state => state.ecommerceInformationReducer.name)
   const { handleSubmit, control, watch } = useForm()
 
   const { isLoaded } = useJsApiLoader({
@@ -53,7 +55,6 @@ function SendOrder({
   }, [activeDirection])
 
   const onSubmit = () => {
-    console.log(send.current)
     if (send.current.type.trim() === '' || send.current.address.trim() === '') {
       setShowAlert(true)
       return
@@ -68,7 +69,7 @@ function SendOrder({
     goToStep(currentStepIndex + 1)
   }
   const handlePlace = (place: string, type: string) => {
-    setSelectedPlace(type === 'Entrega a domicilio' ? 'Entrega a domicilio' : place)
+    setSelectedPlace(type)
     send.current = {
       type,
       address: place
@@ -93,17 +94,12 @@ function SendOrder({
           >
             <RadioGroup
               name="branch"
-              onValueChange={value =>
-                handlePlace(value, 'Recoger de la sucursal')
-              }
+              onValueChange={setSelectedPlace}
+              onChange={(e) => handlePlace(e.target.value, 'Recoger en sucursal')}
               value={selectedPlace}
               color="secondary"
             >
-              <Radio value="Sucursal América">Sucursal América</Radio>
-              <Radio value="Sucursal Circunvalación">
-                Sucursal Circunvalación
-              </Radio>
-              <Radio value="Sucursal laguna">Sucursal laguna</Radio>
+              <Radio value="Recoger en sucursal">Recoger en: {branch}</Radio>
             </RadioGroup>
           </AccordionItem>
           <AccordionItem
@@ -115,8 +111,9 @@ function SendOrder({
               <RadioGroup
                 color="secondary"
                 name="delivery"
-                onValueChange={value => handlePlace(value, 'Entrega a domicilio')}
+                onValueChange={setSelectedPlace}
                 value={selectedPlace}
+                onChange={e => handlePlace(e.target.value, 'Entrega a domicilio')}
               >
                 <Radio value="Entrega a domicilio">Entrega a domicilio</Radio>
               </RadioGroup>

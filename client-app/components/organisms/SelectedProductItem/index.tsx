@@ -53,8 +53,8 @@ function SelectedProductItem({
   const handleDelete = (id: string) => {
     setSelectedProducts({
       products: selectedProducts.products.filter(item => item.productId !== id),
-      subTotal: selectedProducts.subTotal - (item.price * (item.quantity || 0)),
-      total: selectedProducts.total - (item.price * (item.quantity || 0)),
+      subTotal: selectedProducts.subTotal - item.price * (item.quantity || 0),
+      total: selectedProducts.total - item.price * (item.quantity || 0),
       discount: selectedProducts.discount
     })
   }
@@ -72,8 +72,15 @@ function SelectedProductItem({
         <Counter
           productId={item.productId}
           quantity={item.quantity || 0}
-          decrement={() => increment(item.productId)}
-          increment={() => decrement(item.productId)}
+          decrement={() => {
+            item.quantity && item.quantity > 1 && decrement(item.productId)
+          }}
+          increment={() => {
+            item.quantity &&
+              item.stock &&
+              item?.stock > item?.quantity &&
+              increment(item.productId)
+          }}
         />
       </div>
       <div className="flex h-full w-1/6 flex-col items-center justify-between">

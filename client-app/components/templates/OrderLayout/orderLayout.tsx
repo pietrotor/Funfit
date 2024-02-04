@@ -67,7 +67,7 @@ function OrderLayout() {
         <div className="h-24 rounded-md bg-white shadow-lg">
           <Stepper steps={currentStep} />
         </div>
-        <div className="rounded-md border bg-white shadow-lg">
+        <div className="rounded-md border bg-white shadow-lg h-96">
           {currentStep[0].isActive === 'active' ? (
             <RegisterForm
               goToStep={goToStep}

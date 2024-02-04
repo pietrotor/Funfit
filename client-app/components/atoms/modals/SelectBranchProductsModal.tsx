@@ -20,17 +20,28 @@ export const SelectBranchProductsModal = ({
   loading
 }: SelectBranchModalProps) => {
   const router = useRouter()
-  const [selected, setSelected] = useState<string>()
+  const [selected, setSelected] = useState<TDataBranch>()
+  const [errorMessage, setErrorMessage] = useState<string>()
+
+  const handleSelected = (value: string) => {
+    setSelected(data.find(branch => branch.id === value))
+  }
 
   const handleChangeBranch = () => {
-    sessionStorage.setItem('branchId', JSON.stringify(selected))
-    router.reload()
-    onClose()
+    if (selected) {
+      sessionStorage.setItem('branchId', JSON.stringify(selected.id))
+      router.reload()
+      onClose()
+    } else {
+      setErrorMessage('Por favor seleccionar una sucursal')
+    }
   }
 
   useEffect(() => {
-    const currentBranchId = sessionStorage.getItem('branchId')?.replace(/^"|"$/g, '')
-    setSelected(currentBranchId)
+    const currentBranchId = sessionStorage
+      .getItem('branchId')
+      ?.replace(/^"|"$/g, '')
+    setSelected(currentBranchId ? data?.find(branch => branch?.id === currentBranchId) : undefined)
   }, [])
 
   return (
@@ -47,6 +58,7 @@ export const SelectBranchProductsModal = ({
       title="Seleccionar Sucursal"
       isDimissable={false}
       hideCancelButton={false}
+      errorMessage={errorMessage}
     >
       <section className=" mt-3 px-8 text-center  ">
         <div>
@@ -54,8 +66,8 @@ export const SelectBranchProductsModal = ({
             <Spinner label="Cargando..." color="warning" />
           ) : (
             <RadioGroup
-              onValueChange={value => setSelected(value)}
-              value={selected}
+              onValueChange={value => handleSelected(value)}
+              value={selected?.id}
             >
               {(data || []).map(branch => (
                 <Radio key={branch.id} value={branch.id}>
