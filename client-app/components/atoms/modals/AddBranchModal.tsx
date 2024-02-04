@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form'
-
+import { Switch } from '@nextui-org/react'
+import { useState } from 'react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
@@ -17,6 +18,7 @@ export const AddBranchModal = ({
   onClose,
   onAdd
 }: AddBranchModalProps) => {
+  const [isAvaible, setIsAvaible] = useState<boolean>(true)
   const { handleSubmit, watch, control, reset } = useForm()
   const [createBranch, { loading }] = useCreateBranchMutation()
   const onSubmit = () => {
@@ -28,7 +30,8 @@ export const AddBranchModal = ({
           code: watch('code'),
           direction: watch('address'),
           phone: watch('phone'),
-          nit: watch('nit')
+          nit: watch('nit'),
+          visibleOnWeb: isAvaible
         }
       },
       onCompleted: data => {
@@ -148,6 +151,9 @@ export const AddBranchModal = ({
             }}
           />
         </div>
+        <Switch isSelected={isAvaible} onValueChange={setIsAvaible}>
+          Habilitado en para ventas
+        </Switch>
       </div>
     </MyModal>
   )

@@ -9,8 +9,8 @@ import { showSuccessToast } from '../Toast/toasts'
 import ComboInput from '../ComboInput'
 import {
   StockMovementTypeEnum,
-  useGetStocksPaginatedLazyQuery,
-  useGetWarehousesLazyQuery
+  useGetProductStockLazyQuery,
+  useGetWarehousesOfProductLazyQuery
 } from '@/graphql/graphql-types'
 import 'react-circular-progressbar/dist/styles.css'
 import { useCreateBranchProductStockMovement } from '@/hooks/UseStockMovementQuery'
@@ -32,27 +32,26 @@ export const MoveBranchStockModal = ({
   )
 
   const { control, handleSubmit, watch, reset } = useForm()
-  const [getWarehouses, { data }] = useGetWarehousesLazyQuery()
+  const [getWarehouses, { data }] = useGetWarehousesOfProductLazyQuery()
   const [getStockWarehouse, { data: stockData }] =
-    useGetStocksPaginatedLazyQuery({
+    useGetProductStockLazyQuery({
       fetchPolicy: 'network-only',
       variables: {
-        paginationInput: {}
+        paginationInput: {},
+        productId: productBranch?.productId,
+        warehouseId: warehouseData?.id
       },
       onCompleted: data => {
-        console.log(productBranch, 'data')
-        console.log(data, 'data')
-
         console.log(
-          data.getStocksPaginated?.data?.find(
+          data.getProductStock?.data?.find(
             stock =>
               stock.productId === productBranch.productId &&
               stock.warehouseId === warehouseData?.id
           )?.quantity
         )
-        if (data.getStocksPaginated?.status === 'ERROR') {
+        if (data.getProductStock?.status === 'ERROR') {
           showSuccessToast(
-            data.getStocksPaginated?.message || 'Error al cargar los productos',
+            data.getProductStock?.message || 'Error al cargar los productos',
             'error'
           )
         }
@@ -68,19 +67,20 @@ export const MoveBranchStockModal = ({
     useCreateBranchProductStockMovement()
   const handleCancel = () => {
     setWarehouseData(undefined)
-    onClose()
     reset()
+    onClose()
   }
   const handleGetWarehouses = () => {
     getWarehouses({
       fetchPolicy: 'network-only',
       variables: {
-        paginationInput: {}
+        paginationInput: {},
+        productId: productBranch.productId
       },
       onCompleted: data => {
-        if (data.getWarehouses?.status === 'ERROR') {
+        if (data.getWarehousesOfProduct?.status === 'ERROR') {
           showSuccessToast(
-            data.getWarehouses?.message || 'Error al cargar los productos',
+            data.getWarehousesOfProduct?.message || 'Error al cargar los productos',
             'error'
           )
         }
@@ -88,11 +88,12 @@ export const MoveBranchStockModal = ({
     })
   }
   const handlePlusController = () => {
-    const stockD = stockData?.getStocksPaginated?.data?.find(
-      stock =>
-        stock.productId === productBranch.productId &&
-        stock.warehouseId === warehouseData?.id
-    )
+    const stockD = stockData?.getProductStock?.data
+      ?.find(
+        stock =>
+          stock.productId === productBranch.productId &&
+          stock.warehouseId === warehouseData?.id
+      )
     if (watch('movementType') === StockMovementTypeEnum.OUTWARD) {
       console.log(stockD?.quantity, parseInt(watch('quantity')))
       console.log(watch('movementType'))
@@ -112,7 +113,7 @@ export const MoveBranchStockModal = ({
 
   const onSubmit = () => {
     console.log(
-      stockData?.getStocksPaginated?.data?.find(
+      stockData?.getProductStock?.data?.find(
         stock => stock.product?.id === productBranch.id
       )?.id
     )
@@ -123,7 +124,7 @@ export const MoveBranchStockModal = ({
       type: watch('movementType'),
       date: watch('date'),
       observation: watch('observation'),
-      stockId: stockData?.getStocksPaginated?.data?.find(
+      stockId: stockData?.getProductStock?.data?.find(
         stock => stock.productId === productBranch.productId
       )?.id
     })
@@ -140,6 +141,7 @@ export const MoveBranchStockModal = ({
       title="Mover stock"
       message="Ingrese los datos del stock a mover"
       isForm
+      reset={reset}
     >
       <div className="space-y-3 px-8">
         <div className="grid grid-cols-2 gap-2">
@@ -148,7 +150,7 @@ export const MoveBranchStockModal = ({
               value={warehouseData?.name || ''}
               onChange={value => {
                 setWarehouseData(
-                  data?.getWarehouses?.data?.find(
+                  data?.getWarehousesOfProduct?.data?.find(
                     product => product.name === value
                   ) as TValuesWarehouses
                 )
@@ -156,7 +158,7 @@ export const MoveBranchStockModal = ({
               }}
               control={control}
               options={
-                data?.getWarehouses?.data?.map(warehouse => ({
+                data?.getWarehousesOfProduct?.data?.map(warehouse => ({
                   label: warehouse.name,
                   value: warehouse.id
                 })) || [{ label: 'Cargando..', value: 'Cargando..' }]
@@ -239,7 +241,7 @@ export const MoveBranchStockModal = ({
                 className="mx-auto w-4/5"
                 value={
                   handlePlusController() ||
-                  stockData?.getStocksPaginated?.data?.find(
+                  stockData?.getProductStock?.data?.find(
                     stock =>
                       stock.productId === productBranch.productId &&
                       stock.warehouseId === warehouseData?.id
@@ -247,14 +249,14 @@ export const MoveBranchStockModal = ({
                   0
                 }
                 maxValue={
-                  stockData?.getStocksPaginated?.data?.find(
+                  stockData?.getProductStock?.data?.find(
                     stock =>
                       stock.productId === productBranch.productId &&
                       stock.warehouseId === warehouseData?.id
                   )?.quantity
                 }
                 text={`${
-                  stockData?.getStocksPaginated?.data?.find(
+                  stockData?.getProductStock?.data?.find(
                     stock =>
                       stock.productId === productBranch.productId &&
                       stock.warehouseId === warehouseData?.id
@@ -278,7 +280,7 @@ export const MoveBranchStockModal = ({
                 }}
               />
               {watch('warehouseId') ? (
-                stockData?.getStocksPaginated?.data?.find(
+                stockData?.getProductStock?.data?.find(
                   stock =>
                     stock.productId === productBranch.productId &&
                     stock.warehouseId === warehouseData?.id

@@ -214,28 +214,89 @@ export const CREATE_BRANCH = gql`
 
 export const UPDATE_BRANCH = gql`
   mutation UpdateBranch($updateBranchInput: UpdateBranchInput!) {
-    updateBranch(updateBranchInput: $updateBranchInput) {
-      errorInput {
-        message
-        field
-      }
-      status
+  updateBranch(updateBranchInput: $updateBranchInput) {
+    errorInput {
       message
-      data {
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      city
+      direction
+      phone
+      nit
+      cashId
+      cash {
         id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        cashId
-        cash {
+        branchId
+        amount
+        currentTurnId
+        isOpen
+        currentTurn {
           id
+          cashId
+          isOpen
+          amountOfMovents
+          openInfo {
+            amount
+            physicialAmount
+            difference
+            date
+            observation
+            openBy
+            openByInfo {
+              id
+              name
+              lastName
+              email
+              phone
+              lastLogin
+              status
+              createdBy
+              roleId
+              roleInfo {
+                id
+                name
+                code
+                status
+              }
+            }
+          }
+          closeInfo {
+            amount
+            physicialAmount
+            difference
+            date
+            observation
+            closeBy
+            closeByInfo {
+              id
+              name
+              lastName
+              email
+              phone
+              lastLogin
+              status
+              createdBy
+              roleId
+              roleInfo {
+                id
+                name
+                code
+                status
+              }
+            }
+          }
         }
       }
+      visibleOnWeb
     }
   }
+}
 `
 export const DELETE_BRANCH = gql`
   mutation DeleteBranch($deleteBranchId: ObjectId!) {
