@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 export type TValuesWarehouses = {
@@ -39,7 +40,13 @@ export const EditWarehouseModal = ({
 
     onClose()
   }
-  console.log(values)
+  useEffect(() => {
+    reset({
+      name: values.name,
+      description: values.description,
+      address: values.address
+    })
+  }, [values])
 
   return (
     <MyModal
@@ -91,12 +98,6 @@ export const EditWarehouseModal = ({
           label="Descripción"
           placeholder="Descripción"
           type="textArea"
-          rules={{
-            pattern: {
-              value: /^[a-zA-Z\s]+$/i,
-              message: 'Solo se permiten letras'
-            }
-          }}
         />
       </div>
     </MyModal>

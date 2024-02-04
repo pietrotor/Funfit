@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 import { TCategories, UseCustomeUpdateCategory } from '@/hooks/UseCategoryQuery'
@@ -16,7 +17,7 @@ export const EditCategoryModal = ({
   onAdd,
   values
 }: EditCategoryModalProps) => {
-  const { handleSubmit, watch, control } = useForm()
+  const { handleSubmit, watch, control, reset } = useForm()
   const { handleUpdateCategory } = UseCustomeUpdateCategory()
 
   const onSubmit = () => {
@@ -27,6 +28,11 @@ export const EditCategoryModal = ({
     onAdd()
     onClose()
   }
+  useEffect(() => {
+    reset({
+      name: values.name
+    })
+  }, [values])
   return (
     <MyModal
       title="Editar usuario"

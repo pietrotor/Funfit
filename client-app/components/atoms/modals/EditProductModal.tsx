@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 import Selector from '../InputSelector'
@@ -54,6 +55,16 @@ export const EditProductModal = ({
     onClose()
     reset()
   }
+  useEffect(() => {
+    reset({
+      name: values?.name,
+      description: values?.description,
+      cost: values?.cost,
+      code: values?.code,
+      suggetedPrice: values?.suggetedPrice,
+      category: values?.category?.id
+    })
+  }, [values])
   return (
     <MyModal
       title="Editar producto"

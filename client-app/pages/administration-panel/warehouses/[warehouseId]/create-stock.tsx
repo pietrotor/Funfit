@@ -68,7 +68,7 @@ function CreateStock() {
           data.createStock?.message || 'Usuario creado correctamente',
           'success'
         )
-        console.log(data, 'data')
+        router.back()
       }
     })
     console.log('send')
