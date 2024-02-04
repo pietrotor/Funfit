@@ -52,6 +52,7 @@ type Query {
   getProductStock(
     paginationInput: PaginationInput!
     productId: ObjectId!
+    warehouseId: ObjectId
   ): StocksResponse
   getWarehouseStock(
     warehouseStockPaginationInput: WarehouseStockPaginationInput!

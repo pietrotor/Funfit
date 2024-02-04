@@ -612,6 +612,7 @@ export type QueryGetProductByIdArgs = {
 export type QueryGetProductStockArgs = {
   paginationInput: PaginationInput;
   productId: Scalars['ObjectId']['input'];
+  warehouseId?: InputMaybe<Scalars['ObjectId']['input']>;
 };
 
 

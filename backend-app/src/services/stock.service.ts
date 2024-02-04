@@ -70,13 +70,15 @@ export class StocksService extends StockRepository<objectId> {
 
   async getStocksByProductId(
     paginationInput: PaginationInput,
-    productId: objectId
+    productId: objectId,
+    warehouseId?: objectId
   ) {
-    const warehousesFilter = { productId }
+    const warehouseFilter = warehouseId ? { warehouseId } : {}
+    const filters = { productId, ...warehouseFilter }
     return await getInstancesPagination<IStock, IModelStock>(
       Stock,
       paginationInput,
-      warehousesFilter
+      filters
     )
   }
 
@@ -88,7 +90,7 @@ export class StocksService extends StockRepository<objectId> {
   }
 
   async createStock(createStockInput: CreateStockInput, createdBy?: objectId) {
-    const { quantity, warehouseId } = createStockInput
+    const { quantity, warehouseId, productId } = createStockInput
     const productInstance = await productCore.getProductById(
       createStockInput.productId
     )
@@ -108,7 +110,7 @@ export class StocksService extends StockRepository<objectId> {
     const warehouseInstance = await warehouseCore.getWarehouseById(warehouseId)
     const stockInstance = new Stock({ ...createStockInput, createdBy })
     productInstance.warehouses.push(createStockInput.warehouseId)
-    warehouseInstance.productsIds.push(productInstance._id)
+    warehouseInstance.productsIds.push(productId)
     const [stockResponse] = await Promise.all([
       stockInstance.save(),
       stockHistoryUseCase.createStockHistory(
