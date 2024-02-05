@@ -15,7 +15,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
   operation.setContext(({ headers = {} }) => ({
     headers: {
       ...headers,
-      authorization: cookies.get('erp-cookie')
+      authorization: cookies.get('sao-sess')
     }
   }))
   return forward(operation)

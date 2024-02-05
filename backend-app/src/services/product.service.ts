@@ -91,10 +91,10 @@ export class ProductService extends ProductRepository<objectId> {
         `El producto "${duplicatedProductCode.name}" ya esta registrado con este código`
       )
     }
-    const interanlCode = internalCodeGenerator(name)
+    const internalCode = internalCodeGenerator(name)
     const productInstance = new Product({
       ...createProductInput,
-      interanlCode,
+      internalCode,
       createdBy
     })
     return await productInstance.save()

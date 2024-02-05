@@ -47,7 +47,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       dispatch(setBranches(data.getBranchesPaginated?.data))
 
       if (currentBranch.id === '') {
-        console.log('entro')
         data.getBranchesPaginated?.data.forEach(branch => {
           if (branch.id === currentId) {
             dispatch(setBranch(branch))
@@ -162,8 +161,14 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     }
   ]
   useEffect(() => {
-    if (!business) getConfiguration()
-    if (branches.length === 0) getBranchesPaginated()
+    if (!business) {
+      getConfiguration()
+      return
+    }
+    if (branches.length === 0) {
+      getBranchesPaginated()
+      return
+    }
 
     const storedBranchId = localStorage
       .getItem('branchId')
@@ -175,15 +180,21 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       storedBranchId !== ''
     ) {
       setCurrentId(storedBranchId)
+      const branch = branches.find(branch => branch.id === storedBranchId)
+      if (branch) dispatch(setBranch(branch))
+    } else {
+      setCurrentId(branches[0]?.id)
+      dispatch(setBranch(branches[0]))
+      localStorage.setItem('branchId', branches[0].id)
     }
-  }, [])
+  }, [business, branches])
 
   return (
     <>
       <Head>
-        <title>Page Title</title>
+        <title>Page Title 1</title>
       </Head>
-      {business ? (
+      {business && branches.length !== 0 && currentBranch.id !== '' ? (
         <main
           className={` min-h-screen flex-row  transition-colors duration-200 md:flex ${
             sidebarOpen ? 'overflow-hidden bg-white' : 'bg-secondary/5 '
@@ -197,8 +208,12 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
             setSidebar={setsidebarOpen}
           />
           <div className="w-full">
-            <div className={` fixed  z-10 ${sidebarOpen ? 'left-64' : 'lg:left-24 left-10'} `}>
-            {showBackButton && <BackButton />}
+            <div
+              className={` fixed  z-10 ${
+                sidebarOpen ? 'left-64' : 'left-10 lg:left-24'
+              } `}
+            >
+              {showBackButton && <BackButton />}
             </div>
             <div className={` fixed right-5 z-10 ${sidebarOpen ? '' : ''} `}>
               <ToastComponent />
@@ -213,7 +228,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
                   fill
                   IconButtonName="user"
                   label={'Pietro'}
-                  user='https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png'
+                  user="https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png"
                   values={[
                     {
                       label: 'Notificaciones',
@@ -233,7 +248,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
                 />
               </div>
             </div>
-            <div className="h-full w-full ps-5 lg:pt-5 pt-16">{children}</div>
+            <div className="h-full w-full ps-5 pt-16 lg:pt-5">{children}</div>
           </div>
         </main>
       ) : (

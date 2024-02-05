@@ -1,7 +1,9 @@
 import {
   CreateSaleInput,
+  PaymentMethodEnum,
   Sale,
-  SalesPaginationInput
+  SalesPaginationInput,
+  SalesSummaryInput
 } from '@/graphql/graphql_types'
 import { OutErrorResponse } from '@/lib/graphqlerrors/custom.error'
 import { ISale } from '../models'
@@ -13,6 +15,14 @@ export abstract class SalesRepository<T> {
   abstract getSalesPaginated(
     salesPaginationInput: SalesPaginationInput
   ): Promise<IPaginatedResponse<ISale[]> | OutErrorResponse>
+
+  abstract getSummaryByPaymentMethod(
+    salesSummaryInput: SalesSummaryInput
+  ): Promise<{ method: PaymentMethodEnum; total: number }[] | OutErrorResponse>
+
+  abstract getTotalSales(
+    salesSummaryInput: SalesSummaryInput
+  ): Promise<number | OutErrorResponse>
 
   abstract createSale(
     createSaleInput: CreateSaleInput

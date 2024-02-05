@@ -6,7 +6,9 @@ import { CURRENT_USER } from './queries'
 import apolloClientSSR from '@/graphql/apollo-ssr' // Ajusta según tu configuración
 import { CurrentUserQuery, StatusEnum } from '@/graphql/graphql-types' // Ajusta según tu configuración
 
-export const userVerificated = async (ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>) => {
+export const userVerificated = async (
+  ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
+) => {
   try {
     if (ctx.req.headers.cookie) {
       const cookiesParsed = cookie.parse(ctx.req.headers.cookie)
@@ -18,17 +20,20 @@ export const userVerificated = async (ctx: GetServerSidePropsContext<ParsedUrlQu
           props: {}
         }
       }
-      const result = await apolloClientSSR.query <CurrentUserQuery>({
+      const result = await apolloClientSSR.query<CurrentUserQuery>({
         query: CURRENT_USER,
         fetchPolicy: 'network-only',
         context: {
           headers: {
-            Authorization: authToken
+            authorization: authToken
           }
         }
       })
       const data = result.data
-      if (data.currentUser?.status === StatusEnum.OK || data.currentUser?.data) {
+      if (
+        data.currentUser?.status === StatusEnum.OK ||
+        data.currentUser?.data
+      ) {
         return {
           redirect: {
             permanent: false,

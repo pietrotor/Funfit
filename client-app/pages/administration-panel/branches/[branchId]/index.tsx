@@ -45,8 +45,15 @@ function ProductOnBranch() {
           visibleOnWeb: isAviable
         }
       },
-      onCompleted: (data) => {
-        if (data.updateBranch?.status === StatusEnum.ERROR) { showSuccessToast('Ocurrió un error al actualizar la sucursal', 'error') } else { showSuccessToast('La sucursal se actualizó correctamente', 'success') }
+      onCompleted: data => {
+        if (data.updateBranch?.status === StatusEnum.ERROR) {
+          showSuccessToast(
+            'Ocurrió un error al actualizar la sucursal',
+            'error'
+          )
+        } else {
+          showSuccessToast('La sucursal se actualizó correctamente', 'success')
+        }
       },
       onError: () => {
         showSuccessToast('Ocurrió un error al actualizar la sucursal', 'error')
@@ -148,7 +155,7 @@ function ProductOnBranch() {
                     1}
                 </h3>,
                 <p key={idx}>{productBranch.product?.name}</p>,
-                <p key={idx}>{productBranch.price}</p>,
+                <p key={idx}>{productBranch.price} Bs</p>,
                 <p key={idx}>{productBranch.stock}</p>,
                 <Switch
                   key={idx}

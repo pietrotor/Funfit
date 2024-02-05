@@ -1,5 +1,5 @@
 import { useForm } from 'react-hook-form'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import { MyModal } from './MyModal'
 import { TValuesWarehouses } from './EditWarehouseModal'
@@ -33,36 +33,33 @@ export const MoveBranchStockModal = ({
 
   const { control, handleSubmit, watch, reset } = useForm()
   const [getWarehouses, { data }] = useGetWarehousesOfProductLazyQuery()
-  const [getStockWarehouse, { data: stockData }] =
-    useGetProductStockLazyQuery({
-      fetchPolicy: 'network-only',
-      variables: {
-        paginationInput: {},
-        productId: productBranch?.productId,
-        warehouseId: warehouseData?.id
-      },
-      onCompleted: data => {
-        console.log(
-          data.getProductStock?.data?.find(
-            stock =>
-              stock.productId === productBranch.productId &&
-              stock.warehouseId === warehouseData?.id
-          )?.quantity
-        )
-        if (data.getProductStock?.status === 'ERROR') {
-          showSuccessToast(
-            data.getProductStock?.message || 'Error al cargar los productos',
-            'error'
-          )
-        }
-      },
-      onError: error => {
+  const [getStockWarehouse, { data: stockData }] = useGetProductStockLazyQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      paginationInput: {},
+      productId: productBranch?.productId,
+      warehouseId: warehouseData?.id
+    },
+    onCompleted: data => {
+      if (data.getProductStock?.status === 'ERROR') {
         showSuccessToast(
-          error.message || 'Error al cargar los productos',
+          data.getProductStock?.message || 'Error al cargar los productos',
           'error'
         )
       }
-    })
+    },
+    onError: error => {
+      showSuccessToast(
+        error.message || 'Error al cargar los productos',
+        'error'
+      )
+    }
+  })
+
+  useEffect(() => {
+    if (isOpen) reset()
+  }, [isOpen])
+
   const { handleCreateBranchStockMovement } =
     useCreateBranchProductStockMovement()
   const handleCancel = () => {
@@ -80,7 +77,8 @@ export const MoveBranchStockModal = ({
       onCompleted: data => {
         if (data.getWarehousesOfProduct?.status === 'ERROR') {
           showSuccessToast(
-            data.getWarehousesOfProduct?.message || 'Error al cargar los productos',
+            data.getWarehousesOfProduct?.message ||
+              'Error al cargar los productos',
             'error'
           )
         }
@@ -88,46 +86,38 @@ export const MoveBranchStockModal = ({
     })
   }
   const handlePlusController = () => {
-    const stockD = stockData?.getProductStock?.data
-      ?.find(
-        stock =>
-          stock.productId === productBranch.productId &&
-          stock.warehouseId === warehouseData?.id
-      )
+    const stockD = stockData?.getProductStock?.data?.find(
+      stock =>
+        stock.productId === productBranch.productId &&
+        stock.warehouseId === warehouseData?.id
+    )
     if (watch('movementType') === StockMovementTypeEnum.OUTWARD) {
-      console.log(stockD?.quantity, parseInt(watch('quantity')))
-      console.log(watch('movementType'))
-      console.log(stockD && stockD.quantity + parseInt(watch('quantity')))
       return stockD && stockD.quantity + parseInt(watch('quantity'))
     } else if (
       watch('movementType') === StockMovementTypeEnum.INWARD ||
       watch('movementType') === StockMovementTypeEnum.DISPOSE
     ) {
-      console.log(stockD && stockD.quantity - parseInt(watch('quantity')))
-      console.log(stockD && stockD.quantity, parseInt(watch('quantity')))
       return stockD && stockD.quantity - parseInt(watch('quantity'))
     }
-    console.log(watch('date'))
     return stockD?.quantity
   }
 
   const onSubmit = () => {
-    console.log(
-      stockData?.getProductStock?.data?.find(
-        stock => stock.product?.id === productBranch.id
-      )?.id
+    handleCreateBranchStockMovement(
+      {
+        branchProductId: productBranch.id,
+        branchId: branchIdSelected,
+        qty: parseInt(watch('quantity')),
+        type: watch('movementType'),
+        date: watch('date'),
+        observation: watch('observation'),
+        stockId: stockData?.getProductStock?.data?.find(
+          stock => stock.productId === productBranch.productId
+        )?.id
+      },
+      onClose,
+      onClose
     )
-    handleCreateBranchStockMovement({
-      branchProductId: productBranch.id,
-      branchId: branchIdSelected,
-      qty: parseInt(watch('quantity')),
-      type: watch('movementType'),
-      date: watch('date'),
-      observation: watch('observation'),
-      stockId: stockData?.getProductStock?.data?.find(
-        stock => stock.productId === productBranch.productId
-      )?.id
-    })
   }
   return (
     <MyModal

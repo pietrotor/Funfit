@@ -25,7 +25,11 @@ export const CashMovimentModal = ({
   onConfirm,
   cashId
 }: ModalProps) => {
-  const { handleSubmit, control, watch, reset } = useForm()
+  const { handleSubmit, control, watch, reset } = useForm<any>({
+    defaultValues: {
+      movement: TurnMovementTypeEnum.ADD
+    }
+  })
   const { data } = useGetCashById(cashId)
 
   const [createCashMovement, { loading }] = useCreateCashMovementMutation()
@@ -67,8 +71,6 @@ export const CashMovimentModal = ({
   }
   const handleChangeValue = () => {
     if (watch('movement') === TurnMovementTypeEnum.ADD) {
-      console.log(watch('movement'))
-
       return (
         parseInt(watch('physicialAmount')) + data?.getCashById?.data?.amount! ||
         0
@@ -85,7 +87,6 @@ export const CashMovimentModal = ({
         parseInt(watch('physicialAmount'))
       ).toString()
     }
-    console.log(watch('movement'))
   }
 
   return (

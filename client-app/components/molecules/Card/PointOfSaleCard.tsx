@@ -34,9 +34,9 @@ function PointOfSaleCard({
               className="relative h-80 w-full transition-all duration-300 ease-in-out hover:border-1 hover:border-secondary hover:shadow-lg"
               onPress={() => {
                 product?.stock &&
-                quantity < product?.stock &&
-                quantity + 1 >= 1 &&
-                handleSelected(product.id)
+                  quantity < product?.stock &&
+                  quantity + 1 >= 1 &&
+                  handleSelected(product.id)
               }}
             >
               <CardBody className="relative h-full p-0">
@@ -51,7 +51,7 @@ function PointOfSaleCard({
                 />
               </CardBody>
               <Chip
-                className="absolute left-1/2 top-52 z-10 -translate-x-1/2 -translate-y-1/4 transform bg-secondary/80 text-white"
+                className="absolute left-1/2 top-52 z-10 -translate-x-1/2 -translate-y-1/4 transform bg-primary/90 text-white"
                 variant="solid"
               >
                 Inv. {product.stock}

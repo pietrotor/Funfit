@@ -1,11 +1,11 @@
 import { useState } from 'react'
 import PointOfSaleCard from '@/components/molecules/Card/PointOfSaleCard'
-import Search from '@/components/molecules/Search'
 import AdministrationLayout from '@/components/templates/layouts'
 import SalesReceipt from '@/components/organisms/SalesReceipt'
 import { useGetBranchProductPOSQuery } from '@/hooks/UseBranchQuery'
 import { TProductBranchData } from '@/interfaces/TData'
 import { useAppSelector } from '@/store/index'
+import { Spinner } from '@nextui-org/react'
 
 export type TPointOfSaleData = {
   products: TProductBranchData[]
@@ -16,7 +16,7 @@ export type TPointOfSaleData = {
 
 function PointOfSale() {
   const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
-  const { loading, data, setFilter } = useGetBranchProductPOSQuery(branchId)
+  const { loading, data } = useGetBranchProductPOSQuery(branchId)
   const [selectedProducts, setSelectedProducts] = useState<TPointOfSaleData>()
 
   const handleSelected = (id: string) => {
@@ -72,10 +72,15 @@ function PointOfSale() {
     <AdministrationLayout profileButton={false}>
       <section className="flex h-full w-full ">
         <div className="w-2/3 border-1 border-secondary/30  bg-secondary/10 p-4">
-          <div className="flex w-full">
+          {/* <div className="flex w-full">
             <Search setFilter={setFilter} />
-          </div>
-          <div className="grid grid-cols-3 gap-4 p-4 max-h-[39rem] overflow-y-auto scrollbar-hide ">
+          </div> */}
+          {loading && (
+            <div className="flex h-[95vh] items-center justify-center overflow-y-auto scrollbar-hide ">
+              <Spinner label="Cargando..." color="primary" />
+            </div>
+          )}
+          <div className="grid max-h-[95vh] grid-cols-3 gap-4 overflow-y-auto p-4 scrollbar-hide ">
             {data?.getBranchProductsPaginated?.data?.map(item => (
               <PointOfSaleCard
                 key={item.id}

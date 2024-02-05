@@ -732,81 +732,82 @@ export const GET_BRANCH_PAGINATION = gql`
 `
 export const GET_BRANCH_BY_ID = gql`
   query GetBranchById($getBranchByIdId: ObjectId!) {
-  getBranchById(id: $getBranchByIdId) {
-    errorInput {
+    getBranchById(id: $getBranchByIdId) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
-    }
-    status
-    message
-    data {
-      id
-      name
-      code
-      city
-      direction
-      phone
-      nit
-      visibleOnWeb
-      cashId
-      cash {
+      data {
         id
-        branchId
-        amount
-        currentTurnId
-        isOpen
-        currentTurn {
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        visibleOnWeb
+        cashId
+        cash {
           id
-          cashId
+          branchId
+          amount
+          currentTurnId
           isOpen
-          amountOfMovents
-          openInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            openBy
-            openByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
+          currentTurn {
+            id
+            cashId
+            isOpen
+            amountOfMovents
+            openInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              openBy
+              openByInfo {
                 id
                 name
-                code
+                lastName
+                email
+                phone
+                lastLogin
                 status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
               }
             }
-          }
-          closeInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            closeBy
-            closeByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
+            closeInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              closeBy
+              closeByInfo {
                 id
                 name
-                code
+                lastName
+                email
+                phone
+                lastLogin
                 status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
               }
             }
           }
@@ -814,7 +815,6 @@ export const GET_BRANCH_BY_ID = gql`
       }
     }
   }
-}
 `
 
 export const GET_CASH_BY_ID = gql`
@@ -1079,6 +1079,25 @@ export const GET_SALES_PAGINATED = gql`
     }
   }
 `
+export const GET_SALES_SUMMARY = gql`
+  query GetSalesSummary($salesSummaryInput: SalesSummaryInput!) {
+    getSalesSummary(salesSummaryInput: $salesSummaryInput) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data {
+        paymentMethods {
+          method
+          total
+        }
+        total
+      }
+    }
+  }
+`
 export const GET_SALES_BY_ID = gql`
   query GetSaleById($getSaleByIdId: ObjectId!) {
     getSaleById(id: $getSaleByIdId) {
@@ -1284,49 +1303,57 @@ export const GET_WAREHOUSESOFPRODUCT = gql`
   }
 `
 export const GET_PRODUCT_STOCK = gql`
-query GetProductStock($paginationInput: PaginationInput!, $productId: ObjectId!, $warehouseId: ObjectId) {
-  getProductStock(paginationInput: $paginationInput, productId: $productId, warehouseId: $warehouseId) {
-    errorInput {
+  query GetProductStock(
+    $paginationInput: PaginationInput!
+    $productId: ObjectId!
+    $warehouseId: ObjectId
+  ) {
+    getProductStock(
+      paginationInput: $paginationInput
+      productId: $productId
+      warehouseId: $warehouseId
+    ) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
-    }
-    status
-    message
-    data {
-      id
-      productId
-      warehouseId
-      quantity
-      securityStock
-      lastStockEntry
-      units
-      product {
+      data {
         id
-        name
-        suggetedPrice
-        code
-        description
-        categoryId
-        cost
-        image
-        warehouses
-        category {
+        productId
+        warehouseId
+        quantity
+        securityStock
+        lastStockEntry
+        units
+        product {
           id
           name
+          suggetedPrice
           code
+          description
+          categoryId
+          cost
+          image
+          warehouses
+          category {
+            id
+            name
+            code
+          }
+        }
+        warehouse {
+          id
+          name
+          description
+          address
         }
       }
-      warehouse {
-        id
-        name
-        description
-        address
-      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
     }
-    totalRecords
-    totalPages
-    rows
-    currentPage
   }
-}
 `
