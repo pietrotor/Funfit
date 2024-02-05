@@ -6,11 +6,11 @@ import { UserProducts } from '@/components/organisms/Products/UserProducts'
 import Container from '@/components/molecules/Container/Container'
 import HeroShot from '@/components/atoms/FrontPage/heroShot'
 import { TProductBranchData } from '@/interfaces/TData'
-import { useGetBranchProductQuery } from '@/hooks/UseBranchQuery'
+import { UseCustomeGetBranchProductQuery } from '@/hooks/UsePublicBranchProduct'
 
 const Index: NextPage = () => {
   const [currentBranchId, setBranchId] = useState<string>('')
-  const { data, loading } = useGetBranchProductQuery(currentBranchId)
+  const { data, loading } = UseCustomeGetBranchProductQuery(currentBranchId)
 
   useEffect(() => {
     const branchId = sessionStorage.getItem('branchId')?.replace(/^"|"$/g, '')
@@ -26,7 +26,7 @@ const Index: NextPage = () => {
       <Container>
         <UserProducts
           data={
-            data?.getBranchProductsPaginated?.data?.filter(
+            data?.getPublicProducts?.data?.filter(
               product => product.isVisibleOnWeb === true
             ) as TProductBranchData[]
           }

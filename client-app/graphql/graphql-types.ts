@@ -199,6 +199,7 @@ export type CreateBranchInput = {
   name: Scalars['String'];
   nit?: InputMaybe<Scalars['String']>;
   phone?: InputMaybe<Scalars['String']>;
+  visibleOnWeb: Scalars['Boolean'];
 };
 
 export type CreateBranchProductInput = {
@@ -541,7 +542,7 @@ export type Query = {
   getProductStock?: Maybe<StocksResponse>;
   getProducts?: Maybe<ProductsResponse>;
   getProductsOutOfWarehouse?: Maybe<ProductsResponse>;
-  getPublicProducts?: Maybe<ProductsResponse>;
+  getPublicProducts?: Maybe<BranchProductsResponse>;
   getRoles?: Maybe<RolesResponse>;
   getSaleById?: Maybe<SaleResponse>;
   getSalesPaginated?: Maybe<SalesResponse>;
@@ -554,6 +555,7 @@ export type Query = {
   getWarehouseHistory?: Maybe<StocksHistoryResponse>;
   getWarehouseStock?: Maybe<StocksResponse>;
   getWarehouses?: Maybe<WarehousesResponse>;
+  getWarehousesOfProduct?: Maybe<WarehousesResponse>;
   login?: Maybe<LoginResponse>;
 };
 
@@ -608,6 +610,7 @@ export type QueryGetProductByIdArgs = {
 export type QueryGetProductStockArgs = {
   paginationInput: PaginationInput;
   productId: Scalars['ObjectId'];
+  warehouseId?: InputMaybe<Scalars['ObjectId']>;
 };
 
 
@@ -623,6 +626,7 @@ export type QueryGetProductsOutOfWarehouseArgs = {
 
 
 export type QueryGetPublicProductsArgs = {
+  branchId: Scalars['ObjectId'];
   paginationInput: PaginationInput;
 };
 
@@ -686,6 +690,12 @@ export type QueryGetWarehouseStockArgs = {
 
 export type QueryGetWarehousesArgs = {
   paginationInput: PaginationInput;
+};
+
+
+export type QueryGetWarehousesOfProductArgs = {
+  paginationInput: PaginationInput;
+  productId: Scalars['ObjectId'];
 };
 
 
@@ -902,6 +912,7 @@ export type UpdateBranchInput = {
   name?: InputMaybe<Scalars['String']>;
   nit?: InputMaybe<Scalars['String']>;
   phone?: InputMaybe<Scalars['String']>;
+  visibleOnWeb?: InputMaybe<Scalars['Boolean']>;
 };
 
 export type UpdateBranchProductInput = {
@@ -1300,13 +1311,6 @@ export type GetProductByIdQueryVariables = Exact<{
 
 export type GetProductByIdQuery = { __typename?: 'Query', getProductById?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null } | null };
 
-export type GetPublicProductsQueryVariables = Exact<{
-  paginationInput: PaginationInput;
-}>;
-
-
-export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'ProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> }> | null } | null };
-
 export type GetBranchProductsPaginatedQueryVariables = Exact<{
   paginationInput: PaginationInput;
   branchId: Scalars['ObjectId'];
@@ -1371,6 +1375,14 @@ export type GetCategoryByIdQueryVariables = Exact<{
 
 
 export type GetCategoryByIdQuery = { __typename?: 'Query', getCategoryById?: { __typename?: 'CategoryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null };
+
+export type GetPublicProductsQueryVariables = Exact<{
+  paginationInput: PaginationInput;
+  branchId: Scalars['ObjectId'];
+}>;
+
+
+export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, category?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, visibleOnWeb: boolean, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -3647,60 +3659,6 @@ export function useGetProductByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOpt
 export type GetProductByIdQueryHookResult = ReturnType<typeof useGetProductByIdQuery>;
 export type GetProductByIdLazyQueryHookResult = ReturnType<typeof useGetProductByIdLazyQuery>;
 export type GetProductByIdQueryResult = Apollo.QueryResult<GetProductByIdQuery, GetProductByIdQueryVariables>;
-export const GetPublicProductsDocument = gql`
-    query GetPublicProducts($paginationInput: PaginationInput!) {
-  getPublicProducts(paginationInput: $paginationInput) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-      id
-      name
-      suggetedPrice
-      code
-      description
-      cost
-      image
-      warehouses
-    }
-    totalRecords
-    totalPages
-    rows
-    currentPage
-  }
-}
-    `;
-
-/**
- * __useGetPublicProductsQuery__
- *
- * To run a query within a React component, call `useGetPublicProductsQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetPublicProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetPublicProductsQuery({
- *   variables: {
- *      paginationInput: // value for 'paginationInput'
- *   },
- * });
- */
-export function useGetPublicProductsQuery(baseOptions: Apollo.QueryHookOptions<GetPublicProductsQuery, GetPublicProductsQueryVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetPublicProductsQuery, GetPublicProductsQueryVariables>(GetPublicProductsDocument, options);
-      }
-export function useGetPublicProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPublicProductsQuery, GetPublicProductsQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetPublicProductsQuery, GetPublicProductsQueryVariables>(GetPublicProductsDocument, options);
-        }
-export type GetPublicProductsQueryHookResult = ReturnType<typeof useGetPublicProductsQuery>;
-export type GetPublicProductsLazyQueryHookResult = ReturnType<typeof useGetPublicProductsLazyQuery>;
-export type GetPublicProductsQueryResult = Apollo.QueryResult<GetPublicProductsQuery, GetPublicProductsQueryVariables>;
 export const GetBranchProductsPaginatedDocument = gql`
     query GetBranchProductsPaginated($paginationInput: PaginationInput!, $branchId: ObjectId!) {
   getBranchProductsPaginated(
@@ -4614,3 +4572,147 @@ export function useGetCategoryByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetCategoryByIdQueryHookResult = ReturnType<typeof useGetCategoryByIdQuery>;
 export type GetCategoryByIdLazyQueryHookResult = ReturnType<typeof useGetCategoryByIdLazyQuery>;
 export type GetCategoryByIdQueryResult = Apollo.QueryResult<GetCategoryByIdQuery, GetCategoryByIdQueryVariables>;
+export const GetPublicProductsDocument = gql`
+    query GetPublicProducts($paginationInput: PaginationInput!, $branchId: ObjectId!) {
+  getPublicProducts(paginationInput: $paginationInput, branchId: $branchId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      productId
+      price
+      stock
+      isVisibleOnWeb
+      isVisibleOnMenu
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        description
+        categoryId
+        cost
+        image
+        warehouses
+        category {
+          id
+          name
+          code
+        }
+      }
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        visibleOnWeb
+        cashId
+        cash {
+          id
+          branchId
+          amount
+          currentTurnId
+          isOpen
+          currentTurn {
+            id
+            cashId
+            isOpen
+            amountOfMovents
+            openInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              openBy
+              openByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+            closeInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              closeBy
+              closeByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetPublicProductsQuery__
+ *
+ * To run a query within a React component, call `useGetPublicProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublicProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublicProductsQuery({
+ *   variables: {
+ *      paginationInput: // value for 'paginationInput'
+ *      branchId: // value for 'branchId'
+ *   },
+ * });
+ */
+export function useGetPublicProductsQuery(baseOptions: Apollo.QueryHookOptions<GetPublicProductsQuery, GetPublicProductsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPublicProductsQuery, GetPublicProductsQueryVariables>(GetPublicProductsDocument, options);
+      }
+export function useGetPublicProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPublicProductsQuery, GetPublicProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPublicProductsQuery, GetPublicProductsQueryVariables>(GetPublicProductsDocument, options);
+        }
+export type GetPublicProductsQueryHookResult = ReturnType<typeof useGetPublicProductsQuery>;
+export type GetPublicProductsLazyQueryHookResult = ReturnType<typeof useGetPublicProductsLazyQuery>;
+export type GetPublicProductsQueryResult = Apollo.QueryResult<GetPublicProductsQuery, GetPublicProductsQueryVariables>;
