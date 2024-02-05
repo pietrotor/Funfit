@@ -63,19 +63,19 @@ function Warehouse() {
           Administración de Stocks
         </h3>
         <div className="flex justify-end space-x-3">
-        <AdminButton
-         pathname={`${WarehouseRoute}/${warehouseId}/warehouse-history`}
-          color="primary"
-          text='Historial del almacén'
-          iconName='Warehouse'
-          showMinIcon={true}
-          addPlusIcon={false}
+          <AdminButton
+            pathname={`${WarehouseRoute}/${warehouseId}/warehouse-history`}
+            color="primary"
+            text="Historial del almacén"
+            iconName="Warehouse"
+            showMinIcon={true}
+            addPlusIcon={false}
           />
           <AdminButton
-          color='secondary'
-          pathname={`/administration-panel/warehouses/${warehouseId}/create-stock`}
-          iconName='Box'
-          text='Agregar nuevo Stock'
+            color="secondary"
+            pathname={`/administration-panel/warehouses/${warehouseId}/create-stock`}
+            iconName="Box"
+            text="Agregar nuevo Stock"
           />
         </div>
         <Table
@@ -89,7 +89,8 @@ function Warehouse() {
             content: [
               <h3 key={idx} className="text-sm">
                 {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
-                  idx + 1}
+                  idx +
+                  1}
               </h3>,
               <div key={idx} className="text-center">
                 {stock?.product?.name}
@@ -128,7 +129,6 @@ function Warehouse() {
                     width="w-8"
                   />
                 </ButtonComponent>
-
               </div>
             ]
           }))}

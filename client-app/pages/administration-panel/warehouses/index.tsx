@@ -143,8 +143,8 @@ function Warehouses() {
         <AdminButton
           onClick={handleAddWarehouse.onOpen}
           color="secondary"
-          text='Agregar nuevo Almacén'
-          iconName='Bussines'
+          text="Agregar nuevo Almacén"
+          iconName="Bussines"
         />
         <Table
           onChangeRow={row => handleChangeRow(row)}
@@ -184,12 +184,13 @@ function Warehouses() {
               <div key={idx} className="text-left text-sm">
                 {warehouse.address}
               </div>,
-              <div
-                key={idx}
-                className="flex justify-center space-x-1"
-              >
+              <div key={idx} className="flex justify-center space-x-1">
                 <ButtonComponent
-                  onClick={() => router.push(`/administration-panel/warehouses/${warehouse.id}`)}
+                  onClick={() =>
+                    router.push(
+                      `/administration-panel/warehouses/${warehouse.id}`
+                    )
+                  }
                   type="eye"
                   showTooltip
                   tooltipText="Ver Almacén"
@@ -236,11 +237,11 @@ function Warehouses() {
           title="Eliminar almacén"
           message={`¿Esta seguro de eliminar a ${edit?.name}?`}
           onConfirm={handleConfirmDelete}
-          cancelText='Cancelar'
-          color='error'
-          confirmText='Eliminar'
-          name='trash'
-          />
+          cancelText="Cancelar"
+          color="error"
+          confirmText="Eliminar"
+          name="trash"
+        />
       </div>
     </AdministrationLayout>
   )
