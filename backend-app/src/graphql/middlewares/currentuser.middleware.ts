@@ -1,7 +1,13 @@
 import { Request, Response, NextFunction } from 'express'
 import jwt from 'jsonwebtoken'
 import { UserPayload } from '../../interfaces/global.interface'
-export const currentUser = (req:Request, res:Response, next: NextFunction) => {
+import dotenv from 'dotenv'
+dotenv.config()
+export const currentUser = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   // console.log('------------------------HEADERS-------------------------------------------------------------------')
   // console.log(req.headers)
   // console.log('-------------------- apollo header AUTORIZATION FIELD-----------------------------------------------------------------------')
@@ -9,8 +15,12 @@ export const currentUser = (req:Request, res:Response, next: NextFunction) => {
   // console.log(req.headers.authorization)
   // console.log('-------------------------------------------------------------------------------------------')
   if (req.headers.authorization) {
+    console.log('🚀 ~ process.env.JWT_KEY:', process.env.JWT_KEY)
+    console.log('🚀 ~ req.headers.authorization:', req.headers.authorization)
     try {
-      const payload = <UserPayload>jwt.verify(req.headers.authorization, process.env.JWT_KEY!)
+      const payload = <UserPayload>(
+        jwt.verify(req.headers.authorization, process.env.JWT_KEY!)
+      )
       console.log(payload)
       req.currentUser = payload
     } catch (error) {

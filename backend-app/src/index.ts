@@ -3,7 +3,7 @@ import startServer from './server'
 import dotenv from 'dotenv'
 dotenv.config()
 
-const start = async () => {
+const start: any = async () => {
   try {
     console.log(process.env.MONGO_URL)
 
@@ -26,13 +26,13 @@ const start = async () => {
     if (!process.env.MONGO_URL) {
       throw new Error('MONGO_URL must be defined')
     }
-    // await mongoose.connect('mongodb+srv://user_node:Vkvw4ECQ5QxGn0un@miclustercafe.fwx4cd2.mongodb.net/el-sao', options)
     await mongoose.connect(process.env.MONGO_URL, options)
     console.log('mongodb connected')
     console.log('ENV: ', process.env.NODE_ENV)
     await startServer()
   } catch (error) {
     console.error(error)
+    return start()
   }
 }
 

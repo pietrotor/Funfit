@@ -37,7 +37,9 @@ export class ProductService extends ProductRepository<objectId> {
       _id: id,
       deleted: false
     })
-    if (!productInstance) { throw new BadRequestError('No se encontro el Producto') }
+    if (!productInstance) {
+      throw new BadRequestError('No se encontro el Producto')
+    }
     return productInstance
   }
 
@@ -89,9 +91,12 @@ export class ProductService extends ProductRepository<objectId> {
         `El producto "${duplicatedProductCode.name}" ya esta registrado con este código`
       )
     }
-    const interanlCode = internalCodeGenerator(name)
-    console.log('🚀 ~ file: product.service.ts:93 ~ ProductService ~ interanlCode:', interanlCode)
-    const productInstance = new Product({ ...createProductInput, interanlCode, createdBy })
+    const internalCode = internalCodeGenerator(name)
+    const productInstance = new Product({
+      ...createProductInput,
+      internalCode,
+      createdBy
+    })
     return await productInstance.save()
   }
 

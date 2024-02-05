@@ -1,4 +1,4 @@
-import { Button, Card, CardFooter, useDisclosure } from '@nextui-org/react'
+import { Button, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
 import { SkeletonCard } from './SkeletonCard'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -6,7 +6,7 @@ import ProductModal from '@/components/atoms/modals/ProductModal'
 import Images from '@/components/atoms/Image/Image'
 
 type TUserCardProps = {
-  id: number
+  id: string
   name: string
   description: string
   price: number
@@ -27,57 +27,62 @@ export default function UserCard({
   const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
   return (
-    <div className="h-80 ">
+    <div className="overflow-hidden rounded-xl shadow-2xl transition-all duration-500 hover:scale-105">
       {!isLoading ? (
-        <div className='h-full' >
-          <Card isFooterBlurred radius="lg" className="h-full border-none">
-            <Images
-              alt="Product image"
-              className="h-full object-cover transition-all duration-500 hover:scale-105"
-              removeWrapper
-              src={image as string}
-            />
-            <CardFooter className="group absolute bottom-1  z-10 ml-1 grid min-h-[6rem] w-[calc(100%_-_8px)] grid-cols-3 gap-2 overflow-hidden rounded-large border-1 border-white/20 bg-gray-500/60 py-1 shadow-small before:rounded-xl">
-              <div onClick={() => router.push('/producto/' + id)} className="col-start-1 cursor-pointer col-end-3 flex flex-col">
-                <h4 className="text-white drop-shadow-2xl">{name}</h4>
+        <div className="flex h-full flex-col">
+          <Images
+            alt="Product image"
+            className="h-96 object-cover"
+            removeWrapper
+            src={image as string}
+          />
+          <div className="w-full bg-white px-6 py-3">
+            <div className="flex w-full items-center justify-between gap-4">
+              <div
+                onClick={() => router.push('/producto/' + id)}
+                className="col-start-1 col-end-3 flex cursor-pointer flex-col"
+              >
+                <h3 className="font-bold drop-shadow-2xl">{name}</h3>
                 <p
-                  className={`min-h-[3rem] text-base text-white ${'group-hover:line-clamp-none'} line-clamp-2`}
+                  className={`min-h-[3rem] text-base ${'group-hover:line-clamp-none'} line-clamp-2`}
                 >
                   {description}
                 </p>
               </div>
-              <div className="flex flex-col items-center">
-                <h4 className="py-1 text-white">{price} Bs</h4>
-                <Button
-                  className="col-start-3 bg-primary/80 text-tiny text-white "
-                  variant="flat"
-                  color="default"
-                  radius="lg"
-                  fullWidth={true}
-                  size="sm"
-                  onClick={() => {
-                    onOpen()
-                  }}
-                >
-                  <IconSelector
-                    name="cart"
-                    width="w-10"
-                    height="h-10"
-                    color="text-white"
-                  />
-                </Button>
-                <ProductModal
-                  isOpen={isOpen}
-                  onClose={onClose}
-                  onOpen={onOpen}
-                  title={name}
-                  description={description}
-                  price={price}
-                  images={images as string[]}
-                />
-              </div>
-            </CardFooter>
-          </Card>
+              <h3 className="whitespace-nowrap py-1 text-secondary">
+                {price} Bs
+              </h3>
+            </div>
+            <Button
+              className="col-start-3 mt-3 flex h-fit bg-primary/80 py-1 text-tiny text-white"
+              variant="flat"
+              color="default"
+              radius="lg"
+              fullWidth={true}
+              size="sm"
+              onClick={() => {
+                onOpen()
+              }}
+            >
+              <p className="text-lg font-bold">Agregar</p>
+              <IconSelector
+                name="cart"
+                width="w-10"
+                height="h-10"
+                color="text-white"
+              />
+            </Button>
+          </div>
+          <ProductModal
+            isOpen={isOpen}
+            onClose={onClose}
+            onOpen={onOpen}
+            id={id}
+            title={name}
+            description={description}
+            price={price}
+            images={images as string[]}
+          />
         </div>
       ) : (
         <SkeletonCard />

@@ -1,5 +1,5 @@
 import { ErrorMessage } from '@hookform/error-message'
-import { Input, InputProps } from '@nextui-org/react'
+import { Input, InputProps, Textarea } from '@nextui-org/react'
 import React from 'react'
 import { Control, Controller, RegisterOptions } from 'react-hook-form'
 
@@ -10,12 +10,17 @@ type TLabelProps = {
   labelColor?: string
 }
 
-const Label = ({ label, children, required, labelColor = 'text-white' }: TLabelProps) => {
+const Label = ({
+  label,
+  children,
+  required,
+  labelColor = 'text-white'
+}: TLabelProps) => {
   if (!label) {
     return <>{children}</>
   }
   return (
-    <label className="w-full mt-2">
+    <label className="mt-2 w-full">
       <p className={`mb-2 font-bold ${labelColor}`}>
         {label} {required ? '*' : ''}
       </p>
@@ -28,9 +33,11 @@ type TInputProps = InputProps & {
   name: string
   control?: Control<any>
   type?: 'text' | 'number' | 'date' | 'textArea' | 'email' | 'password'
+  variant?: 'bordered' | 'flat' | 'faded' | 'underlined'
   valueAs?: 'number' | 'date' | 'string'
   placeholder?: string
   label?: string
+  size?: 'sm' | 'md' | 'lg'
   onChange?: () => void
   value?: any
   disabled?: boolean
@@ -42,16 +49,19 @@ type TInputProps = InputProps & {
     | undefined
   customeClassName?: string
   labelColor?: string
-  defaultValue?: any
+  defaultValue?: string
 }
 
 const InputComponent: React.FC<TInputProps> = ({
   control,
   valueAs = 'string',
   required = true,
+  isRequired = true,
   type = 'text',
+  variant = 'bordered',
   name,
   label = '',
+  size = 'md',
   placeholder = '',
   onChange,
   value,
@@ -77,19 +87,23 @@ const InputComponent: React.FC<TInputProps> = ({
       <Controller
         name={name}
         control={control}
-        defaultValue={ type === 'date' ? new Date().toISOString().split('T')[0] : ''}
+        defaultValue={
+          type === 'date'
+            ? new Date().toISOString().split('T')[0]
+            : defaultValue
+        }
         rules={rules}
         render={({ field, formState: { errors } }) => (
-          <div className="w-full">
+          <div className="w-full ">
             {type !== 'textArea' ? (
               <>
                 <Input
                   {...field}
                   defaultValue={defaultValue}
                   type={type}
-                  variant={'bordered'}
+                  variant={variant}
                   radius="sm"
-                  label={label}
+                  label={label + (isRequired ? '*' : '')}
                   onChange={event => field.onChange(getTypeOfValue(event))}
                   className={`w-full appearance-none rounded-md bg-gray-100/30 text-black placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
                   placeholder={placeholder}
@@ -108,14 +122,16 @@ const InputComponent: React.FC<TInputProps> = ({
               </>
             ) : (
               <>
-                <Input
+                <Textarea
                   {...field}
                   type={type}
                   variant={'bordered'}
                   label={label}
+                  placeholder={placeholder}
+                  size='sm'
                   radius="sm"
                   onChange={event => field.onChange(getTypeOfValue(event))}
-                  className={`w-full appearance-none rounded-md  border-gray-500 bg-gray-100/30 p-2 text-black outline-none  transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+                  className={`w-full appearance-none rounded-md bg-gray-100/30 text-black placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
                 />
                 <ErrorMessage
                   errors={errors}
@@ -135,12 +151,31 @@ const InputComponent: React.FC<TInputProps> = ({
   }
   return (
     <Label required={required} label={label}>
-      <Input
-        disabled={disabled}
-        type={type}
-        value={value}
-        {...props}
-      />
+      {type !== 'textArea' ? (
+        <Input
+          disabled={disabled}
+          type={type}
+          variant={variant}
+          radius="sm"
+          label={label}
+          size={size}
+          className={`w-full appearance-none rounded-md bg-white/40 text-gray placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+          value={value}
+          placeholder={placeholder}
+          {...props}
+        />
+      ) : (
+        <Textarea
+          type={type}
+          variant={variant}
+          label={label}
+          placeholder={placeholder}
+          radius="sm"
+          size='sm'
+          className={`w-full appearance-none rounded-md bg-white/40 text-gray placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}` }
+          value={value}
+        />
+      )}
     </Label>
   )
 }

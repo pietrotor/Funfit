@@ -21,14 +21,16 @@ import { TValuesWarehouses } from '@/components/atoms/modals/EditWarehouseModal'
 function CreateStock() {
   const [filterProduct] = useState<string>('')
   const [productsData, setProductsData] = useState<TValueProductData>()
-  const [warehouseData] = useState<TValuesWarehouses>({})
+  // const [warehouseData /* ,setWarehousesData */] = useState<TValuesWarehouses>(
+  //   {}
+  // )
   const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
   // const { measurementUnits } = useAppSelector(state => state.configuration)
   const units = useAppSelector(
     state => state.configuration.business?.measurementUnits
   )
   console.log(units, 'units')
-  const [CreateStock] = useCreateStockMutation()
+  const [CreateStock, { loading }] = useCreateStockMutation()
   const { control, handleSubmit, watch, reset } = useForm()
   const router = useRouter()
   const { warehouseId } = router.query
@@ -67,37 +69,46 @@ function CreateStock() {
           data.createStock?.message || 'Usuario creado correctamente',
           'success'
         )
-        console.log(data, 'data')
+        router.back()
       }
     })
     console.log('send')
   }
   useEffect(() => {
     console.log(productsData, 'data')
-    console.log(watch('units'), 'watch')
-  }, [data])
+    console.log(watch('product'), 'watch')
+  }, [productsData])
   return (
     <AdministrationLayout showBackButton={true}>
-      <div className="absolute ms-5 mt-5 flex h-[75%] w-[90%] transform flex-col items-start justify-center bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center">
+      <div className="w-full"></div>
+      <div className="absolute right-5 top-20 ms-5 mt-5 flex h-[75%] w-[90%] transform flex-col items-start justify-center bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center lg:right-0">
         <div
           className={`${
-            productsData ? 'absolute right-0 h-full w-[60%] bg-gray-700 opacity-60' : ''
+            productsData
+              ? 'absolute h-full  w-[60%] bg-gray-700 opacity-60 md:right-0'
+              : ''
           }`}
         />
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className={` relative z-30 flex h-full  w-[40%] flex-col items-center justify-center border bg-slate-50/100  px-16 py-9 transition-all duration-700  ${
+          className={` relative z-30 flex h-full  w-full flex-col items-center justify-center border bg-slate-50/100 px-16  py-9 transition-all  duration-700 md:w-[43%]  ${
             productsData ? '' : ''
           }`}
         >
           <h3 className="mb-7"> Registrar producto </h3>
-          <div className="max-w-5/6">
+          <div className="max-w-full space-y-3">
             <ComboInput
-              // rules={{ required: { value: true, message: 'Este campo es requerido' } }}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Este campo es requerido'
+                }
+              }}
               control={control}
               name="product"
               onClick={getProducts}
               label="Producto"
+              value={productsData?.name || ''}
               onChange={value => {
                 setProductsData(
                   data?.getProductsOutOfWarehouse?.data?.find(
@@ -127,7 +138,7 @@ function CreateStock() {
                 }
               }}
             />
-            <div className="grid grid-cols-2 gap-2  pt-3">
+            <div className="grid gap-2 lg:grid-cols-2  ">
               <Input
                 control={control}
                 name="quantity"
@@ -154,10 +165,17 @@ function CreateStock() {
                     label: unit.shortName
                   })) || [{ value: 'Cargando..', label: 'Cargando..' }]
                 }
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Este campo es requerido'
+                  }
+                }}
               />
             </div>
           </div>
           <Button
+            isLoading={loading}
             className="my-6  h-12 w-4/5 rounded-md bg-secondary/80 px-5 text-xl text-white transition duration-300 hover:bg-secondary"
             type="submit"
             onClick={() => {}}
@@ -167,30 +185,23 @@ function CreateStock() {
         </form>
         <div
           className={`absolute  grid grid-cols-2 place-items-center gap-x-2 py-6 ps-4 transition-all duration-300 ${
-            !productsData ? 'invisible left-1 ' : 'left-unit-9xl '
+            !productsData
+              ? 'invisible md:left-1 '
+              : 'md:left-unit-7xl lg:left-unit-8xl xl:left-unit-9xl'
           }`}
         >
           <div className="">
             <Input
-              labelColor=" text-white "
-              required={false}
-              value={warehouseData.address || ''}
-              type="textArea"
-              name="address"
-              label="Dirección del almacén"
-              disabled={true}
-              customeClassName="cursor-not-allowed mb-2"
-            />
-            <Input
               required={false}
               value={productsData?.description || ''}
+              variant="bordered"
               type="textArea"
               name="description"
               label="Descripción del producto"
               disabled={true}
-              customeClassName="cursor-not-allowed mb-2"
+              customeClassName=" mb-2"
             />
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid gap-2 xl:grid-cols-2">
               <Input
                 required={false}
                 name="code"

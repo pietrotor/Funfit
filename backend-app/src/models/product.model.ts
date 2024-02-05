@@ -2,17 +2,19 @@ import { Document, Model, Schema, model } from 'mongoose'
 import IGeneric from '@/interfaces/generic.interface'
 
 export interface IProduct extends Document, IGeneric {
-  id: objectId;
-  name: string;
-  suggetedPrice: number;
-  code: string;
-  internalCode: string;
-  description: string;
-  cost: number | null;
-  image?: string;
-  warehouses: objectId[];
+  id: objectId
+  name: string
+  suggetedPrice: number
+  code: string
+  internalCode: string
+  description: string
+  cost: number | null
+  image?: string
+  categoryId?: objectId
+  warehouses: objectId[]
+  branchesIds: objectId[]
 }
-export interface IModelProduct extends Model<IProduct> { }
+export interface IModelProduct extends Model<IProduct> {}
 const productSchema = new Schema<IProduct>(
   {
     name: {
@@ -44,11 +46,22 @@ const productSchema = new Schema<IProduct>(
     image: {
       type: String
     },
+    categoryId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Category'
+    },
     warehouses: [
       {
         type: Schema.Types.ObjectId,
         default: [],
         ref: 'Warehouse'
+      }
+    ],
+    branchesIds: [
+      {
+        type: Schema.Types.ObjectId,
+        default: [],
+        ref: 'Branch'
       }
     ],
     // Generic Types

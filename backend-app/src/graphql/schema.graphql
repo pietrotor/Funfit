@@ -10,7 +10,16 @@ enum StockMovementTypeEnum {
   OUTWARD
   DISPOSE
 }
-
+enum TurnMovementTypeEnum {
+  ADD
+  WITHDRAW
+  ADJUST
+}
+enum PaymentMethodEnum {
+  QR_TRANSFER
+  CARD
+  CASH
+}
 type Query {
   # CONFIGURATION ====================================
   getConfiguration: ConfigurationResponse
@@ -20,6 +29,9 @@ type Query {
   getRoles(paginationInput: PaginationInput!): RolesResponse
   getUsers(paginationInput: PaginationInput!): UsersResponse
   getUserById(id: ObjectId!): UserResponse
+  # CATEGORIES ==========================================
+  getCategories(paginationInput: PaginationInput!): CategoriesResponse
+  getCategoryById(id: ObjectId!): CategoryResponse
   # PRODUCTS ==========================================
   getProducts(paginationInput: PaginationInput!): ProductsResponse
   getProductById(id: ObjectId!): ProductResponse
@@ -30,12 +42,17 @@ type Query {
   # WAREHOUSES =======================================
   getWarehouses(paginationInput: PaginationInput!): WarehousesResponse
   getWarehouseById(id: ObjectId!): WarehouseResponse
+  getWarehousesOfProduct(
+    paginationInput: PaginationInput!
+    productId: ObjectId!
+  ): WarehousesResponse
   # STOCKS =======================================
   getStocksPaginated(paginationInput: PaginationInput!): StocksResponse
   getStockById(id: ObjectId!): StockResponse
   getProductStock(
     paginationInput: PaginationInput!
     productId: ObjectId!
+    warehouseId: ObjectId
   ): StocksResponse
   getWarehouseStock(
     warehouseStockPaginationInput: WarehouseStockPaginationInput!
@@ -48,8 +65,29 @@ type Query {
     paginationInput: PaginationInput!
     warehouseId: ObjectId!
   ): StocksHistoryResponse
-  # ECOMMERCE ROUTES ================================
-  getPublicProducts(paginationInput: PaginationInput!): ProductsResponse
+  # BRANCHES ===============================
+  getBranchesPaginated(paginationInput: PaginationInput!): BranchsResponse
+  getBranchById(id: ObjectId!): BranchResponse
+  getBranchProductsPaginated(
+    paginationInput: PaginationInput!
+    branchId: ObjectId!
+  ): BranchProductsResponse
+  getBranchProductById(id: ObjectId!): BranchProductResponse
+  # CASH ==================================
+  getCashById(id: ObjectId!): CashResponse
+  getCashTurnMovements(
+    paginationInput: PaginationInput!
+    turnId: ObjectId!
+  ): CashTurnMovementsResponse
+  # SALES =================================
+  getSaleById(id: ObjectId!): SaleResponse
+  getSalesPaginated(salesPaginationInput: SalesPaginationInput!): SalesResponse
+  getSalesSummary(salesSummaryInput: SalesSummaryInput!): SalesSummaryResponse
+  # ============================ ECOMMERCE ROUTES ================================
+  getPublicProducts(
+    paginationInput: PaginationInput!
+    branchId: ObjectId!
+  ): BranchProductsResponse
 }
 type Mutation {
   # CONFIGURATION ====================================
@@ -62,6 +100,10 @@ type Mutation {
     updateUserInput: UpdateUserInput!
     deleteInput: Boolean = false
   ): UserResponse
+  # CATEGORIES ==========================================
+  createCategory(createCategoryInput: CreateCategoryInput!): CategoryResponse
+  updateCategory(updateCategoryInput: UpdateCategoryInput!): CategoryResponse
+  deleteCategory(id: ObjectId!): CategoryResponse
   # PRODUCTS ==========================================
   createProduct(createProductInput: CreateProductInput!): ProductResponse
   updateProduct(updateProductInput: UpdateProductInput!): ProductResponse
@@ -79,6 +121,28 @@ type Mutation {
   creatStockMovement(
     createStockMovementInput: CreateStockMovementInput!
   ): StockResponse
+  # BRANCHES ===============================
+  createBranch(createBranchInput: CreateBranchInput!): BranchResponse
+  updateBranch(updateBranchInput: UpdateBranchInput!): BranchResponse
+  deleteBranch(id: ObjectId!): BranchResponse
+  createBranchProduct(
+    createBranchProductInput: CreateBranchProductInput!
+  ): BranchProductResponse
+  updateBranchProduct(
+    updateBranchProductInput: UpdateBranchProductInput!
+  ): BranchProductResponse
+  deleteBranchProduct(id: ObjectId!): BranchProductResponse
+  createBranchProductStockMovement(
+    createBranchProductStockMovementInput: CreateBranchProductStockMovementInput!
+  ): BranchProductResponse
+  # CASH ==================================
+  openCash(createTurnInput: CreateTurnInput!): CashResponse
+  closeCash(closeTurnInput: CloseTurnInput!): CashResponse
+  createCashMovement(
+    createTurnMovementInput: CreateTurnMovementInput!
+  ): CashTurnMovementResponse
+  # SALES =================================
+  createSale(createSaleInput: CreateSaleInput!): SaleResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type MeasurementUnits {
@@ -115,17 +179,25 @@ type User {
   # resolvers
   roleInfo: Role
 }
+type Category {
+  id: ObjectId!
+  name: String!
+  code: String!
+}
 type Product {
   id: ObjectId!
   name: String!
   # TODO: Change to pricelist
   suggetedPrice: Float!
   code: String!
-  internalCode: String!
+  internalCode: String
   description: String!
+  categoryId: ObjectId
   cost: Float
   image: String
   warehouses: [ObjectId!]!
+  # FieldsResolvers
+  category: Category
 }
 type Warehouse {
   id: ObjectId!
@@ -159,6 +231,119 @@ type StockHistory {
   stock: Stock
   warehouse: Warehouse
   createdByInfo: User
+}
+type Branch {
+  id: ObjectId!
+  name: String!
+  code: String!
+  city: String!
+  direction: String!
+  phone: String
+  nit: String
+  visibleOnWeb: Boolean!
+  cashId: ObjectId!
+  # Fields Resolvers
+  cash: Cash
+}
+type BranchProduct {
+  id: ObjectId!
+  branchId: ObjectId!
+  productId: ObjectId!
+  price: Float!
+  stock: Float!
+  isVisibleOnWeb: Boolean!
+  isVisibleOnMenu: Boolean!
+  # Fields Resolvers
+  product: Product
+  branch: Branch
+}
+type Cash {
+  id: ObjectId!
+  branchId: ObjectId!
+  amount: Float!
+  currentTurnId: ObjectId
+  isOpen: Boolean!
+  # Fields Resolvers
+  currentTurn: Turn
+}
+type OpenTurnInfo {
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  date: Date!
+  observation: String
+  openBy: ObjectId
+  # Fields Resolver
+  openByInfo: User
+}
+type CloseTurnInfo {
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  date: Date!
+  observation: String
+  closeBy: ObjectId
+  # Fields Resolver
+  closeByInfo: User
+}
+type Turn {
+  id: ObjectId!
+  cashId: ObjectId!
+  isOpen: Boolean!
+  amountOfMovents: Int!
+  openInfo: OpenTurnInfo!
+  closeInfo: CloseTurnInfo
+}
+type TurnMovements {
+  id: ObjectId!
+  turnId: ObjectId!
+  cashId: ObjectId!
+  amount: Float!
+  date: Date!
+  type: TurnMovementTypeEnum
+  concept: String
+  createdBy: ObjectId
+  # Fields Resolvers
+  createdByInfo: User
+}
+type SaleItem {
+  branchProductId: ObjectId!
+  productId: ObjectId!
+  price: Float!
+  qty: Int!
+  total: Float!
+  # Fields Resolvers
+  product: Product
+}
+type Sale {
+  id: ObjectId!
+  branchId: ObjectId!
+  products: [SaleItem!]!
+  paymentMethod: PaymentMethodEnum!
+  subTotal: Float!
+  total: Float!
+  discount: Float!
+  date: Date!
+  code: String!
+  client: String
+  amountRecibed: Float!
+  change: Float!
+  observations: String
+  canceled: Boolean
+  reason: String
+  canceledAt: Date
+  createdBy: ObjectId
+  # Fields Resolvers
+  branch: Branch
+  createdByInfo: User
+}
+type SalesByPaymentMethodSummary {
+  method: PaymentMethodEnum
+  total: Float!
+}
+type SalesSummary {
+  paymentMethods: [SalesByPaymentMethodSummary!]!
+  total: Float!
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -208,6 +393,22 @@ type UserResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: User
+}
+type CategoriesResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Category!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type CategoryResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Category
 }
 type ProductsResponse implements ResponseBase {
   errorInput: [ErrorInput!]
@@ -267,6 +468,82 @@ type StocksHistoryResponse implements ResponseBase {
   rows: Int
   currentPage: Int
 }
+type BranchsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Branch!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type BranchResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Branch
+}
+type BranchProductsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [BranchProduct!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type BranchProductResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: BranchProduct
+}
+type CashResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Cash
+}
+type CashTurnMovementsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [TurnMovements!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type CashTurnMovementResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: TurnMovements
+}
+type SalesResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Sale!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type SaleResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Sale
+}
+type SalesSummaryResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: SalesSummary
+}
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
   name: String!
@@ -311,12 +588,20 @@ input UpdateUserInput {
   roleId: ObjectId
   status: Boolean
 }
+input CreateCategoryInput {
+  name: String!
+}
+input UpdateCategoryInput {
+  id: ObjectId!
+  name: String
+}
 input CreateProductInput {
   name: String!
   code: String!
   # TODO: Change to pricelist
   suggetedPrice: Float!
   description: String!
+  categoryId: ObjectId
   cost: Float
   image: String
 }
@@ -327,6 +612,7 @@ input UpdateProductInput {
   # TODO: Change to PriceList
   suggetedPrice: Float
   description: String
+  categoryId: ObjectId
   cost: Float
   image: String
 }
@@ -360,4 +646,107 @@ input CreateStockMovementInput {
   type: StockMovementTypeEnum!
   detail: String
   date: Date!
+}
+input CreateBranchInput {
+  name: String!
+  code: String!
+  city: String!
+  direction: String!
+  phone: String
+  nit: String
+  visibleOnWeb: Boolean!
+}
+input UpdateBranchInput {
+  id: ObjectId!
+  name: String
+  code: String
+  city: String
+  direction: String
+  phone: String
+  nit: String
+  visibleOnWeb: Boolean
+}
+input CreateBranchProductInput {
+  branchId: ObjectId!
+  productId: ObjectId!
+  price: Float!
+  isVisibleOnWeb: Boolean!
+  isVisibleOnMenu: Boolean!
+}
+input UpdateBranchProductInput {
+  id: ObjectId!
+  price: Float
+  isVisibleOnWeb: Boolean
+  isVisibleOnMenu: Boolean
+}
+input CreateBranchProductStockMovementInput {
+  branchId: ObjectId!
+  branchProductId: ObjectId!
+  type: StockMovementTypeEnum!
+  qty: Float!
+  # Optional on OutPuts
+  stockId: ObjectId
+  observation: String
+  date: Date!
+}
+input CreateTurnInput {
+  cashId: ObjectId!
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  observation: String
+  updateToPhysicialAmount: Boolean!
+}
+input CloseTurnInput {
+  cashId: ObjectId!
+  turnId: ObjectId!
+  amount: Float!
+  physicialAmount: Float!
+  difference: Float!
+  observation: String
+  updateToPhysicialAmount: Boolean!
+}
+input CreateTurnMovementInput {
+  turnId: ObjectId!
+  cashId: ObjectId!
+  amount: Float!
+  date: Date!
+  type: TurnMovementTypeEnum
+  concept: String
+}
+input SalesPaginationInput {
+  rows: Int
+  page: Int
+  # Filter by sale code
+  filter: String
+  branchIds: [ObjectId!]!
+  initialDate: Date
+  endDate: Date
+  saleBy: ObjectId
+}
+input SaleItemInput {
+  branchProductId: ObjectId!
+  productId: ObjectId!
+  price: Float!
+  qty: Int!
+  total: Float!
+}
+input CreateSaleInput {
+  branchId: ObjectId!
+  products: [SaleItemInput!]!
+  paymentMethod: PaymentMethodEnum!
+  subTotal: Float!
+  total: Float!
+  discount: Float!
+  date: Date!
+  client: String
+  amountRecibed: Float!
+  change: Float!
+  observations: String
+}
+input SalesSummaryInput {
+  branchIds: [ObjectId!]!
+  initialDate: Date
+  endDate: Date
+  saleBy: ObjectId
 }

@@ -1,7 +1,9 @@
 import { Button, Textarea, Tooltip } from '@nextui-org/react'
 import { useRef, useState } from 'react'
 import Images from '@/components/atoms/Image/Image'
-import { useAppDispatch, useAppSelector } from '@/components/redux/hooks'
+
+import IconSelector from '@/components/atoms/IconSelector'
+import { useAppDispatch, useAppSelector } from '@/store/index'
 import {
   decreaseCart,
   increaseCart,
@@ -9,19 +11,14 @@ import {
   TCartItem,
   updateCartDetails,
   updateCartSubTotal
-} from '@/components/redux/features/cartSlice'
-import IconSelector from '@/components/atoms/IconSelector'
+} from '@/store/slices'
 
 function SideCart() {
   const dispatch = useAppDispatch()
-  const cartItems = useAppSelector(
-    state => state.cartReducer.initialState.cartItems
-  )
-  const details = useAppSelector(
-    state => state.cartReducer.initialState.cartDetails
-  )
+  const cartItems = useAppSelector(state => state.cartReducer.cartItems)
+  const details = useAppSelector(state => state.cartReducer.cartDetails)
   const totalPrice = useRef<number>(
-    useAppSelector(state => state.cartReducer.initialState.cartSubTotal)
+    useAppSelector(state => state.cartReducer.cartSubTotal)
   )
   const [newDetails, setNewDetails] = useState(details)
   const [showTextArea, setShowTextArea] = useState(false)
@@ -47,7 +44,6 @@ function SideCart() {
     dispatch(updateCartSubTotal(totalPrice.current))
   }
 
-  // console.log(cartItems)
   return (
     <>
       {cartItems.map((item, index) => (
@@ -62,18 +58,18 @@ function SideCart() {
                 src={`${item.pictureUrl}`}
                 radius="md"
                 alt="Banner de la empresa"
-                className="w-3/7 h-20"
+                className="w-44 h-20"
                 removeWrapper={true}
               />
               <section className=" flex w-full items-center justify-between">
                 <div className="flex w-full flex-col justify-between px-5">
                   <p className="flex justify-between font-semibold">
-                    <div>P/U </div>
-                    <div>{item.price / item.quantity} Bs</div>
+                    <p>P/U:</p>
+                    <p>{item.price / item.quantity} Bs</p>
                   </p>
-                  <p className="flex justify-between font-semibold">
-                    <div>Total</div>
-                    <div>{item.price} Bs</div>
+                  <p className="flex justify-between font-bold">
+                    <p>Total:</p>
+                    <p>{item.price} Bs</p>
                   </p>
                 </div>
                 <div
@@ -140,6 +136,7 @@ function SideCart() {
                 >
                   <Button
                     className=" w-1/6 cursor-pointer border-2 bg-white "
+                    isIconOnly
                     onClick={() => setShowTextArea(!showTextArea)}
                   >
                     <IconSelector name="edit" color="text-primary" />
@@ -148,8 +145,8 @@ function SideCart() {
               </div>
             )}
             <div className="flex items-center justify-between pt-2">
-              <p className="text-lg font-bold">sub Total</p>
-              <p className="text-lg font-bold">
+              <p className="text-2xl font-bold">Sub Total</p>
+              <p className="text-2xl font-bold">
                 {cartItems.reduce((total, item) => total + item.price, 0)} Bs
               </p>
             </div>

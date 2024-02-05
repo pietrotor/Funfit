@@ -18,8 +18,11 @@ interface ComboInputProps {
     label: string
   }[]
   value?: string
-  onChange: (value: string) => void
+  onChange?: (value: string) => void
   onClick: () => void
+  defaultValue?: string
+  disabledKeys?: string[]
+  onSelectionChange?: (e: any) => void
 }
 
 const ComboInput: React.FC<ComboInputProps> = ({
@@ -29,8 +32,11 @@ const ComboInput: React.FC<ComboInputProps> = ({
   label,
   options,
   value,
+  defaultValue,
   onChange,
-  onClick
+  onClick,
+  disabledKeys,
+  onSelectionChange
 }) => {
   return (
     <Controller
@@ -47,11 +53,14 @@ const ComboInput: React.FC<ComboInputProps> = ({
             label={label}
             className={`${value ? 'border-gray-900' : 'border-gray-300'} w-full`}
             radius='sm'
+            onSelectionChange={(e) => { onSelectionChange && onSelectionChange(e) }}
+            defaultSelectedKey={defaultValue}
+            disabledKeys={disabledKeys}
             onClick={onClick}
             list="options"
             onInputChange={e => {
               field.onChange(e)
-              onChange(e)
+              onChange && onChange(e)
             }}
             placeholder={`Selecciona o escribe ${label.toLowerCase()}`}
           >

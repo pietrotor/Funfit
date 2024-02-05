@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next'
 import { useState } from 'react'
-import { Button, useDisclosure } from '@nextui-org/react'
+import { useDisclosure } from '@nextui-org/react'
 
 import AdministrationLayout from '@/components/templates/layouts'
 import { AddUserModal } from '@/components/atoms/modals/AddUserModal'
@@ -13,12 +13,13 @@ import {
   useGetUsersQuery,
   useUpdateUserMutation
 } from '@/graphql/graphql-types'
-import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import Table from '@/components/organisms/tableNext/Table'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
+import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 function CreateUserForm() {
   const handleAddUser = useDisclosure()
@@ -87,6 +88,7 @@ function CreateUserForm() {
   const handleUpdateUser = (id: string) => {
     const user = data?.getUsers?.data?.find(user => user.id === id)
     setEdit(user as TValueUserData)
+    console.log(edit)
     handleEditModal.onOpen()
   }
 
@@ -133,18 +135,16 @@ function CreateUserForm() {
 
   return (
     <AdministrationLayout>
-      <div className="m-auto mt-16 w-5/6 ">
+      <div className="m-auto mt-6 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de usuarios
         </h3>
-        <Button
+        <AdminButton
           onClick={handleAddUser.onOpen}
           color="secondary"
-          className="float-right my-4 font-extrabold text-white"
-        >
-          <IconSelector name="addUser" />
-          Agregar nuevo usuario
-        </Button>
+          iconName="addUser"
+          text="Agregar nuevo usuario"
+        />
         <Table
           titles={[
             { name: '#' },
@@ -199,7 +199,10 @@ function CreateUserForm() {
           totalPages={variables?.totalPages}
           isLoading={loading}
           enablePagination={true}
-          onSearch={value => setFilter(value)}
+          onSearch={value => {
+            setFilter(value)
+            setVariables({ ...variables, currentPage: 1 })
+          }}
           totalItems={variables?.totalRecords}
         />
       </div>
@@ -212,12 +215,15 @@ function CreateUserForm() {
       />
 
       <ConfirmModal
+        cancelText="Cancelar"
+        color="error"
+        confirmText="Eliminar"
+        name="trash"
         onClose={handleDeleteModal.onClose}
         onConfirm={handleConfirmDeleteUser}
         isOpen={handleDeleteModal.isOpen}
         title={'Mensaje de confirmación'}
         message={`¿Esta seguro de eliminar a ${edit.name} ?`}
-        onCancel={handleDeleteModal.onClose}
       />
 
       <AddUserModal

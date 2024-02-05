@@ -1,16 +1,19 @@
 import { createSlice } from '@reduxjs/toolkit'
 export type TCartItem = {
+  id: string
   productName: string
   price: number
   quantity: number
   pictureUrl: string
 }
 export type TCart = {
+  id: string
   cartItems: TCartItem[]
   cartSubTotal: number
   cartDetails?: string
 }
 const initialState: TCart = {
+  id: '',
   cartItems: [],
   cartSubTotal: 0,
   cartDetails: ''
@@ -18,37 +21,52 @@ const initialState: TCart = {
 
 export const cartSlice = createSlice({
   name: 'cart',
-  initialState: { initialState },
+  initialState,
   reducers: {
-    addToCart(state, action) {
+    updateCart(state, action) {
       const item = action.payload
-      const existItem = initialState.cartItems.find(
-        x => x.productName === item.productName
-      )
+      const existItem = state.cartItems.find((x) => x.id === item.id)
 
       if (existItem) {
-        state.initialState.cartItems = state.initialState.cartItems.map(x => {
-          if (x.productName === existItem.productName) {
-            return {
-              ...x,
-              quantity: x.quantity + item.quantity,
-              price: x.price + item.price
-            }
-          } else {
-            return x
-          }
-        })
+        state.cartItems = state.cartItems.map((x) =>
+          x.id === existItem.id ? {
+            ...x,
+            quantity: item.quantity,
+            price: item.price
+          } : x
+        )
       } else {
-        state.initialState.cartItems.push(item)
+        state.cartItems.push(item)
       }
+      state.cartSubTotal = state.cartItems.reduce((acc, item) => acc + item.price, 0)
+    },
+    addToCart(state, action) {
+      localStorage.removeItem('cartItems')
+      const item = action.payload
+      const existItem = state.cartItems.find((x) => x.id === item.id)
+
+      if (existItem) {
+        state.cartItems = state.cartItems.map((x) =>
+          x.id === existItem.id ? {
+            ...x,
+            quantity: x.quantity + item.quantity,
+            price: x.price + item.price
+          } : x
+        )
+      } else {
+        state.cartItems.push(item)
+      }
+      state.cartSubTotal = state.cartItems.reduce((acc, item) => acc + item.price, 0)
+      localStorage.setItem('cartItems', JSON.stringify(state.cartItems))
     },
     decreaseCart(state, action) {
+      localStorage.removeItem('cartItems')
       const item = action.payload
-      const existItem = state.initialState.cartItems.find(
+      const existItem = state.cartItems.find(
         x => x.productName === item.productName
       )
       if (existItem) {
-        state.initialState.cartItems = state.initialState.cartItems.map(x => {
+        state.cartItems = state.cartItems.map(x => {
           if (x.productName === existItem.productName) {
             if (x.quantity > 1) {
               return {
@@ -63,19 +81,21 @@ export const cartSlice = createSlice({
             return x
           }
         })
-        state.initialState.cartSubTotal = state.initialState.cartItems.reduce(
+        state.cartSubTotal = state.cartItems.reduce(
           (acc, item) => acc + item.price,
           0
         )
       }
+      localStorage.setItem('cartItems', JSON.stringify(state.cartItems))
     },
     increaseCart(state, action) {
+      localStorage.removeItem('cartItems')
       const item = action.payload
-      const existItem = state.initialState.cartItems.find(
+      const existItem = state.cartItems.find(
         x => x.productName === item.productName
       )
       if (existItem) {
-        state.initialState.cartItems = state.initialState.cartItems.map(x => {
+        state.cartItems = state.cartItems.map(x => {
           if (x.productName === existItem.productName) {
             if (x.quantity < 100) {
               return {
@@ -90,26 +110,40 @@ export const cartSlice = createSlice({
             return x
           }
         })
-        state.initialState.cartSubTotal = state.initialState.cartItems.reduce(
+        state.cartSubTotal = state.cartItems.reduce(
           (acc, item) => acc + item.price,
           0
         )
       }
+      localStorage.setItem('cartItems', JSON.stringify(state.cartItems))
     },
     removeFromCart(state, action) {
+      localStorage.removeItem('cartItems')
       const item = action.payload
-      state.initialState.cartItems = state.initialState.cartItems.filter(
+      state.cartItems = state.cartItems.filter(
         x => x.productName !== item.productName
       )
+      localStorage.setItem('cartItems', JSON.stringify(state.cartItems))
     },
     clearCart(state) {
-      state.initialState.cartItems = []
+      localStorage.removeItem('cartItems')
+      state.cartItems = []
+    },
+    updateLocalStorageCartDetails(state, action) {
+      state.cartDetails = action.payload
     },
     updateCartDetails: (state, action) => {
-      state.initialState.cartDetails = action.payload
+      localStorage.removeItem('cartDetails')
+      state.cartDetails = action.payload
+      localStorage.setItem('cartDetails', JSON.stringify(state.cartDetails))
+    },
+    updateLocalStorageCartSubTotal(state, action) {
+      state.cartSubTotal = action.payload
     },
     updateCartSubTotal: (state, action) => {
-      state.initialState.cartSubTotal = action.payload
+      localStorage.removeItem('cartSubTotal')
+      state.cartSubTotal = action.payload
+      localStorage.setItem('cartSubTotal', JSON.stringify(state.cartSubTotal))
     }
   }
 })
@@ -120,5 +154,8 @@ export const {
   decreaseCart,
   increaseCart,
   updateCartDetails,
-  updateCartSubTotal
+  updateCartSubTotal,
+  updateLocalStorageCartDetails,
+  updateLocalStorageCartSubTotal,
+  updateCart
 } = cartSlice.actions

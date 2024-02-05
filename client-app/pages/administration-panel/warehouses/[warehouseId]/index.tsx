@@ -1,9 +1,8 @@
-import { Button, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
-import { WarehouseRoute } from '@/utils/routes'
+import { useDisclosure } from '@nextui-org/react'
 
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -14,6 +13,8 @@ import ButtonComponent from '@/components/atoms/Button'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { TStockData } from '@/interfaces/TData'
+import { WarehouseRoute } from '@/utils/routes'
+import { AdminButton } from '@/components/atoms/Button/AdminButton'
 
 function Warehouse() {
   const [variables, setVariables] = useState<PaginationInterfaceState>({
@@ -57,34 +58,27 @@ function Warehouse() {
   }
   return (
     <AdministrationLayout showBackButton={true}>
-      <div className="m-auto w-5/6 ">
+      <div className="m-auto mt-8 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de Stocks
         </h3>
-        <div className="mb-8 ms-auto w-1/4">
-
-            <Button
-              color="secondary"
-              className="float-right my-4 font-extrabold text-white"
-              onClick={ () => router.push(`${WarehouseRoute} ${warehouseId}/create-stock`)}
-            >
-              <IconSelector name="Box" />
-              Agregar nuevo Stock
-            </Button>
+        <div className="flex justify-end space-x-3">
+          <AdminButton
+            pathname={`${WarehouseRoute}/${warehouseId}/warehouse-history`}
+            color="primary"
+            text="Historial del almacén"
+            iconName="Warehouse"
+            showMinIcon={true}
+            addPlusIcon={false}
+          />
+          <AdminButton
+            color="secondary"
+            pathname={`/administration-panel/warehouses/${warehouseId}/create-stock`}
+            iconName="Box"
+            text="Agregar nuevo Stock"
+          />
         </div>
         <Table
-          tableName="STOCKS"
-          onChangeRow={row => handleChangeRow(row)}
-          onChangePage={page =>
-            setVariables({ ...variables, currentPage: page })
-          }
-          itemsPerPage={variables?.rows}
-          currentPage={variables?.currentPage}
-          totalPages={variables?.totalPages}
-          isLoading={loading}
-          enablePagination={true}
-          onSearch={value => setFilter(value)}
-          totalItems={variables?.totalRecords}
           titles={[
             { name: '#' },
             { name: 'Producto' },
@@ -95,7 +89,8 @@ function Warehouse() {
             content: [
               <h3 key={idx} className="text-sm">
                 {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
-                  idx + 1}
+                  idx +
+                  1}
               </h3>,
               <div key={idx} className="text-center">
                 {stock?.product?.name}
@@ -108,7 +103,7 @@ function Warehouse() {
                 />{' '}
                 {stock.units}
               </div>,
-              <div key={idx} className="">
+              <div key={idx} className="flex justify-center space-x-3">
                 <ButtonComponent
                   onClick={() => handleCreateMovement(stock as TStockData)}
                   type="edit"
@@ -118,10 +113,37 @@ function Warehouse() {
                 >
                   <IconSelector name="edit" color="text-primary" width="w-8" />
                 </ButtonComponent>
+                <ButtonComponent
+                  onClick={() =>
+                    router.push(
+                      `${WarehouseRoute}/${warehouseId}/stock-history/${stock.id}`
+                    )
+                  }
+                  type="history"
+                  showTooltip
+                  tooltipText="Historial de Stock"
+                >
+                  <IconSelector
+                    name="Boxes"
+                    color="text-blue-500"
+                    width="w-8"
+                  />
+                </ButtonComponent>
               </div>
             ]
           }))}
-
+          onChangeRow={row => handleChangeRow(row)}
+          tableName="STOCKS"
+          onChangePage={page =>
+            setVariables({ ...variables, currentPage: page })
+          }
+          itemsPerPage={variables?.rows}
+          currentPage={variables?.currentPage}
+          totalPages={variables?.totalPages}
+          isLoading={loading}
+          enablePagination={true}
+          onSearch={value => setFilter(value)}
+          totalItems={variables?.totalRecords}
         />
       </div>
       <MoveStockModal

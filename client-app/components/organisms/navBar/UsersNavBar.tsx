@@ -8,8 +8,8 @@ import { TSections } from '@/interfaces/Sections'
 import Images from '@/components/atoms/Image/Image'
 import Nav from '@/components/organisms/navBar/Nav'
 import CartModal from '@/components/atoms/modals/CartsModal'
-import { useAppSelector } from '@/components/redux/hooks'
 import ToastComponent from '@/components/atoms/Toast/toasts'
+import { useAppSelector } from '@/store/index'
 
 type TSubMenuLinkProps = {
   menu: TSections
@@ -19,9 +19,7 @@ const UsersNavBar: React.FC<TSubMenuLinkProps> = ({ menu }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
   const [isNavOpen, setIsNavOpen] = useState(false)
-  const cartItems = useAppSelector(
-    state => state.cartReducer.initialState.cartItems
-  )
+  const cartItems = useAppSelector(state => state.cartReducer.cartItems)
 
   return (
     <header className={`${isNavOpen ? 'relative h-16' : 'h-16'}`}>

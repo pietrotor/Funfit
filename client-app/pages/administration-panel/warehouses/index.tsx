@@ -1,11 +1,10 @@
-import { Button, useDisclosure } from '@nextui-org/react'
+import { useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router'
 
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
-import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import {
   EditWarehouseModal,
   TValuesWarehouses
@@ -23,6 +22,8 @@ import {
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import ButtonComponent from '@/components/atoms/Button'
+import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 function Warehouses() {
   const [edit, setEdit] = useState<TValuesWarehouses>({})
@@ -44,8 +45,8 @@ function Warehouses() {
   const { loading, data, refetch } = useGetWarehousesQuery({
     variables: {
       paginationInput: {
-        rows: 5,
         page: variables?.currentPage,
+        rows: variables?.rows,
         filter: filtroDebounced
       }
     },
@@ -135,20 +136,16 @@ function Warehouses() {
 
   return (
     <AdministrationLayout>
-      <div className="m-auto mt-16 w-5/6 ">
+      <div className="m-auto mt-8 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de Almacenes
         </h3>
-        <div className="space-x-3 text-end">
-          <Button
-            onClick={handleAddWarehouse.onOpen}
-            color="secondary"
-            className=" my-4 font-extrabold text-white"
-          >
-            <IconSelector name="Bussines" />
-            Agregar nuevo Almacén
-          </Button>
-        </div>
+        <AdminButton
+          onClick={handleAddWarehouse.onOpen}
+          color="secondary"
+          text="Agregar nuevo Almacén"
+          iconName="Bussines"
+        />
         <Table
           onChangeRow={row => handleChangeRow(row)}
           tableName="ALMACENES"
@@ -160,7 +157,10 @@ function Warehouses() {
           totalPages={variables?.totalPages}
           isLoading={loading}
           enablePagination={true}
-          onSearch={value => setFilter(value)}
+          onSearch={value => {
+            setFilter(value)
+            setVariables({ ...variables, currentPage: 1 })
+          }}
           totalItems={variables?.totalRecords}
           titles={[
             { name: '#' },
@@ -172,11 +172,10 @@ function Warehouses() {
           items={(data?.getWarehouses?.data || []).map((warehouse, idx) => ({
             content: [
               <h3 key={idx} className="text-sm">
-                {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
-                  idx +
-                  1}
+                {' '}
+                {idx + 1}
               </h3>,
-              <div key={idx} className="text-sm">
+              <div key={idx} className="text-left text-sm">
                 {warehouse.name}
               </div>,
               <div key={idx} className="text-left text-sm">
@@ -194,10 +193,9 @@ function Warehouses() {
                   }
                   type="eye"
                   showTooltip
-                  tooltipText="Administrar Stock"
-                  className="px-3"
+                  tooltipText="Ver Almacén"
                 >
-                  <IconSelector name="eye" color="text-secondary" width="w-5" />
+                  <IconSelector name="eye" color="text-secondary" width="w-8" />
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() => handleUpdateWarehouse(warehouse.id)}
@@ -236,10 +234,13 @@ function Warehouses() {
         <ConfirmModal
           isOpen={handleConfirmModal.isOpen}
           onClose={handleConfirmModal.onClose}
-          onCancel={handleConfirmModal.onClose}
           title="Eliminar almacén"
           message={`¿Esta seguro de eliminar a ${edit?.name}?`}
           onConfirm={handleConfirmDelete}
+          cancelText="Cancelar"
+          color="error"
+          confirmText="Eliminar"
+          name="trash"
         />
       </div>
     </AdministrationLayout>

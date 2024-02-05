@@ -16,43 +16,43 @@ function ProductInformation() {
 
   const [count, setCount] = useState(1)
   const saveData = useRef<TCartItem>({
+    id: data?.getProductById?.data?.id as string,
     productName: data?.getProductById?.data?.name as string,
     quantity: count,
-    price: (data?.getProductById?.data?.suggetedPrice as number * count),
+    price: (data?.getProductById?.data?.suggetedPrice as number) * count,
     pictureUrl: ''
   })
 
   const addProduct = (units: number) => {
     showSuccessToast('Producto añadido exitosamente', 'success')
     saveData.current = {
+      id: data?.getProductById?.data?.id as string,
       productName: data?.getProductById?.data?.name as string,
       quantity: units,
-      price: data?.getProductById?.data?.suggetedPrice as number * units,
+      price: (data?.getProductById?.data?.suggetedPrice as number) * units,
       pictureUrl: data?.getProductById?.data?.image as string
     }
     dispatch(addToCart(saveData.current))
   }
   return (
-    <article className='bg-white py-10 '>
-      <div className=' py-10 md:px-20 md:flex md:space-x-32 md:justify-center'>
-        <div className='lg:w-1/3 '>
+    <article className="bg-white py-10 ">
+      <div className=" py-10 md:flex md:justify-center md:space-x-32 md:px-20">
+        <div className="lg:w-1/3 ">
           <Slide
             images={[data?.getProductById?.data?.image as string]}
             infiniteLoop={false}
-            radius='none'
+            radius="none"
             showArrows={true}
           />
         </div>
-        <section className='p-3 space-y-4'>
-          <h2 className='text-3xl text-center'>
+        <section className="space-y-4 p-3">
+          <h2 className="text-center text-3xl">
             {data?.getProductById?.data?.name}
           </h2>
-          <p className='font-bold'>
-           Precio unitario Bs. {data?.getProductById?.data?.suggetedPrice}
+          <p className="font-bold">
+            Precio unitario Bs. {data?.getProductById?.data?.suggetedPrice}
           </p>
-          <p>
-            {data?.getProductById?.data?.description}
-          </p>
+          <p>{data?.getProductById?.data?.description}</p>
           <section className="my-2 flex h-10 items-center justify-between rounded-md px-5 shadow-medium ">
             <h4>Unidades</h4>
             <div className="flex">
@@ -77,7 +77,7 @@ function ProductInformation() {
               </button>
             </div>
           </section>
-          <div className='flex justify-center'>
+          <div className="flex justify-center">
             <Button
               color="primary"
               onPress={() => {
@@ -86,18 +86,14 @@ function ProductInformation() {
               className="h-14 w-64 text-lg font-bold hover:bg-primary/80 hover:shadow-lg "
             >
               Añadir al carrito
-              <div>{`${data?.getProductById?.data?.suggetedPrice as number * count} Bs`}</div>
+              <div>{`${
+                (data?.getProductById?.data?.suggetedPrice as number) * count
+              } Bs`}</div>
             </Button>
           </div>
-          </section>
-        </div>
-        <h2 className='text-3xl my-4 px-20'>
-          Ingredientes
-        </h2>
-        <p className=' px-20 '>
-              asdasd
-        </p>
-      </article>
+        </section>
+      </div>
+    </article>
   )
 }
 export default ProductInformation
