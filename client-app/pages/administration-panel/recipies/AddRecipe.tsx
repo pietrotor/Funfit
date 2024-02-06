@@ -15,7 +15,11 @@ export interface RecipeFormProps {
   units: string
 }
 
-function Recipe() {
+interface RecipeProps {
+  user: any
+}
+
+function Recipe({ user }: RecipeProps) {
   // const [productsData, setProductsData] = useState<TValueProductData>()
   const { control, handleSubmit } = useForm()
   const [rows, setRows] = useState<RecipeFormProps[]>([
@@ -35,7 +39,7 @@ function Recipe() {
   }
 
   return (
-    <AdministrationLayout showBackButton>
+    <AdministrationLayout user={user} showBackButton>
       <div className="m-auto mt-16 w-5/6">
         <h3 className="text-center text-4xl font-extrabold text-gray-500">
           Crea una nueva receta

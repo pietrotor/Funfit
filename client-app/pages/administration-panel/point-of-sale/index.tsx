@@ -14,8 +14,11 @@ export type TPointOfSaleData = {
   total: number
   discount: number
 }
+interface PointOfSaleProps {
+  user: any
+}
 
-function PointOfSale() {
+function PointOfSale({ user }: PointOfSaleProps) {
   const router = useRouter()
   const { data: dataPassed } = router.query
   const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
@@ -90,7 +93,7 @@ function PointOfSale() {
   }, [router.query])
 
   return (
-    <AdministrationLayout profileButton={false}>
+    <AdministrationLayout user={user} profileButton={false}>
       <section className="flex h-full w-full ">
         <div className="w-2/3 border-1 border-secondary/30  bg-secondary/10 p-4">
           {/* <div className="flex w-full">

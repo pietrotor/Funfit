@@ -23,7 +23,11 @@ import {
 } from '@/graphql/graphql-types'
 import { useGetSalesSummary } from '@/services/useGetSalesSummary'
 
-function Sales() {
+interface SalesProps {
+  user: any
+}
+
+function Sales({ user }: SalesProps) {
   const router = useRouter()
   const { branches, currentBranch } = useAppSelector(
     state => state.branchReducer
@@ -72,7 +76,7 @@ function Sales() {
   }
 
   return (
-    <AdministrationLayout>
+    <AdministrationLayout user={user}>
       <div className="m-auto mt-7 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Reporte de ventas

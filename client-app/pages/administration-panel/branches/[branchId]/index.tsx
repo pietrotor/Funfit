@@ -19,7 +19,10 @@ import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { StatusEnum, useUpdateBranchMutation } from '@/graphql/graphql-types'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 
-function ProductOnBranch() {
+interface ProductOnBranchProps {
+  user: any
+}
+function ProductOnBranch({ user }: ProductOnBranchProps) {
   const router = useRouter()
   const { branchId } = router.query
   const [editProduct, setEditProduct] = useState<TProductBranchData>()
@@ -74,7 +77,7 @@ function ProductOnBranch() {
   }
 
   return (
-    <AdministrationLayout showBackButton={true}>
+    <AdministrationLayout user={user} showBackButton={true}>
       <div className="m-auto mt-7 w-5/6 space-y-7">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de productos

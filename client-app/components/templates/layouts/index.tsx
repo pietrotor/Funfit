@@ -21,13 +21,15 @@ type TAdministrationLayoutProps = {
   showBackButton?: boolean
   onSubmit?: () => void
   profileButton?: boolean
+  user?:any
 }
 
 const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   onSubmit,
   showBackButton = false,
   children,
-  profileButton = true
+  profileButton = true,
+  user
 }) => {
   const { business } = useAppSelector(state => state.configuration)
   const { branches, currentBranch } = useAppSelector(
@@ -35,6 +37,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   )
   const dispatch = useAppDispatch()
   const [currentId, setCurrentId] = useState<string>('')
+  console.log(user)
   const [getBranchesPaginated] = useGetBranchesPaginatedLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -259,7 +262,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         >
           <Sidebar
             onSubmit={onSubmit}
-            user={{ name: 'pietro' }}
+            user={{ name: user.name }}
             menu={menu}
             isSidebarOpen={sidebarOpen}
             setSidebar={setsidebarOpen}
@@ -297,7 +300,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
                 <DropDown
                   fill
                   IconButtonName="user"
-                  label={'Pietro'}
+                  label={user.name}
                   user="https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png"
                   values={[
                     {

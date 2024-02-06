@@ -9,12 +9,16 @@ import Images from '@/components/atoms/Image/Image'
 import useCustomGetSaleById from '@/services/UseGetCustomSaleById'
 import { useAppSelector } from '@/store/index'
 
-function SaleDetail() {
+interface SaleDetailProps {
+  user: any
+}
+
+function SaleDetail({ user }: SaleDetailProps) {
   const router = useRouter()
   const { data } = useCustomGetSaleById(router.query.saleId as string)
   const { currentBranch } = useAppSelector(state => state.branchReducer)
   return (
-    <AdministrationLayout showBackButton={true}>
+    <AdministrationLayout user={user} showBackButton={true}>
       <div className="m-auto mt-8 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Detalle de venta
