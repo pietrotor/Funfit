@@ -1,11 +1,12 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
+import { Spinner } from '@nextui-org/react'
+import { useRouter } from 'next/router'
 import PointOfSaleCard from '@/components/molecules/Card/PointOfSaleCard'
 import AdministrationLayout from '@/components/templates/layouts'
 import SalesReceipt from '@/components/organisms/SalesReceipt'
 import { useGetBranchProductPOSQuery } from '@/hooks/UseBranchQuery'
 import { TProductBranchData } from '@/interfaces/TData'
 import { useAppSelector } from '@/store/index'
-import { Spinner } from '@nextui-org/react'
 
 export type TPointOfSaleData = {
   products: TProductBranchData[]
@@ -15,9 +16,14 @@ export type TPointOfSaleData = {
 }
 
 function PointOfSale() {
+  const router = useRouter()
+  const { data: dataPassed } = router.query
+  const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
   const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
   const { loading, data } = useGetBranchProductPOSQuery(branchId)
-  const [selectedProducts, setSelectedProducts] = useState<TPointOfSaleData>()
+  const [selectedProducts, setSelectedProducts] = useState<TPointOfSaleData>(
+    parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
+  )
 
   const handleSelected = (id: string) => {
     const existingProduct = selectedProducts?.products?.find(
@@ -67,6 +73,13 @@ function PointOfSale() {
       }
     }
   }
+  useEffect(() => {
+    const { data: dataPassed } = router.query
+    const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
+    setSelectedProducts(
+      parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
+    )
+  }, [router.query])
 
   return (
     <AdministrationLayout profileButton={false}>
@@ -98,14 +111,7 @@ function PointOfSale() {
         </div>
         <div className="h-full w-1/3">
           <SalesReceipt
-            selectedProducts={
-              selectedProducts || {
-                products: [],
-                subTotal: 0,
-                total: 0,
-                discount: 0
-              }
-            }
+            selectedProducts={selectedProducts}
             setSelectedProducts={setSelectedProducts}
           />
         </div>
