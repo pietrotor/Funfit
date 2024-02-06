@@ -83,7 +83,9 @@ function CreateStock() {
       <div className="absolute right-5 top-20 ms-5 mt-5 flex h-[75%] w-[90%] transform flex-col items-start justify-center bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center lg:right-0">
         <div
           className={`${
-            productsData ? 'absolute h-full  w-[60%] bg-gray-700 opacity-60 md:right-0' : ''
+            productsData
+              ? 'absolute h-full  w-[60%] bg-gray-700 opacity-60 md:right-0'
+              : ''
           }`}
         />
         <form
@@ -135,7 +137,7 @@ function CreateStock() {
                 }
               }}
             />
-            <div className="grid lg:grid-cols-2 gap-2  ">
+            <div className="grid gap-2 lg:grid-cols-2  ">
               <Input
                 control={control}
                 name="quantity"
@@ -182,7 +184,9 @@ function CreateStock() {
         </form>
         <div
           className={`absolute  grid grid-cols-2 place-items-center gap-x-2 py-6 ps-4 transition-all duration-300 ${
-            !productsData ? 'invisible md:left-1 ' : 'xl:left-unit-9xl lg:left-unit-8xl md:left-unit-7xl'
+            !productsData
+              ? 'invisible md:left-1 '
+              : 'md:left-unit-7xl lg:left-unit-8xl xl:left-unit-9xl'
           }`}
         >
           <div className="">
@@ -196,7 +200,7 @@ function CreateStock() {
               disabled={true}
               customeClassName=" mb-2"
             />
-            <div className="grid xl:grid-cols-2 gap-2">
+            <div className="grid gap-2 xl:grid-cols-2">
               <Input
                 required={false}
                 name="code"

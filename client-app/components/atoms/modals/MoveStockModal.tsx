@@ -175,14 +175,18 @@ export const MoveStockModal = ({
           <div className="my-auto h-24 text-center font-semibold">
             <CircularProgressbar
               value={
-                handlePlusController() && handlePlusController() >= 0 ? handlePlusController() : stockData?.quantity
+                handlePlusController() && handlePlusController() >= 0
+                  ? handlePlusController()
+                  : stockData?.quantity
               }
               maxValue={stockData?.lastStockEntry}
               text={
                 `${
                   handlePlusController() &&
                   handlePlusController() >= 0 &&
-                  handlePlusController() <= stockData?.lastStockEntry ? handlePlusController() : stockData?.quantity
+                  handlePlusController() <= stockData?.lastStockEntry
+                    ? handlePlusController()
+                    : stockData?.quantity
                 }` || '0'
               }
               className="h-full"
