@@ -13,9 +13,11 @@ import {
   updateCart,
   updateLocalStorageCartDetails
 } from '@/store/slices'
-import { SelectBranchProductsModal } from '@/components/atoms/modals/SelectBranchProductsModal'
-import { useGetBranchByIdLazyQuery, useGetBranchesPaginatedLazyQuery } from '@/graphql/graphql-types'
-import { TDataBranch } from '@/interfaces/TData'
+// import { SelectBranchProductsModal } from '@/components/atoms/modals/SelectBranchProductsModal'
+import {
+  useGetBranchByIdLazyQuery,
+  useGetBranchesPaginatedLazyQuery
+} from '@/graphql/graphql-types'
 import { setBranchInformation } from '@/store/slices/e-commerceInformation/e-commerceInformationSlice'
 export type TClientLayoutProps = {
   children: React.ReactNode
@@ -26,7 +28,7 @@ function ClientLayout({ children }: TClientLayoutProps) {
   const dispatch = useDispatch()
   const router = useRouter()
   const [storedBranch, setStoredBranch] = useState<string>()
-  const [getBranches, { data, loading }] = useGetBranchesPaginatedLazyQuery({
+  const [getBranches, { data }] = useGetBranchesPaginatedLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
       paginationInput: {}
@@ -99,12 +101,20 @@ function ClientLayout({ children }: TClientLayoutProps) {
     }
   }, [])
   useEffect(() => {
-    const availableBranches = data?.getBranchesPaginated?.data?.filter(objeto => objeto.visibleOnWeb === true)
-    if (sessionStorage.getItem('branchId') === null || sessionStorage.getItem('branchId') === 'undefined') {
+    const availableBranches = data?.getBranchesPaginated?.data?.filter(
+      objeto => objeto.visibleOnWeb === true
+    )
+    if (
+      sessionStorage.getItem('branchId') === null ||
+      sessionStorage.getItem('branchId') === 'undefined'
+    ) {
       if (availableBranches && availableBranches?.length > 1) {
         handleSelectBranch.onOpen()
       } else if (availableBranches && availableBranches?.length === 1) {
-        sessionStorage.setItem('branchId', JSON.stringify(availableBranches[0].id))
+        sessionStorage.setItem(
+          'branchId',
+          JSON.stringify(availableBranches[0].id)
+        )
         router.reload()
       }
     }
@@ -118,7 +128,19 @@ function ClientLayout({ children }: TClientLayoutProps) {
         <div className="flex-grow ">
           <UserContainer>{children}</UserContainer>
         </div>
-        <SelectBranchProductsModal
+        <div className="fixed left-0 top-0 z-50 flex h-screen w-full items-center justify-center bg-black/40">
+          <div className="max-w-lg space-y-5 rounded-xl bg-white p-7">
+            <h1>Tienda en mantenimiento</h1>
+            <p>
+              ¡Disculpa las molestias! Estamos realizando mejoras en nuestra
+              tienda para brindarte una experiencia de compra aún mejor. Estamos
+              trabajando arduamente para completar el mantenimiento lo antes
+              posible
+            </p>
+          </div>
+        </div>
+
+        {/* <SelectBranchProductsModal
           isOpen={handleSelectBranch.isOpen}
           onClose={handleSelectBranch.onClose}
           data={
@@ -127,7 +149,7 @@ function ClientLayout({ children }: TClientLayoutProps) {
             ) as TDataBranch[]
           }
           loading={loading}
-        />
+        /> */}
         <div className="">
           <UsersFooter menu={menu} />
         </div>
