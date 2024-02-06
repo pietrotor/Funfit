@@ -42,6 +42,9 @@ function ClientLayout({ children }: TClientLayoutProps) {
     onCompleted: data => {
       console.log(data.getBranchById?.data)
       dispatch(setBranchInformation(data.getBranchById?.data))
+    },
+    onError: error => {
+      console.log(error)
     }
   })
 
@@ -69,8 +72,10 @@ function ClientLayout({ children }: TClientLayoutProps) {
     const branchSelected = sessionStorage
       .getItem('branchId')
       ?.replace(/^"|"$/g, '')
-    getBranchById()
     setStoredBranch(branchSelected)
+    if (storedBranch) {
+      getBranchById()
+    }
 
     if (details) {
       const detailsParsed = JSON.parse(details)
@@ -91,14 +96,6 @@ function ClientLayout({ children }: TClientLayoutProps) {
       })
     }
     getBranches()
-
-    if (
-      sessionStorage.getItem('branchId') === null ||
-      sessionStorage.getItem('branchId') === undefined
-    ) {
-      getBranches()
-      handleSelectBranch.onOpen()
-    }
   }, [])
   useEffect(() => {
     const availableBranches = data?.getBranchesPaginated?.data?.filter(

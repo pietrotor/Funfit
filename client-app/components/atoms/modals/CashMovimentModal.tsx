@@ -1,5 +1,4 @@
 import { useForm } from 'react-hook-form'
-import { Checkbox } from '@nextui-org/react'
 
 import { MyModal } from './MyModal'
 import Selector from '../InputSelector'
@@ -156,9 +155,6 @@ export const CashMovimentModal = ({
             <div> {handleChangeValue()} Bs</div>
           </div>
           <InputComponent name="details" control={control} type="textArea" />
-          <Checkbox defaultSelected size="sm">
-            Actualizar movimiento caja
-          </Checkbox>
         </div>
       </section>
     </MyModal>

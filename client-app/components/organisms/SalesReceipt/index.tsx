@@ -22,44 +22,6 @@ function SalesReceipt({
     setSelectedProducts({ products: [], subTotal: 0, total: 0, discount: 0 })
   }
 
-  const sale : TPointOfSaleData = {
-    products: [
-      {
-        id: '1',
-        price: 100,
-        branchId: '1',
-        productId: '1',
-        quantity: 1,
-        isVisibleOnMenu: true,
-        isVisibleOnWeb: true,
-        product: {
-          id: '1',
-          name: 'Producto 1'
-        },
-        stock: 1,
-        total: 200
-      },
-      {
-        id: '2',
-        price: 200,
-        branchId: '1',
-        productId: '2',
-        quantity: 1,
-        isVisibleOnMenu: true,
-        isVisibleOnWeb: true,
-        product: {
-          id: '2',
-          name: 'Producto 2'
-        },
-        stock: 1,
-        total: 200
-      }
-    ],
-    subTotal: 400,
-    total: 300,
-    discount: 100
-  }
-
   const handleChange = (discount: string) => {
     setSelectedProducts({
       ...selectedProducts,
@@ -121,7 +83,7 @@ function SalesReceipt({
             </div>
           </div>
 
-          <div className="w-full flex space-x-2">
+          <div className="w-full flex">
             <Button
               className="flex w-full justify-between"
               variant="solid"
@@ -132,12 +94,6 @@ function SalesReceipt({
               <span className="w-1/6 text-xl font-bold text-white">
                 Bs. {selectedProducts.total}
               </span>
-            </Button>
-            <Button onClick={() => {
-              console.log('1')
-              setSelectedProducts(sale)
-            }}>
-              generar venta
             </Button>
           </div>
           <div className="flex justify-between">
