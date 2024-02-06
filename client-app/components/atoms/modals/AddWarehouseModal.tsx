@@ -66,7 +66,7 @@ export const AddWarehouseModal = ({
       onSubmit={onSubmit}
       reset={reset}
     >
-      <div className="flex w-full flex-col items-center space-y-3 px-6 py-2">
+      <div className="flex w-full flex-col md:space-y-0 items-center space-y-3 px-6 py-2">
         <Input
           control={control}
           name="name"
