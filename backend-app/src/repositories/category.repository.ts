@@ -11,14 +11,17 @@ export default abstract class CategoryRepository<T> {
   abstract createCategory(
     createCategoryInput: CreateCategoryInput
   ): Promise<ICategory | OutErrorResponse>
+
   abstract updateCategory(
     updateCategoryInput: UpdateCategoryInput
   ): Promise<ICategory | OutErrorResponse>
+
   abstract deleteCategory(id: T): Promise<ICategory | OutErrorResponse>
 
   abstract getCategoriesPaginated(
     paginationInput: PaginationInput
   ): Promise<IPaginatedResponse<ICategory[]> | OutErrorResponse>
+
   abstract getCategoryById(id: T): Promise<ICategory | OutErrorResponse>
   abstract getCategoryByIdInstance(id: T): Promise<ICategory | null>
 }

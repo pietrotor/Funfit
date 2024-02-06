@@ -200,7 +200,7 @@ function CreateStock() {
               disabled={true}
               customeClassName=" mb-2"
             />
-            <div className="grid gap-2 xl:grid-cols-2">
+            <div className="grid gap-2 xl:grid-cols-2 ">
               <Input
                 required={false}
                 name="code"
