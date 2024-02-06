@@ -38,7 +38,7 @@ function CashPaymentMethod({
         change:
           parseFloat(cash) > total ? parseFloat(cash) - total : 0
       })
-      setValue('|   amountRecibed', cash)
+      setValue('amountRecibed', cash)
     } else {
       setPayment({
         paymentMethod: 'cash',

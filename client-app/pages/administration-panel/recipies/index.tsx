@@ -296,14 +296,14 @@ function Recipe() {
                 <div className="space-x-1">
                   <ButtonComponent
                     onClick={() => handleShowRecipe(warehouse.id)}
-                    type="edit"
+                    type="eye"
                     showTooltip
                     tooltipText="Mostrar todos los ingredientes"
-                    className="px-3"
+                    isIconOnly
                   >
                     <IconSelector
                       name="Recipe"
-                      color="text-primary"
+                      color="text-secondary"
                       width="w-8"
                     />
                   </ButtonComponent>

@@ -81,6 +81,14 @@ function PointOfSale() {
     )
   }, [router.query])
 
+  useEffect(() => {
+    const { data: dataPassed } = router.query
+    const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
+    setSelectedProducts(
+      parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
+    )
+  }, [router.query])
+
   return (
     <AdministrationLayout profileButton={false}>
       <section className="flex h-full w-full ">

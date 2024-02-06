@@ -13,6 +13,7 @@ type TButtonProps = {
   showTooltip?: boolean
   tooltipText?: string
   isLoading?: boolean
+  isIconOnly?: boolean
   typeOf?: 'button' | 'submit' | 'reset' | undefined
 }
 
@@ -25,6 +26,7 @@ const ButtonComponent = ({
   className,
   showTooltip = true,
   isLoading = false,
+  isIconOnly = false,
   tooltipText = ''
 }: TButtonProps) => {
   const getTooltipId = () => {
@@ -68,6 +70,7 @@ const ButtonComponent = ({
           className={`rounded bg-gray-100 p-1 ${className} ${disabled && 'cursor-not-allowed'} `}
           onClick={onClick}
           disabled={disabled}
+          isIconOnly={isIconOnly}
         >
           {children}
         </Button>
