@@ -16,7 +16,10 @@ import { TStockData } from '@/interfaces/TData'
 import { WarehouseRoute } from '@/utils/routes'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 
-function Warehouse() {
+interface WarehouseProps {
+  user: any
+}
+function Warehouse({ user }: WarehouseProps) {
   const [variables, setVariables] = useState<PaginationInterfaceState>({
     rows: 5,
     filter: '',
@@ -57,7 +60,7 @@ function Warehouse() {
     setStock(stockId)
   }
   return (
-    <AdministrationLayout showBackButton={true}>
+    <AdministrationLayout user={user} showBackButton={true}>
       <div className="m-auto mt-8 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de Stocks

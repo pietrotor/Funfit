@@ -15,7 +15,10 @@ import DateConverter from '@/components/atoms/DateConverter'
 import { authUserHeader } from '@/utils/verificationUser'
 import InformationCard from '@/components/molecules/Card/InformationCard'
 
-function StockHistory() {
+interface StockHistoryProps {
+  user: any
+}
+function StockHistory({ user }: StockHistoryProps) {
   const router = useRouter()
   const stockId = router.query.stockId
   const [variables, setVariables] = useState<PaginationInterfaceState>({
@@ -55,7 +58,7 @@ function StockHistory() {
     data?.getStockHistory?.data && data.getStockHistory.data.length > 0 ? data.getStockHistory.data[0] : null
 
   return (
-    <AdministrationLayout showBackButton={true}>
+    <AdministrationLayout user={user} showBackButton={true}>
       <div className="m-auto w-5/6 space-y-10">
         <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
           Historial del stock

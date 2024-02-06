@@ -106,7 +106,7 @@ export const EditProductModal = ({
             type="text"
             rules={{
               pattern: {
-                value: /^[0-9]+$/i,
+                value: /^\d+(\.\d+)?$/,
                 message: 'Solo se permiten números'
               }
             }}
@@ -120,7 +120,7 @@ export const EditProductModal = ({
             type="text"
             rules={{
               pattern: {
-                value: /^[0-9]+$/i,
+                value: /^\d+(\.\d+)?$/,
                 message: 'Solo se permiten números'
               }
             }}
@@ -162,12 +162,6 @@ export const EditProductModal = ({
           label="Descripción"
           placeholder="Descripción"
           type="textArea"
-          rules={{
-            pattern: {
-              value: /^[a-zA-Z\s]+$/i,
-              message: 'Solo se permiten letras'
-            }
-          }}
         />
 
         <DropZone />

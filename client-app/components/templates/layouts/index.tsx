@@ -21,7 +21,7 @@ type TAdministrationLayoutProps = {
   showBackButton?: boolean
   onSubmit?: () => void
   profileButton?: boolean
-  user?:any
+  user:any
 }
 
 const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
@@ -262,7 +262,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         >
           <Sidebar
             onSubmit={onSubmit}
-            user={{ name: user.name }}
+            user={{ name: user?.name }}
             menu={menu}
             isSidebarOpen={sidebarOpen}
             setSidebar={setsidebarOpen}
