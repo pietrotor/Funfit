@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import Sidebar, { TMenuStructure } from './sidebar'
-import ToastComponent from '@/components/atoms/Toast/toasts'
 import {
   useGetBranchesPaginatedLazyQuery,
   useGetConfigurationLazyQuery
@@ -14,6 +13,7 @@ import { setBusiness } from '@/store/slices'
 import BackButton from '@/components/atoms/BackButton/intex'
 import { setBranch, setBranches } from '@/store/slices/branches/branchSlice'
 import { DropDown } from '@/components/atoms/DropDown'
+import ToastComponent from '@/components/atoms/Toast/toasts'
 
 type TAdministrationLayoutProps = {
   children: React.ReactNode
@@ -220,8 +220,15 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
               <div className="flex items-center">
                 <DropDown
                   IconButtonName="Notifications"
-                  values={[]}
-                  counter={0}
+                  values={[{
+                    label: 'Nueva venta',
+                    value: 'notifications',
+                    icon: 'PointOfSale',
+                    handleClick: () => {
+                      router.push('/administration-panel/point-of-sale')
+                    }
+                  }]}
+                  counter={1}
                   avatar="https://static.vecteezy.com/system/resources/previews/000/376/699/original/notification-vector-icon.jpg"
                 />
                 <DropDown

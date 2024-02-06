@@ -239,7 +239,11 @@ function Cash() {
           cashId={cashId}
           onClose={handleMovementModal.onClose}
           isOpen={handleMovementModal.isOpen}
-          onConfirm={refetch}
+          onConfirm={() => {
+            refetch()
+            setVariables({ ...variables, currentPage: 1 })
+          }
+          }
         />
         <CloseCashRegister
           cashId={cashId}

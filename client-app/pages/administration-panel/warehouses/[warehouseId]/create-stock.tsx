@@ -16,7 +16,6 @@ import ComboInput from '@/components/atoms/ComboInput'
 import { TValueProductData } from '@/components/atoms/modals/EditProductModal'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import Selector from '@/components/atoms/InputSelector'
-import { TValuesWarehouses } from '@/components/atoms/modals/EditWarehouseModal'
 
 function CreateStock() {
   const [filterProduct] = useState<string>('')
