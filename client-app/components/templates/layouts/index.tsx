@@ -269,7 +269,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
             >
               {showBackButton && <BackButton />}
             </div>
-            <div className={` fixed right-5 z-10 ${sidebarOpen ? '' : ''} `}>
+            <div className={` fixed right-5 z-30 ${sidebarOpen ? '' : ''} `}>
               <ToastComponent />
               <div className="flex items-center">
                 <DropDown
@@ -315,7 +315,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
                 />
               </div>
             </div>
-            <div className="h-full w-full ps-5 pt-16 lg:pt-5">{children}</div>
+            <div className="h-full w-full ps-5 md:pt-16 lg:pt-5">{children}</div>
           </div>
         </main>
       ) : (

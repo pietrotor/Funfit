@@ -22,6 +22,7 @@ export type ModalProps = {
   textBackButton?: string
   errorMessage?: string
   hideCancelButton?: boolean
+  hideSuccessButton?: boolean
   control?: any
   watch?: any
   reset?: () => void
@@ -68,7 +69,8 @@ export const MyModal = ({
   isForm = true,
   backButtonDisabled = false,
   successButtonDisabled = false,
-  hideCancelButton = true
+  hideCancelButton = true,
+  hideSuccessButton = true
 }: ModalProps) => {
   return (
     <Modal
@@ -156,7 +158,7 @@ export const MyModal = ({
                         isLoading={loading}
                         disabled={backButtonDisabled}
                         showTooltip={false}
-                        className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
+                        className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm mt-3 ${
                           color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : 'border-2 border-gray-300 text-lg text-gray-500 hover:border-secondary focus:ring-blue-500'
                         }`}
                       >
@@ -196,7 +198,8 @@ export const MyModal = ({
                     )}
 
                     <div className="space-x-3">
-                      <ButtonComponent
+                      {hideSuccessButton && (
+                        <ButtonComponent
                         typeOf="submit"
                         onClick={handleSubmit}
                         isLoading={loading}
@@ -207,6 +210,7 @@ export const MyModal = ({
                       >
                         {textSuccessButton}
                       </ButtonComponent>
+                      )}
                       {hideCancelButton && (
                         <ButtonComponent
                           showTooltip={false}
