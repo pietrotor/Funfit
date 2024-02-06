@@ -126,7 +126,7 @@ export const MyModal = ({
                 <form onSubmit={handleSubmit(onSubmit)}>
                   {children}
                   <div className="justify-between bg-gray-50 px-8 py-3 sm:flex  sm:flex-row-reverse sm:px-6">
-                    <div className="space-x-3">
+                    <div className="md:space-x-3 ">
                       <ButtonComponent
                         typeOf="submit"
                         onClick={handleSubmit}
@@ -195,7 +195,7 @@ export const MyModal = ({
                       </p>
                     )}
 
-                    <div className="space-x-3">
+                    <div className="md:space-x-3 space-x-0">
                       <ButtonComponent
                         typeOf="submit"
                         onClick={handleSubmit}

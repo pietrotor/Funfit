@@ -50,6 +50,7 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
     reset()
     onClose()
   }
+
   return (
     <MyModal
       title="Agregar usuario"
@@ -66,11 +67,10 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
       handleSubmit={handleSubmit}
       onSubmit={onSubmit}
     >
-      <form
+      <div
         className="flex w-full flex-col items-center p-9 text-gray-500"
-        onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="flex w-full flex-col md:grid md:grid-cols-2 md:gap-5">
+        <div className="flex w-full flex-col md:space-y-0 space-y-2 md:grid md:grid-cols-2 md:gap-5">
           <Input
             control={control}
             name="name"
@@ -161,7 +161,7 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
             }}
           />
         </div>
-      </form>
+      </div>
     </MyModal>
   )
 }

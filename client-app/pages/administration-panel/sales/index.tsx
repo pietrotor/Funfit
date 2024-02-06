@@ -102,7 +102,7 @@ function Sales() {
           </RadioGroup>
         </InformationCard>
 
-        <div className="mt-10 grid grid-cols-5 gap-4">
+        <div className="mt-10 gap-2 grid-cols-2 md:space-y-0 grid md:grid-cols-5 md:gap-4">
           <InputComponent
             isRequired={false}
             name="initialDate"
@@ -141,7 +141,7 @@ function Sales() {
               }))
             }}
           />
-          <div className="col-start-5 rounded-md bg-white ">
+          <div className="md:col-start-5 col-start-1 md:col-end-6 col-end-3 rounded-md bg-white ">
             <ComboInput
               label="Vendedor"
               name="seller"
