@@ -90,6 +90,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         price: 100,
         isVisibleOnWeb: true,
         isVisibleOnMenu: true,
+        quantity: 1,
         product: {
           id: '1',
           name: 'Producto 1',
@@ -105,6 +106,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         price: 200,
         isVisibleOnWeb: true,
         isVisibleOnMenu: true,
+        quantity: 2,
         product: {
           id: '2',
           name: 'Producto 2',
@@ -118,6 +120,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         branchId: '1',
         productId: '3',
         price: 300,
+        quantity: 1,
         isVisibleOnWeb: true,
         isVisibleOnMenu: true,
         product: {

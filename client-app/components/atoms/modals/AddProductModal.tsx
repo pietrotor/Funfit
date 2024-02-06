@@ -90,10 +90,6 @@ export const AddProductModal = ({
               required: {
                 value: true,
                 message: 'Este campo es obligatorio'
-              },
-              pattern: {
-                value: /^[a-zA-Z\s]+$/i,
-                message: 'Solo se permiten letras'
               }
             }}
           />
@@ -108,7 +104,7 @@ export const AddProductModal = ({
                 message: 'Este campo es obligatorio'
               },
               pattern: {
-                value: /^[0-9]+$/i,
+                value: /^\d+(\.\d+)?$/,
                 message: 'Solo se permiten números'
               }
             }}
@@ -124,8 +120,8 @@ export const AddProductModal = ({
                 message: 'Este campo es obligatorio'
               },
               pattern: {
-                value: /^[0-9]+$/i,
-                message: 'Solo se permiten números'
+                value: /^\d+(\.\d+)?$/,
+                message: 'Solo se permiiten números'
               }
             }}
           />
@@ -170,10 +166,6 @@ export const AddProductModal = ({
             required: {
               value: true,
               message: 'Este campo es obligatorio'
-            },
-            pattern: {
-              value: /^[a-zA-Z\s]+$/i,
-              message: 'Solo se permiten letras'
             }
           }}
         />

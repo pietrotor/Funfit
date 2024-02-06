@@ -70,7 +70,7 @@ export const MyModal = ({
   backButtonDisabled = false,
   successButtonDisabled = false,
   hideCancelButton = true,
-  hideSuccessButton = true
+  hideSuccessButton = false
 }: ModalProps) => {
   return (
     <Modal
@@ -95,7 +95,7 @@ export const MyModal = ({
                 <div className="sm:flex sm:items-start">
                   <div
                     className={`mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ${
-                      color === 'success' ? 'bg-green-100' : color === 'warning' ? 'bg-yellow-100' : color === 'error' ? 'bg-red-100' : color === 'information' ? 'bg-green-100' : color === 'secondary' ? 'bg-secondary' : 'bg-blue-100'
+                      color === 'success' ? 'bg-green-100' : color === 'warning' ? 'bg-yellow-100' : color === 'error' ? 'bg-red-100' : color === 'information' ? 'bg-green-100' : color === 'secondary' ? 'bg-secondary/50' : 'bg-blue-100'
                     } sm:mx-0 sm:h-10 sm:w-10`}
                   >
                     <IconSelector
@@ -128,7 +128,7 @@ export const MyModal = ({
                 <form onSubmit={handleSubmit(onSubmit)}>
                   {children}
                   <div className="justify-between bg-gray-50 px-8 py-3 sm:flex  sm:flex-row-reverse sm:px-6">
-                    <div className="space-x-3">
+                    <div className="md:space-x-3 ">
                       <ButtonComponent
                         typeOf="submit"
                         onClick={handleSubmit}
@@ -198,7 +198,7 @@ export const MyModal = ({
                     )}
 
                     <div className="space-x-3">
-                      {hideSuccessButton && (
+                      {!hideSuccessButton && (
                         <ButtonComponent
                         typeOf="submit"
                         onClick={handleSubmit}
@@ -211,7 +211,7 @@ export const MyModal = ({
                         {textSuccessButton}
                       </ButtonComponent>
                       )}
-                      {hideCancelButton && (
+                      {!hideCancelButton && (
                         <ButtonComponent
                           showTooltip={false}
                           onClick={handleCancel}

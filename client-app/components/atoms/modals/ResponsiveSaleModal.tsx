@@ -23,7 +23,8 @@ function ResponsiveSaleModal({
       title=""
       message=""
       color='secondary'
-      hideCloseButton={false}
+      hideSuccessButton
+      hideCancelButton
       size='5xl'
     >
       <SalesReceipt
