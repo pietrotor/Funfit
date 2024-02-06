@@ -186,14 +186,23 @@ const Productos = () => {
                 alt="image"
                 width={100}
                 src={
-                  product.image === 'null' || !product.image ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' : product.image
+                  product.image === 'null' || !product.image
+                    ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
+                    : product.image
                 }
                 key={idx}
               />,
               <div key={idx} className="text-left text-sm">
                 {product.name}
               </div>,
-              <Chip key={idx} className="text-left text-sm" variant='flat' color={`${product.category?.name === undefined ? 'default' : 'success'}`}>
+              <Chip
+                key={idx}
+                className="text-left text-sm"
+                variant="flat"
+                color={`${
+                  product.category?.name === undefined ? 'default' : 'success'
+                }`}
+              >
                 {product.category?.name || 'Sin categoría'}
               </Chip>,
               product.suggetedPrice + ' Bs.',

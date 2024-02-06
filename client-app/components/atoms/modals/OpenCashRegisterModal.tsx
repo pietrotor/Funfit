@@ -6,7 +6,6 @@ import InputComponent from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
 import { useOpenCashMutation } from '@/graphql/graphql-types'
 import useGetCashById from '@/services/UseGetCashById'
-import { useAppSelector } from '@/store/index'
 
 type ModalProps = {
   isOpen: boolean
@@ -25,13 +24,12 @@ export const OpenCashRegister = ({
   const { control, handleSubmit, watch } = useForm()
   const [openCashRegister, { loading }] = useOpenCashMutation()
   const { data } = useGetCashById(cashId)
-  const { currentBranch } = useAppSelector(state => state.branchReducer)
 
   const onSubmit = () => {
     openCashRegister({
       variables: {
         createTurnInput: {
-          amount: currentBranch.cash.amount,
+          amount: data?.getCashById?.data?.amount || 0,
           cashId,
           difference: parseFloat(handleDiference()),
           physicialAmount: parseFloat(watch('physicialAmount')),

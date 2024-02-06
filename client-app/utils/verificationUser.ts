@@ -9,7 +9,9 @@ import { CurrentUserQuery, StatusEnum } from '@/graphql/graphql-types'
 
 // import client from '@/graphql/apollo-client'
 
-export const authUserHeader = async (ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>) => {
+export const authUserHeader = async (
+  ctx: GetServerSidePropsContext<ParsedUrlQuery, PreviewData>
+) => {
   try {
     if (!ctx.req.headers.cookie) {
       return {
@@ -33,19 +35,22 @@ export const authUserHeader = async (ctx: GetServerSidePropsContext<ParsedUrlQue
     }
 
     // Get the user's session based on the request
-    const result = await apolloClientSSR.query <CurrentUserQuery>({
+    const result = await apolloClientSSR.query<CurrentUserQuery>({
       query: CURRENT_USER,
       fetchPolicy: 'network-only',
       context: {
         headers: {
-          Authorization: authToken
+          authorization: authToken
         }
       }
     })
 
     console.log(result, 'result------------')
     const data = result.data
-    if (data.currentUser?.status === StatusEnum.ERROR || !data.currentUser?.data) {
+    if (
+      data.currentUser?.status === StatusEnum.ERROR ||
+      !data.currentUser?.data
+    ) {
       return {
         redirect: {
           permanent: false,

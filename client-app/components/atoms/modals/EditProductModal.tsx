@@ -5,6 +5,7 @@ import Input from '../Input'
 import Selector from '../InputSelector'
 import { DropZone } from '@/components/molecules/DropZone'
 import { useGetCategoriesLazyQuery } from '@/graphql/graphql-types'
+import { TCategories } from '@/hooks/UseCategoryQuery'
 export type TValueProductData = {
   id?: any
   name?: string
@@ -15,7 +16,8 @@ export type TValueProductData = {
   code?: string
   internalCode?: string
   warehouses?: string[]
-  categoryId: string
+  categoryId?: string
+  category?: TCategories
 }
 interface EditProductModalProps {
   isOpen: boolean
@@ -46,18 +48,23 @@ export const EditProductModal = ({
       code: watch('code') === values.code ? undefined : watch('code'),
       image: watch('image'),
       suggetedPrice: parseFloat(watch('suggetedPrice')),
-      categoryId: watch('categories')
+      categoryId: watch('category')
     })
   }
   const handleCancel = () => {
     onClose()
     reset()
   }
-
   useEffect(() => {
-    getProducts()
-  }, [])
-
+    reset({
+      name: values?.name,
+      description: values?.description,
+      cost: values?.cost,
+      code: values?.code,
+      suggetedPrice: values?.suggetedPrice,
+      category: values?.category?.id
+    })
+  }, [values])
   return (
     <MyModal
       title="Editar producto"
@@ -74,7 +81,7 @@ export const EditProductModal = ({
       reset={reset}
       handleSubmit={handleSubmit}
     >
-      <div className=" m-auto flex w-5/6 flex-col items-center space-y-4 pb-9 text-gray-500">
+      <div className=" m-auto flex w-5/6 flex-col items-center space-y-3 pb-9 text-gray-500">
         <div className="grid w-full grid-cols-2 gap-3 ">
           <Input
             control={control}
@@ -82,7 +89,7 @@ export const EditProductModal = ({
             label="Nombre"
             placeholder="Nombre"
             type="text"
-            defaultValue={values.name}
+            defaultValue={values?.name}
             rules={{
               pattern: {
                 value: /^[a-zA-Z\s]+$/i,
@@ -94,7 +101,7 @@ export const EditProductModal = ({
             control={control}
             name="suggetedPrice"
             label="Precio sugerido"
-            defaultValue={values.suggetedPrice?.toString()}
+            defaultValue={values?.suggetedPrice?.toString()}
             placeholder="Precio sugerido"
             type="text"
             rules={{
@@ -106,7 +113,7 @@ export const EditProductModal = ({
           />
           <Input
             control={control}
-            defaultValue={values.cost?.toString()}
+            defaultValue={values?.cost?.toString()}
             name="cost"
             label="Costo"
             placeholder="Costo"
@@ -119,42 +126,50 @@ export const EditProductModal = ({
             }}
           />
           <Input
-            defaultValue={values.code}
+            defaultValue={values?.code}
             name="code"
             control={control}
             label="Código"
             placeholder="Código"
             type="text"
           />
-          <Input
-            defaultValue={values.description}
-            control={control}
-            name="description"
-            label="Descripción"
-            placeholder="Descripción"
-            type="textArea"
-            customeClassName="h-20"
-            rules={{
-              pattern: {
-                value: /^[a-zA-Z\s]+$/i,
-                message: 'Solo se permiten letras'
-              }
-            }}
-          />
-          <Selector
-            control={control}
-            name="categories"
-            label="Categoría"
-            size="lg"
-            defaultValue={values.categoryId}
-            options={
-              data?.getCategories?.data?.map(category => ({
-                label: category.name,
-                value: category.id
-              })) || [{ label: 'Cargando..', value: 'Cargando..' }]
-            }
-          />
         </div>
+        <Selector
+          control={control}
+          name="category"
+          label="Categoría"
+          placeholder="Categoría"
+          rules={{
+            required: {
+              value: true,
+              message: 'Este campo es obligatorio'
+            }
+          }}
+          onClick={getProducts}
+          defaultValue={values?.category?.id}
+          options={
+            data?.getCategories?.data?.map(category => ({
+              label: category.name,
+              value: category.id
+            })) || [{ label: values?.category?.name || 'Cargando..', value: values?.category?.id }]
+          }
+        />
+
+        <Input
+          defaultValue={values?.description}
+          control={control}
+          name="description"
+          label="Descripción"
+          placeholder="Descripción"
+          type="textArea"
+          rules={{
+            pattern: {
+              value: /^[a-zA-Z\s]+$/i,
+              message: 'Solo se permiten letras'
+            }
+          }}
+        />
+
         <DropZone />
       </div>
     </MyModal>

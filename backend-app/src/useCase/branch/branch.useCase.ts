@@ -32,7 +32,7 @@ export class BranchUseCase {
           date,
           quantity: qty,
           stockId,
-          type: StockMovementTypeEnum.INWARD,
+          type: StockMovementTypeEnum.OUTWARD,
           detail: observation
         },
         createdBy

@@ -105,10 +105,7 @@ function Branches() {
           totalPages={variables?.totalPages}
           isLoading={loading}
           enablePagination={true}
-          onSearch={value => {
-            setFilter(value)
-            setVariables({ ...variables, currentPage: 1 })
-          }}
+          onSearch={value => setFilter(value)}
           totalItems={variables?.totalRecords}
           titles={[
             { name: '#' },
@@ -124,11 +121,11 @@ function Branches() {
             (branch, idx) => ({
               content: [
                 <h3 key={idx} className="text-sm">
-                  {((variables?.currentPage || 0) - 1) *
-                    (variables?.rows || 0) +
-                    idx +
-                    1}
-                </h3>,
+                    {((variables?.currentPage || 0) - 1) *
+                      (variables?.rows || 0) +
+                      idx +
+                      1}
+                  </h3>,
                 <div key={idx} className="text-left text-sm">
                   {branch.name}
                 </div>,

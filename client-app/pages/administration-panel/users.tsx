@@ -88,6 +88,7 @@ function CreateUserForm() {
   const handleUpdateUser = (id: string) => {
     const user = data?.getUsers?.data?.find(user => user.id === id)
     setEdit(user as TValueUserData)
+    console.log(edit)
     handleEditModal.onOpen()
   }
 

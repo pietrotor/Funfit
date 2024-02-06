@@ -16,7 +16,7 @@ function Counter({ productId, quantity, increment, decrement }: CounterProps) {
         size="sm"
         variant="flat"
         color="secondary"
-        onClick={ () => increment(productId) }
+        onClick={ () => decrement(productId) }
       >
         {<IconSelector name="Minus" width="w-3" />}
       </Button>
@@ -26,7 +26,7 @@ function Counter({ productId, quantity, increment, decrement }: CounterProps) {
         size="sm"
         variant="flat"
         color="secondary"
-        onClick={ () => decrement(productId) }
+        onClick={ () => increment(productId) }
       >
         {<IconSelector name="Plus" width="w-3" />}
       </Button>

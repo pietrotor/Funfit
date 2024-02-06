@@ -8,7 +8,9 @@ import {
   SaleItem,
   Sale,
   Branch,
-  User
+  User,
+  SalesSummaryResponse,
+  SalesSummaryInput
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
@@ -26,6 +28,31 @@ const getSaleById = async (
       status: StatusEnum.OK,
       message: 'Venta encontrada',
       data: saleInstance
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
+const getSalesSummary = async (
+  _: any,
+  args: { salesSummaryInput: SalesSummaryInput }
+): Promise<SalesSummaryResponse> => {
+  try {
+    const { salesSummaryInput } = args
+    console.log('🚀 ~ salesSummaryInput:', salesSummaryInput)
+    const [paymentMethods, total] = await Promise.all([
+      saleCore.getSummaryByPaymentMethod(salesSummaryInput),
+      saleCore.getTotalSales(salesSummaryInput)
+    ])
+    console.log('🚀 ~ total:', total)
+    return {
+      status: StatusEnum.OK,
+      message: 'Resumen de ventas generado',
+      data: {
+        paymentMethods,
+        total
+      }
     }
   } catch (error) {
     console.log(error)
@@ -69,6 +96,7 @@ const createSale = async (
 
 export const saleQuery = {
   getSaleById,
+  getSalesSummary,
   getSalesPaginated
 }
 export const saleMutation = {

@@ -14,7 +14,8 @@ const initialState : TBranch = {
     direction: '',
     phone: '',
     nit: '',
-    cashId: ''
+    cashId: '',
+    visibleOnWeb: false
 
   }
 }

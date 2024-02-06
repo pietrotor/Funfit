@@ -1,7 +1,8 @@
 import {
   CreateSaleInput,
   PaymentMethodEnum,
-  SalesPaginationInput
+  SalesPaginationInput,
+  SalesSummaryInput
 } from '@/graphql/graphql_types'
 import { SalesRepository } from '../repositories'
 import { BadRequestError } from '@/lib/graphqlerrors'
@@ -34,6 +35,88 @@ export class SalesService extends SalesRepository<objectId> {
     })
   }
 
+  async getTotalSales(salesSummaryInput: SalesSummaryInput) {
+    const { branchIds, endDate, initialDate, saleBy } = salesSummaryInput
+    const filterQuery: any = {}
+    if (branchIds && branchIds.length > 0) {
+      filterQuery.branchId = { $in: branchIds }
+    }
+    if (endDate && initialDate) {
+      filterQuery.createdAt =
+        initialDate.toDateString() === endDate.toDateString()
+          ? {
+              $gte: new Date(initialDate),
+              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+            }
+          : {
+              $gte: new Date(initialDate),
+              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+            }
+    }
+    if (saleBy) {
+      filterQuery.createdBy = saleBy
+    }
+
+    const result = await Sale.aggregate([
+      { $match: filterQuery },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: '$total' }
+        }
+      }
+    ])
+
+    if (result.length === 0) {
+      return 0
+    }
+
+    return result[0].total
+  }
+
+  async getSummaryByPaymentMethod(salesSummaryInput: SalesSummaryInput) {
+    const { branchIds, endDate, initialDate, saleBy } = salesSummaryInput
+    const filtrosConsulta: any = {}
+    if (branchIds && branchIds.length > 0) {
+      filtrosConsulta.branchId = { $in: branchIds }
+    }
+    if (endDate && initialDate) {
+      filtrosConsulta.createdAt =
+        initialDate.toDateString() === endDate.toDateString()
+          ? {
+              $gte: new Date(initialDate),
+              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+            }
+          : {
+              $gte: new Date(initialDate),
+              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+            }
+    }
+    if (saleBy) {
+      filtrosConsulta.createdBy = saleBy
+    }
+
+    const result = await Sale.aggregate([
+      {
+        $match: filtrosConsulta // Aplica los a la consulta
+      },
+      {
+        $group: {
+          _id: '$paymentMethod', // Agrupa por método de pago
+          total: { $sum: '$total' } // Calcula la suma del campo 'total' para cada grupo
+        }
+      },
+      {
+        $project: {
+          method: '$_id', // Renombra '_id' como 'metodoPago'
+          total: 1, // Incluye el campo 'total'
+          _id: 0 // Excluye el campo '_id' del resultado final
+        }
+      }
+    ])
+    return result
+  }
+
   async getSalesPaginated(salesPaginationInput: SalesPaginationInput) {
     const {
       filter,
@@ -43,6 +126,22 @@ export class SalesService extends SalesRepository<objectId> {
       saleBy,
       ...paginationInput
     } = salesPaginationInput
+    const dateFilter =
+      initialDate && endDate
+        ? initialDate.toDateString() === endDate.toDateString()
+          ? {
+              createdAt: {
+                $gte: new Date(initialDate),
+                $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+              }
+            }
+          : {
+              createdAt: {
+                $gte: new Date(initialDate),
+                $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+              }
+            }
+        : {}
     const branchesFilter =
       branchIds.length > 0
         ? {
@@ -54,18 +153,18 @@ export class SalesService extends SalesRepository<objectId> {
     const salesByFilter = saleBy ? { createdBy: saleBy } : {}
     if (filter) {
       const filterArgs = {
-        $or: [{ name: { $regex: filter, $options: 'i' } }]
+        $or: [{ code: { $regex: filter, $options: 'i' } }]
       }
       return await getInstancesPagination<ISale, IModelSale>(
         Sale,
         paginationInput,
-        { ...branchesFilter, ...filterArgs, ...salesByFilter }
+        { ...branchesFilter, ...filterArgs, ...salesByFilter, ...dateFilter }
       )
     }
     return await getInstancesPagination<ISale, IModelSale>(
       Sale,
       paginationInput,
-      { ...branchesFilter, ...salesByFilter }
+      { ...branchesFilter, ...salesByFilter, ...dateFilter }
     )
   }
 
@@ -129,8 +228,7 @@ export class SalesService extends SalesRepository<objectId> {
     )
 
     function generateCode(): string {
-      const characters: string =
-        'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+      const characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
       let code: string = ''
 
       for (let i = 0; i < 5; i++) {

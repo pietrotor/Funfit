@@ -143,8 +143,8 @@ function Warehouses() {
         <AdminButton
           onClick={handleAddWarehouse.onOpen}
           color="secondary"
-          text='Agregar nuevo Almacén'
-          iconName='Bussines'
+          text="Agregar nuevo Almacén"
+          iconName="Bussines"
         />
         <Table
           onChangeRow={row => handleChangeRow(row)}
@@ -172,8 +172,9 @@ function Warehouses() {
           items={(data?.getWarehouses?.data || []).map((warehouse, idx) => ({
             content: [
               <h3 key={idx} className="text-sm">
-                {' '}
-                {idx + 1}
+                {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
+                  idx +
+                  1}
               </h3>,
               <div key={idx} className="text-left text-sm">
                 {warehouse.name}
@@ -184,12 +185,13 @@ function Warehouses() {
               <div key={idx} className="text-left text-sm">
                 {warehouse.address}
               </div>,
-              <div
-                key={idx}
-                className="flex justify-center space-x-1"
-              >
+              <div key={idx} className="flex justify-center space-x-1">
                 <ButtonComponent
-                  onClick={() => router.push(`/administration-panel/warehouses/${warehouse.id}`)}
+                  onClick={() =>
+                    router.push(
+                      `/administration-panel/warehouses/${warehouse.id}`
+                    )
+                  }
                   type="eye"
                   showTooltip
                   tooltipText="Ver Almacén"
@@ -236,11 +238,11 @@ function Warehouses() {
           title="Eliminar almacén"
           message={`¿Esta seguro de eliminar a ${edit?.name}?`}
           onConfirm={handleConfirmDelete}
-          cancelText='Cancelar'
-          color='error'
-          confirmText='Eliminar'
-          name='trash'
-          />
+          cancelText="Cancelar"
+          color="error"
+          confirmText="Eliminar"
+          name="trash"
+        />
       </div>
     </AdministrationLayout>
   )

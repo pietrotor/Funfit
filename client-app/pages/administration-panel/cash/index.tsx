@@ -198,10 +198,11 @@ function Cash() {
               { name: 'Monto' },
               { name: 'Por concepto de' },
               { name: 'En fecha' },
-              { name: 'Tipo de movimiento' }
+              { name: 'Tipo de movimiento' },
+              { name: 'Realizado por' }
             ]}
             items={(data?.getCashTurnMovements?.data || []).map(
-              (branch, idx) => ({
+              (movement, idx) => ({
                 content: [
                   <h3 key={idx} className="text-sm">
                     {((variables?.currentPage || 0) - 1) *
@@ -210,20 +211,23 @@ function Cash() {
                       1}
                   </h3>,
                   <div key={idx} className="text-sm">
-                    {branch.amount}
+                    {movement.amount} Bs
                   </div>,
                   <div key={idx} className="text-left text-sm">
-                    {branch.concept}
+                    {movement.concept}
                   </div>,
-                  <div key={idx} className="text-center text-sm">
-                    <p>14:37</p>
-                    <p>29 de diciembre de 2023 </p>
+                  <div key={idx} className="text-sm">
+                    <DateConverter showTime dateString={movement.date} />
                   </div>,
                   <div key={idx} className="text-center text-sm font-bold">
                     <Chip color="success" variant="flat">
                       Activo
                     </Chip>
-                  </div>
+                  </div>,
+                  <p key={idx}>
+                    {movement.createdByInfo?.name}{' '}
+                    {movement.createdByInfo?.lastName}
+                  </p>
                 ]
               })
             )}

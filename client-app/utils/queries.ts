@@ -559,6 +559,32 @@ export const GET_PRODUCT_BY_ID = gql`
     }
   }
 `
+// export const GET_PUBLIC_PRODUCTS = gql`
+//   query GetPublicProducts($paginationInput: PaginationInput!) {
+//     getPublicProducts(paginationInput: $paginationInput) {
+//       errorInput {
+//         message
+//         field
+//       }
+//       status
+//       message
+//       data {
+//         id
+//         name
+//         suggetedPrice
+//         code
+//         description
+//         cost
+//         image
+//         warehouses
+//       }
+//       totalRecords
+//       totalPages
+//       rows
+//       currentPage
+//     }
+//   }
+// `
 
 export const GET_BRANCH_PRODUCTS = gql`
   query GetBranchProductsPaginated(
@@ -721,6 +747,7 @@ export const GET_BRANCH_BY_ID = gql`
         direction
         phone
         nit
+        visibleOnWeb
         cashId
         cash {
           id
@@ -732,6 +759,7 @@ export const GET_BRANCH_BY_ID = gql`
             id
             cashId
             isOpen
+            amountOfMovents
             openInfo {
               amount
               physicialAmount
@@ -1051,6 +1079,25 @@ export const GET_SALES_PAGINATED = gql`
     }
   }
 `
+export const GET_SALES_SUMMARY = gql`
+  query GetSalesSummary($salesSummaryInput: SalesSummaryInput!) {
+    getSalesSummary(salesSummaryInput: $salesSummaryInput) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data {
+        paymentMethods {
+          method
+          total
+        }
+        total
+      }
+    }
+  }
+`
 export const GET_SALES_BY_ID = gql`
   query GetSaleById($getSaleByIdId: ObjectId!) {
     getSaleById(id: $getSaleByIdId) {
@@ -1227,13 +1274,15 @@ export const GET_CATEGORY_BY_ID = gql`
     }
   }
 `
-
-export const GET_PUBLIC_PRODUCTS = gql`
-  query GetPublicProducts(
+export const GET_WAREHOUSESOFPRODUCT = gql`
+  query GetWarehousesOfProduct(
     $paginationInput: PaginationInput!
-    $branchId: ObjectId!
+    $productId: ObjectId!
   ) {
-    getPublicProducts(paginationInput: $paginationInput, branchId: $branchId) {
+    getWarehousesOfProduct(
+      paginationInput: $paginationInput
+      productId: $productId
+    ) {
       errorInput {
         message
         field
@@ -1242,12 +1291,42 @@ export const GET_PUBLIC_PRODUCTS = gql`
       message
       data {
         id
-        branchId
+        name
+        description
+        address
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+export const GET_PRODUCT_STOCK = gql`
+  query GetProductStock(
+    $paginationInput: PaginationInput!
+    $productId: ObjectId!
+    $warehouseId: ObjectId
+  ) {
+    getProductStock(
+      paginationInput: $paginationInput
+      productId: $productId
+      warehouseId: $warehouseId
+    ) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
         productId
-        price
-        stock
-        isVisibleOnWeb
-        isVisibleOnMenu
+        warehouseId
+        quantity
+        securityStock
+        lastStockEntry
+        units
         product {
           id
           name
@@ -1264,79 +1343,11 @@ export const GET_PUBLIC_PRODUCTS = gql`
             code
           }
         }
-        branch {
+        warehouse {
           id
           name
-          code
-          city
-          direction
-          phone
-          nit
-          visibleOnWeb
-          cashId
-          cash {
-            id
-            branchId
-            amount
-            currentTurnId
-            isOpen
-            currentTurn {
-              id
-              cashId
-              isOpen
-              amountOfMovents
-              openInfo {
-                amount
-                physicialAmount
-                difference
-                date
-                observation
-                openBy
-                openByInfo {
-                  id
-                  name
-                  lastName
-                  email
-                  phone
-                  lastLogin
-                  status
-                  createdBy
-                  roleId
-                  roleInfo {
-                    id
-                    name
-                    code
-                    status
-                  }
-                }
-              }
-              closeInfo {
-                amount
-                physicialAmount
-                difference
-                date
-                observation
-                closeBy
-                closeByInfo {
-                  id
-                  name
-                  lastName
-                  email
-                  phone
-                  lastLogin
-                  status
-                  createdBy
-                  roleId
-                  roleInfo {
-                    id
-                    name
-                    code
-                    status
-                  }
-                }
-              }
-            }
-          }
+          description
+          address
         }
       }
       totalRecords
@@ -1345,4 +1356,120 @@ export const GET_PUBLIC_PRODUCTS = gql`
       currentPage
     }
   }
+`
+
+export const GET_PUBLIC_BRANCH_PRODUCTS = gql`
+query GetPublicProducts($paginationInput: PaginationInput!, $branchId: ObjectId!) {
+  getPublicProducts(paginationInput: $paginationInput, branchId: $branchId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      productId
+      price
+      stock
+      isVisibleOnWeb
+      isVisibleOnMenu
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        description
+        categoryId
+        cost
+        image
+        warehouses
+        category {
+          id
+          name
+          code
+        }
+      }
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        visibleOnWeb
+        cashId
+        cash {
+          id
+          branchId
+          amount
+          currentTurnId
+          isOpen
+          currentTurn {
+            id
+            cashId
+            isOpen
+            amountOfMovents
+            openInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              openBy
+              openByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+            closeInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              closeBy
+              closeByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
 `

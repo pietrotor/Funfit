@@ -500,7 +500,7 @@ export type Product = {
   description: Scalars['String'];
   id: Scalars['ObjectId'];
   image?: Maybe<Scalars['String']>;
-  internalCode: Scalars['String'];
+  internalCode?: Maybe<Scalars['String']>;
   name: Scalars['String'];
   suggetedPrice: Scalars['Float'];
   warehouses: Array<Scalars['ObjectId']>;
@@ -546,6 +546,7 @@ export type Query = {
   getRoles?: Maybe<RolesResponse>;
   getSaleById?: Maybe<SaleResponse>;
   getSalesPaginated?: Maybe<SalesResponse>;
+  getSalesSummary?: Maybe<SalesSummaryResponse>;
   getStockById?: Maybe<StockResponse>;
   getStockHistory?: Maybe<StocksHistoryResponse>;
   getStocksPaginated?: Maybe<StocksResponse>;
@@ -643,6 +644,11 @@ export type QueryGetSaleByIdArgs = {
 
 export type QueryGetSalesPaginatedArgs = {
   salesPaginationInput: SalesPaginationInput;
+};
+
+
+export type QueryGetSalesSummaryArgs = {
+  salesSummaryInput: SalesSummaryInput;
 };
 
 
@@ -781,6 +787,12 @@ export type SaleResponse = ResponseBase & {
   status: StatusEnum;
 };
 
+export type SalesByPaymentMethodSummary = {
+  __typename?: 'SalesByPaymentMethodSummary';
+  method?: Maybe<PaymentMethodEnum>;
+  total: Scalars['Float'];
+};
+
 export type SalesPaginationInput = {
   branchIds: Array<Scalars['ObjectId']>;
   endDate?: InputMaybe<Scalars['Date']>;
@@ -801,6 +813,27 @@ export type SalesResponse = ResponseBase & {
   status: StatusEnum;
   totalPages?: Maybe<Scalars['Int']>;
   totalRecords?: Maybe<Scalars['Int']>;
+};
+
+export type SalesSummary = {
+  __typename?: 'SalesSummary';
+  paymentMethods: Array<SalesByPaymentMethodSummary>;
+  total: Scalars['Float'];
+};
+
+export type SalesSummaryInput = {
+  branchIds: Array<Scalars['ObjectId']>;
+  endDate?: InputMaybe<Scalars['Date']>;
+  initialDate?: InputMaybe<Scalars['Date']>;
+  saleBy?: InputMaybe<Scalars['ObjectId']>;
+};
+
+export type SalesSummaryResponse = ResponseBase & {
+  __typename?: 'SalesSummaryResponse';
+  data?: Maybe<SalesSummary>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
 };
 
 export enum StatusEnum {
@@ -1114,7 +1147,7 @@ export type UpdateBranchMutationVariables = Exact<{
 }>;
 
 
-export type UpdateBranchMutation = { __typename?: 'Mutation', updateBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null };
+export type UpdateBranchMutation = { __typename?: 'Mutation', updateBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, visibleOnWeb: boolean, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null } | null };
 
 export type DeleteBranchMutationVariables = Exact<{
   deleteBranchId: Scalars['ObjectId'];
@@ -1170,7 +1203,7 @@ export type CreateBranchProductStockMovementMutationVariables = Exact<{
 }>;
 
 
-export type CreateBranchProductStockMovementMutation = { __typename?: 'Mutation', createBranchProductStockMovement?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null } | null } | null };
+export type CreateBranchProductStockMovementMutation = { __typename?: 'Mutation', createBranchProductStockMovement?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null } | null } | null };
 
 export type CreateCategoryMutationVariables = Exact<{
   createCategoryInput: CreateCategoryInput;
@@ -1331,7 +1364,7 @@ export type GetBranchByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetBranchByIdQuery = { __typename?: 'Query', getBranchById?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null } | null };
+export type GetBranchByIdQuery = { __typename?: 'Query', getBranchById?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, visibleOnWeb: boolean, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null } | null };
 
 export type GetCashByIdQueryVariables = Exact<{
   getCashByIdId: Scalars['ObjectId'];
@@ -1353,14 +1386,21 @@ export type GetSalesPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }> | null } | null };
+export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }> | null } | null };
+
+export type GetSalesSummaryQueryVariables = Exact<{
+  salesSummaryInput: SalesSummaryInput;
+}>;
+
+
+export type GetSalesSummaryQuery = { __typename?: 'Query', getSalesSummary?: { __typename?: 'SalesSummaryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'SalesSummary', total: number, paymentMethods: Array<{ __typename?: 'SalesByPaymentMethodSummary', method?: PaymentMethodEnum | null, total: number }> } | null } | null };
 
 export type GetSaleByIdQueryVariables = Exact<{
   getSaleByIdId: Scalars['ObjectId'];
 }>;
 
 
-export type GetSaleByIdQuery = { __typename?: 'Query', getSaleById?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null };
+export type GetSaleByIdQuery = { __typename?: 'Query', getSaleById?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null };
 
 export type GetCategoriesQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -1375,6 +1415,23 @@ export type GetCategoryByIdQueryVariables = Exact<{
 
 
 export type GetCategoryByIdQuery = { __typename?: 'Query', getCategoryById?: { __typename?: 'CategoryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null };
+
+export type GetWarehousesOfProductQueryVariables = Exact<{
+  paginationInput: PaginationInput;
+  productId: Scalars['ObjectId'];
+}>;
+
+
+export type GetWarehousesOfProductQuery = { __typename?: 'Query', getWarehousesOfProduct?: { __typename?: 'WarehousesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Warehouse', id: any, name: string, description: string, address: string }> | null } | null };
+
+export type GetProductStockQueryVariables = Exact<{
+  paginationInput: PaginationInput;
+  productId: Scalars['ObjectId'];
+  warehouseId?: InputMaybe<Scalars['ObjectId']>;
+}>;
+
+
+export type GetProductStockQuery = { __typename?: 'Query', getProductStock?: { __typename?: 'StocksResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, category?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null }> | null } | null };
 
 export type GetPublicProductsQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -1820,7 +1877,68 @@ export const UpdateBranchDocument = gql`
       cashId
       cash {
         id
+        branchId
+        amount
+        currentTurnId
+        isOpen
+        currentTurn {
+          id
+          cashId
+          isOpen
+          amountOfMovents
+          openInfo {
+            amount
+            physicialAmount
+            difference
+            date
+            observation
+            openBy
+            openByInfo {
+              id
+              name
+              lastName
+              email
+              phone
+              lastLogin
+              status
+              createdBy
+              roleId
+              roleInfo {
+                id
+                name
+                code
+                status
+              }
+            }
+          }
+          closeInfo {
+            amount
+            physicialAmount
+            difference
+            date
+            observation
+            closeBy
+            closeByInfo {
+              id
+              name
+              lastName
+              email
+              phone
+              lastLogin
+              status
+              createdBy
+              roleId
+              roleInfo {
+                id
+                name
+                code
+                status
+              }
+            }
+          }
+        }
       }
+      visibleOnWeb
     }
   }
 }
@@ -3874,6 +3992,7 @@ export const GetBranchByIdDocument = gql`
       direction
       phone
       nit
+      visibleOnWeb
       cashId
       cash {
         id
@@ -3885,6 +4004,7 @@ export const GetBranchByIdDocument = gql`
           id
           cashId
           isOpen
+          amountOfMovents
           openInfo {
             amount
             physicialAmount
@@ -4313,6 +4433,53 @@ export function useGetSalesPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetSalesPaginatedQueryHookResult = ReturnType<typeof useGetSalesPaginatedQuery>;
 export type GetSalesPaginatedLazyQueryHookResult = ReturnType<typeof useGetSalesPaginatedLazyQuery>;
 export type GetSalesPaginatedQueryResult = Apollo.QueryResult<GetSalesPaginatedQuery, GetSalesPaginatedQueryVariables>;
+export const GetSalesSummaryDocument = gql`
+    query GetSalesSummary($salesSummaryInput: SalesSummaryInput!) {
+  getSalesSummary(salesSummaryInput: $salesSummaryInput) {
+    errorInput {
+      field
+      message
+    }
+    status
+    message
+    data {
+      paymentMethods {
+        method
+        total
+      }
+      total
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetSalesSummaryQuery__
+ *
+ * To run a query within a React component, call `useGetSalesSummaryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetSalesSummaryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetSalesSummaryQuery({
+ *   variables: {
+ *      salesSummaryInput: // value for 'salesSummaryInput'
+ *   },
+ * });
+ */
+export function useGetSalesSummaryQuery(baseOptions: Apollo.QueryHookOptions<GetSalesSummaryQuery, GetSalesSummaryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetSalesSummaryQuery, GetSalesSummaryQueryVariables>(GetSalesSummaryDocument, options);
+      }
+export function useGetSalesSummaryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetSalesSummaryQuery, GetSalesSummaryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetSalesSummaryQuery, GetSalesSummaryQueryVariables>(GetSalesSummaryDocument, options);
+        }
+export type GetSalesSummaryQueryHookResult = ReturnType<typeof useGetSalesSummaryQuery>;
+export type GetSalesSummaryLazyQueryHookResult = ReturnType<typeof useGetSalesSummaryLazyQuery>;
+export type GetSalesSummaryQueryResult = Apollo.QueryResult<GetSalesSummaryQuery, GetSalesSummaryQueryVariables>;
 export const GetSaleByIdDocument = gql`
     query GetSaleById($getSaleByIdId: ObjectId!) {
   getSaleById(id: $getSaleByIdId) {
@@ -4572,6 +4739,138 @@ export function useGetCategoryByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOp
 export type GetCategoryByIdQueryHookResult = ReturnType<typeof useGetCategoryByIdQuery>;
 export type GetCategoryByIdLazyQueryHookResult = ReturnType<typeof useGetCategoryByIdLazyQuery>;
 export type GetCategoryByIdQueryResult = Apollo.QueryResult<GetCategoryByIdQuery, GetCategoryByIdQueryVariables>;
+export const GetWarehousesOfProductDocument = gql`
+    query GetWarehousesOfProduct($paginationInput: PaginationInput!, $productId: ObjectId!) {
+  getWarehousesOfProduct(paginationInput: $paginationInput, productId: $productId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      description
+      address
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetWarehousesOfProductQuery__
+ *
+ * To run a query within a React component, call `useGetWarehousesOfProductQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetWarehousesOfProductQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetWarehousesOfProductQuery({
+ *   variables: {
+ *      paginationInput: // value for 'paginationInput'
+ *      productId: // value for 'productId'
+ *   },
+ * });
+ */
+export function useGetWarehousesOfProductQuery(baseOptions: Apollo.QueryHookOptions<GetWarehousesOfProductQuery, GetWarehousesOfProductQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetWarehousesOfProductQuery, GetWarehousesOfProductQueryVariables>(GetWarehousesOfProductDocument, options);
+      }
+export function useGetWarehousesOfProductLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetWarehousesOfProductQuery, GetWarehousesOfProductQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetWarehousesOfProductQuery, GetWarehousesOfProductQueryVariables>(GetWarehousesOfProductDocument, options);
+        }
+export type GetWarehousesOfProductQueryHookResult = ReturnType<typeof useGetWarehousesOfProductQuery>;
+export type GetWarehousesOfProductLazyQueryHookResult = ReturnType<typeof useGetWarehousesOfProductLazyQuery>;
+export type GetWarehousesOfProductQueryResult = Apollo.QueryResult<GetWarehousesOfProductQuery, GetWarehousesOfProductQueryVariables>;
+export const GetProductStockDocument = gql`
+    query GetProductStock($paginationInput: PaginationInput!, $productId: ObjectId!, $warehouseId: ObjectId) {
+  getProductStock(
+    paginationInput: $paginationInput
+    productId: $productId
+    warehouseId: $warehouseId
+  ) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      productId
+      warehouseId
+      quantity
+      securityStock
+      lastStockEntry
+      units
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        description
+        categoryId
+        cost
+        image
+        warehouses
+        category {
+          id
+          name
+          code
+        }
+      }
+      warehouse {
+        id
+        name
+        description
+        address
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetProductStockQuery__
+ *
+ * To run a query within a React component, call `useGetProductStockQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetProductStockQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetProductStockQuery({
+ *   variables: {
+ *      paginationInput: // value for 'paginationInput'
+ *      productId: // value for 'productId'
+ *      warehouseId: // value for 'warehouseId'
+ *   },
+ * });
+ */
+export function useGetProductStockQuery(baseOptions: Apollo.QueryHookOptions<GetProductStockQuery, GetProductStockQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetProductStockQuery, GetProductStockQueryVariables>(GetProductStockDocument, options);
+      }
+export function useGetProductStockLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetProductStockQuery, GetProductStockQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetProductStockQuery, GetProductStockQueryVariables>(GetProductStockDocument, options);
+        }
+export type GetProductStockQueryHookResult = ReturnType<typeof useGetProductStockQuery>;
+export type GetProductStockLazyQueryHookResult = ReturnType<typeof useGetProductStockLazyQuery>;
+export type GetProductStockQueryResult = Apollo.QueryResult<GetProductStockQuery, GetProductStockQueryVariables>;
 export const GetPublicProductsDocument = gql`
     query GetPublicProducts($paginationInput: PaginationInput!, $branchId: ObjectId!) {
   getPublicProducts(paginationInput: $paginationInput, branchId: $branchId) {

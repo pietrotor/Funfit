@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 export type TValuesWarehouses = {
@@ -21,7 +22,7 @@ export const EditWarehouseModal = ({
   values,
   handleSendUpdateWarehouse
 }: EditWarehouseModalProps) => {
-  const { handleSubmit, watch, control } = useForm()
+  const { handleSubmit, watch, control, reset } = useForm()
   const onSubmit = () => {
     handleSendUpdateWarehouse({
       id: values.id,
@@ -29,12 +30,29 @@ export const EditWarehouseModal = ({
       description: watch('description'),
       address: watch('address')
     })
+    reset()
+    onClose()
   }
+  const handleCancel = () => {
+    reset()
+    console.log(watch('name'))
+    console.log(values.name)
+
+    onClose()
+  }
+  useEffect(() => {
+    reset({
+      name: values.name,
+      description: values.description,
+      address: values.address
+    })
+  }, [values])
+
   return (
     <MyModal
       title="Editar almacen"
       message="Ingrese los datos del almacen"
-      handleCancel={onClose}
+      handleCancel={handleCancel}
       color="warning"
       loading={false}
       isOpen={isOpen}
@@ -48,7 +66,6 @@ export const EditWarehouseModal = ({
           control={control}
           name="name"
           label="Nombre"
-          placeholder="Nombre"
           type="text"
           defaultValue={values.name}
           rules={{
@@ -81,13 +98,6 @@ export const EditWarehouseModal = ({
           label="Descripción"
           placeholder="Descripción"
           type="textArea"
-          customeClassName="h-20"
-          rules={{
-            pattern: {
-              value: /^[a-zA-Z\s]+$/i,
-              message: 'Solo se permiten letras'
-            }
-          }}
         />
       </div>
     </MyModal>

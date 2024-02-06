@@ -82,6 +82,7 @@ type Query {
   # SALES =================================
   getSaleById(id: ObjectId!): SaleResponse
   getSalesPaginated(salesPaginationInput: SalesPaginationInput!): SalesResponse
+  getSalesSummary(salesSummaryInput: SalesSummaryInput!): SalesSummaryResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(
     paginationInput: PaginationInput!
@@ -189,7 +190,7 @@ type Product {
   # TODO: Change to pricelist
   suggetedPrice: Float!
   code: String!
-  internalCode: String!
+  internalCode: String
   description: String!
   categoryId: ObjectId
   cost: Float
@@ -335,6 +336,14 @@ type Sale {
   # Fields Resolvers
   branch: Branch
   createdByInfo: User
+}
+type SalesByPaymentMethodSummary {
+  method: PaymentMethodEnum
+  total: Float!
+}
+type SalesSummary {
+  paymentMethods: [SalesByPaymentMethodSummary!]!
+  total: Float!
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -528,6 +537,12 @@ type SaleResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: Sale
+}
+type SalesSummaryResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: SalesSummary
 }
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
@@ -728,4 +743,10 @@ input CreateSaleInput {
   amountRecibed: Float!
   change: Float!
   observations: String
+}
+input SalesSummaryInput {
+  branchIds: [ObjectId!]!
+  initialDate: Date
+  endDate: Date
+  saleBy: ObjectId
 }

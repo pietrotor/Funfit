@@ -11,6 +11,8 @@ import UseGetCustomSalesPaginated from '@/services/UseGetCustomSalesPaginated'
 import { useAppSelector } from '@/store/index'
 import InformationCard from '@/components/molecules/Card/InformationCard'
 import DateConverter from '@/components/atoms/DateConverter'
+import { useGetSalesSummary } from '@/services/index'
+import { PaymentMethodEnum } from '@/graphql/graphql-types'
 
 function DailySale() {
   const router = useRouter()
@@ -19,17 +21,41 @@ function DailySale() {
   const { data, setVariables, variables, setFilter, loading } =
     UseGetCustomSalesPaginated(currentBranch.id)
 
+  const {
+    data: summary,
+    setVariables: setSummaryVariables,
+    variables: summaryVariables
+  } = useGetSalesSummary()
+
   const handleChangeRow = (row: number) => {
     setVariables({ ...variables, rows: row, currentPage: 1 })
   }
 
   useEffect(() => {
-    setVariables({
-      ...variables,
+    if (!currentBranch.id) return
+    setSummaryVariables({
+      ...summaryVariables,
+      branchIds: [currentBranch.id],
       initialDate: new Date().toISOString().split('T')[0],
       endDate: new Date().toISOString().split('T')[0]
     })
-  }, [])
+  }, [currentBranch.id])
+
+  useEffect(() => {
+    setVariables({
+      ...variables,
+      branchIds: [currentBranch.id],
+      initialDate: new Date().toISOString().split('T')[0],
+      endDate: new Date().toISOString().split('T')[0]
+    })
+  }, [currentBranch.id])
+
+  function getTotalByPaymentMethod(method: PaymentMethodEnum) {
+    return summary?.paymentMethods.find(
+      paymentMethod => paymentMethod.method === method
+    )
+  }
+
   return (
     <AdministrationLayout>
       <div className="m-auto mt-7 w-5/6 ">
@@ -41,7 +67,7 @@ function DailySale() {
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
                 <div className="text-xl">Total en ventas</div>
-                <div className="text-center">200 Bs</div>
+                <div className="text-center">{`${summary?.total || 0} Bs`}</div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
                 <IconSelector
@@ -57,7 +83,10 @@ function DailySale() {
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
                 <div className="text-xl">Ventas en efectivo</div>
-                <div className="text-center">1999 Bs</div>
+                <div className="text-center">
+                  {getTotalByPaymentMethod(PaymentMethodEnum.CASH)?.total || 0}{' '}
+                  Bs
+                </div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
                 <IconSelector
@@ -73,7 +102,11 @@ function DailySale() {
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
                 <div className="text-xl"> Ventas por QR</div>
-                <div className="text-center">3190 Bs</div>
+                <div className="text-center">
+                  {getTotalByPaymentMethod(PaymentMethodEnum.QR_TRANSFER)
+                    ?.total || 0}{' '}
+                  Bs
+                </div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
                 <IconSelector
@@ -89,7 +122,10 @@ function DailySale() {
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
                 <div className="text-xl">Ventas por tarjeta</div>
-                <div className="text-center">100 Bs</div>
+                <div className="text-center">
+                  {getTotalByPaymentMethod(PaymentMethodEnum.CARD)?.total || 0}{' '}
+                  Bs
+                </div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
                 <IconSelector
@@ -158,7 +194,9 @@ function DailySale() {
                 </div>
               </div>,
               <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm">{sale.createdBy}</div>
+                <div className="text-sm">
+                  {sale.createdByInfo?.name} {sale.createdByInfo?.lastName}
+                </div>
               </div>,
               <div key={idx}>
                 <div className="space-x-1">

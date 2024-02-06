@@ -1,4 +1,5 @@
 import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 export type TValueUserData = {
@@ -22,7 +23,7 @@ export const EditModal = ({
   values,
   handleSendUpdateUser
 }: EditModalProps) => {
-  const { handleSubmit, watch, control } = useForm()
+  const { handleSubmit, watch, control, reset } = useForm()
   const onSubmit = () => {
     handleSendUpdateUser({
       id: values.id,
@@ -32,6 +33,14 @@ export const EditModal = ({
       phone: watch('phone')
     })
   }
+  useEffect(() => {
+    reset({
+      name: values.name,
+      lastName: values.lastName,
+      email: values.email,
+      phone: values.phone
+    })
+  }, [values])
   return (
     <MyModal
       title="Editar usuario"

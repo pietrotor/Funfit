@@ -1,5 +1,6 @@
 import { useForm } from 'react-hook-form'
 
+import { useEffect } from 'react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
@@ -58,6 +59,16 @@ export const EditBranchModal = ({
     reset()
     onClose()
   }
+  useEffect(() => {
+    reset({
+      name: values.name,
+      city: values.city,
+      code: values.code,
+      address: values.direction,
+      phone: values.phone,
+      nit: values.nit
+    })
+  }, [values])
 
   return (
     <MyModal
@@ -90,7 +101,7 @@ export const EditBranchModal = ({
             }}
           />
           <Input
-            name="code"
+            name="address"
             control={control}
             label="Código"
             placeholder="Código"
@@ -136,12 +147,11 @@ export const EditBranchModal = ({
             }}
           />
           <Input
-            name="code"
+            name="address"
             control={control}
-            label="Código"
-            placeholder="Código"
+            label="Dirección"
             type="text"
-            defaultValue={values.code}
+            defaultValue={values.direction}
             rules={{
               required: {
                 value: true,

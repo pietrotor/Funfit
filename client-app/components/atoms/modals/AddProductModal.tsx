@@ -79,7 +79,7 @@ export const AddProductModal = ({
       onSubmit={onSubmit}
       reset={reset}
     >
-      <div className="p-4 text-gray-500 md:p-8">
+      <div className="p-4 space-y-2 text-gray-500 md:p-8">
         <div className="grid grid-cols-2 gap-3 pb-2">
           <Input
             control={control}
@@ -141,23 +141,7 @@ export const AddProductModal = ({
               }
             }}
           />
-          <Input
-          customeClassName="h-20 "
-          control={control}
-          name="description"
-          label="Descripción"
-          type="textArea"
-          rules={{
-            required: {
-              value: true,
-              message: 'Este campo es obligatorio'
-            },
-            pattern: {
-              value: /^[a-zA-Z\s]+$/i,
-              message: 'Solo se permiten letras'
-            }
-          }}
-        />
+        </div>
         <Selector
           control={control}
           name="category"
@@ -177,7 +161,22 @@ export const AddProductModal = ({
             })) || [{ label: 'Cargando..', value: 'Cargando..' }]
           }
         />
-        </div>
+        <Input
+          control={control}
+          name="description"
+          label="Descripción"
+          type="textArea"
+          rules={{
+            required: {
+              value: true,
+              message: 'Este campo es obligatorio'
+            },
+            pattern: {
+              value: /^[a-zA-Z\s]+$/i,
+              message: 'Solo se permiten letras'
+            }
+          }}
+        />
         <DropZone />
       </div>
     </MyModal>
