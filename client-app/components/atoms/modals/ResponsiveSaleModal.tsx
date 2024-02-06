@@ -1,6 +1,6 @@
-import SalesReceipt from '@/components/organisms/SalesReceipt'
 import { MyModal } from './MyModal'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
+import SalesReceipt from '@/components/organisms/SalesReceipt'
 
 interface ResponsiveSaleModalProps {
   isOpen: boolean
