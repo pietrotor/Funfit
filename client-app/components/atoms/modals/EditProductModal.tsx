@@ -91,9 +91,9 @@ export const EditProductModal = ({
             type="text"
             defaultValue={values?.name}
             rules={{
-              pattern: {
-                value: /^[a-zA-Z\s]+$/i,
-                message: 'Solo se permiten letras'
+              required: {
+                value: true,
+                message: 'Este campo es obligatorio'
               }
             }}
           />
@@ -105,9 +105,9 @@ export const EditProductModal = ({
             placeholder="Precio sugerido"
             type="text"
             rules={{
-              pattern: {
-                value: /^\d+(\.\d+)?$/,
-                message: 'Solo se permiten números'
+              required: {
+                value: true,
+                message: 'Este campo es obligatorio'
               }
             }}
           />

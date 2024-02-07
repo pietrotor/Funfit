@@ -7,6 +7,8 @@ import SalesReceipt from '@/components/organisms/SalesReceipt'
 import { useGetBranchProductPOSQuery } from '@/hooks/UseBranchQuery'
 import { TProductBranchData } from '@/interfaces/TData'
 import { useAppSelector } from '@/store/index'
+import { GetServerSideProps } from 'next'
+import { authUserHeader } from '@/utils/verificationUser'
 
 export type TPointOfSaleData = {
   products: TProductBranchData[]
@@ -132,3 +134,5 @@ function PointOfSale({ user }: PointOfSaleProps) {
 }
 
 export default PointOfSale
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)

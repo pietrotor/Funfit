@@ -80,7 +80,7 @@ export const AddProductModal = ({
       reset={reset}
     >
       <div className="p-4 space-y-2 text-gray-500 md:p-8">
-        <div className="grid grid-cols-2 gap-3 pb-2">
+        <div className="grid grid-cols-2 gap-2 pb-2">
           <Input
             control={control}
             name="name"
@@ -162,12 +162,6 @@ export const AddProductModal = ({
           name="description"
           label="Descripción"
           type="textArea"
-          rules={{
-            required: {
-              value: true,
-              message: 'Este campo es obligatorio'
-            }
-          }}
         />
         <DropZone />
       </div>

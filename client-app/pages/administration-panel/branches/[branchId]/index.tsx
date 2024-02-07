@@ -18,6 +18,8 @@ import { TProductBranchData } from '@/interfaces/TData'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { StatusEnum, useUpdateBranchMutation } from '@/graphql/graphql-types'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
+import { authUserHeader } from '@/utils/verificationUser'
+import { GetServerSideProps } from 'next'
 
 interface ProductOnBranchProps {
   user: any
@@ -236,3 +238,6 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
   )
 }
 export default ProductOnBranch
+
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)
