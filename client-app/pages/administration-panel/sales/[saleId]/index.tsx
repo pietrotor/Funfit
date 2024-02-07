@@ -93,7 +93,7 @@ function SaleDetail({ user }: SaleDetailProps) {
                 <Images
                   alt="imagen"
                   src={sale.product?.image || 'https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg'}
-                  className="h-28 w-28 rounded-md"
+                  className="md:h-28  md:w-28 w-16 h-14 rounded-md"
                 />
               </div>,
               <div key={idx} className=" text-sm">
