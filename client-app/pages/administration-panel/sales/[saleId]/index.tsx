@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import 'react-circular-progressbar/dist/styles.css'
 
+import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import Table from '@/components/organisms/tableNext/Table'
@@ -8,6 +9,7 @@ import InformationCard from '@/components/molecules/Card/InformationCard'
 import Images from '@/components/atoms/Image/Image'
 import useCustomGetSaleById from '@/services/UseGetCustomSaleById'
 import { useAppSelector } from '@/store/index'
+import { authUserHeader } from '@/utils/verificationUser'
 
 interface SaleDetailProps {
   user: any
@@ -116,3 +118,5 @@ function SaleDetail({ user }: SaleDetailProps) {
   )
 }
 export default SaleDetail
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)

@@ -7,7 +7,6 @@ import {
   useGetStockHistoryQuery
 } from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
-import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 
 import AdministrationLayout from '@/components/templates/layouts'
 import Table from '@/components/organisms/tableNext/Table'
@@ -26,16 +25,13 @@ function StockHistory({ user }: StockHistoryProps) {
     filter: '',
     currentPage: 1
   })
-  const [filter, setFilter] = useState<string>('')
-  const filterProductDebounced = UseDebouncedValue(filter, 800)
 
   const { loading, data } = useGetStockHistoryQuery({
     variables: {
       stockId,
       paginationInput: {
         page: variables?.currentPage,
-        rows: variables?.rows,
-        filter: filterProductDebounced
+        rows: variables?.rows
       }
     },
     fetchPolicy: 'network-only',
@@ -43,7 +39,6 @@ function StockHistory({ user }: StockHistoryProps) {
       setVariables({
         totalPages: data.getStockHistory?.totalPages || 1,
         rows: data.getStockHistory?.rows || 5,
-        filter: filterProductDebounced,
         currentPage: data.getStockHistory?.currentPage || 1,
         totalRecords: data.getStockHistory?.totalRecords || 1
       })
@@ -113,7 +108,6 @@ function StockHistory({ user }: StockHistoryProps) {
           totalPages={variables.totalPages}
           itemsPerPage={variables.rows}
           enablePagination={true}
-          onSearch={value => setFilter(value)}
           onChangeRow={row => handleChangeRow(row)}
           onChangePage={page =>
             setVariables({ ...variables, currentPage: page })

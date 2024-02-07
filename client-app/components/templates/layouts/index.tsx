@@ -321,7 +321,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
                 />
               </div>
             </div>
-            <div className="h-full w-full ps-5 pt-16 lg:pt-5">{children}</div>
+            <div className="h-full w-full ps-5 pt-16 lg:pt-0">{children}</div>
           </div>
         </main>
       ) : (

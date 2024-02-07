@@ -2,6 +2,7 @@ import { Chip, Image, Switch, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 
+import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { AddBranchProductModal } from '@/components/atoms/modals/AddBranchProductModal'
@@ -19,7 +20,6 @@ import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { StatusEnum, useUpdateBranchMutation } from '@/graphql/graphql-types'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import { authUserHeader } from '@/utils/verificationUser'
-import { GetServerSideProps } from 'next'
 
 interface ProductOnBranchProps {
   user: any

@@ -279,11 +279,11 @@ function Sales({ user }: SalesProps) {
                 <div className="text-sm">{sale.discount || 'S/D'}</div>
               </div>,
               <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm">
+                <div className="text-sm ">
                   {sale.products.map((product, idx) => (
                     <p
                       key={idx}
-                      className="m-auto w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                      className="m-auto w-fit mt-1 rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
                     >
                       {product.product?.name}
                     </p>

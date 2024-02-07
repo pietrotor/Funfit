@@ -7,6 +7,8 @@ import InputComponent from '@/components/atoms/Input'
 import Selector from '@/components/atoms/InputSelector'
 import ButtonComponent from '@/components/atoms/Button'
 import IconSelector from '@/components/atoms/IconSelector'
+import { authUserHeader } from '@/utils/verificationUser'
+import { GetServerSideProps } from 'next'
 // import { TValueProductData } from '@/components/atoms/modals/EditProductModal'
 
 export interface RecipeFormProps {
@@ -155,3 +157,5 @@ function Recipe({ user }: RecipeProps) {
 }
 
 export default Recipe
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)
