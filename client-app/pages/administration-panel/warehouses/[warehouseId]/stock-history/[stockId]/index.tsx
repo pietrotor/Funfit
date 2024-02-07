@@ -7,7 +7,6 @@ import {
   useGetStockHistoryQuery
 } from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
-import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 
 import AdministrationLayout from '@/components/templates/layouts'
 import Table from '@/components/organisms/tableNext/Table'
@@ -15,7 +14,10 @@ import DateConverter from '@/components/atoms/DateConverter'
 import { authUserHeader } from '@/utils/verificationUser'
 import InformationCard from '@/components/molecules/Card/InformationCard'
 
-function StockHistory() {
+interface StockHistoryProps {
+  user: any
+}
+function StockHistory({ user }: StockHistoryProps) {
   const router = useRouter()
   const stockId = router.query.stockId
   const [variables, setVariables] = useState<PaginationInterfaceState>({
@@ -23,16 +25,13 @@ function StockHistory() {
     filter: '',
     currentPage: 1
   })
-  const [filter, setFilter] = useState<string>('')
-  const filterProductDebounced = UseDebouncedValue(filter, 800)
 
   const { loading, data } = useGetStockHistoryQuery({
     variables: {
       stockId,
       paginationInput: {
         page: variables?.currentPage,
-        rows: variables?.rows,
-        filter: filterProductDebounced
+        rows: variables?.rows
       }
     },
     fetchPolicy: 'network-only',
@@ -40,7 +39,6 @@ function StockHistory() {
       setVariables({
         totalPages: data.getStockHistory?.totalPages || 1,
         rows: data.getStockHistory?.rows || 5,
-        filter: filterProductDebounced,
         currentPage: data.getStockHistory?.currentPage || 1,
         totalRecords: data.getStockHistory?.totalRecords || 1
       })
@@ -55,7 +53,7 @@ function StockHistory() {
     data?.getStockHistory?.data && data.getStockHistory.data.length > 0 ? data.getStockHistory.data[0] : null
 
   return (
-    <AdministrationLayout showBackButton={true}>
+    <AdministrationLayout user={user} showBackButton={true}>
       <div className="m-auto w-5/6 space-y-10">
         <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
           Historial del stock
@@ -110,7 +108,6 @@ function StockHistory() {
           totalPages={variables.totalPages}
           itemsPerPage={variables.rows}
           enablePagination={true}
-          onSearch={value => setFilter(value)}
           onChangeRow={row => handleChangeRow(row)}
           onChangePage={page =>
             setVariables({ ...variables, currentPage: page })

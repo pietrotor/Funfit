@@ -23,7 +23,11 @@ import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
-const Productos = () => {
+interface IProduct {
+  user: any
+}
+
+const Productos = ({ user }: IProduct) => {
   const [editProduct, setEditProduct] = useState<TValueProductData>()
   const [variables, setVariables] = useState<PaginationInterfaceState>({
     rows: 5,
@@ -136,7 +140,7 @@ const Productos = () => {
   }
 
   return (
-    <AdministrationLayout>
+    <AdministrationLayout user={user}>
       <div className="m-auto mt-7  w-5/6 ">
         <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de productos
@@ -186,9 +190,7 @@ const Productos = () => {
                 alt="image"
                 width={100}
                 src={
-                  product.image === 'null' || !product.image
-                    ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
-                    : product.image
+                  product.image === 'null' || !product.image ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' : product.image
                 }
                 key={idx}
               />,

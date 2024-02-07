@@ -91,9 +91,9 @@ export const EditProductModal = ({
             type="text"
             defaultValue={values?.name}
             rules={{
-              pattern: {
-                value: /^[a-zA-Z\s]+$/i,
-                message: 'Solo se permiten letras'
+              required: {
+                value: true,
+                message: 'Este campo es obligatorio'
               }
             }}
           />
@@ -105,9 +105,9 @@ export const EditProductModal = ({
             placeholder="Precio sugerido"
             type="text"
             rules={{
-              pattern: {
-                value: /^[0-9]+$/i,
-                message: 'Solo se permiten números'
+              required: {
+                value: true,
+                message: 'Este campo es obligatorio'
               }
             }}
           />
@@ -120,7 +120,7 @@ export const EditProductModal = ({
             type="text"
             rules={{
               pattern: {
-                value: /^[0-9]+$/i,
+                value: /^\d+(\.\d+)?$/,
                 message: 'Solo se permiten números'
               }
             }}
@@ -162,12 +162,6 @@ export const EditProductModal = ({
           label="Descripción"
           placeholder="Descripción"
           type="textArea"
-          rules={{
-            pattern: {
-              value: /^[a-zA-Z\s]+$/i,
-              message: 'Solo se permiten letras'
-            }
-          }}
         />
 
         <DropZone />

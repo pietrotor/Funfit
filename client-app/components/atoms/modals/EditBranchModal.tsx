@@ -101,7 +101,7 @@ export const EditBranchModal = ({
             }}
           />
           <Input
-            name="address"
+            name="code"
             control={control}
             label="Código"
             placeholder="Código"

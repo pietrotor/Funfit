@@ -53,7 +53,7 @@ const Selector: React.FC<TSelectorProps> = ({
               <Select
                 {...field}
                 variant={'bordered'}
-                label={label}
+                label={`${label}${rules?.required ? '*' : ''}`}
                 onClick={onClick}
                 defaultSelectedKeys={[defaultValue]}
                 style={{ border: '1px solid' }}

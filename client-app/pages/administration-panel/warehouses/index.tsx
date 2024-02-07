@@ -25,7 +25,11 @@ import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
-function Warehouses() {
+interface WarehousesProps {
+  user: any
+}
+
+function Warehouses({ user }: WarehousesProps) {
   const [edit, setEdit] = useState<TValuesWarehouses>({})
   const [variables, setVariables] = useState<PaginationInterfaceState>({
     rows: 5,
@@ -135,7 +139,7 @@ function Warehouses() {
   }
 
   return (
-    <AdministrationLayout>
+    <AdministrationLayout user={user}>
       <div className="m-auto mt-8 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de Almacenes

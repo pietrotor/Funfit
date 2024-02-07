@@ -9,6 +9,8 @@ import { TProductBranchData } from '@/interfaces/TData'
 import { useAppSelector } from '@/store/index'
 import ResponsiveSaleModal from '@/components/atoms/modals/ResponsiveSaleModal'
 import ButtonComponent from '@/components/atoms/Button'
+import { GetServerSideProps } from 'next'
+import { authUserHeader } from '@/utils/verificationUser'
 
 export type TPointOfSaleData = {
   products: TProductBranchData[]
@@ -16,8 +18,11 @@ export type TPointOfSaleData = {
   total: number
   discount: number
 }
+interface PointOfSaleProps {
+  user: any
+}
 
-function PointOfSale() {
+function PointOfSale({ user }: PointOfSaleProps) {
   const router = useRouter()
   const { data: dataPassed } = router.query
   const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
@@ -94,8 +99,8 @@ function PointOfSale() {
   }, [router.query])
 
   return (
-    <AdministrationLayout profileButton={false}>
-      <section className="h-full w-full flex-col md:flex md:flex-row ">
+    <AdministrationLayout user={user} profileButton={false}>
+      <section className="h-full w-full flex-col md:flex md:flex-row  ">
         <div className="w-full border-1 border-secondary/30 bg-secondary/10  p-4 md:w-2/3">
           {/* <div className="flex w-full">
             <Search setFilter={setFilter} />
@@ -145,3 +150,5 @@ function PointOfSale() {
 }
 
 export default PointOfSale
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)
