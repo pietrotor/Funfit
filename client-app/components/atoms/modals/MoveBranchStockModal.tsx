@@ -57,7 +57,16 @@ export const MoveBranchStockModal = ({
   })
 
   useEffect(() => {
-    if (isOpen) reset()
+    if (isOpen) {
+      reset(
+        {
+          warehouseId: '',
+          movementType: '',
+          quantity: '',
+          observation: ''
+        }
+      )
+    }
   }, [isOpen])
 
   const { handleCreateBranchStockMovement } =

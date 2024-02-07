@@ -20,8 +20,12 @@ import {
 } from '@/graphql/graphql-types'
 import { IsNotContent } from '@/components/atoms/IsNotContent'
 import DateConverter from '@/components/atoms/DateConverter'
+interface CashProps {
+  user: any
+}
 
-function Cash() {
+function Cash({ user }: CashProps) {
+  console.log(user)
   const handleMovementModal = useDisclosure()
   const handleCloseCashModal = useDisclosure()
   const handleOpenCashModal = useDisclosure()
@@ -61,7 +65,7 @@ function Cash() {
     setVariables({ ...variables, rows: row, currentPage: 1 })
   }
   return (
-    <AdministrationLayout onSubmit={currentBranch.refetch}>
+    <AdministrationLayout user={user} onSubmit={currentBranch.refetch}>
       <div className="m-auto mt-7 w-5/6 ">
         <h2 className="mb-2 text-center text-4xl font-extrabold text-gray-500 ">
           Administración de caja

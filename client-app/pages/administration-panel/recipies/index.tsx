@@ -27,7 +27,10 @@ import { EditRecipeModal } from '@/components/atoms/modals/EditRecipeModal'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import { TDataRecipes } from '@/interfaces/TData'
 
-function Recipe() {
+interface RecipeProps {
+  user : any
+}
+function Recipe({ user } : RecipeProps) {
   const [edit, setEdit] = useState<TDataRecipes>({
     id: 4,
     name: 'Receta 4',
@@ -247,7 +250,7 @@ function Recipe() {
   // }
 
   return (
-    <AdministrationLayout>
+    <AdministrationLayout user={user}>
       <div className="m-auto mt-7 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de recetas

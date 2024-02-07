@@ -23,7 +23,11 @@ import {
 } from '@/graphql/graphql-types'
 import { useGetSalesSummary } from '@/services/useGetSalesSummary'
 
-function Sales() {
+interface SalesProps {
+  user: any
+}
+
+function Sales({ user }: SalesProps) {
   const router = useRouter()
   const { branches, currentBranch } = useAppSelector(
     state => state.branchReducer
@@ -72,7 +76,7 @@ function Sales() {
   }
 
   return (
-    <AdministrationLayout>
+    <AdministrationLayout user={user}>
       <div className="m-auto mt-7 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Reporte de ventas
@@ -275,11 +279,11 @@ function Sales() {
                 <div className="text-sm">{sale.discount || 'S/D'}</div>
               </div>,
               <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm">
+                <div className="text-sm ">
                   {sale.products.map((product, idx) => (
                     <p
                       key={idx}
-                      className="m-auto w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                      className="m-auto w-fit mt-1 rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
                     >
                       {product.product?.name}
                     </p>

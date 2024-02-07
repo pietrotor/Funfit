@@ -66,9 +66,9 @@ export const EditModal = ({
           label={'Nombre'}
           required={false}
           rules={{
-            pattern: {
-              value: /^[a-zA-ZÀ-ÿ\s]{1,40}$/,
-              message: 'El nombre solo puede contener letras y espacios'
+            required: {
+              value: true,
+              message: 'Este campo es obligatorio'
             }
           }}
           defaultValue={values.name}
@@ -82,9 +82,9 @@ export const EditModal = ({
           defaultValue={values.lastName}
           required={false}
           rules={{
-            pattern: {
-              value: /^[a-zA-ZÀ-ÿ\s]{1,40}$/,
-              message: 'El apellido solo puede contener letras y espacios'
+            required: {
+              value: true,
+              message: 'Este campo es obligatorio'
             }
           }}
         />
@@ -100,6 +100,10 @@ export const EditModal = ({
             pattern: {
               value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
               message: 'El email no es valido'
+            },
+            required: {
+              value: true,
+              message: 'Este campo es obligatorio'
             }
           }}
         />
@@ -115,6 +119,10 @@ export const EditModal = ({
             pattern: {
               value: /^[0-9]+$/,
               message: 'El celular solo puede contener numeros'
+            },
+            required: {
+              value: true,
+              message: 'Este campo es obligatorio'
             }
           }}
         />

@@ -1,6 +1,7 @@
 import { useRouter } from 'next/router'
 import 'react-circular-progressbar/dist/styles.css'
 
+import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import Table from '@/components/organisms/tableNext/Table'
@@ -8,13 +9,18 @@ import InformationCard from '@/components/molecules/Card/InformationCard'
 import Images from '@/components/atoms/Image/Image'
 import useCustomGetSaleById from '@/services/UseGetCustomSaleById'
 import { useAppSelector } from '@/store/index'
+import { authUserHeader } from '@/utils/verificationUser'
 
-function SaleDetail() {
+interface SaleDetailProps {
+  user: any
+}
+
+function SaleDetail({ user }: SaleDetailProps) {
   const router = useRouter()
   const { data } = useCustomGetSaleById(router.query.saleId as string)
   const { currentBranch } = useAppSelector(state => state.branchReducer)
   return (
-    <AdministrationLayout showBackButton={true}>
+    <AdministrationLayout user={user} showBackButton={true}>
       <div className="m-auto mt-8 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Detalle de venta
@@ -87,7 +93,7 @@ function SaleDetail() {
                 <Images
                   alt="imagen"
                   src={sale.product?.image || 'https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg'}
-                  className="h-28 w-28 rounded-md"
+                  className="md:h-28  md:w-28 w-16 h-14 rounded-md"
                 />
               </div>,
               <div key={idx} className=" text-sm">
@@ -112,3 +118,5 @@ function SaleDetail() {
   )
 }
 export default SaleDetail
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)

@@ -16,7 +16,7 @@ const useCustomGetCashTurnMovementQuery = (turnId:string) => {
       paginationInput: {
         filter: filtroDebounced,
         page: variables?.currentPage || 1,
-        rows: 5
+        rows: variables?.rows || 5
       }
     },
     onCompleted: (result) => {
