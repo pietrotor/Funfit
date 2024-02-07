@@ -15,6 +15,8 @@ import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { TStockData } from '@/interfaces/TData'
 import { WarehouseRoute } from '@/utils/routes'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import { GetServerSideProps } from 'next'
+import { authUserHeader } from '@/utils/verificationUser'
 
 interface WarehouseProps {
   user: any
@@ -162,3 +164,5 @@ function Warehouse({ user }: WarehouseProps) {
   )
 }
 export default Warehouse
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)
