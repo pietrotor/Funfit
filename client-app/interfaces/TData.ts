@@ -58,3 +58,11 @@ export type TDataSale = {
   products: TValueProductData[]
   saleMakedBy: string
 }
+
+export type TSaleProduct = {
+    productId: string,
+    price: number,
+    qty: number,
+    total: number,
+    product: TValueProductData
+}

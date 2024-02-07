@@ -139,9 +139,9 @@ function SalesReceipt({
                 console.log('1')
                 setSelectedProducts(sale)
               }}
-              className="md:text-md text-sm"
+              className="md:text-md text-sm border-1 border-secondary bg-gray-200"
             >
-              generar venta
+              Generar venta
             </Button>
           </div>
           <div className="flex justify-between">
