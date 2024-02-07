@@ -143,6 +143,7 @@ type Mutation {
   ): CashTurnMovementResponse
   # SALES =================================
   createSale(createSaleInput: CreateSaleInput!): SaleResponse
+  cancelSale(cancelSaleInput: CancelSaleInput!): SaleResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type MeasurementUnits {
@@ -331,11 +332,13 @@ type Sale {
   observations: String
   canceled: Boolean
   reason: String
-  canceledAt: Date
   createdBy: ObjectId
+  canceledAt: Date
+  canceledBy: ObjectId
   # Fields Resolvers
   branch: Branch
   createdByInfo: User
+  canceledByInfo: User
 }
 type SalesByPaymentMethodSummary {
   method: PaymentMethodEnum
@@ -749,4 +752,10 @@ input SalesSummaryInput {
   initialDate: Date
   endDate: Date
   saleBy: ObjectId
+}
+input CancelSaleInput {
+  saleId: ObjectId!
+  reason: String!
+  returnStock: Boolean!
+  returnCash: Boolean
 }

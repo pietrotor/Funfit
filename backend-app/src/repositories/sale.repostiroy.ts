@@ -1,4 +1,5 @@
 import {
+  CancelSaleInput,
   CreateSaleInput,
   PaymentMethodEnum,
   Sale,
@@ -26,5 +27,9 @@ export abstract class SalesRepository<T> {
 
   abstract createSale(
     createSaleInput: CreateSaleInput
+  ): Promise<Sale | OutErrorResponse>
+
+  abstract cancelSale(
+    cancelSaleInput: CancelSaleInput
   ): Promise<Sale | OutErrorResponse>
 }

@@ -10,7 +10,8 @@ import {
   Branch,
   User,
   SalesSummaryResponse,
-  SalesSummaryInput
+  SalesSummaryInput,
+  CancelSaleInput
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
@@ -93,6 +94,27 @@ const createSale = async (
     return errorHandler(error)
   }
 }
+const cancelSale = async (
+  _: any,
+  args: { cancelSaleInput: CancelSaleInput },
+  context: ContextGraphQl
+): Promise<SaleResponse> => {
+  try {
+    const { cancelSaleInput } = args
+    const saleInstance = await saleCore.cancelSale(
+      cancelSaleInput,
+      context.req.currentUser?.id
+    )
+    return {
+      status: StatusEnum.OK,
+      message: 'Venta cancelada correactamente',
+      data: saleInstance
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
 
 export const saleQuery = {
   getSaleById,
@@ -100,7 +122,8 @@ export const saleQuery = {
   getSalesPaginated
 }
 export const saleMutation = {
-  createSale
+  createSale,
+  cancelSale
 }
 
 export const saleType = {
@@ -115,6 +138,13 @@ export const saleType = {
     async createdByInfo(parent: Sale, _: any, __: any): Promise<User | null> {
       if (parent.createdBy) {
         const user = await userCore.getUserByIdInstance(parent.createdBy)
+        return user
+      }
+      return null
+    },
+    async canceledByInfo(parent: Sale, _: any, __: any): Promise<User | null> {
+      if (parent.canceledBy) {
+        const user = await userCore.getUserByIdInstance(parent.canceledBy)
         return user
       }
       return null
