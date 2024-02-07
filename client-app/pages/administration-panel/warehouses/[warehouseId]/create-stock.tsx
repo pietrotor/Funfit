@@ -16,6 +16,8 @@ import ComboInput from '@/components/atoms/ComboInput'
 import { TValueProductData } from '@/components/atoms/modals/EditProductModal'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import Selector from '@/components/atoms/InputSelector'
+import { GetServerSideProps } from 'next'
+import { authUserHeader } from '@/utils/verificationUser'
 
 interface ICreateStock {
   user: any
@@ -239,3 +241,5 @@ function CreateStock({ user }: ICreateStock) {
   )
 }
 export default CreateStock
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)
