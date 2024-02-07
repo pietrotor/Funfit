@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Spinner, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
+import { GetServerSideProps } from 'next'
 import PointOfSaleCard from '@/components/molecules/Card/PointOfSaleCard'
 import AdministrationLayout from '@/components/templates/layouts'
 import SalesReceipt from '@/components/organisms/SalesReceipt'
@@ -9,7 +10,6 @@ import { TProductBranchData } from '@/interfaces/TData'
 import { useAppSelector } from '@/store/index'
 import ResponsiveSaleModal from '@/components/atoms/modals/ResponsiveSaleModal'
 import ButtonComponent from '@/components/atoms/Button'
-import { GetServerSideProps } from 'next'
 import { authUserHeader } from '@/utils/verificationUser'
 
 export type TPointOfSaleData = {
@@ -111,7 +111,7 @@ function PointOfSale({ user }: PointOfSaleProps) {
             </div>
           )}
           <div className="grid max-h-[95vh] grid-cols-2 gap-3 overflow-y-auto scrollbar-hide md:grid-cols-3 md:gap-4 md:p-4 ">
-            {data?.getBranchProductsPaginated?.data?.map(item => (
+            {!loading && data?.getBranchProductsPaginated?.data?.map(item => (
               <PointOfSaleCard
                 key={item.id}
                 product={item as TProductBranchData}
