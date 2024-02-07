@@ -7,6 +7,8 @@ import InputComponent from '@/components/atoms/Input'
 import Selector from '@/components/atoms/InputSelector'
 import ButtonComponent from '@/components/atoms/Button'
 import IconSelector from '@/components/atoms/IconSelector'
+import { authUserHeader } from '@/utils/verificationUser'
+import { GetServerSideProps } from 'next'
 // import { TValueProductData } from '@/components/atoms/modals/EditProductModal'
 
 export interface RecipeFormProps {
@@ -15,7 +17,11 @@ export interface RecipeFormProps {
   units: string
 }
 
-function Recipe() {
+interface RecipeProps {
+  user: any
+}
+
+function Recipe({ user }: RecipeProps) {
   // const [productsData, setProductsData] = useState<TValueProductData>()
   const { control, handleSubmit } = useForm()
   const [rows, setRows] = useState<RecipeFormProps[]>([
@@ -35,7 +41,7 @@ function Recipe() {
   }
 
   return (
-    <AdministrationLayout showBackButton>
+    <AdministrationLayout user={user} showBackButton>
       <div className="m-auto mt-16 w-5/6">
         <h3 className="text-center text-4xl font-extrabold text-gray-500">
           Crea una nueva receta
@@ -151,3 +157,5 @@ function Recipe() {
 }
 
 export default Recipe
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)

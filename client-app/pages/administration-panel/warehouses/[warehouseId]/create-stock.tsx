@@ -16,8 +16,13 @@ import ComboInput from '@/components/atoms/ComboInput'
 import { TValueProductData } from '@/components/atoms/modals/EditProductModal'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import Selector from '@/components/atoms/InputSelector'
+import { GetServerSideProps } from 'next'
+import { authUserHeader } from '@/utils/verificationUser'
 
-function CreateStock() {
+interface ICreateStock {
+  user: any
+}
+function CreateStock({ user }: ICreateStock) {
   const [filterProduct] = useState<string>('')
   const [productsData, setProductsData] = useState<TValueProductData>()
   // const [warehouseData /* ,setWarehousesData */] = useState<TValuesWarehouses>(
@@ -78,7 +83,7 @@ function CreateStock() {
     console.log(watch('product'), 'watch')
   }, [productsData])
   return (
-    <AdministrationLayout showBackButton={true}>
+    <AdministrationLayout user={user} showBackButton={true}>
       <div className="w-full"></div>
       <div className="absolute right-5 top-20 ms-5 mt-5 flex h-[75%] w-[90%] transform flex-col items-start justify-center bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center lg:right-0">
         <div
@@ -236,3 +241,5 @@ function CreateStock() {
   )
 }
 export default CreateStock
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)

@@ -134,7 +134,7 @@ export const AddBranchProductModal = ({
                 message: 'Este campo es obligatorio'
               },
               pattern: {
-                value: /^[0-9]+$/i,
+                value: /^\d+(\.\d+)?$/,
                 message: 'Solo se permiten números'
               }
             }}

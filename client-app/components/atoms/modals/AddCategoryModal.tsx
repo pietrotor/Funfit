@@ -52,10 +52,6 @@ export const AddCategoryModal = ({
             required: {
               value: true,
               message: 'El nombre es requerido'
-            },
-            pattern: {
-              value: /^[A-Za-z\s]+$/,
-              message: 'El nombre no debe contener caracteres especiales'
             }
           }}
         />

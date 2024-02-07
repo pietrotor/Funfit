@@ -200,7 +200,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
                 height="h-8"
                 className="text-white"
               />
-              <p className="font-semibold capitalize text-white">{user.name}</p>
+              <p className="font-semibold capitalize text-white">{user?.name}</p>
             </div>
           </div>
         </div>

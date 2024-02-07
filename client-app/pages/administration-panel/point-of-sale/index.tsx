@@ -7,6 +7,8 @@ import SalesReceipt from '@/components/organisms/SalesReceipt'
 import { useGetBranchProductPOSQuery } from '@/hooks/UseBranchQuery'
 import { TProductBranchData } from '@/interfaces/TData'
 import { useAppSelector } from '@/store/index'
+import { GetServerSideProps } from 'next'
+import { authUserHeader } from '@/utils/verificationUser'
 
 export type TPointOfSaleData = {
   products: TProductBranchData[]
@@ -14,8 +16,11 @@ export type TPointOfSaleData = {
   total: number
   discount: number
 }
+interface PointOfSaleProps {
+  user: any
+}
 
-function PointOfSale() {
+function PointOfSale({ user }: PointOfSaleProps) {
   const router = useRouter()
   const { data: dataPassed } = router.query
   const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
@@ -90,7 +95,7 @@ function PointOfSale() {
   }, [router.query])
 
   return (
-    <AdministrationLayout profileButton={false}>
+    <AdministrationLayout user={user} profileButton={false}>
       <section className="flex h-full w-full ">
         <div className="w-2/3 border-1 border-secondary/30  bg-secondary/10 p-4">
           {/* <div className="flex w-full">
@@ -129,3 +134,5 @@ function PointOfSale() {
 }
 
 export default PointOfSale
+export const getServerSideProps: GetServerSideProps = async ctx =>
+  await authUserHeader(ctx)
