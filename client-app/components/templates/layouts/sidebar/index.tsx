@@ -79,7 +79,9 @@ const Sidebar: React.FC<TSidebarProps> = ({
       ></div>
       <div
         className={`fixed left-0 top-0 z-50 flex h-screen max-h-screen text-white transition-all duration-700 ${
-          isSidebarOpen ? 'w-80 -translate-x-20 ' : 'w-16 -translate-x-20 md:-translate-x-0 xl:w-[70px]'
+          isSidebarOpen
+            ? 'w-80 -translate-x-20 '
+            : 'w-16 -translate-x-20 md:-translate-x-0 xl:w-[70px]'
         }`}
       >
         {/* Simple sidebar */}
@@ -93,7 +95,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
               alt="100"
               width={50}
               height={20}
-              src="/../../common/logo (1).png"
+              src="/common/logo_1.png"
               className="m-auto mb-4 mt-20 h-16 w-16 transform cursor-pointer rounded-full object-contain px-1 transition-transform duration-300 hover:scale-110"
             />
             <div>
@@ -132,7 +134,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
         </div>
         {/* Detail sidebar */}
         <div
-          className={`z-50 flex h-full flex-col justify-between  overflow-hidden bg-white shadow-2xl transition-all duration-300 overflow-y-auto scrollbar-hide scrollbar-thumb-gray-500 ${
+          className={`scrollbar-thumb-gray-500 z-50 flex h-full flex-col justify-between overflow-hidden overflow-y-auto bg-white shadow-2xl transition-all duration-300 scrollbar-hide ${
             isSidebarOpen ? 'w-80' : 'w-0'
           }`}
         >
@@ -140,7 +142,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
             onClick={() => setSidebar(!isSidebarOpen)}
             type="button"
             className={`absolute ${
-              isSidebarOpen ? '-right-3 top-10' : '-right-16 top-10 md:-right-3'
+              isSidebarOpen ? 'right-20 top-10' : 'right-10 top-10 md:-right-3'
             } -right-3 top-10 aspect-square rounded-full bg-primary p-1`}
           >
             <IconSelector name="menu" stroke={3} />
@@ -151,7 +153,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
                 alt="s"
                 width={100}
                 height={100}
-                src="/../../common/logo.png"
+                src="/common/logo.png"
                 className="m-auto h-[80%] object-contain"
               />
             </div>
