@@ -58,3 +58,10 @@ export type TDataSale = {
   products: TValueProductData[]
   saleMakedBy: string
 }
+
+export type TCancelSale = {
+  saleId: string
+  reason: string
+  returnCash: boolean
+  returnStock: boolean
+}

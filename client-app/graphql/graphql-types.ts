@@ -85,6 +85,13 @@ export type BranchsResponse = ResponseBase & {
   totalRecords?: Maybe<Scalars['Int']>;
 };
 
+export type CancelSaleInput = {
+  reason: Scalars['String'];
+  returnCash?: InputMaybe<Scalars['Boolean']>;
+  returnStock: Scalars['Boolean'];
+  saleId: Scalars['ObjectId'];
+};
+
 export type Cash = {
   __typename?: 'Cash';
   amount: Scalars['Float'];
@@ -315,6 +322,7 @@ export type MeasurementUnits = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  cancelSale?: Maybe<SaleResponse>;
   closeCash?: Maybe<CashResponse>;
   creatStockMovement?: Maybe<StockResponse>;
   createBranch?: Maybe<BranchResponse>;
@@ -340,6 +348,11 @@ export type Mutation = {
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
+};
+
+
+export type MutationCancelSaleArgs = {
+  cancelSaleInput: CancelSaleInput;
 };
 
 
@@ -745,6 +758,8 @@ export type Sale = {
   branchId: Scalars['ObjectId'];
   canceled?: Maybe<Scalars['Boolean']>;
   canceledAt?: Maybe<Scalars['Date']>;
+  canceledBy?: Maybe<Scalars['ObjectId']>;
+  canceledByInfo?: Maybe<User>;
   change: Scalars['Float'];
   client?: Maybe<Scalars['String']>;
   code: Scalars['String'];
@@ -1225,6 +1240,13 @@ export type DeleteCategoryMutationVariables = Exact<{
 
 
 export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory?: { __typename?: 'CategoryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null };
+
+export type CancelSaleMutationVariables = Exact<{
+  cancelSaleInput: CancelSaleInput;
+}>;
+
+
+export type CancelSaleMutation = { __typename?: 'Mutation', cancelSale?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, createdBy?: any | null, canceledAt?: any | null, canceledBy?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, category?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, visibleOnWeb: boolean, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null, canceledByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null };
 
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2764,6 +2786,195 @@ export function useDeleteCategoryMutation(baseOptions?: Apollo.MutationHookOptio
 export type DeleteCategoryMutationHookResult = ReturnType<typeof useDeleteCategoryMutation>;
 export type DeleteCategoryMutationResult = Apollo.MutationResult<DeleteCategoryMutation>;
 export type DeleteCategoryMutationOptions = Apollo.BaseMutationOptions<DeleteCategoryMutation, DeleteCategoryMutationVariables>;
+export const CancelSaleDocument = gql`
+    mutation CancelSale($cancelSaleInput: CancelSaleInput!) {
+  cancelSale(cancelSaleInput: $cancelSaleInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      branchId
+      products {
+        branchProductId
+        productId
+        price
+        qty
+        total
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          internalCode
+          description
+          categoryId
+          cost
+          image
+          warehouses
+          category {
+            id
+            name
+            code
+          }
+        }
+      }
+      paymentMethod
+      subTotal
+      total
+      discount
+      date
+      code
+      client
+      amountRecibed
+      change
+      observations
+      canceled
+      reason
+      createdBy
+      canceledAt
+      canceledBy
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        visibleOnWeb
+        cashId
+        cash {
+          id
+          branchId
+          amount
+          currentTurnId
+          isOpen
+          currentTurn {
+            id
+            cashId
+            isOpen
+            amountOfMovents
+            openInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              openBy
+              openByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+            closeInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              closeBy
+              closeByInfo {
+                id
+                name
+                lastName
+                email
+                phone
+                lastLogin
+                status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
+              }
+            }
+          }
+        }
+      }
+      createdByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
+      }
+      canceledByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+        roleInfo {
+          id
+          name
+          code
+          status
+        }
+      }
+    }
+  }
+}
+    `;
+export type CancelSaleMutationFn = Apollo.MutationFunction<CancelSaleMutation, CancelSaleMutationVariables>;
+
+/**
+ * __useCancelSaleMutation__
+ *
+ * To run a mutation, you first call `useCancelSaleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCancelSaleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [cancelSaleMutation, { data, loading, error }] = useCancelSaleMutation({
+ *   variables: {
+ *      cancelSaleInput: // value for 'cancelSaleInput'
+ *   },
+ * });
+ */
+export function useCancelSaleMutation(baseOptions?: Apollo.MutationHookOptions<CancelSaleMutation, CancelSaleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CancelSaleMutation, CancelSaleMutationVariables>(CancelSaleDocument, options);
+      }
+export type CancelSaleMutationHookResult = ReturnType<typeof useCancelSaleMutation>;
+export type CancelSaleMutationResult = Apollo.MutationResult<CancelSaleMutation>;
+export type CancelSaleMutationOptions = Apollo.BaseMutationOptions<CancelSaleMutation, CancelSaleMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {

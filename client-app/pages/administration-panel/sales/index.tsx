@@ -1,4 +1,4 @@
-import { Radio, RadioGroup } from '@nextui-org/react'
+import { Radio, RadioGroup, useDisclosure } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { GetServerSideProps } from 'next'
 
@@ -22,16 +22,20 @@ import {
   useGetUsersLazyQuery
 } from '@/graphql/graphql-types'
 import { useGetSalesSummary } from '@/services/useGetSalesSummary'
+import { CandelSaleModal } from '@/components/atoms/modals/CancelSaleModal'
 
 interface SalesProps {
   user: any
 }
 
 function Sales({ user }: SalesProps) {
+  const [edit, setEdit] = useState<string>('')
   const router = useRouter()
   const { branches, currentBranch } = useAppSelector(
     state => state.branchReducer
   )
+
+  const handleCancelModal = useDisclosure()
   const { control, watch } = useForm({
     defaultValues: {
       initialDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
@@ -61,7 +65,7 @@ function Sales({ user }: SalesProps) {
       paginationInput: {}
     }
   })
-  const { data, setVariables, variables } = UseGetCustomSalesPaginated(
+  const { data, setVariables, variables, refetch } = UseGetCustomSalesPaginated(
     branchSelected.id
   )
 
@@ -74,7 +78,10 @@ function Sales({ user }: SalesProps) {
       paymentMethod => paymentMethod.method === method
     )
   }
-
+  const handleCancelSale = (saleId: string) => {
+    setEdit(saleId)
+    handleCancelModal.onOpen()
+  }
   return (
     <AdministrationLayout user={user}>
       <div className="m-auto mt-7 w-5/6 ">
@@ -106,7 +113,7 @@ function Sales({ user }: SalesProps) {
           </RadioGroup>
         </InformationCard>
 
-        <div className="mt-10 gap-2 grid-cols-2 md:space-y-0 grid md:grid-cols-5 md:gap-4">
+        <div className="mt-10 grid grid-cols-2 gap-2 md:grid-cols-5 md:gap-4 md:space-y-0">
           <InputComponent
             isRequired={false}
             name="initialDate"
@@ -145,7 +152,7 @@ function Sales({ user }: SalesProps) {
               }))
             }}
           />
-          <div className="md:col-start-5 col-start-1 md:col-end-6 col-end-3 rounded-md bg-white ">
+          <div className="col-start-1 col-end-3 rounded-md bg-white md:col-start-5 md:col-end-6 ">
             <ComboInput
               label="Vendedor"
               name="seller"
@@ -210,7 +217,7 @@ function Sales({ user }: SalesProps) {
                 <div className="text-center">
                   {getTotalByPaymentMethod(PaymentMethodEnum.QR_TRANSFER)
                     ?.total || 0}{' '}
-                  Bs Bs
+                  Bs
                 </div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
@@ -229,7 +236,7 @@ function Sales({ user }: SalesProps) {
                 <div className="text-xl">Ventas por tarjeta</div>
                 <div className="text-center">
                   {getTotalByPaymentMethod(PaymentMethodEnum.CARD)?.total || 0}{' '}
-                  Bs Bs
+                  Bs
                 </div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
@@ -257,6 +264,7 @@ function Sales({ user }: SalesProps) {
           titles={[
             { name: '#' },
             { name: 'Fecha de venta' },
+            { name: 'Estado' },
             { name: 'Monto total' },
             { name: 'Descuento' },
             { name: 'Productos' },
@@ -272,6 +280,9 @@ function Sales({ user }: SalesProps) {
               <div key={idx} className="text-sm">
                 <DateConverter dateString={sale.date} showTime />
               </div>,
+              <div key={idx} className={`m-auto mt-1 w-fit rounded-full  px-2 py-1 font-semibold ${sale.canceled ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+                {sale.canceled ? 'Cancelada' : 'Activa'}
+              </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm font-bold">{sale.total} Bs</div>
               </div>,
@@ -283,7 +294,7 @@ function Sales({ user }: SalesProps) {
                   {sale.products.map((product, idx) => (
                     <p
                       key={idx}
-                      className="m-auto w-fit mt-1 rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                      className="m-auto mt-1 w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
                     >
                       {product.product?.name}
                     </p>
@@ -312,12 +323,34 @@ function Sales({ user }: SalesProps) {
                       width="w-8"
                     />
                   </ButtonComponent>
+                  <ButtonComponent
+                    onClick={() =>
+                      handleCancelSale(sale.id)
+                    }
+                    type="delete"
+                    showTooltip
+                    tooltipText="Cancelar venta"
+                    className="px-3"
+                    disabled={sale?.canceled || false}
+                  >
+                    <IconSelector
+                      name="CircleMinus"
+                      color="text-red-500"
+                      width="w-5"
+                    />
+                  </ButtonComponent>
                 </div>
               </div>
             ]
           }))}
         />
       </div>
+      <CandelSaleModal
+      isOpen={handleCancelModal.isOpen}
+      onClose={handleCancelModal.onClose}
+      onConfirm={refetch}
+      saleId={edit}
+      />
     </AdministrationLayout>
   )
 }
