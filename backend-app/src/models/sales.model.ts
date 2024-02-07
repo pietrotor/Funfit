@@ -31,6 +31,7 @@ export interface ISale extends Document, IGeneric {
   canceled: boolean
   reason: string | null
   canceledAt: Date | null
+  canceledBy: objectId | null
 }
 export interface IModelSale extends Model<ISale> {}
 const saleSchema = new Schema<ISale>(
@@ -113,6 +114,10 @@ const saleSchema = new Schema<ISale>(
     canceledAt: {
       type: Date,
       default: null
+    },
+    canceledBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
     },
     // Generic Types
     status: { type: Boolean, default: true },
