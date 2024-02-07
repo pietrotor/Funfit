@@ -17,8 +17,11 @@ import { TDataBranch } from '@/interfaces/TData'
 import useCustomGetBranchesQuery from '@/services/UseBranches'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
+interface BranchesProps {
+  user: any
+}
 
-function Branches() {
+function Branches({ user }: BranchesProps) {
   const [edit, setEdit] = useState<TDataBranch>({} as TDataBranch)
   const handleConfirmModal = useDisclosure()
   const handleEditModal = useDisclosure()
@@ -81,7 +84,7 @@ function Branches() {
   }
 
   return (
-    <AdministrationLayout>
+    <AdministrationLayout user={user}>
       <div className="m-auto mt-7 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de Sucursales
@@ -105,10 +108,7 @@ function Branches() {
           totalPages={variables?.totalPages}
           isLoading={loading}
           enablePagination={true}
-          onSearch={value => {
-            setFilter(value)
-            setVariables({ ...variables, currentPage: 1 })
-          }}
+          onSearch={value => setFilter(value)}
           totalItems={variables?.totalRecords}
           titles={[
             { name: '#' },
@@ -124,11 +124,11 @@ function Branches() {
             (branch, idx) => ({
               content: [
                 <h3 key={idx} className="text-sm">
-                  {((variables?.currentPage || 0) - 1) *
-                    (variables?.rows || 0) +
-                    idx +
-                    1}
-                </h3>,
+                    {((variables?.currentPage || 0) - 1) *
+                      (variables?.rows || 0) +
+                      idx +
+                      1}
+                  </h3>,
                 <div key={idx} className="text-left text-sm">
                   {branch.name}
                 </div>,

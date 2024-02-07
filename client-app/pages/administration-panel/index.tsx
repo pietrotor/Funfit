@@ -1,13 +1,18 @@
 // import { Inter } from 'next/font/google'
+import React from 'react'
 import AdministrationLayout from '@/components/templates/layouts'
 import { userValidation } from '@/services/UserValidation'
 
 // const inter = Inter({ subsets: ['latin'] })
-
-export default function Home() {
+interface BranchesProps {
+  user?: any
+  children: React.ReactNode
+  showBackButton?: boolean
+}
+export default function MainPage({ user, children, showBackButton }: BranchesProps) {
   return (
-    <AdministrationLayout>
-      <h1>YOUR CONTENT</h1>
+    <AdministrationLayout user={user} showBackButton= {showBackButton}>
+      {children}
     </AdministrationLayout>
   )
 }

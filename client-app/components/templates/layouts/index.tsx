@@ -3,6 +3,8 @@ import React, { useEffect, useState } from 'react'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import Sidebar, { TMenuStructure } from './sidebar'
+import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
+import ToastComponent from '@/components/atoms/Toast/toasts'
 import {
   useGetBranchesPaginatedLazyQuery,
   useGetConfigurationLazyQuery
@@ -13,20 +15,21 @@ import { setBusiness } from '@/store/slices'
 import BackButton from '@/components/atoms/BackButton/intex'
 import { setBranch, setBranches } from '@/store/slices/branches/branchSlice'
 import { DropDown } from '@/components/atoms/DropDown'
-import ToastComponent from '@/components/atoms/Toast/toasts'
 
 type TAdministrationLayoutProps = {
   children: React.ReactNode
   showBackButton?: boolean
   onSubmit?: () => void
   profileButton?: boolean
+  user:any
 }
 
 const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   onSubmit,
   showBackButton = false,
   children,
-  profileButton = true
+  profileButton = true,
+  user
 }) => {
   const { business } = useAppSelector(state => state.configuration)
   const { branches, currentBranch } = useAppSelector(
@@ -34,6 +37,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   )
   const dispatch = useAppDispatch()
   const [currentId, setCurrentId] = useState<string>('')
+  console.log(user)
   const [getBranchesPaginated] = useGetBranchesPaginatedLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -78,6 +82,62 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   const handleLogOut = () => {
     Cookies.remove('sao-sess')
     router.push('/administration-panel/login')
+  }
+
+  const dataToPass: TPointOfSaleData = {
+    products: [
+      {
+        id: '1',
+        branchId: '1',
+        productId: '1',
+        price: 100,
+        isVisibleOnWeb: true,
+        isVisibleOnMenu: true,
+        quantity: 1,
+        product: {
+          id: '1',
+          name: 'Producto 1',
+          description: 'Descripcion del producto'
+        },
+        stock: 10,
+        total: 100
+      },
+      {
+        id: '2',
+        branchId: '1',
+        productId: '2',
+        price: 200,
+        isVisibleOnWeb: true,
+        isVisibleOnMenu: true,
+        quantity: 2,
+        product: {
+          id: '2',
+          name: 'Producto 2',
+          description: 'Descripcion del producto'
+        },
+        stock: 10,
+        total: 200
+      },
+      {
+        id: '3',
+        branchId: '1',
+        productId: '3',
+        price: 300,
+        quantity: 1,
+        isVisibleOnWeb: true,
+        isVisibleOnMenu: true,
+        product: {
+          id: '3',
+          name: 'Producto 3',
+          description: 'Descripcion del producto'
+        },
+        stock: 10,
+        total: 300
+      }
+    ],
+    subTotal: 600,
+    total: 600,
+    discount: 0
   }
   const menu: TMenuStructure = [
     {
@@ -202,7 +262,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         >
           <Sidebar
             onSubmit={onSubmit}
-            user={{ name: 'pietro' }}
+            user={{ name: user?.name }}
             menu={menu}
             isSidebarOpen={sidebarOpen}
             setSidebar={setsidebarOpen}
@@ -220,21 +280,27 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
               <div className="flex items-center">
                 <DropDown
                   IconButtonName="Notifications"
-                  values={[{
-                    label: 'Nueva venta',
-                    value: 'notifications',
-                    icon: 'PointOfSale',
-                    handleClick: () => {
-                      router.push('/administration-panel/point-of-sale')
+                  values={[
+                    {
+                      label: 'Notificaciones',
+                      value: 'notifications',
+                      icon: 'PointOfSale',
+                      handleClick: () => {
+                        router.push({
+                          pathname: '/administration-panel/point-of-sale',
+                          query: { data: JSON.stringify(dataToPass) }
+                        })
+                      },
+                      counter: 2
                     }
-                  }]}
-                  counter={1}
+                  ]}
+                  counter={0}
                   avatar="https://static.vecteezy.com/system/resources/previews/000/376/699/original/notification-vector-icon.jpg"
                 />
                 <DropDown
                   fill
                   IconButtonName="user"
-                  label={'Pietro'}
+                  label={user.name}
                   user="https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png"
                   values={[
                     {
@@ -255,7 +321,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
                 />
               </div>
             </div>
-            <div className="h-full w-full ps-5 pt-16 lg:pt-5">{children}</div>
+            <div className="h-full w-full ps-5 pt-16 lg:pt-0">{children}</div>
           </div>
         </main>
       ) : (

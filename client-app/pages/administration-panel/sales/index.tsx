@@ -23,7 +23,11 @@ import {
 } from '@/graphql/graphql-types'
 import { useGetSalesSummary } from '@/services/useGetSalesSummary'
 
-function Sales() {
+interface SalesProps {
+  user: any
+}
+
+function Sales({ user }: SalesProps) {
   const router = useRouter()
   const { branches, currentBranch } = useAppSelector(
     state => state.branchReducer
@@ -72,7 +76,7 @@ function Sales() {
   }
 
   return (
-    <AdministrationLayout>
+    <AdministrationLayout user={user}>
       <div className="m-auto mt-7 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Reporte de ventas
@@ -102,7 +106,7 @@ function Sales() {
           </RadioGroup>
         </InformationCard>
 
-        <div className="mt-10 grid grid-cols-5 gap-4">
+        <div className="mt-10 gap-2 grid-cols-2 md:space-y-0 grid md:grid-cols-5 md:gap-4">
           <InputComponent
             isRequired={false}
             name="initialDate"
@@ -141,7 +145,7 @@ function Sales() {
               }))
             }}
           />
-          <div className="col-start-5 rounded-md bg-white ">
+          <div className="md:col-start-5 col-start-1 md:col-end-6 col-end-3 rounded-md bg-white ">
             <ComboInput
               label="Vendedor"
               name="seller"
@@ -275,11 +279,11 @@ function Sales() {
                 <div className="text-sm">{sale.discount || 'S/D'}</div>
               </div>,
               <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm">
+                <div className="text-sm ">
                   {sale.products.map((product, idx) => (
                     <p
                       key={idx}
-                      className="m-auto w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                      className="m-auto w-fit mt-1 rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
                     >
                       {product.product?.name}
                     </p>

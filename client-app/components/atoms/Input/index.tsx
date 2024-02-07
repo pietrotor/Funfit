@@ -88,9 +88,7 @@ const InputComponent: React.FC<TInputProps> = ({
         name={name}
         control={control}
         defaultValue={
-          type === 'date'
-            ? new Date().toISOString().split('T')[0]
-            : defaultValue
+          type === 'date' ? new Date().toISOString().split('T')[0] : defaultValue
         }
         rules={rules}
         render={({ field, formState: { errors } }) => (
@@ -126,7 +124,7 @@ const InputComponent: React.FC<TInputProps> = ({
                   {...field}
                   type={type}
                   variant={'bordered'}
-                  label={label}
+                  label={`${label} ${required ? '*' : ''}`}
                   placeholder={placeholder}
                   size='sm'
                   radius="sm"
@@ -168,7 +166,7 @@ const InputComponent: React.FC<TInputProps> = ({
         <Textarea
           type={type}
           variant={variant}
-          label={label}
+          label={`${label} ${required ? '*' : ''}`}
           placeholder={placeholder}
           radius="sm"
           size='sm'

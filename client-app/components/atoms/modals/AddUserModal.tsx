@@ -50,6 +50,7 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
     reset()
     onClose()
   }
+
   return (
     <MyModal
       title="Agregar usuario"
@@ -66,11 +67,10 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
       handleSubmit={handleSubmit}
       onSubmit={onSubmit}
     >
-      <form
+      <div
         className="flex w-full flex-col items-center p-9 text-gray-500"
-        onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="flex w-full flex-col md:grid md:grid-cols-2 md:gap-5">
+        <div className="flex w-full flex-col md:space-y-0 space-y-2 md:grid md:grid-cols-2 md:gap-5">
           <Input
             control={control}
             name="name"
@@ -81,10 +81,6 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
               required: {
                 value: true,
                 message: 'Este campo es obligatorio'
-              },
-              pattern: {
-                value: /^[a-zA-Z\s]+$/i,
-                message: 'Solo se permiten letras'
               }
             }}
           />
@@ -95,11 +91,7 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
             type="text"
             label="Apellido"
             rules={{
-              required: { value: true, message: 'Este campo es obligatorio' },
-              pattern: {
-                value: /^[a-zA-Z\s]+$/i,
-                message: 'Solo se permiten letras'
-              }
+              required: { value: true, message: 'Este campo es obligatorio' }
             }}
           />
           <Input
@@ -112,6 +104,10 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
               required: {
                 value: true,
                 message: 'Este campo es obligatorio'
+              },
+              pattern: {
+                value: /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,4}$/,
+                message: 'Correo electrónico inválido'
               }
             }}
           />
@@ -161,7 +157,7 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
             }}
           />
         </div>
-      </form>
+      </div>
     </MyModal>
   )
 }

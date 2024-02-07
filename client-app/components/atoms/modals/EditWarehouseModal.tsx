@@ -69,9 +69,9 @@ export const EditWarehouseModal = ({
           type="text"
           defaultValue={values.name}
           rules={{
-            pattern: {
-              value: /^[a-zA-Z\s]+$/i,
-              message: 'Solo se permiten letras'
+            required: {
+              value: true,
+              message: 'Este campo es requerido'
             }
           }}
         />
@@ -84,9 +84,9 @@ export const EditWarehouseModal = ({
           placeholder="Calle"
           type="text"
           rules={{
-            pattern: {
-              value: /^[a-zA-Z\s]+$/i,
-              message: 'Solo se permiten letras'
+            required: {
+              value: true,
+              message: 'Este campo es requerido'
             }
           }}
         />
@@ -98,6 +98,7 @@ export const EditWarehouseModal = ({
           label="Descripción"
           placeholder="Descripción"
           type="textArea"
+          isRequired={false}
         />
       </div>
     </MyModal>

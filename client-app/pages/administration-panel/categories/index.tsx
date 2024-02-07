@@ -19,7 +19,11 @@ import {
 import { EditCategoryModal } from '@/components/atoms/modals/EditCategoryModal'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
-function Categories() {
+interface CategoriesProps {
+  user: any
+}
+
+function Categories({ user }: CategoriesProps) {
   const [edit, setEdit] = useState<TCategories>({} as TCategories)
   const [variables, setVariables] = useState<PaginationInterfaceState>({})
 
@@ -59,7 +63,7 @@ function Categories() {
   }
 
   return (
-    <AdministrationLayout>
+    <AdministrationLayout user={user}>
       <div className="m-auto mt-16 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de Categorías

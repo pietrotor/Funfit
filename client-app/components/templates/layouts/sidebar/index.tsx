@@ -142,8 +142,8 @@ const Sidebar: React.FC<TSidebarProps> = ({
             onClick={() => setSidebar(!isSidebarOpen)}
             type="button"
             className={`absolute ${
-              isSidebarOpen ? 'right-20 top-10' : 'right-10 top-10 md:-right-3'
-            } -right-3 top-10 aspect-square rounded-full bg-primary p-1`}
+              isSidebarOpen ? '-right-3 top-10' : '-right-12 top-10 md:-right-3'
+            } top-10  aspect-square rounded-full bg-primary p-1 md:-right-3`}
           >
             <IconSelector name="menu" stroke={3} />
           </button>
@@ -202,7 +202,9 @@ const Sidebar: React.FC<TSidebarProps> = ({
                 height="h-8"
                 className="text-white"
               />
-              <p className="font-semibold capitalize text-white">{user.name}</p>
+              <p className="font-semibold capitalize text-white">
+                {user?.name}
+              </p>
             </div>
           </div>
         </div>

@@ -21,7 +21,11 @@ import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
-function CreateUserForm() {
+interface ICreateUserForm {
+  user: any
+}
+
+function CreateUserForm({ user }: ICreateUserForm) {
   const handleAddUser = useDisclosure()
   const handleEditModal = useDisclosure()
   const handleDeleteModal = useDisclosure()
@@ -134,7 +138,7 @@ function CreateUserForm() {
   }
 
   return (
-    <AdministrationLayout>
+    <AdministrationLayout user={user}>
       <div className="m-auto mt-6 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Administración de usuarios

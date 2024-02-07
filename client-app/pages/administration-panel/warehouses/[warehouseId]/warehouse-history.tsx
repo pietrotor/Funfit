@@ -16,7 +16,10 @@ import { authUserHeader } from '@/utils/verificationUser'
 import InformationCard from '@/components/molecules/Card/InformationCard'
 import IconSelector from '@/components/atoms/IconSelector'
 
-const WarehouseHsitory = () => {
+interface WarehouseHsitoryProps {
+  user: any
+}
+const WarehouseHsitory = ({ user }:WarehouseHsitoryProps) => {
   const router = useRouter()
   const { warehouseId } = router.query
   const [variables, setVariables] = useState<PaginationInterfaceState>({
@@ -55,7 +58,7 @@ const WarehouseHsitory = () => {
   const warehouse =
     data?.getWarehouseHistory?.data && data.getWarehouseHistory.data.length > 0 ? data.getWarehouseHistory.data[0] : null
   return (
-    <AdministrationLayout showBackButton>
+    <AdministrationLayout user={user} showBackButton>
       <div className="m-auto w-5/6 space-y-5">
         <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
           Historial de almacén
