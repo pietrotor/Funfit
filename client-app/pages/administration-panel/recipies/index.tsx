@@ -296,7 +296,7 @@ function Recipe({ user } : RecipeProps) {
                 </p>
               </div>,
               <div key={idx}>
-                <div className="space-x-1">
+                <div className="space-x-1 flex">
                   <ButtonComponent
                     onClick={() => handleShowRecipe(warehouse.id)}
                     type="eye"

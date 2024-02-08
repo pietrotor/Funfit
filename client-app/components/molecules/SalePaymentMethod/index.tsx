@@ -18,13 +18,13 @@ function SalePaymentMethod({ setPayment }: SalePaymentMethodProps) {
 
       <div className="grid grid-cols-3 gap-14 p-6 px-10">
         <span
-          className="border-gray flex cursor-pointer flex-col items-center justify-center border-2 p-3 text-secondary/80 hover:border-secondary/40 hover:text-secondary"
+          className=" border-gray flex cursor-pointer flex-col items-center justify-center border-2 p-3 text-secondary/80 hover:border-secondary/40 hover:text-secondary"
           onClick={() =>
             setPayment({ paymentMethod: 'cash', cash: 0, change: 0 })
           }
         >
           <IconSelector name="Bill" width="w-8" />
-          <h3 className="text-lg font-semibold text-gray-500">Efectivo</h3>
+          <h3 className="md:text-lg text-sm  font-semibold text-gray-500">Efectivo</h3>
         </span>
         <span
           className="border-gray flex cursor-pointer flex-col items-center justify-center border-2 p-3 text-secondary/80 hover:border-secondary/40 hover:text-secondary"
@@ -33,8 +33,8 @@ function SalePaymentMethod({ setPayment }: SalePaymentMethodProps) {
           }
         >
           <IconSelector name="Card" width="w-8" />
-          <h3 className="text-lg font-semibold text-gray-500">Tarjeta</h3>
-          <p className='text-xs'> 2% de descuento</p>
+          <h3 className="md:text-lg text-sm font-semibold text-gray-500">Tarjeta</h3>
+          <p className='md:text-xs text-tiny text-center'> 2% de descuento</p>
         </span>
         <span
           className="border-gray flex cursor-pointer flex-col items-center justify-center border-2 p-3 text-secondary/80 hover:border-secondary/40 hover:text-secondary"
@@ -43,7 +43,7 @@ function SalePaymentMethod({ setPayment }: SalePaymentMethodProps) {
           }
         >
           <IconSelector name="Qr" width="w-8" />
-          <h3 className="text-center text-lg font-semibold text-gray-500">
+          <h3 className="text-center md:text-lg text-xs  font-semibold text-gray-500">
             QR o transferencia
           </h3>
         </span>

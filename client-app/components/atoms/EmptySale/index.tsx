@@ -6,12 +6,12 @@ function EmptySale() {
       <div className="flex flex-col items-center justify-center">
         <IconSelector
           name="cart"
-          width="w-20"
-          height="h-20"
+          width="md:w-20 w-10"
+          height="md:h-20 h-10"
           color="text-gray-500"
         />
-        <p className="text-2xl font-bold text-gray-500">No tiene productos añadidos</p>
-        <p className="text-xl text-gray-500">Acá verá los productos añadidos para su venta</p>
+        <p className="md:text-2xl text-md font-bold text-gray-500">No tiene productos añadidos</p>
+        <p className="md:text-xl text-sm text-gray-500">Acá verá los productos añadidos para su venta</p>
       </div>
     </div>
   )

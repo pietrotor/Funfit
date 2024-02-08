@@ -22,6 +22,7 @@ export type ModalProps = {
   textBackButton?: string
   errorMessage?: string
   hideCancelButton?: boolean
+  hideSuccessButton?: boolean
   control?: any
   watch?: any
   reset?: () => void
@@ -68,7 +69,8 @@ export const MyModal = ({
   isForm = true,
   backButtonDisabled = false,
   successButtonDisabled = false,
-  hideCancelButton = true
+  hideCancelButton = true,
+  hideSuccessButton = false
 }: ModalProps) => {
   return (
     <Modal
@@ -93,7 +95,7 @@ export const MyModal = ({
                 <div className="sm:flex sm:items-start">
                   <div
                     className={`mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ${
-                      color === 'success' ? 'bg-green-100' : color === 'warning' ? 'bg-yellow-100' : color === 'error' ? 'bg-red-100' : color === 'information' ? 'bg-green-100' : color === 'secondary' ? 'bg-secondary' : 'bg-blue-100'
+                      color === 'success' ? 'bg-green-100' : color === 'warning' ? 'bg-yellow-100' : color === 'error' ? 'bg-red-100' : color === 'information' ? 'bg-green-100' : color === 'secondary' ? 'bg-secondary/50' : 'bg-blue-100'
                     } sm:mx-0 sm:h-10 sm:w-10`}
                   >
                     <IconSelector
@@ -156,7 +158,7 @@ export const MyModal = ({
                         isLoading={loading}
                         disabled={backButtonDisabled}
                         showTooltip={false}
-                        className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
+                        className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm mt-3 ${
                           color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : 'border-2 border-gray-300 text-lg text-gray-500 hover:border-secondary focus:ring-blue-500'
                         }`}
                       >
@@ -195,8 +197,9 @@ export const MyModal = ({
                       </p>
                     )}
 
-                    <div className="md:space-x-3 space-x-0">
-                      <ButtonComponent
+                    <div className="space-x-3">
+                      {!hideSuccessButton && (
+                        <ButtonComponent
                         typeOf="submit"
                         onClick={handleSubmit}
                         isLoading={loading}
@@ -207,7 +210,8 @@ export const MyModal = ({
                       >
                         {textSuccessButton}
                       </ButtonComponent>
-                      {hideCancelButton && (
+                      )}
+                      {!hideCancelButton && (
                         <ButtonComponent
                           showTooltip={false}
                           onClick={handleCancel}
