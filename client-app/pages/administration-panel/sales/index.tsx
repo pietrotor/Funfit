@@ -1,4 +1,4 @@
-import { Radio, RadioGroup } from '@nextui-org/react'
+import { Radio, RadioGroup, useDisclosure } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { GetServerSideProps } from 'next'
 
@@ -9,7 +9,7 @@ import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
-import { TDataBranch } from '@/interfaces/TData'
+import { TDataBranch, TSaleProduct } from '@/interfaces/TData'
 import UseGetCustomSalesPaginated from '@/services/UseGetCustomSalesPaginated'
 import { useAppSelector } from '@/store/index'
 import InformationCard from '@/components/molecules/Card/InformationCard'
@@ -22,6 +22,7 @@ import {
   useGetUsersLazyQuery
 } from '@/graphql/graphql-types'
 import { useGetSalesSummary } from '@/services/useGetSalesSummary'
+import ProductListModal from '@/components/atoms/modals/ProductListModal'
 
 interface SalesProps {
   user: any
@@ -41,6 +42,8 @@ function Sales({ user }: SalesProps) {
     }
   })
   const [branchSelected, setSelected] = useState<TDataBranch>(currentBranch)
+  const [products, setProducts] = useState<TSaleProduct[]>()
+  const handleProductsListModal = useDisclosure()
 
   const { data: summaryData, setVariables: setSummaryVariables } =
     useGetSalesSummary()
@@ -75,6 +78,11 @@ function Sales({ user }: SalesProps) {
     )
   }
 
+  const handleProducts = (products: TSaleProduct[]) => {
+    setProducts(products)
+    handleProductsListModal.onOpen()
+  }
+
   return (
     <AdministrationLayout user={user}>
       <div className="m-auto mt-7 w-5/6 ">
@@ -106,7 +114,7 @@ function Sales({ user }: SalesProps) {
           </RadioGroup>
         </InformationCard>
 
-        <div className="mt-10 gap-2 grid-cols-2 md:space-y-0 grid md:grid-cols-5 md:gap-4">
+        <div className="mt-10 grid grid-cols-2 gap-2 md:grid-cols-5 md:gap-4 md:space-y-0">
           <InputComponent
             isRequired={false}
             name="initialDate"
@@ -145,7 +153,7 @@ function Sales({ user }: SalesProps) {
               }))
             }}
           />
-          <div className="md:col-start-5 col-start-1 md:col-end-6 col-end-3 rounded-md bg-white ">
+          <div className="col-start-1 col-end-3 rounded-md bg-white md:col-start-5 md:col-end-6 ">
             <ComboInput
               label="Vendedor"
               name="seller"
@@ -210,7 +218,7 @@ function Sales({ user }: SalesProps) {
                 <div className="text-center">
                   {getTotalByPaymentMethod(PaymentMethodEnum.QR_TRANSFER)
                     ?.total || 0}{' '}
-                  Bs Bs
+                  Bs
                 </div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
@@ -229,7 +237,7 @@ function Sales({ user }: SalesProps) {
                 <div className="text-xl">Ventas por tarjeta</div>
                 <div className="text-center">
                   {getTotalByPaymentMethod(PaymentMethodEnum.CARD)?.total || 0}{' '}
-                  Bs Bs
+                  Bs
                 </div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
@@ -269,7 +277,7 @@ function Sales({ user }: SalesProps) {
                 {' '}
                 {idx + 1}
               </h3>,
-              <div key={idx} className="text-sm">
+              <div key={idx} className="w-[10rem] text-sm md:w-full">
                 <DateConverter dateString={sale.date} showTime />
               </div>,
               <div key={idx} className=" flex justify-center  ">
@@ -280,14 +288,29 @@ function Sales({ user }: SalesProps) {
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm ">
-                  {sale.products.map((product, idx) => (
-                    <p
-                      key={idx}
-                      className="m-auto w-fit mt-1 rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                  {sale.products.length <= 3 ? (
+                    sale.products.map((product, idx) => (
+                      <p
+                        key={idx}
+                        className="m-auto mt-1 w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                      >
+                        {product.product?.name}
+                      </p>
+                    ))
+                  ) : (
+                    <ButtonComponent
+                      onClick={() => handleProducts(sale.products as TSaleProduct[])}
+                      showTooltip
+                      tooltipText="Ver lista de productos"
+                      type="history"
                     >
-                      {product.product?.name}
-                    </p>
-                  ))}
+                      <IconSelector
+                        name="eye"
+                        color="text-blue-600"
+                        width="w-8"
+                      />
+                    </ButtonComponent>
+                  )}
                 </div>
               </div>,
               <div key={idx} className=" flex justify-center  ">
@@ -304,7 +327,6 @@ function Sales({ user }: SalesProps) {
                     type="edit"
                     showTooltip
                     tooltipText="Ver detalles de venta"
-                    className="px-3"
                   >
                     <IconSelector
                       name="Recipe"
@@ -318,6 +340,11 @@ function Sales({ user }: SalesProps) {
           }))}
         />
       </div>
+      <ProductListModal
+        isOpen={handleProductsListModal.isOpen}
+        onClose={handleProductsListModal.onClose}
+        values={products || []}
+      />
     </AdministrationLayout>
   )
 }

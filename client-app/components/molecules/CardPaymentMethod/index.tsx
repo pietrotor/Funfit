@@ -32,8 +32,8 @@ function CardPaymentMethod({
         <hr className="mx-4  flex-grow border-1 border-gray-200" />
         <p className="text-lg text-primary">Bs. 0</p>
       </div>
-      <div className="flex h-full w-full pt-2">
-        <div className="border-r-gray flex w-1/2 flex-col border-r-1 px-2">
+      <div className="flex h-full w-full pt-2 md:flex-row flex-col">
+        <div className="border-r-gray flex md:w-1/2 flex-col md:border-r-1 px-2">
           <p className="font-thin text-gray-500">Monto</p>
           <InputComponent
             control={control}
@@ -50,7 +50,7 @@ function CardPaymentMethod({
             isDisabled
           />
         </div>
-        <div className="w-1/2 px-2">
+        <div className="md:w-1/2 px-2 md:border-0 border-t-2 md:m-0 mt-4 pt-2 md:pt-0">
           <ClientObservationPayment control={control}/>
         </div>
       </div>

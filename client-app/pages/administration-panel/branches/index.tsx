@@ -114,9 +114,9 @@ function Branches({ user }: BranchesProps) {
             { name: '#' },
             { name: 'Nombre' },
             { name: 'Ciudad' },
-            { name: 'Direccion' },
-            { name: 'Telefono' },
-            { name: 'Codigo' },
+            { name: 'Dirección' },
+            { name: 'Teléfono' },
+            { name: 'Código' },
             { name: 'Nit' },
             { name: 'Acciones' }
           ]}

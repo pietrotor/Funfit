@@ -1,14 +1,16 @@
 import { useEffect, useState } from 'react'
-import { Spinner } from '@nextui-org/react'
+import { Spinner, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
+import { GetServerSideProps } from 'next'
 import PointOfSaleCard from '@/components/molecules/Card/PointOfSaleCard'
 import AdministrationLayout from '@/components/templates/layouts'
 import SalesReceipt from '@/components/organisms/SalesReceipt'
-import { useGetBranchProductPOSQuery } from '@/hooks/UseBranchQuery'
 import { TProductBranchData } from '@/interfaces/TData'
 import { useAppSelector } from '@/store/index'
-import { GetServerSideProps } from 'next'
+import ResponsiveSaleModal from '@/components/atoms/modals/ResponsiveSaleModal'
+import ButtonComponent from '@/components/atoms/Button'
 import { authUserHeader } from '@/utils/verificationUser'
+import { useGetBranchProductsPaginatedLazyQuery } from '@/graphql/graphql-types'
 
 export type TPointOfSaleData = {
   products: TProductBranchData[]
@@ -25,10 +27,18 @@ function PointOfSale({ user }: PointOfSaleProps) {
   const { data: dataPassed } = router.query
   const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
   const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
-  const { loading, data } = useGetBranchProductPOSQuery(branchId)
+  const [getproducts, { data, loading }] = useGetBranchProductsPaginatedLazyQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      branchId,
+      paginationInput: {}
+    }
+  })
   const [selectedProducts, setSelectedProducts] = useState<TPointOfSaleData>(
     parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
   )
+
+  const handleResponsiveSaleModal = useDisclosure()
 
   const handleSelected = (id: string) => {
     const existingProduct = selectedProducts?.products?.find(
@@ -78,6 +88,7 @@ function PointOfSale({ user }: PointOfSaleProps) {
       }
     }
   }
+
   useEffect(() => {
     const { data: dataPassed } = router.query
     const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
@@ -87,27 +98,23 @@ function PointOfSale({ user }: PointOfSaleProps) {
   }, [router.query])
 
   useEffect(() => {
-    const { data: dataPassed } = router.query
-    const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
-    setSelectedProducts(
-      parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
-    )
-  }, [router.query])
+    if (branchId) getproducts()
+  }, [branchId])
 
   return (
     <AdministrationLayout user={user} profileButton={false}>
-      <section className="flex h-full w-full ">
-        <div className="w-2/3 border-1 border-secondary/30  bg-secondary/10 p-4">
+      <section className="h-full w-full flex-col md:flex md:flex-row  ">
+        <div className="w-full border-1 border-secondary/30 bg-secondary/10  p-4 md:w-2/3">
           {/* <div className="flex w-full">
             <Search setFilter={setFilter} />
           </div> */}
           {loading && (
-            <div className="flex h-[95vh] items-center justify-center overflow-y-auto scrollbar-hide ">
+            <div className="flex h-[90vh] items-center justify-center overflow-y-auto scrollbar-hide ">
               <Spinner label="Cargando..." color="primary" />
             </div>
           )}
-          <div className="grid max-h-[95vh] grid-cols-3 gap-4 overflow-y-auto p-4 scrollbar-hide ">
-            {data?.getBranchProductsPaginated?.data?.map(item => (
+          <div className="grid max-h-[90vh] grid-cols-2 gap-3 overflow-y-auto scrollbar-hide md:grid-cols-3 md:gap-4 md:p-4 ">
+            {!loading && data?.getBranchProductsPaginated?.data?.map(item => (
               <PointOfSaleCard
                 key={item.id}
                 product={item as TProductBranchData}
@@ -121,14 +128,26 @@ function PointOfSale({ user }: PointOfSaleProps) {
               />
             ))}
           </div>
+          <ButtonComponent
+            className="mt-4 block w-full bg-secondary font-extrabold text-white md:hidden"
+            onClick={handleResponsiveSaleModal.onOpen}
+          >
+            Finalizar venta
+          </ButtonComponent>
         </div>
-        <div className="h-full w-1/3">
+        <div className="hidden h-full md:block md:w-1/3">
           <SalesReceipt
             selectedProducts={selectedProducts}
             setSelectedProducts={setSelectedProducts}
           />
         </div>
       </section>
+      <ResponsiveSaleModal
+        isOpen={handleResponsiveSaleModal.isOpen}
+        onClose={handleResponsiveSaleModal.onClose}
+        selectedProducts={selectedProducts}
+        setSelectedProducts={setSelectedProducts}
+      />
     </AdministrationLayout>
   )
 }
