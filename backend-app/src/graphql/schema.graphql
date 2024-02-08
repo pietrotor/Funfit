@@ -348,6 +348,35 @@ type SalesSummary {
   paymentMethods: [SalesByPaymentMethodSummary!]!
   total: Float!
 }
+type Order {
+  id: ObjectId!
+  branchId: ObjectId!
+  products: {
+    branchProductId: ObjectId!
+    productId: ObjectId!
+    price: Float!
+    qty: Float!
+    total: Float!
+  }[]
+  deliveryMethod: DeliveryMethodEnum
+  paymentMethod: PaymentMethodEnum
+  subTotal: Float!
+  total: Float!
+  discount: Float!
+  date: Date!
+  code: String!
+  customerId: ObjectId!
+  addressId: ObjectId
+  pickUpInformation?: String
+  orderDetails: String
+  orderAcepted: Boolean
+  orderAceptedAt: Date
+  orderAceptedBy: ObjectId
+  reason: String
+  canceled: Boolean
+  canceledAt: Date
+  canceledBy: ObjectId
+}
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
   errorInput: [ErrorInput!]
@@ -758,4 +787,11 @@ input CancelSaleInput {
   reason: String!
   returnStock: Boolean!
   returnCash: Boolean
+}
+input OrderPagination {
+  rows: Int
+  page: Int
+  filter: String
+  orderesAcepted: Boolean
+  branchId: ObjectId
 }

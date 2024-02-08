@@ -1,14 +1,14 @@
 /* eslint-disable no-unused-vars */
 import IGeneric from '@/interfaces/generic.interface'
 import { Schema, Model, model, Document } from 'mongoose'
+import { PaymentMethodEnum } from './sales.model'
 
-export enum PaymentMethodEnum {
-  QR_TRANSFER = 'QR_TRANSFER',
-  CARD = 'CARD',
-  CASH = 'CASH'
+enum DeliveryMethodEnum {
+  DELIVERY = 'DELIVERY',
+  PICKUP = 'PICKUP'
 }
 
-export interface ISale extends Document, IGeneric {
+interface IOrder extends Document, IGeneric {
   id: objectId
   branchId: objectId
   products: {
@@ -18,23 +18,30 @@ export interface ISale extends Document, IGeneric {
     qty: number
     total: number
   }[]
+  deliveryMethod: DeliveryMethodEnum
   paymentMethod: PaymentMethodEnum
   subTotal: number
   total: number
   discount: number
   date: Date
   code: string
-  client: string
-  amountRecibed: number
-  change: number
-  observations: string | null
-  canceled: boolean
+  customerId: objectId
+  addressId?: objectId | null
+  pickUpInformation?: string | null
+  orderDetails: string | null
+  orderAcepted: boolean
+  orderAceptedAt: Date | null
+  orderAceptedBy: objectId | null
+  // Cancel fields
   reason: string | null
+  canceled: boolean
   canceledAt: Date | null
   canceledBy: objectId | null
 }
-export interface IModelSale extends Model<ISale> {}
-const saleSchema = new Schema<ISale>(
+
+interface IModelOrder extends Model<IOrder> {}
+
+const orderSchema = new Schema<IOrder>(
   {
     branchId: {
       type: Schema.Types.ObjectId,
@@ -65,6 +72,10 @@ const saleSchema = new Schema<ISale>(
         }
       }
     ],
+    deliveryMethod: {
+      type: String,
+      enum: DeliveryMethodEnum
+    },
     paymentMethod: {
       type: String,
       enum: PaymentMethodEnum
@@ -89,20 +100,24 @@ const saleSchema = new Schema<ISale>(
       type: String,
       default: ''
     },
-    client: {
-      type: String,
-      default: ''
+    customerId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Customer'
     },
-    amountRecibed: {
-      type: Number,
-      default: 0
-    },
-    change: {
-      type: Number,
-      default: 0
-    },
-    observations: {
+    orderDetails: {
       type: String
+    },
+    orderAcepted: {
+      type: Boolean,
+      default: false
+    },
+    orderAceptedAt: {
+      type: Date,
+      default: null
+    },
+    orderAceptedBy: {
+      type: Schema.Types.ObjectId,
+      ref: 'User'
     },
     canceled: {
       type: Boolean,
@@ -135,6 +150,6 @@ const saleSchema = new Schema<ISale>(
   { timestamps: true }
 )
 
-const Sale = model<ISale, IModelSale>('Sale', saleSchema, 'sale')
+const Order = model<IOrder, IModelOrder>('Order', orderSchema, 'order')
 
-export default Sale
+export { Order, IOrder, IModelOrder }
