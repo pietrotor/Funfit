@@ -12,6 +12,9 @@ import { TurnService } from './turn.service'
 import { TurnMovementService } from './turnMovement.service'
 import { SalesService } from './sale.service'
 import { CategoryService } from './category.service'
+import { CustomerService } from './customer.service'
+import { AddressService } from './address.service'
+import { OrderService } from './order.service'
 
 export const configurationCore = new ConfigurationService()
 export const userCore = new UserService()
@@ -27,3 +30,6 @@ export const cashCore = new CashService()
 export const turnCore = new TurnService()
 export const turnMovementCore = new TurnMovementService()
 export const saleCore = new SalesService()
+export const addressCore = new AddressService()
+export const customerCore = new CustomerService()
+export const orderCore = new OrderService()

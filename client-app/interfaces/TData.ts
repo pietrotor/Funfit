@@ -65,3 +65,10 @@ export type TCancelSale = {
   returnCash: boolean
   returnStock: boolean
 }
+export type TSaleProduct = {
+    productId: string,
+    price: number,
+    qty: number,
+    total: number,
+    product: TValueProductData
+}

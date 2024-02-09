@@ -15,6 +15,8 @@ import DateConverter from '@/components/atoms/DateConverter'
 import { useGetSalesSummary } from '@/services/index'
 import { PaymentMethodEnum } from '@/graphql/graphql-types'
 import { CandelSaleModal } from '@/components/atoms/modals/CancelSaleModal'
+import { TSaleProduct } from '@/interfaces/TData'
+import ProductListModal from '@/components/atoms/modals/ProductListModal'
 
 interface DailySaleProps {
   user: any
@@ -25,6 +27,8 @@ function DailySale({ user }: DailySaleProps) {
   const handleCancelModal = useDisclosure()
   const router = useRouter()
   const { currentBranch } = useAppSelector(state => state.branchReducer)
+  const [products, setProducts] = useState<TSaleProduct[]>([])
+  const handleProductsListModal = useDisclosure()
 
   const { data, setVariables, variables, setFilter, loading, refetch } =
     UseGetCustomSalesPaginated(currentBranch.id)
@@ -68,8 +72,13 @@ function DailySale({ user }: DailySaleProps) {
     handleCancelModal.onOpen()
   }
 
+  const handleProducts = (products: TSaleProduct[]) => {
+    setProducts(products)
+    handleProductsListModal.onOpen()
+  }
+
   return (
-    <AdministrationLayout user= {user}>
+    <AdministrationLayout user={user}>
       <div className="m-auto mt-7 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Ventas del día
@@ -180,10 +189,10 @@ function DailySale({ user }: DailySaleProps) {
                 {' '}
                 {idx + 1}
               </h3>,
-              <p key={idx} className="text-sm">
+              <p key={idx} className="text-sm ">
                 {sale.code}
               </p>,
-              <div key={idx} className="text-sm">
+              <div key={idx} className="w-[10rem] text-sm md:w-full">
                 <DateConverter showTime dateString={sale.date} />
               </div>,
               <div key={idx} className={`m-auto mt-1 w-fit rounded-full  px-2 py-1 font-semibold ${sale.canceled ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
@@ -199,14 +208,31 @@ function DailySale({ user }: DailySaleProps) {
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm">
-                  {sale.products.map((product, idx) => (
-                    <p
-                      key={idx}
-                      className="m-auto w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                  {sale.products.length <= 3 ? (
+                    sale.products.map((product, idx) => (
+                      <p
+                        key={idx}
+                        className="m-auto mt-1 w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                      >
+                        {product.product?.name}
+                      </p>
+                    ))
+                  ) : (
+                    <ButtonComponent
+                      onClick={() =>
+                        handleProducts(sale.products as TSaleProduct[])
+                      }
+                      showTooltip
+                      tooltipText="Ver lista de productos"
+                      type="history"
                     >
-                      {product.product?.name}
-                    </p>
-                  ))}
+                      <IconSelector
+                        name="eye"
+                        color="text-blue-600"
+                        width="w-8"
+                      />
+                    </ButtonComponent>
+                  )}
                 </div>
               </div>,
               <div key={idx} className=" flex justify-center  ">
@@ -258,6 +284,11 @@ function DailySale({ user }: DailySaleProps) {
       onClose={handleCancelModal.onClose}
       onConfirm={refetch}
       saleId={edit}
+    />
+      <ProductListModal
+        isOpen={handleProductsListModal.isOpen}
+        onClose={handleProductsListModal.onClose}
+        values={products || []}
       />
     </AdministrationLayout>
   )
