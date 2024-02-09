@@ -12,6 +12,7 @@ import {
   branchCore,
   branchProductCore,
   cashCore,
+  orderCore,
   productCore,
   turnMovementCore
 } from '.'
@@ -46,13 +47,13 @@ export class SalesService extends SalesRepository<objectId> {
       filterQuery.createdAt =
         initialDate.toDateString() === endDate.toDateString()
           ? {
-              $gte: new Date(initialDate),
-              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
-            }
+            $gte: new Date(initialDate),
+            $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+          }
           : {
-              $gte: new Date(initialDate),
-              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
-            }
+            $gte: new Date(initialDate),
+            $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+          }
     }
     if (saleBy) {
       filterQuery.createdBy = saleBy
@@ -85,13 +86,13 @@ export class SalesService extends SalesRepository<objectId> {
       filtrosConsulta.createdAt =
         initialDate.toDateString() === endDate.toDateString()
           ? {
-              $gte: new Date(initialDate),
-              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
-            }
+            $gte: new Date(initialDate),
+            $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+          }
           : {
-              $gte: new Date(initialDate),
-              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
-            }
+            $gte: new Date(initialDate),
+            $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+          }
     }
     if (saleBy) {
       filtrosConsulta.createdBy = saleBy
@@ -131,25 +132,25 @@ export class SalesService extends SalesRepository<objectId> {
       initialDate && endDate
         ? initialDate.toDateString() === endDate.toDateString()
           ? {
-              createdAt: {
-                $gte: new Date(initialDate),
-                $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
-              }
+            createdAt: {
+              $gte: new Date(initialDate),
+              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
             }
+          }
           : {
-              createdAt: {
-                $gte: new Date(initialDate),
-                $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
-              }
+            createdAt: {
+              $gte: new Date(initialDate),
+              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
             }
+          }
         : {}
     const branchesFilter =
       branchIds.length > 0
         ? {
-            branchId: {
-              $in: branchIds
-            }
+          branchId: {
+            $in: branchIds
           }
+        }
         : {}
     const salesByFilter = saleBy ? { createdBy: saleBy } : {}
     if (filter) {
@@ -181,7 +182,8 @@ export class SalesService extends SalesRepository<objectId> {
       total,
       client,
       subTotal,
-      observations
+      observations,
+      orderId
     } = createSaleInput
     if (total < 0) throw new BadRequestError('El total no puede ser negativo')
     if (change < 0) throw new BadRequestError('El cambio no puede ser negativo')
@@ -203,9 +205,13 @@ export class SalesService extends SalesRepository<objectId> {
 
     const branchInstance = await branchCore.getBranchById(branchId)
 
-    const [cashInstance, isCashOpen] = await Promise.all([
+    const [cashInstance, isCashOpen, orderInstance] = await Promise.all([
       cashCore.getCashById(branchInstance.cashId),
-      cashCore.isCashOpen(branchInstance.cashId)
+      cashCore.isCashOpen(branchInstance.cashId),
+      (async () => {
+        if (orderId) return await orderCore.getOrderById(orderId)
+        return null
+      })()
     ])
 
     if (!isCashOpen) {
@@ -286,7 +292,11 @@ export class SalesService extends SalesRepository<objectId> {
       canceled: false,
       createdBy
     })
-
+    if (orderInstance) {
+      orderInstance.isSold = true
+      orderInstance.saleId = saleInstance._id
+      await saleInstance.save()
+    }
     return await saleInstance.save()
   }
 

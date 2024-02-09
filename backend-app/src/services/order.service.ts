@@ -109,11 +109,11 @@ export class OrderService extends OrderRepository<objectId> {
     const [, customerInstance] = await Promise.all([
       branchCore.getBranchById(branchId),
       customerCore.getCustomerById(customerId),
-      async () => {
+      (async () => {
         if (addressId) {
           await addressCore.getAddressById(addressId)
         }
-      }
+      })()
     ])
 
     await Promise.all(

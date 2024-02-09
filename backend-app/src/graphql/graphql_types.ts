@@ -297,6 +297,7 @@ export type CreateSaleInput = {
   date: Scalars['Date']['input'];
   discount: Scalars['Float']['input'];
   observations?: InputMaybe<Scalars['String']['input']>;
+  orderId?: InputMaybe<Scalars['ObjectId']['input']>;
   paymentMethod: PaymentMethodEnum;
   products: Array<SaleItemInput>;
   subTotal: Scalars['Float']['input'];
@@ -396,7 +397,6 @@ export type MeasurementUnits = {
 
 export type Mutation = {
   __typename?: 'Mutation';
-  acceptOrder?: Maybe<OrderResponse>;
   cancelSale?: Maybe<SaleResponse>;
   closeCash?: Maybe<CashResponse>;
   creatStockMovement?: Maybe<StockResponse>;
@@ -416,6 +416,7 @@ export type Mutation = {
   deleteProduct?: Maybe<ProductResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
   openCash?: Maybe<CashResponse>;
+  orderInstanceorderInstance?: Maybe<OrderResponse>;
   publicCreateAddress?: Maybe<AddressResponse>;
   publicCreateCustomer?: Maybe<CustomerResponse>;
   publicCreateOrder?: Maybe<OrderResponse>;
@@ -426,11 +427,6 @@ export type Mutation = {
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
-};
-
-
-export type MutationAcceptOrderArgs = {
-  orderId: Scalars['ObjectId']['input'];
 };
 
 
@@ -526,6 +522,11 @@ export type MutationDeleteWarehouseArgs = {
 
 export type MutationOpenCashArgs = {
   createTurnInput: CreateTurnInput;
+};
+
+
+export type MutationOrderInstanceorderInstanceArgs = {
+  orderId: Scalars['ObjectId']['input'];
 };
 
 
@@ -944,6 +945,7 @@ export type Sale = {
   discount: Scalars['Float']['output'];
   id: Scalars['ObjectId']['output'];
   observations?: Maybe<Scalars['String']['output']>;
+  orderId?: Maybe<Scalars['ObjectId']['output']>;
   paymentMethod: PaymentMethodEnum;
   products: Array<SaleItem>;
   reason?: Maybe<Scalars['String']['output']>;
@@ -1779,7 +1781,6 @@ export type MeasurementUnitsResolvers<ContextType = any, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
-  acceptOrder?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<MutationAcceptOrderArgs, 'orderId'>>;
   cancelSale?: Resolver<Maybe<ResolversTypes['SaleResponse']>, ParentType, ContextType, RequireFields<MutationCancelSaleArgs, 'cancelSaleInput'>>;
   closeCash?: Resolver<Maybe<ResolversTypes['CashResponse']>, ParentType, ContextType, RequireFields<MutationCloseCashArgs, 'closeTurnInput'>>;
   creatStockMovement?: Resolver<Maybe<ResolversTypes['StockResponse']>, ParentType, ContextType, RequireFields<MutationCreatStockMovementArgs, 'createStockMovementInput'>>;
@@ -1799,6 +1800,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteProduct?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationDeleteProductArgs, 'id'>>;
   deleteWarehouse?: Resolver<Maybe<ResolversTypes['WarehouseResponse']>, ParentType, ContextType, RequireFields<MutationDeleteWarehouseArgs, 'id'>>;
   openCash?: Resolver<Maybe<ResolversTypes['CashResponse']>, ParentType, ContextType, RequireFields<MutationOpenCashArgs, 'createTurnInput'>>;
+  orderInstanceorderInstance?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<MutationOrderInstanceorderInstanceArgs, 'orderId'>>;
   publicCreateAddress?: Resolver<Maybe<ResolversTypes['AddressResponse']>, ParentType, ContextType, RequireFields<MutationPublicCreateAddressArgs, 'createAddressInput'>>;
   publicCreateCustomer?: Resolver<Maybe<ResolversTypes['CustomerResponse']>, ParentType, ContextType, RequireFields<MutationPublicCreateCustomerArgs, 'createCustomerInput'>>;
   publicCreateOrder?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<MutationPublicCreateOrderArgs, 'createOrderInput'>>;
@@ -1995,6 +1997,7 @@ export type SaleResolvers<ContextType = any, ParentType extends ResolversParentT
   discount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   observations?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  orderId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   paymentMethod?: Resolver<ResolversTypes['PaymentMethodEnum'], ParentType, ContextType>;
   products?: Resolver<Array<ResolversTypes['SaleItem']>, ParentType, ContextType>;
   reason?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;

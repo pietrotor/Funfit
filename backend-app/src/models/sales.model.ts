@@ -25,6 +25,7 @@ export interface ISale extends Document, IGeneric {
   date: Date
   code: string
   client: string
+  orderId: objectId | null
   amountRecibed: number
   change: number
   observations: string | null
@@ -33,7 +34,7 @@ export interface ISale extends Document, IGeneric {
   canceledAt: Date | null
   canceledBy: objectId | null
 }
-export interface IModelSale extends Model<ISale> {}
+export interface IModelSale extends Model<ISale> { }
 const saleSchema = new Schema<ISale>(
   {
     branchId: {
@@ -107,6 +108,11 @@ const saleSchema = new Schema<ISale>(
     canceled: {
       type: Boolean,
       default: false
+    },
+    orderId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Order',
+      default: null
     },
     reason: {
       type: String
