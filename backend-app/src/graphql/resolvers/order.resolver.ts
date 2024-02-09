@@ -44,12 +44,31 @@ const getOrdersPaginated = async (
   }
 }
 // ========================================== Mutations ====================================================
+const acceptOrder = async (
+  _: any,
+  args: { orderId: objectId },
+  context: ContextGraphQl
+): Promise<OrderResponse> => {
+  try {
+    const { orderId } = args
+    const orderInstance = await orderCore.acceptOrder(orderId, context.req.currentUser?.id)
+    return {
+      status: StatusEnum.OK,
+      message: 'Pedido aceptado',
+      data: orderInstance
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
 
 export const orderQuery = {
   getOrdersPaginated,
   getOrderById
 }
 export const orderMutation = {
+  acceptOrder
 }
 
 export const orderType = {

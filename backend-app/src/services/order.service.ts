@@ -166,4 +166,13 @@ export class OrderService extends OrderRepository<objectId> {
     ])
     return orderInstanceSaved
   }
+
+  async acceptOrder(orderId: objectId, acceptedBy?: objectId) {
+    const orderInstance = await this.getOrderById(orderId)
+    if (orderInstance.orderAcepted) throw new BadRequestError('EL pedido ya fue aceptado previamente')
+    orderInstance.orderAcepted = true
+    orderInstance.orderAceptedAt = new Date()
+    orderInstance.orderAceptedBy = acceptedBy || null
+    return await orderInstance.save()
+  }
 }

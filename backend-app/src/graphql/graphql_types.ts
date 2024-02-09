@@ -396,6 +396,7 @@ export type MeasurementUnits = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptOrder?: Maybe<OrderResponse>;
   cancelSale?: Maybe<SaleResponse>;
   closeCash?: Maybe<CashResponse>;
   creatStockMovement?: Maybe<StockResponse>;
@@ -425,6 +426,11 @@ export type Mutation = {
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
+};
+
+
+export type MutationAcceptOrderArgs = {
+  orderId: Scalars['ObjectId']['input'];
 };
 
 
@@ -596,6 +602,7 @@ export type Order = {
   deliveryMethod: DeliveryMethodEnum;
   discount: Scalars['Float']['output'];
   id: Scalars['ObjectId']['output'];
+  isSold: Scalars['Boolean']['output'];
   orderAcepted?: Maybe<Scalars['Boolean']['output']>;
   orderAceptedAt?: Maybe<Scalars['Date']['output']>;
   orderAceptedBy?: Maybe<Scalars['ObjectId']['output']>;
@@ -609,6 +616,7 @@ export type Order = {
   rejectedAt?: Maybe<Scalars['Date']['output']>;
   rejectedBy?: Maybe<Scalars['ObjectId']['output']>;
   rejectedByInfo?: Maybe<User>;
+  saleId?: Maybe<Scalars['ObjectId']['output']>;
   subTotal: Scalars['Float']['output'];
   total: Scalars['Float']['output'];
 };
@@ -1771,6 +1779,7 @@ export type MeasurementUnitsResolvers<ContextType = any, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  acceptOrder?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<MutationAcceptOrderArgs, 'orderId'>>;
   cancelSale?: Resolver<Maybe<ResolversTypes['SaleResponse']>, ParentType, ContextType, RequireFields<MutationCancelSaleArgs, 'cancelSaleInput'>>;
   closeCash?: Resolver<Maybe<ResolversTypes['CashResponse']>, ParentType, ContextType, RequireFields<MutationCloseCashArgs, 'closeTurnInput'>>;
   creatStockMovement?: Resolver<Maybe<ResolversTypes['StockResponse']>, ParentType, ContextType, RequireFields<MutationCreatStockMovementArgs, 'createStockMovementInput'>>;
@@ -1828,6 +1837,7 @@ export type OrderResolvers<ContextType = any, ParentType extends ResolversParent
   deliveryMethod?: Resolver<ResolversTypes['DeliveryMethodEnum'], ParentType, ContextType>;
   discount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  isSold?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   orderAcepted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   orderAceptedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   orderAceptedBy?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
@@ -1841,6 +1851,7 @@ export type OrderResolvers<ContextType = any, ParentType extends ResolversParent
   rejectedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   rejectedBy?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   rejectedByInfo?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  saleId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   subTotal?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   total?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

@@ -152,6 +152,8 @@ type Mutation {
   # SALES =================================
   createSale(createSaleInput: CreateSaleInput!): SaleResponse
   cancelSale(cancelSaleInput: CancelSaleInput!): SaleResponse
+  # ORDERS =================================
+  acceptOrder(orderId: ObjectId!): OrderResponse
   # ========================= ECOMMERCE ROUTES ============================
   publicCreateCustomer(
     createCustomerInput: CreateCustomerInput!
@@ -384,6 +386,8 @@ type Order {
   rejected: Boolean
   rejectedAt: Date
   rejectedBy: ObjectId
+  isSold: Boolean!
+  saleId: ObjectId
   # Fields Resolvers
   customerInfo: Customer
   addressInfo: Address
