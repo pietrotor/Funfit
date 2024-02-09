@@ -350,7 +350,7 @@ export type Customer = {
   email?: Maybe<Scalars['String']['output']>;
   id: Scalars['ObjectId']['output'];
   lastName: Scalars['String']['output'];
-  lastOrderDate: Scalars['Date']['output'];
+  lastOrderDate?: Maybe<Scalars['Date']['output']>;
   name: Scalars['String']['output'];
   ordersIds: Array<Scalars['ObjectId']['output']>;
   phone: Scalars['String']['output'];
@@ -1719,7 +1719,7 @@ export type CustomerResolvers<ContextType = any, ParentType extends ResolversPar
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  lastOrderDate?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
+  lastOrderDate?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   ordersIds?: Resolver<Array<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   phone?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

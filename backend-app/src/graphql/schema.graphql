@@ -393,7 +393,7 @@ type Customer {
   lastName: String!
   email: String
   phone: String!
-  lastOrderDate: Date!
+  lastOrderDate: Date
   addressesIds: [ObjectId!]!
   ordersIds: [ObjectId!]!
   # Fields Resolvers
