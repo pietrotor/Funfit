@@ -22,6 +22,7 @@ import {
   useGetUsersLazyQuery
 } from '@/graphql/graphql-types'
 import { useGetSalesSummary } from '@/services/useGetSalesSummary'
+import { CandelSaleModal } from '@/components/atoms/modals/CancelSaleModal'
 import ProductListModal from '@/components/atoms/modals/ProductListModal'
 
 interface SalesProps {
@@ -29,10 +30,13 @@ interface SalesProps {
 }
 
 function Sales({ user }: SalesProps) {
+  const [edit, setEdit] = useState<string>('')
   const router = useRouter()
   const { branches, currentBranch } = useAppSelector(
     state => state.branchReducer
   )
+
+  const handleCancelModal = useDisclosure()
   const { control, watch } = useForm({
     defaultValues: {
       initialDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
@@ -64,7 +68,7 @@ function Sales({ user }: SalesProps) {
       paginationInput: {}
     }
   })
-  const { data, setVariables, variables } = UseGetCustomSalesPaginated(
+  const { data, setVariables, variables, refetch } = UseGetCustomSalesPaginated(
     branchSelected.id
   )
 
@@ -76,6 +80,10 @@ function Sales({ user }: SalesProps) {
     return summaryData?.paymentMethods.find(
       paymentMethod => paymentMethod.method === method
     )
+  }
+  const handleCancelSale = (saleId: string) => {
+    setEdit(saleId)
+    handleCancelModal.onOpen()
   }
 
   const handleProducts = (products: TSaleProduct[]) => {
@@ -265,6 +273,7 @@ function Sales({ user }: SalesProps) {
           titles={[
             { name: '#' },
             { name: 'Fecha de venta' },
+            { name: 'Estado' },
             { name: 'Monto total' },
             { name: 'Descuento' },
             { name: 'Productos' },
@@ -279,6 +288,9 @@ function Sales({ user }: SalesProps) {
               </h3>,
               <div key={idx} className="w-[10rem] text-sm md:w-full">
                 <DateConverter dateString={sale.date} showTime />
+              </div>,
+              <div key={idx} className={`m-auto mt-1 w-fit rounded-full  px-2 py-1 font-semibold ${sale.canceled ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+                {sale.canceled ? 'Cancelada' : 'Activa'}
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm font-bold">{sale.total} Bs</div>
@@ -334,12 +346,34 @@ function Sales({ user }: SalesProps) {
                       width="w-8"
                     />
                   </ButtonComponent>
+                  <ButtonComponent
+                    onClick={() =>
+                      handleCancelSale(sale.id)
+                    }
+                    type="delete"
+                    showTooltip
+                    tooltipText="Cancelar venta"
+                    className="px-3"
+                    disabled={!sale?.canceled || false}
+                  >
+                    <IconSelector
+                      name="CircleMinus"
+                      color="text-red-500"
+                      width="w-5"
+                    />
+                  </ButtonComponent>
                 </div>
               </div>
             ]
           }))}
         />
       </div>
+      <CandelSaleModal
+      isOpen={handleCancelModal.isOpen}
+      onClose={handleCancelModal.onClose}
+      onConfirm={refetch}
+      saleId={edit}
+    />
       <ProductListModal
         isOpen={handleProductsListModal.isOpen}
         onClose={handleProductsListModal.onClose}

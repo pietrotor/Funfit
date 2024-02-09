@@ -18,13 +18,15 @@ export const ShowRecipeListModal = ({
       title="Lista de ingredientes"
       message="A continuación se muestra la lista de ingredientes que se necesitan para preparar esta receta"
       isForm={false}
-      onSubmit={onClose}
+      handleSubmit={onClose}
       isOpen={isOpen}
       color="information"
       handleCancel={onClose}
       onClose={onClose}
       hideCloseButton={false}
       size={'xl'}
+      hideCancelButton
+      textSuccessButton='Aceptar'
     >
       <section className=" relative space-y-3  bg-cover bg-center px-8 ">
         <div className="my-5 ">

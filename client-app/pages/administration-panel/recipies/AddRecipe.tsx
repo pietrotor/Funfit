@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { Button } from '@nextui-org/react'
+import { GetServerSideProps } from 'next'
 import ComboInput from '@/components/atoms/ComboInput'
 import AdministrationLayout from '@/components/templates/layouts'
 import InputComponent from '@/components/atoms/Input'
@@ -8,7 +9,6 @@ import Selector from '@/components/atoms/InputSelector'
 import ButtonComponent from '@/components/atoms/Button'
 import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
-import { GetServerSideProps } from 'next'
 // import { TValueProductData } from '@/components/atoms/modals/EditProductModal'
 
 export interface RecipeFormProps {

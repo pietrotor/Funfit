@@ -57,7 +57,7 @@ export const CloseCashRegister = ({
   }
   const handleDiference = () => {
     return (
-      (data?.getCashById?.data?.amount! || 0) -
+      (data?.getCashById?.data?.amount || 0) -
       parseInt(watch('physicialAmount') || 0)
     ).toString()
   }

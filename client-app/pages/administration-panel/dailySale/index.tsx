@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next'
 
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { useDisclosure } from '@nextui-org/react'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -13,8 +14,8 @@ import InformationCard from '@/components/molecules/Card/InformationCard'
 import DateConverter from '@/components/atoms/DateConverter'
 import { useGetSalesSummary } from '@/services/index'
 import { PaymentMethodEnum } from '@/graphql/graphql-types'
+import { CandelSaleModal } from '@/components/atoms/modals/CancelSaleModal'
 import { TSaleProduct } from '@/interfaces/TData'
-import { useDisclosure } from '@nextui-org/react'
 import ProductListModal from '@/components/atoms/modals/ProductListModal'
 
 interface DailySaleProps {
@@ -22,12 +23,14 @@ interface DailySaleProps {
 }
 
 function DailySale({ user }: DailySaleProps) {
+  const [edit, setEdit] = useState<string>('')
+  const handleCancelModal = useDisclosure()
   const router = useRouter()
   const { currentBranch } = useAppSelector(state => state.branchReducer)
   const [products, setProducts] = useState<TSaleProduct[]>([])
   const handleProductsListModal = useDisclosure()
 
-  const { data, setVariables, variables, setFilter, loading } =
+  const { data, setVariables, variables, setFilter, loading, refetch } =
     UseGetCustomSalesPaginated(currentBranch.id)
 
   const {
@@ -63,6 +66,10 @@ function DailySale({ user }: DailySaleProps) {
     return summary?.paymentMethods.find(
       paymentMethod => paymentMethod.method === method
     )
+  }
+  const handleCancelSale = (saleId: string) => {
+    setEdit(saleId)
+    handleCancelModal.onOpen()
   }
 
   const handleProducts = (products: TSaleProduct[]) => {
@@ -168,6 +175,7 @@ function DailySale({ user }: DailySaleProps) {
           titles={[
             { name: '#' },
             { name: 'Código de venta' },
+            { name: 'Estado' },
             { name: 'Fecha de venta' },
             { name: 'Monto total' },
             { name: 'Descuento' },
@@ -186,6 +194,9 @@ function DailySale({ user }: DailySaleProps) {
               </p>,
               <div key={idx} className="w-[10rem] text-sm md:w-full">
                 <DateConverter showTime dateString={sale.date} />
+              </div>,
+              <div key={idx} className={`m-auto mt-1 w-fit rounded-full  px-2 py-1 font-semibold ${sale.canceled ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+                {sale.canceled ? 'Cancelada' : 'Activa'}
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm">{sale.total} Bs</div>
@@ -230,7 +241,7 @@ function DailySale({ user }: DailySaleProps) {
                 </div>
               </div>,
               <div key={idx}>
-                <div className="space-x-1">
+                <div className="space-x-1 flex">
                   <ButtonComponent
                     onClick={() =>
                       router.push(`/administration-panel/sales/${sale.id}`)
@@ -246,12 +257,34 @@ function DailySale({ user }: DailySaleProps) {
                       width="w-8"
                     />
                   </ButtonComponent>
+                  <ButtonComponent
+                    onClick={() =>
+                      handleCancelSale(sale.id)
+                    }
+                    type="delete"
+                    showTooltip
+                    tooltipText="Cancelar venta"
+                    className="px-3"
+                    disabled={sale?.canceled || false}
+                  >
+                    <IconSelector
+                      name="CircleMinus"
+                      color="text-red-500"
+                      width="w-5"
+                    />
+                  </ButtonComponent>
                 </div>
               </div>
             ]
           }))}
         />
       </div>
+      <CandelSaleModal
+      isOpen={handleCancelModal.isOpen}
+      onClose={handleCancelModal.onClose}
+      onConfirm={refetch}
+      saleId={edit}
+    />
       <ProductListModal
         isOpen={handleProductsListModal.isOpen}
         onClose={handleProductsListModal.onClose}
