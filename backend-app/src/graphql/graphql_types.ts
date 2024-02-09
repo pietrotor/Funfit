@@ -397,6 +397,7 @@ export type MeasurementUnits = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptOrder?: Maybe<OrderResponse>;
   cancelSale?: Maybe<SaleResponse>;
   closeCash?: Maybe<CashResponse>;
   creatStockMovement?: Maybe<StockResponse>;
@@ -416,7 +417,6 @@ export type Mutation = {
   deleteProduct?: Maybe<ProductResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
   openCash?: Maybe<CashResponse>;
-  orderInstanceorderInstance?: Maybe<OrderResponse>;
   publicCreateAddress?: Maybe<AddressResponse>;
   publicCreateCustomer?: Maybe<CustomerResponse>;
   publicCreateOrder?: Maybe<OrderResponse>;
@@ -427,6 +427,11 @@ export type Mutation = {
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
+};
+
+
+export type MutationAcceptOrderArgs = {
+  orderId: Scalars['ObjectId']['input'];
 };
 
 
@@ -522,11 +527,6 @@ export type MutationDeleteWarehouseArgs = {
 
 export type MutationOpenCashArgs = {
   createTurnInput: CreateTurnInput;
-};
-
-
-export type MutationOrderInstanceorderInstanceArgs = {
-  orderId: Scalars['ObjectId']['input'];
 };
 
 
@@ -1781,6 +1781,7 @@ export type MeasurementUnitsResolvers<ContextType = any, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  acceptOrder?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<MutationAcceptOrderArgs, 'orderId'>>;
   cancelSale?: Resolver<Maybe<ResolversTypes['SaleResponse']>, ParentType, ContextType, RequireFields<MutationCancelSaleArgs, 'cancelSaleInput'>>;
   closeCash?: Resolver<Maybe<ResolversTypes['CashResponse']>, ParentType, ContextType, RequireFields<MutationCloseCashArgs, 'closeTurnInput'>>;
   creatStockMovement?: Resolver<Maybe<ResolversTypes['StockResponse']>, ParentType, ContextType, RequireFields<MutationCreatStockMovementArgs, 'createStockMovementInput'>>;
@@ -1800,7 +1801,6 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteProduct?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationDeleteProductArgs, 'id'>>;
   deleteWarehouse?: Resolver<Maybe<ResolversTypes['WarehouseResponse']>, ParentType, ContextType, RequireFields<MutationDeleteWarehouseArgs, 'id'>>;
   openCash?: Resolver<Maybe<ResolversTypes['CashResponse']>, ParentType, ContextType, RequireFields<MutationOpenCashArgs, 'createTurnInput'>>;
-  orderInstanceorderInstance?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<MutationOrderInstanceorderInstanceArgs, 'orderId'>>;
   publicCreateAddress?: Resolver<Maybe<ResolversTypes['AddressResponse']>, ParentType, ContextType, RequireFields<MutationPublicCreateAddressArgs, 'createAddressInput'>>;
   publicCreateCustomer?: Resolver<Maybe<ResolversTypes['CustomerResponse']>, ParentType, ContextType, RequireFields<MutationPublicCreateCustomerArgs, 'createCustomerInput'>>;
   publicCreateOrder?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<MutationPublicCreateOrderArgs, 'createOrderInput'>>;

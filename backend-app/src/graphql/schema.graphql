@@ -153,7 +153,7 @@ type Mutation {
   createSale(createSaleInput: CreateSaleInput!): SaleResponse
   cancelSale(cancelSaleInput: CancelSaleInput!): SaleResponse
   # ORDERS =================================
-  orderInstanceorderInstance(orderId: ObjectId!): OrderResponse
+  acceptOrder(orderId: ObjectId!): OrderResponse
   # ========================= ECOMMERCE ROUTES ============================
   publicCreateCustomer(
     createCustomerInput: CreateCustomerInput!
