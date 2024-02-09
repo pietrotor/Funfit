@@ -700,6 +700,8 @@ export type Query = {
   getCategories?: Maybe<CategoriesResponse>;
   getCategoryById?: Maybe<CategoryResponse>;
   getConfiguration?: Maybe<ConfigurationResponse>;
+  getOrderById?: Maybe<OrderResponse>;
+  getOrdersPaginated?: Maybe<OrdersResponse>;
   getProductById?: Maybe<ProductResponse>;
   getProductStock?: Maybe<StocksResponse>;
   getProducts?: Maybe<ProductsResponse>;
@@ -763,6 +765,16 @@ export type QueryGetCategoriesArgs = {
 
 export type QueryGetCategoryByIdArgs = {
   id: Scalars['ObjectId']['input'];
+};
+
+
+export type QueryGetOrderByIdArgs = {
+  id: Scalars['ObjectId']['input'];
+};
+
+
+export type QueryGetOrdersPaginatedArgs = {
+  orderPaginationInput: OrderPaginationInput;
 };
 
 
@@ -1900,6 +1912,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getCategories?: Resolver<Maybe<ResolversTypes['CategoriesResponse']>, ParentType, ContextType, RequireFields<QueryGetCategoriesArgs, 'paginationInput'>>;
   getCategoryById?: Resolver<Maybe<ResolversTypes['CategoryResponse']>, ParentType, ContextType, RequireFields<QueryGetCategoryByIdArgs, 'id'>>;
   getConfiguration?: Resolver<Maybe<ResolversTypes['ConfigurationResponse']>, ParentType, ContextType>;
+  getOrderById?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<QueryGetOrderByIdArgs, 'id'>>;
+  getOrdersPaginated?: Resolver<Maybe<ResolversTypes['OrdersResponse']>, ParentType, ContextType, RequireFields<QueryGetOrdersPaginatedArgs, 'orderPaginationInput'>>;
   getProductById?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<QueryGetProductByIdArgs, 'id'>>;
   getProductStock?: Resolver<Maybe<ResolversTypes['StocksResponse']>, ParentType, ContextType, RequireFields<QueryGetProductStockArgs, 'paginationInput' | 'productId'>>;
   getProducts?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsArgs, 'paginationInput'>>;
