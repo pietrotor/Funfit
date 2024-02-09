@@ -65,6 +65,7 @@ function Warehouses({ user }: WarehousesProps) {
       })
     }
   })
+  console.log(data)
 
   const handleSendUpdateWarehouse = async (values: TValuesWarehouses) => {
     await UpdateWarehousesMutationVariables({

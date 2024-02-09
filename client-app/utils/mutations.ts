@@ -35,22 +35,6 @@ export const CREATE_PRODUCT = gql`
       }
       status
       message
-      data {
-        id
-        name
-        suggetedPrice
-        code
-        description
-        categoryId
-        cost
-        image
-        warehouses
-        category {
-          id
-          name
-          code
-        }
-      }
     }
   }
 `
@@ -62,22 +46,6 @@ export const UPDATE_PRODUCT = gql`
       errorInput {
         message
         field
-      }
-      data {
-        id
-        name
-        suggetedPrice
-        code
-        description
-        categoryId
-        cost
-        image
-        warehouses
-        category {
-          id
-          name
-          code
-        }
       }
     }
   }
@@ -92,22 +60,6 @@ export const DELETE_PRODUCT = gql`
       }
       status
       message
-      data {
-        id
-        name
-        suggetedPrice
-        code
-        description
-        categoryId
-        cost
-        image
-        warehouses
-        category {
-          id
-          name
-          code
-        }
-      }
     }
   }
 `
@@ -120,31 +72,6 @@ export const CREATE_STOCK = gql`
       }
       status
       message
-      data {
-        id
-        productId
-        warehouseId
-        quantity
-        securityStock
-        lastStockEntry
-        units
-        product {
-          id
-          name
-          suggetedPrice
-          code
-          description
-          cost
-          image
-          warehouses
-        }
-        warehouse {
-          id
-          name
-          description
-          address
-        }
-      }
     }
   }
 `
@@ -159,30 +86,6 @@ export const CREATE_STOCK_MOVEMENT = gql`
       }
       status
       message
-      data {
-        id
-        productId
-        warehouseId
-        quantity
-        securityStock
-        units
-        product {
-          id
-          name
-          suggetedPrice
-          code
-          description
-          cost
-          image
-          warehouses
-        }
-        warehouse {
-          id
-          name
-          description
-          address
-        }
-      }
     }
   }
 `
@@ -195,19 +98,6 @@ export const CREATE_BRANCH = gql`
       }
       status
       message
-      data {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        cashId
-        cash {
-          id
-        }
-      }
     }
   }
 `
@@ -221,80 +111,6 @@ export const UPDATE_BRANCH = gql`
     }
     status
     message
-    data {
-      id
-      name
-      code
-      city
-      direction
-      phone
-      nit
-      cashId
-      cash {
-        id
-        branchId
-        amount
-        currentTurnId
-        isOpen
-        currentTurn {
-          id
-          cashId
-          isOpen
-          amountOfMovents
-          openInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            openBy
-            openByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
-                id
-                name
-                code
-                status
-              }
-            }
-          }
-          closeInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            closeBy
-            closeByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
-                id
-                name
-                code
-                status
-              }
-            }
-          }
-        }
-      }
-      visibleOnWeb
-    }
   }
 }
 `
@@ -307,19 +123,7 @@ export const DELETE_BRANCH = gql`
       }
       status
       message
-      data {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        cashId
-        cash {
-          id
-        }
-      }
+  
     }
   }
 `
@@ -335,37 +139,7 @@ export const CREATE_BRANCH_PRODUCT = gql`
       }
       status
       message
-      data {
-        id
-        branchId
-        productId
-        price
-        isVisibleOnWeb
-        isVisibleOnMenu
-        product {
-          id
-          name
-          suggetedPrice
-          code
-          description
-          cost
-          image
-          warehouses
-        }
-        branch {
-          id
-          name
-          code
-          city
-          direction
-          phone
-          nit
-          cashId
-          cash {
-            id
-          }
-        }
-      }
+   
     }
   }
 `
@@ -381,37 +155,7 @@ export const UPDATE_BRANCH_PRODUCT = gql`
       }
       status
       message
-      data {
-        id
-        branchId
-        productId
-        price
-        isVisibleOnWeb
-        isVisibleOnMenu
-        product {
-          id
-          name
-          suggetedPrice
-          code
-          description
-          cost
-          image
-          warehouses
-        }
-        branch {
-          id
-          name
-          code
-          city
-          direction
-          phone
-          nit
-          cashId
-          cash {
-            id
-          }
-        }
-      }
+     
     }
   }
 `
@@ -424,68 +168,7 @@ export const OPEN_CASH = gql`
       }
       status
       message
-      data {
-        id
-        branchId
-        amount
-        currentTurnId
-        isOpen
-        currentTurn {
-          id
-          cashId
-          isOpen
-          openInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            openBy
-            openByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
-                id
-                name
-                code
-                status
-              }
-            }
-          }
-          closeInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            closeBy
-            closeByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
-                id
-                name
-                code
-                status
-              }
-            }
-          }
-        }
-      }
+    
     }
   }
 `
@@ -498,68 +181,7 @@ export const CLOSE_CASH = gql`
       }
       status
       message
-      data {
-        id
-        branchId
-        amount
-        currentTurnId
-        isOpen
-        currentTurn {
-          id
-          cashId
-          isOpen
-          openInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            openBy
-            openByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
-                id
-                name
-                code
-                status
-              }
-            }
-          }
-          closeInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            closeBy
-            closeByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
-                id
-                name
-                code
-                status
-              }
-            }
-          }
-        }
-      }
+    
     }
   }
 `
@@ -574,33 +196,7 @@ export const CREATE_CASH_MOVEMENT = gql`
       }
       status
       message
-      data {
-        id
-        turnId
-        cashId
-        amount
-        date
-        type
-        concept
-        createdBy
-        createdByInfo {
-          id
-          name
-          lastName
-          email
-          phone
-          lastLogin
-          status
-          createdBy
-          roleId
-          roleInfo {
-            id
-            name
-            code
-            status
-          }
-        }
-      }
+      
     }
   }
 `
@@ -614,38 +210,6 @@ export const CREATE_SALE = gql`
       }
       status
       message
-      data {
-        id
-        branchId
-        products {
-          productId
-          price
-          qty
-          total
-          product {
-            id
-            name
-            suggetedPrice
-            code
-            description
-            cost
-            image
-            warehouses
-          }
-        }
-        paymentMethod
-        total
-        discount
-        date
-        code
-        client
-        amountRecibed
-        change
-        observations
-        canceled
-        reason
-        canceledAt
-      }
     }
   }
 `
@@ -662,108 +226,6 @@ export const CREATE_BRANCH_PRODUCT_STOCK_MOVEMENT = gql`
       }
       status
       message
-      data {
-        id
-        branchId
-        productId
-        price
-        stock
-        isVisibleOnWeb
-        isVisibleOnMenu
-        product {
-          id
-          id
-          name
-          suggetedPrice
-          code
-          internalCode
-          description
-          cost
-          image
-          warehouses
-          name
-          suggetedPrice
-          code
-          internalCode
-          description
-          cost
-          image
-          warehouses
-        }
-        branch {
-          id
-          name
-          code
-          city
-          direction
-          phone
-          nit
-          cashId
-          cash {
-            id
-            branchId
-            amount
-            currentTurnId
-            isOpen
-            currentTurn {
-              id
-              cashId
-              isOpen
-              amountOfMovents
-              openInfo {
-                amount
-                physicialAmount
-                difference
-                date
-                observation
-                openBy
-                openByInfo {
-                  id
-                  name
-                  lastName
-                  email
-                  phone
-                  lastLogin
-                  status
-                  createdBy
-                  roleId
-                  roleInfo {
-                    id
-                    name
-                    code
-                    status
-                  }
-                }
-              }
-              closeInfo {
-                amount
-                physicialAmount
-                difference
-                date
-                observation
-                closeBy
-                closeByInfo {
-                  id
-                  name
-                  lastName
-                  email
-                  phone
-                  lastLogin
-                  status
-                  createdBy
-                  roleId
-                  roleInfo {
-                    id
-                    name
-                    code
-                    status
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
     }
   }
 `
@@ -777,11 +239,6 @@ export const CREATE_CATEGORY = gql`
       }
       status
       message
-      data {
-        id
-        name
-        code
-      }
     }
   }
 `
@@ -795,11 +252,6 @@ export const UPDATE_CATEGORY = gql`
       }
       status
       message
-      data {
-        id
-        name
-        code
-      }
     }
   }
 `
@@ -813,13 +265,8 @@ export const DELETE_CATEGORY = gql`
       }
       status
       message
-      data {
-        id
-        name
-        code
-      }
-    }
   }
+}
 `
 export const CANCEL_SALE = gql`
 mutation CancelSale($cancelSaleInput: CancelSaleInput!) {
@@ -830,157 +277,6 @@ mutation CancelSale($cancelSaleInput: CancelSaleInput!) {
     }
     status
     message
-    data {
-      id
-      branchId
-      products {
-        branchProductId
-        productId
-        price
-        qty
-        total
-        product {
-          id
-          name
-          suggetedPrice
-          code
-          internalCode
-          description
-          categoryId
-          cost
-          image
-          warehouses
-          category {
-            id
-            name
-            code
-          }
-        }
-      }
-      paymentMethod
-      subTotal
-      total
-      discount
-      date
-      code
-      client
-      amountRecibed
-      change
-      observations
-      canceled
-      reason
-      createdBy
-      canceledAt
-      canceledBy
-      branch {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        visibleOnWeb
-        cashId
-        cash {
-          id
-          branchId
-          amount
-          currentTurnId
-          isOpen
-          currentTurn {
-            id
-            cashId
-            isOpen
-            amountOfMovents
-            openInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              openBy
-              openByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-            closeInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              closeBy
-              closeByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-          }
-        }
-      }
-      createdByInfo {
-        id
-        name
-        lastName
-        email
-        phone
-        lastLogin
-        status
-        createdBy
-        roleId
-        roleInfo {
-          id
-          name
-          code
-          status
-        }
-      }
-      canceledByInfo {
-        id
-        name
-        lastName
-        email
-        phone
-        lastLogin
-        status
-        createdBy
-        roleId
-        roleInfo {
-          id
-          name
-          code
-          status
-        }
-      }
-    }
   }
 }
 `

@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next'
 
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { useDisclosure } from '@nextui-org/react'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -14,7 +15,6 @@ import DateConverter from '@/components/atoms/DateConverter'
 import { useGetSalesSummary } from '@/services/index'
 import { PaymentMethodEnum } from '@/graphql/graphql-types'
 import { CandelSaleModal } from '@/components/atoms/modals/CancelSaleModal'
-import { useDisclosure } from '@nextui-org/react'
 
 interface DailySaleProps {
   user: any

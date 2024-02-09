@@ -331,7 +331,7 @@ function Sales({ user }: SalesProps) {
                     showTooltip
                     tooltipText="Cancelar venta"
                     className="px-3"
-                    disabled={sale?.canceled || false}
+                    disabled={!sale?.canceled || false}
                   >
                     <IconSelector
                       name="CircleMinus"

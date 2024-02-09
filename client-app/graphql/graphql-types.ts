@@ -1120,133 +1120,133 @@ export type CreateProductMutationVariables = Exact<{
 }>;
 
 
-export type CreateProductMutation = { __typename?: 'Mutation', createProduct?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, category?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null } | null };
+export type CreateProductMutation = { __typename?: 'Mutation', createProduct?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type UpdateProductMutationVariables = Exact<{
   updateProductInput: UpdateProductInput;
 }>;
 
 
-export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, category?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null } | null };
+export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type DeleteProductMutationVariables = Exact<{
   deleteProductId: Scalars['ObjectId'];
 }>;
 
 
-export type DeleteProductMutation = { __typename?: 'Mutation', deleteProduct?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, category?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null } | null };
+export type DeleteProductMutation = { __typename?: 'Mutation', deleteProduct?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type CreateStockMutationVariables = Exact<{
   createStockInput: CreateStockInput;
 }>;
 
 
-export type CreateStockMutation = { __typename?: 'Mutation', createStock?: { __typename?: 'StockResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null } | null };
+export type CreateStockMutation = { __typename?: 'Mutation', createStock?: { __typename?: 'StockResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type CreatStockMovementMutationVariables = Exact<{
   createStockMovementInput: CreateStockMovementInput;
 }>;
 
 
-export type CreatStockMovementMutation = { __typename?: 'Mutation', creatStockMovement?: { __typename?: 'StockResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null } | null };
+export type CreatStockMovementMutation = { __typename?: 'Mutation', creatStockMovement?: { __typename?: 'StockResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type CreateBranchMutationVariables = Exact<{
   createBranchInput: CreateBranchInput;
 }>;
 
 
-export type CreateBranchMutation = { __typename?: 'Mutation', createBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null };
+export type CreateBranchMutation = { __typename?: 'Mutation', createBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type UpdateBranchMutationVariables = Exact<{
   updateBranchInput: UpdateBranchInput;
 }>;
 
 
-export type UpdateBranchMutation = { __typename?: 'Mutation', updateBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, visibleOnWeb: boolean, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null } | null };
+export type UpdateBranchMutation = { __typename?: 'Mutation', updateBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type DeleteBranchMutationVariables = Exact<{
   deleteBranchId: Scalars['ObjectId'];
 }>;
 
 
-export type DeleteBranchMutation = { __typename?: 'Mutation', deleteBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null };
+export type DeleteBranchMutation = { __typename?: 'Mutation', deleteBranch?: { __typename?: 'BranchResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type CreateBranchProductMutationVariables = Exact<{
   createBranchProductInput: CreateBranchProductInput;
 }>;
 
 
-export type CreateBranchProductMutation = { __typename?: 'Mutation', createBranchProduct?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null } | null };
+export type CreateBranchProductMutation = { __typename?: 'Mutation', createBranchProduct?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type UpdateBranchProductMutationVariables = Exact<{
   updateBranchProductInput: UpdateBranchProductInput;
 }>;
 
 
-export type UpdateBranchProductMutation = { __typename?: 'Mutation', updateBranchProduct?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null } | null } | null };
+export type UpdateBranchProductMutation = { __typename?: 'Mutation', updateBranchProduct?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type OpenCashMutationVariables = Exact<{
   createTurnInput: CreateTurnInput;
 }>;
 
 
-export type OpenCashMutation = { __typename?: 'Mutation', openCash?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null };
+export type OpenCashMutation = { __typename?: 'Mutation', openCash?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type CloseCashMutationVariables = Exact<{
   closeTurnInput: CloseTurnInput;
 }>;
 
 
-export type CloseCashMutation = { __typename?: 'Mutation', closeCash?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null };
+export type CloseCashMutation = { __typename?: 'Mutation', closeCash?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type CreateCashMovementMutationVariables = Exact<{
   createTurnMovementInput: CreateTurnMovementInput;
 }>;
 
 
-export type CreateCashMovementMutation = { __typename?: 'Mutation', createCashMovement?: { __typename?: 'CashTurnMovementResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'TurnMovements', id: any, turnId: any, cashId: any, amount: number, date: any, type?: TurnMovementTypeEnum | null, concept?: string | null, createdBy?: any | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null };
+export type CreateCashMovementMutation = { __typename?: 'Mutation', createCashMovement?: { __typename?: 'CashTurnMovementResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type CreateSaleMutationVariables = Exact<{
   createSaleInput: CreateSaleInput;
 }>;
 
 
-export type CreateSaleMutation = { __typename?: 'Mutation', createSale?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }> } | null } | null };
+export type CreateSaleMutation = { __typename?: 'Mutation', createSale?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type CreateBranchProductStockMovementMutationVariables = Exact<{
   createBranchProductStockMovementInput: CreateBranchProductStockMovementInput;
 }>;
 
 
-export type CreateBranchProductStockMovementMutation = { __typename?: 'Mutation', createBranchProductStockMovement?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null } | null } | null };
+export type CreateBranchProductStockMovementMutation = { __typename?: 'Mutation', createBranchProductStockMovement?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type CreateCategoryMutationVariables = Exact<{
   createCategoryInput: CreateCategoryInput;
 }>;
 
 
-export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory?: { __typename?: 'CategoryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null };
+export type CreateCategoryMutation = { __typename?: 'Mutation', createCategory?: { __typename?: 'CategoryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type UpdateCategoryMutationVariables = Exact<{
   updateCategoryInput: UpdateCategoryInput;
 }>;
 
 
-export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory?: { __typename?: 'CategoryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null };
+export type UpdateCategoryMutation = { __typename?: 'Mutation', updateCategory?: { __typename?: 'CategoryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type DeleteCategoryMutationVariables = Exact<{
   deleteCategoryId: Scalars['ObjectId'];
 }>;
 
 
-export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory?: { __typename?: 'CategoryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null };
+export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory?: { __typename?: 'CategoryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type CancelSaleMutationVariables = Exact<{
   cancelSaleInput: CancelSaleInput;
 }>;
 
 
-export type CancelSaleMutation = { __typename?: 'Mutation', cancelSale?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, createdBy?: any | null, canceledAt?: any | null, canceledBy?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, category?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, visibleOnWeb: boolean, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null, canceledByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null };
+export type CancelSaleMutation = { __typename?: 'Mutation', cancelSale?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1327,7 +1327,7 @@ export type GetWarehouseHistoryQueryVariables = Exact<{
 }>;
 
 
-export type GetWarehouseHistoryQuery = { __typename?: 'Query', getWarehouseHistory?: { __typename?: 'StocksHistoryResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'StockHistory', id: any, stockId: any, warehouseId: any, quantity: number, type: StockMovementTypeEnum, date: any, stockBefore: number, stockLater: number, createdBy?: any | null, stock?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }> | null } | null };
+export type GetWarehouseHistoryQuery = { __typename?: 'Query', getWarehouseHistory?: { __typename?: 'StocksHistoryResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'StockHistory', id: any, warehouseId: any, type: StockMovementTypeEnum, date: any, stockBefore: number, stockLater: number, stock?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null }> | null } | null };
 
 export type GetStockHistoryQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -1335,7 +1335,7 @@ export type GetStockHistoryQueryVariables = Exact<{
 }>;
 
 
-export type GetStockHistoryQuery = { __typename?: 'Query', getStockHistory?: { __typename?: 'StocksHistoryResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'StockHistory', id: any, stockId: any, warehouseId: any, quantity: number, type: StockMovementTypeEnum, date: any, stockBefore: number, stockLater: number, createdBy?: any | null, stock?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }> | null } | null };
+export type GetStockHistoryQuery = { __typename?: 'Query', getStockHistory?: { __typename?: 'StocksHistoryResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'StockHistory', id: any, stockId: any, warehouseId: any, type: StockMovementTypeEnum, date: any, stockBefore: number, stockLater: number, stock?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null } | null } | null }> | null } | null };
 
 export type GetStockByIdQueryVariables = Exact<{
   getStockByIdId: Scalars['ObjectId'];
@@ -1350,21 +1350,21 @@ export type GetProductsOutOfWarehouseQueryVariables = Exact<{
 }>;
 
 
-export type GetProductsOutOfWarehouseQuery = { __typename?: 'Query', getProductsOutOfWarehouse?: { __typename?: 'ProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> }> | null } | null };
+export type GetProductsOutOfWarehouseQuery = { __typename?: 'Query', getProductsOutOfWarehouse?: { __typename?: 'ProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string }> | null } | null };
 
 export type GetWarehouseStockQueryVariables = Exact<{
   warehouseStockPaginationInput: WarehouseStockPaginationInput;
 }>;
 
 
-export type GetWarehouseStockQuery = { __typename?: 'Query', getWarehouseStock?: { __typename?: 'StocksResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null }> | null } | null };
+export type GetWarehouseStockQuery = { __typename?: 'Query', getWarehouseStock?: { __typename?: 'StocksResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string } | null, warehouse?: { __typename?: 'Warehouse', id: any } | null }> | null } | null };
 
 export type GetProductByIdQueryVariables = Exact<{
   getProductByIdId: Scalars['ObjectId'];
 }>;
 
 
-export type GetProductByIdQuery = { __typename?: 'Query', getProductById?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null } | null };
+export type GetProductByIdQuery = { __typename?: 'Query', getProductById?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, image?: string | null, description: string } | null } | null };
 
 export type GetBranchProductsPaginatedQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -1372,14 +1372,14 @@ export type GetBranchProductsPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetBranchProductsPaginatedQuery = { __typename?: 'Query', getBranchProductsPaginated?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any } | null } | null }> | null } | null };
+export type GetBranchProductsPaginatedQuery = { __typename?: 'Query', getBranchProductsPaginated?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string } | null }> | null } | null };
 
 export type GetBranchesPaginatedQueryVariables = Exact<{
   paginationInput: PaginationInput;
 }>;
 
 
-export type GetBranchesPaginatedQuery = { __typename?: 'Query', getBranchesPaginated?: { __typename?: 'BranchsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, visibleOnWeb: boolean, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null }> | null } | null };
+export type GetBranchesPaginatedQuery = { __typename?: 'Query', getBranchesPaginated?: { __typename?: 'BranchsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, visibleOnWeb: boolean, cashId: any }> | null } | null };
 
 export type GetBranchByIdQueryVariables = Exact<{
   getBranchByIdId: Scalars['ObjectId'];
@@ -1393,7 +1393,7 @@ export type GetCashByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetCashByIdQuery = { __typename?: 'Query', getCashById?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null };
+export type GetCashByIdQuery = { __typename?: 'Query', getCashById?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number } | null } | null } | null };
 
 export type GetCashTurnMovementsQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -1401,14 +1401,14 @@ export type GetCashTurnMovementsQueryVariables = Exact<{
 }>;
 
 
-export type GetCashTurnMovementsQuery = { __typename?: 'Query', getCashTurnMovements?: { __typename?: 'CashTurnMovementsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'TurnMovements', id: any, turnId: any, cashId: any, amount: number, date: any, type?: TurnMovementTypeEnum | null, concept?: string | null, createdBy?: any | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }> | null } | null };
+export type GetCashTurnMovementsQuery = { __typename?: 'Query', getCashTurnMovements?: { __typename?: 'CashTurnMovementsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'TurnMovements', id: any, turnId: any, cashId: any, amount: number, date: any, concept?: string | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string } | null }> | null } | null };
 
 export type GetSalesPaginatedQueryVariables = Exact<{
   salesPaginationInput: SalesPaginationInput;
 }>;
 
 
-export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }> | null } | null };
+export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, total: number, discount: number, date: any, code: string, canceled?: boolean | null, products: Array<{ __typename?: 'SaleItem', productId: any, product?: { __typename?: 'Product', id: any, name: string } | null }>, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string } | null }> | null } | null };
 
 export type GetSalesSummaryQueryVariables = Exact<{
   salesSummaryInput: SalesSummaryInput;
@@ -1422,7 +1422,7 @@ export type GetSaleByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetSaleByIdQuery = { __typename?: 'Query', getSaleById?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null };
+export type GetSaleByIdQuery = { __typename?: 'Query', getSaleById?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, code: string, total: number, products: Array<{ __typename?: 'SaleItem', productId: any, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, code: string, image?: string | null } | null }> } | null } | null };
 
 export type GetCategoriesQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -1444,7 +1444,7 @@ export type GetWarehousesOfProductQueryVariables = Exact<{
 }>;
 
 
-export type GetWarehousesOfProductQuery = { __typename?: 'Query', getWarehousesOfProduct?: { __typename?: 'WarehousesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Warehouse', id: any, name: string, description: string, address: string }> | null } | null };
+export type GetWarehousesOfProductQuery = { __typename?: 'Query', getWarehousesOfProduct?: { __typename?: 'WarehousesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Warehouse', id: any, name: string }> | null } | null };
 
 export type GetProductStockQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -1453,7 +1453,7 @@ export type GetProductStockQueryVariables = Exact<{
 }>;
 
 
-export type GetProductStockQuery = { __typename?: 'Query', getProductStock?: { __typename?: 'StocksResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, category?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null, warehouse?: { __typename?: 'Warehouse', id: any, name: string, description: string, address: string } | null }> | null } | null };
+export type GetProductStockQuery = { __typename?: 'Query', getProductStock?: { __typename?: 'StocksResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, units: string }> | null } | null };
 
 export type GetPublicProductsQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -1461,7 +1461,7 @@ export type GetPublicProductsQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, category?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, visibleOnWeb: boolean, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null }> | null } | null };
+export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, description: string, image?: string | null } | null }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -1550,22 +1550,6 @@ export const CreateProductDocument = gql`
     }
     status
     message
-    data {
-      id
-      name
-      suggetedPrice
-      code
-      description
-      categoryId
-      cost
-      image
-      warehouses
-      category {
-        id
-        name
-        code
-      }
-    }
   }
 }
     `;
@@ -1603,22 +1587,6 @@ export const UpdateProductDocument = gql`
     errorInput {
       message
       field
-    }
-    data {
-      id
-      name
-      suggetedPrice
-      code
-      description
-      categoryId
-      cost
-      image
-      warehouses
-      category {
-        id
-        name
-        code
-      }
     }
   }
 }
@@ -1658,22 +1626,6 @@ export const DeleteProductDocument = gql`
     }
     status
     message
-    data {
-      id
-      name
-      suggetedPrice
-      code
-      description
-      categoryId
-      cost
-      image
-      warehouses
-      category {
-        id
-        name
-        code
-      }
-    }
   }
 }
     `;
@@ -1712,31 +1664,6 @@ export const CreateStockDocument = gql`
     }
     status
     message
-    data {
-      id
-      productId
-      warehouseId
-      quantity
-      securityStock
-      lastStockEntry
-      units
-      product {
-        id
-        name
-        suggetedPrice
-        code
-        description
-        cost
-        image
-        warehouses
-      }
-      warehouse {
-        id
-        name
-        description
-        address
-      }
-    }
   }
 }
     `;
@@ -1775,30 +1702,6 @@ export const CreatStockMovementDocument = gql`
     }
     status
     message
-    data {
-      id
-      productId
-      warehouseId
-      quantity
-      securityStock
-      units
-      product {
-        id
-        name
-        suggetedPrice
-        code
-        description
-        cost
-        image
-        warehouses
-      }
-      warehouse {
-        id
-        name
-        description
-        address
-      }
-    }
   }
 }
     `;
@@ -1837,19 +1740,6 @@ export const CreateBranchDocument = gql`
     }
     status
     message
-    data {
-      id
-      name
-      code
-      city
-      direction
-      phone
-      nit
-      cashId
-      cash {
-        id
-      }
-    }
   }
 }
     `;
@@ -1888,80 +1778,6 @@ export const UpdateBranchDocument = gql`
     }
     status
     message
-    data {
-      id
-      name
-      code
-      city
-      direction
-      phone
-      nit
-      cashId
-      cash {
-        id
-        branchId
-        amount
-        currentTurnId
-        isOpen
-        currentTurn {
-          id
-          cashId
-          isOpen
-          amountOfMovents
-          openInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            openBy
-            openByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
-                id
-                name
-                code
-                status
-              }
-            }
-          }
-          closeInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            closeBy
-            closeByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
-                id
-                name
-                code
-                status
-              }
-            }
-          }
-        }
-      }
-      visibleOnWeb
-    }
   }
 }
     `;
@@ -2000,19 +1816,6 @@ export const DeleteBranchDocument = gql`
     }
     status
     message
-    data {
-      id
-      name
-      code
-      city
-      direction
-      phone
-      nit
-      cashId
-      cash {
-        id
-      }
-    }
   }
 }
     `;
@@ -2051,37 +1854,6 @@ export const CreateBranchProductDocument = gql`
     }
     status
     message
-    data {
-      id
-      branchId
-      productId
-      price
-      isVisibleOnWeb
-      isVisibleOnMenu
-      product {
-        id
-        name
-        suggetedPrice
-        code
-        description
-        cost
-        image
-        warehouses
-      }
-      branch {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        cashId
-        cash {
-          id
-        }
-      }
-    }
   }
 }
     `;
@@ -2120,37 +1892,6 @@ export const UpdateBranchProductDocument = gql`
     }
     status
     message
-    data {
-      id
-      branchId
-      productId
-      price
-      isVisibleOnWeb
-      isVisibleOnMenu
-      product {
-        id
-        name
-        suggetedPrice
-        code
-        description
-        cost
-        image
-        warehouses
-      }
-      branch {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        cashId
-        cash {
-          id
-        }
-      }
-    }
   }
 }
     `;
@@ -2189,68 +1930,6 @@ export const OpenCashDocument = gql`
     }
     status
     message
-    data {
-      id
-      branchId
-      amount
-      currentTurnId
-      isOpen
-      currentTurn {
-        id
-        cashId
-        isOpen
-        openInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          openBy
-          openByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
-        }
-        closeInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          closeBy
-          closeByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
-        }
-      }
-    }
   }
 }
     `;
@@ -2289,68 +1968,6 @@ export const CloseCashDocument = gql`
     }
     status
     message
-    data {
-      id
-      branchId
-      amount
-      currentTurnId
-      isOpen
-      currentTurn {
-        id
-        cashId
-        isOpen
-        openInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          openBy
-          openByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
-        }
-        closeInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          closeBy
-          closeByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
-        }
-      }
-    }
   }
 }
     `;
@@ -2389,33 +2006,6 @@ export const CreateCashMovementDocument = gql`
     }
     status
     message
-    data {
-      id
-      turnId
-      cashId
-      amount
-      date
-      type
-      concept
-      createdBy
-      createdByInfo {
-        id
-        name
-        lastName
-        email
-        phone
-        lastLogin
-        status
-        createdBy
-        roleId
-        roleInfo {
-          id
-          name
-          code
-          status
-        }
-      }
-    }
   }
 }
     `;
@@ -2454,38 +2044,6 @@ export const CreateSaleDocument = gql`
     }
     status
     message
-    data {
-      id
-      branchId
-      products {
-        productId
-        price
-        qty
-        total
-        product {
-          id
-          name
-          suggetedPrice
-          code
-          description
-          cost
-          image
-          warehouses
-        }
-      }
-      paymentMethod
-      total
-      discount
-      date
-      code
-      client
-      amountRecibed
-      change
-      observations
-      canceled
-      reason
-      canceledAt
-    }
   }
 }
     `;
@@ -2526,108 +2084,6 @@ export const CreateBranchProductStockMovementDocument = gql`
     }
     status
     message
-    data {
-      id
-      branchId
-      productId
-      price
-      stock
-      isVisibleOnWeb
-      isVisibleOnMenu
-      product {
-        id
-        id
-        name
-        suggetedPrice
-        code
-        internalCode
-        description
-        cost
-        image
-        warehouses
-        name
-        suggetedPrice
-        code
-        internalCode
-        description
-        cost
-        image
-        warehouses
-      }
-      branch {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        cashId
-        cash {
-          id
-          branchId
-          amount
-          currentTurnId
-          isOpen
-          currentTurn {
-            id
-            cashId
-            isOpen
-            amountOfMovents
-            openInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              openBy
-              openByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-            closeInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              closeBy
-              closeByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-          }
-        }
-      }
-    }
   }
 }
     `;
@@ -2666,11 +2122,6 @@ export const CreateCategoryDocument = gql`
     }
     status
     message
-    data {
-      id
-      name
-      code
-    }
   }
 }
     `;
@@ -2709,11 +2160,6 @@ export const UpdateCategoryDocument = gql`
     }
     status
     message
-    data {
-      id
-      name
-      code
-    }
   }
 }
     `;
@@ -2752,11 +2198,6 @@ export const DeleteCategoryDocument = gql`
     }
     status
     message
-    data {
-      id
-      name
-      code
-    }
   }
 }
     `;
@@ -2795,157 +2236,6 @@ export const CancelSaleDocument = gql`
     }
     status
     message
-    data {
-      id
-      branchId
-      products {
-        branchProductId
-        productId
-        price
-        qty
-        total
-        product {
-          id
-          name
-          suggetedPrice
-          code
-          internalCode
-          description
-          categoryId
-          cost
-          image
-          warehouses
-          category {
-            id
-            name
-            code
-          }
-        }
-      }
-      paymentMethod
-      subTotal
-      total
-      discount
-      date
-      code
-      client
-      amountRecibed
-      change
-      observations
-      canceled
-      reason
-      createdBy
-      canceledAt
-      canceledBy
-      branch {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        visibleOnWeb
-        cashId
-        cash {
-          id
-          branchId
-          amount
-          currentTurnId
-          isOpen
-          currentTurn {
-            id
-            cashId
-            isOpen
-            amountOfMovents
-            openInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              openBy
-              openByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-            closeInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              closeBy
-              closeByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-          }
-        }
-      }
-      createdByInfo {
-        id
-        name
-        lastName
-        email
-        phone
-        lastLogin
-        status
-        createdBy
-        roleId
-        roleInfo {
-          id
-          name
-          code
-          status
-        }
-      }
-      canceledByInfo {
-        id
-        name
-        lastName
-        email
-        phone
-        lastLogin
-        status
-        createdBy
-        roleId
-        roleInfo {
-          id
-          name
-          code
-          status
-        }
-      }
-    }
   }
 }
     `;
@@ -3550,14 +2840,11 @@ export const GetWarehouseHistoryDocument = gql`
     message
     data {
       id
-      stockId
       warehouseId
-      quantity
       type
       date
       stockBefore
       stockLater
-      createdBy
       stock {
         id
         productId
@@ -3569,41 +2856,12 @@ export const GetWarehouseHistoryDocument = gql`
         product {
           id
           name
-          suggetedPrice
-          code
-          description
-          cost
-          image
-          warehouses
         }
         warehouse {
           id
           name
           description
           address
-        }
-      }
-      warehouse {
-        id
-        name
-        description
-        address
-      }
-      createdByInfo {
-        id
-        name
-        lastName
-        email
-        phone
-        lastLogin
-        status
-        createdBy
-        roleId
-        roleInfo {
-          id
-          name
-          code
-          status
         }
       }
     }
@@ -3656,12 +2914,10 @@ export const GetStockHistoryDocument = gql`
       id
       stockId
       warehouseId
-      quantity
       type
       date
       stockBefore
       stockLater
-      createdBy
       stock {
         id
         productId
@@ -3678,36 +2934,6 @@ export const GetStockHistoryDocument = gql`
           description
           cost
           image
-          warehouses
-        }
-        warehouse {
-          id
-          name
-          description
-          address
-        }
-      }
-      warehouse {
-        id
-        name
-        description
-        address
-      }
-      createdByInfo {
-        id
-        name
-        lastName
-        email
-        phone
-        lastLogin
-        status
-        createdBy
-        roleId
-        roleInfo {
-          id
-          name
-          code
-          status
         }
       }
     }
@@ -3829,9 +3055,6 @@ export const GetProductsOutOfWarehouseDocument = gql`
       suggetedPrice
       code
       description
-      cost
-      image
-      warehouses
     }
     totalRecords
     totalPages
@@ -3883,24 +3106,14 @@ export const GetWarehouseStockDocument = gql`
       productId
       warehouseId
       quantity
-      securityStock
       lastStockEntry
       units
       product {
         id
         name
-        suggetedPrice
-        code
-        description
-        cost
-        image
-        warehouses
       }
       warehouse {
         id
-        name
-        description
-        address
       }
     }
     totalRecords
@@ -3951,11 +3164,8 @@ export const GetProductByIdDocument = gql`
       id
       name
       suggetedPrice
-      code
-      description
-      cost
       image
-      warehouses
+      description
     }
   }
 }
@@ -4011,25 +3221,6 @@ export const GetBranchProductsPaginatedDocument = gql`
       product {
         id
         name
-        suggetedPrice
-        code
-        description
-        cost
-        image
-        warehouses
-      }
-      branch {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        cashId
-        cash {
-          id
-        }
       }
     }
     totalRecords
@@ -4087,69 +3278,6 @@ export const GetBranchesPaginatedDocument = gql`
       nit
       visibleOnWeb
       cashId
-      cash {
-        id
-        branchId
-        amount
-        currentTurnId
-        isOpen
-        currentTurn {
-          id
-          cashId
-          isOpen
-          amountOfMovents
-          openInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            openBy
-            openByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
-                id
-                name
-                code
-                status
-              }
-            }
-          }
-          closeInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            closeBy
-            closeByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
-                id
-                name
-                code
-                status
-              }
-            }
-          }
-        }
-      }
     }
     totalRecords
     totalPages
@@ -4320,56 +3448,6 @@ export const GetCashByIdDocument = gql`
         cashId
         isOpen
         amountOfMovents
-        openInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          openBy
-          openByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
-        }
-        closeInfo {
-          amount
-          physicialAmount
-          difference
-          date
-          observation
-          closeBy
-          closeByInfo {
-            id
-            name
-            lastName
-            email
-            phone
-            lastLogin
-            status
-            createdBy
-            roleId
-            roleInfo {
-              id
-              name
-              code
-              status
-            }
-          }
-        }
       }
     }
   }
@@ -4418,25 +3496,11 @@ export const GetCashTurnMovementsDocument = gql`
       cashId
       amount
       date
-      type
       concept
-      createdBy
       createdByInfo {
         id
         name
         lastName
-        email
-        phone
-        lastLogin
-        status
-        createdBy
-        roleId
-        roleInfo {
-          id
-          name
-          code
-          status
-        }
       }
     }
     totalRecords
@@ -4489,124 +3553,20 @@ export const GetSalesPaginatedDocument = gql`
       branchId
       products {
         productId
-        price
-        qty
-        total
         product {
           id
           name
-          suggetedPrice
-          code
-          internalCode
-          description
-          cost
-          image
-          warehouses
         }
       }
-      paymentMethod
-      subTotal
       total
       discount
       date
       code
-      client
-      amountRecibed
-      change
-      observations
       canceled
-      reason
-      canceledAt
-      createdBy
-      branch {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        cashId
-        cash {
-          id
-          branchId
-          amount
-          currentTurnId
-          isOpen
-          currentTurn {
-            id
-            cashId
-            isOpen
-            amountOfMovents
-            openInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              openBy
-              openByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-            closeInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              closeBy
-              closeByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-          }
-        }
-      }
       createdByInfo {
         id
         name
         lastName
-        email
-        phone
-        lastLogin
-        status
-        createdBy
-        roleId
-        roleInfo {
-          id
-          name
-          code
-          status
-        }
       }
     }
     totalRecords
@@ -4705,125 +3665,17 @@ export const GetSaleByIdDocument = gql`
       branchId
       products {
         productId
-        price
         qty
         total
         product {
           id
           name
-          suggetedPrice
           code
-          internalCode
-          description
-          cost
           image
-          warehouses
         }
       }
-      paymentMethod
-      subTotal
-      total
-      discount
-      date
       code
-      client
-      amountRecibed
-      change
-      observations
-      canceled
-      reason
-      canceledAt
-      createdBy
-      branch {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        cashId
-        cash {
-          id
-          branchId
-          amount
-          currentTurnId
-          isOpen
-          currentTurn {
-            id
-            cashId
-            isOpen
-            amountOfMovents
-            openInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              openBy
-              openByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-            closeInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              closeBy
-              closeByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-          }
-        }
-      }
-      createdByInfo {
-        id
-        name
-        lastName
-        email
-        phone
-        lastLogin
-        status
-        createdBy
-        roleId
-        roleInfo {
-          id
-          name
-          code
-          status
-        }
-      }
+      total
     }
   }
 }
@@ -4962,8 +3814,6 @@ export const GetWarehousesOfProductDocument = gql`
     data {
       id
       name
-      description
-      address
     }
     totalRecords
     totalPages
@@ -5019,31 +3869,7 @@ export const GetProductStockDocument = gql`
       productId
       warehouseId
       quantity
-      securityStock
-      lastStockEntry
       units
-      product {
-        id
-        name
-        suggetedPrice
-        code
-        description
-        categoryId
-        cost
-        image
-        warehouses
-        category {
-          id
-          name
-          code
-        }
-      }
-      warehouse {
-        id
-        name
-        description
-        address
-      }
     }
     totalRecords
     totalPages
@@ -5102,92 +3928,8 @@ export const GetPublicProductsDocument = gql`
       product {
         id
         name
-        suggetedPrice
-        code
         description
-        categoryId
-        cost
         image
-        warehouses
-        category {
-          id
-          name
-          code
-        }
-      }
-      branch {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        visibleOnWeb
-        cashId
-        cash {
-          id
-          branchId
-          amount
-          currentTurnId
-          isOpen
-          currentTurn {
-            id
-            cashId
-            isOpen
-            amountOfMovents
-            openInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              openBy
-              openByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-            closeInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              closeBy
-              closeByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-          }
-        }
       }
     }
     totalRecords

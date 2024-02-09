@@ -49,7 +49,12 @@ export const CandelSaleModal = ({
       handleCancel={handleCancel}
       reset={reset}
       loading={loading}
-      color="error"
+      textColor='red-600'
+      bgIconColor='red-100'
+      colorButon='danger '
+      hoverButon='red-700'
+      focusButon='red-700'
+      icon='CircleMinus'
     >
       <div className="space-y-2 p-9">
         <InputComponent
