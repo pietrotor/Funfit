@@ -20,6 +20,10 @@ enum PaymentMethodEnum {
   CARD
   CASH
 }
+enum DeliveryMethodEnum {
+  DELIVERY
+  PICKUP
+}
 type Query {
   # CONFIGURATION ====================================
   getConfiguration: ConfigurationResponse
@@ -88,6 +92,7 @@ type Query {
     paginationInput: PaginationInput!
     branchId: ObjectId!
   ): BranchProductsResponse
+  getPublicCustomerById(id: ObjectId!): CustomerResponse
 }
 type Mutation {
   # CONFIGURATION ====================================
@@ -144,6 +149,12 @@ type Mutation {
   # SALES =================================
   createSale(createSaleInput: CreateSaleInput!): SaleResponse
   cancelSale(cancelSaleInput: CancelSaleInput!): SaleResponse
+  # ========================= ECOMMERCE ROUTES ============================
+  publicCreateCustomer(
+    createCustomerInput: CreateCustomerInput!
+  ): CustomerResponse
+  publicCreateAddress(createAddressInput: CreateAddressInput!): AddressResponse
+  publicCreateOrder(createOrderInput: CreateOrderInput!): OrderResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type MeasurementUnits {
@@ -351,15 +362,9 @@ type SalesSummary {
 type Order {
   id: ObjectId!
   branchId: ObjectId!
-  products: {
-    branchProductId: ObjectId!
-    productId: ObjectId!
-    price: Float!
-    qty: Float!
-    total: Float!
-  }[]
-  deliveryMethod: DeliveryMethodEnum
-  paymentMethod: PaymentMethodEnum
+  products: [SaleItem!]!
+  deliveryMethod: DeliveryMethodEnum!
+  paymentMethod: PaymentMethodEnum!
   subTotal: Float!
   total: Float!
   discount: Float!
@@ -367,15 +372,41 @@ type Order {
   code: String!
   customerId: ObjectId!
   addressId: ObjectId
-  pickUpInformation?: String
+  pickUpInformation: String
   orderDetails: String
   orderAcepted: Boolean
   orderAceptedAt: Date
   orderAceptedBy: ObjectId
   reason: String
-  canceled: Boolean
-  canceledAt: Date
-  canceledBy: ObjectId
+  rejected: Boolean
+  rejectedAt: Date
+  rejectedBy: ObjectId
+  # Fields Resolvers
+  customerInfo: Customer
+  addressInfo: Address
+  orderAceptedByInfo: User
+  rejectedByInfo: User
+}
+type Customer {
+  id: ObjectId!
+  name: String!
+  lastName: String!
+  email: String
+  phone: String!
+  lastOrderDate: Date!
+  addressesIds: [ObjectId!]!
+  ordersIds: [ObjectId!]!
+  # Fields Resolvers
+  addressInfo: Address
+}
+type Address {
+  id: ObjectId!
+  latitude: Float!
+  longitude: Float!
+  detail: String!
+  customerId: ObjectId!
+  # Fields Resolvers
+  customerInfo: Customer
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -575,6 +606,34 @@ type SalesSummaryResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: SalesSummary
+}
+type CustomerResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Customer
+}
+type AddressResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Address
+}
+type OrdersResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Order!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type OrderResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Order
 }
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
@@ -788,10 +847,35 @@ input CancelSaleInput {
   returnStock: Boolean!
   returnCash: Boolean
 }
-input OrderPagination {
+input OrderPaginationInput {
   rows: Int
   page: Int
   filter: String
   orderesAcepted: Boolean
   branchId: ObjectId
+}
+input CreateCustomerInput {
+  name: String!
+  lastName: String!
+  email: String
+  phone: String!
+}
+input CreateAddressInput {
+  latitude: Float!
+  longitude: Float!
+  detail: String!
+  customerId: ObjectId!
+}
+input CreateOrderInput {
+  branchId: ObjectId!
+  products: [SaleItemInput!]!
+  deliveryMethod: DeliveryMethodEnum!
+  paymentMethod: PaymentMethodEnum!
+  subTotal: Float!
+  total: Float!
+  discount: Float!
+  customerId: ObjectId!
+  addressId: ObjectId
+  pickUpInformation: String
+  orderDetails: String
 }

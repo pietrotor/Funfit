@@ -8,12 +8,8 @@ interface ICustomer extends Document, IGeneric {
   email?: string | null
   phone: string
   lastOrderDate: Date
-  addresses: {
-    latitude: number
-    longitude: number
-    detail: string
-  }[]
-  orders: objectId[]
+  addressesIds: objectId[]
+  ordersIds: objectId[]
 }
 
 interface IModelCustomer extends Model<ICustomer> {}
@@ -43,24 +39,14 @@ const customerSchema = new Schema<ICustomer>(
       type: Date,
       default: null
     },
-    addresses: [
+    addressesIds: [
       {
-        _id: false,
-        latitude: {
-          type: Number,
-          required: true
-        },
-        longitude: {
-          type: Number,
-          required: true
-        },
-        detail: {
-          type: Number,
-          required: true
-        }
+        type: Schema.Types.ObjectId,
+        default: [],
+        ref: 'Address'
       }
     ],
-    orders: [
+    ordersIds: [
       {
         type: Schema.Types.ObjectId,
         default: [],

@@ -34,9 +34,9 @@ interface IOrder extends Document, IGeneric {
   orderAceptedBy: objectId | null
   // Cancel fields
   reason: string | null
-  canceled: boolean
-  canceledAt: Date | null
-  canceledBy: objectId | null
+  rejected: boolean
+  rejectedAt: Date | null
+  rejectedBy: objectId | null
 }
 
 interface IModelOrder extends Model<IOrder> {}
@@ -119,18 +119,18 @@ const orderSchema = new Schema<IOrder>(
       type: Schema.Types.ObjectId,
       ref: 'User'
     },
-    canceled: {
+    rejected: {
       type: Boolean,
       default: false
     },
     reason: {
       type: String
     },
-    canceledAt: {
+    rejectedAt: {
       type: Date,
       default: null
     },
-    canceledBy: {
+    rejectedBy: {
       type: Schema.Types.ObjectId,
       ref: 'User'
     },
