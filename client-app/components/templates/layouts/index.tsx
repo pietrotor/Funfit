@@ -37,7 +37,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   )
   const dispatch = useAppDispatch()
   const [currentId, setCurrentId] = useState<string>('')
-  console.log(user)
   const [getBranchesPaginated] = useGetBranchesPaginatedLazyQuery({
     fetchPolicy: 'network-only',
     variables: {

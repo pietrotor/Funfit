@@ -23,7 +23,7 @@ const getPublicCustomerById = async (
     const customerInstance = await customerCore.getCustomerById(id)
     return {
       status: StatusEnum.OK,
-      message: 'Venta encontrada',
+      message: 'Cliente encontrado correctamente',
       data: customerInstance
     }
   } catch (error) {

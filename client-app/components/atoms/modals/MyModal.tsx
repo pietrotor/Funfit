@@ -1,6 +1,6 @@
 import { Modal, ModalContent } from '@nextui-org/react'
 import React from 'react'
-import IconSelector from '../IconSelector'
+import IconSelector, { TSvgNames } from '../IconSelector'
 import ButtonComponent from '../Button'
 
 export type ModalProps = {
@@ -27,6 +27,12 @@ export type ModalProps = {
   watch?: any
   reset?: () => void
   handleSubmit?: any
+  icon?: TSvgNames
+  textColor?: string
+  bgIconColor?: string
+  colorButon?: string
+  hoverButon?: string
+  focusButon?: string
   onSubmit?: any
   isForm?: boolean
   radius?: 'sm' | 'md' | 'lg' | 'none' | undefined
@@ -70,6 +76,12 @@ export const MyModal = ({
   backButtonDisabled = false,
   successButtonDisabled = false,
   hideCancelButton = true,
+  icon = 'Admin',
+  textColor = 'blue-600',
+  bgIconColor = 'blue-100',
+  colorButon = 'blue-600',
+  hoverButon = 'blue-700',
+  focusButon = 'blue-500',
   hideSuccessButton = false
 }: ModalProps) => {
   return (
@@ -95,12 +107,12 @@ export const MyModal = ({
                 <div className="sm:flex sm:items-start">
                   <div
                     className={`mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ${
-                      color === 'success' ? 'bg-green-100' : color === 'warning' ? 'bg-yellow-100' : color === 'error' ? 'bg-red-100' : color === 'information' ? 'bg-green-100' : color === 'secondary' ? 'bg-secondary/50' : 'bg-blue-100'
+                      color === 'success' ? 'bg-green-100' : color === 'warning' ? 'bg-yellow-100' : color === 'error' ? 'bg-red-100' : color === 'information' ? 'bg-green-100' : color === 'secondary' ? 'bg-secondary' : `bg-${bgIconColor}`
                     } sm:mx-0 sm:h-10 sm:w-10`}
                   >
                     <IconSelector
                       name={
-                        color === 'success' ? 'Plus' : color === 'warning' ? 'edit' : color === 'error' ? 'trash' : color === 'information' ? 'eye' : color === 'secondary' ? 'Cash' : 'Admin'
+                        color === 'success' ? 'Plus' : color === 'warning' ? 'edit' : color === 'error' ? 'trash' : color === 'information' ? 'eye' : color === 'secondary' ? 'Cash' : `${icon}`
                       }
                       width="w-6"
                       height="h-6"
@@ -112,8 +124,9 @@ export const MyModal = ({
                   <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                     <h3
                       className={`text-lg font-medium leading-6 text-gray-900 ${
-                        color === 'success' ? 'text-green-600' : color === 'warning' ? 'text-yellow-600' : color === 'error' ? 'text-red-600' : color === 'information' ? 'text-green-600' : color === 'secondary' ? 'text-lg text-gray-500' : 'text-blue-600'
-                      }`}
+                        color === 'success' ? 'text-green-600' : color === 'warning' ? 'text-yellow-600' : color === 'error' ? 'text-red-600' : color === 'information' ? 'text-green-600' : color === 'secondary' ? 'text-lg text-gray-500' : `text-${textColor}`
+                      }`
+                    }
                       id="modal-headline"
                     >
                       {title}
@@ -136,7 +149,7 @@ export const MyModal = ({
                         showTooltip={false}
                         disabled={successButtonDisabled}
                         className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
-                          color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : color === 'secondary' ? 'bg-secondary/100 hover:bg-secondary focus:ring-secondary' : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
+                          color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : color === 'secondary' ? 'bg-secondary/100 hover:bg-secondary focus:ring-secondary' : `bg-${colorButon} hover:bg-${hoverButon} focus:ring-${focusButon}`
                         }`}
                       >
                         {textSuccessButton}
@@ -184,7 +197,7 @@ export const MyModal = ({
                         disabled={backButtonDisabled}
                         showTooltip={false}
                         className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
-                          color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
+                          color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : `bg-${colorButon} hover:bg-${hoverButon} focus:ring-${focusButon}`
                         }`}
                       >
                         <IconSelector name="arrow-left" />
@@ -205,7 +218,7 @@ export const MyModal = ({
                         isLoading={loading}
                         showTooltip={false}
                         className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
-                          color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
+                          color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : `bg-${colorButon} hover:bg-${hoverButon} focus:ring-${focusButon}`
                         }`}
                       >
                         {textSuccessButton}

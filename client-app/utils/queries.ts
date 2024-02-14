@@ -281,14 +281,11 @@ export const GET_WAREHOUSE_HISTORY = gql`
       message
       data {
         id
-        stockId
         warehouseId
-        quantity
         type
         date
         stockBefore
         stockLater
-        createdBy
         stock {
           id
           productId
@@ -300,41 +297,12 @@ export const GET_WAREHOUSE_HISTORY = gql`
           product {
             id
             name
-            suggetedPrice
-            code
-            description
-            cost
-            image
-            warehouses
           }
           warehouse {
             id
             name
             description
             address
-          }
-        }
-        warehouse {
-          id
-          name
-          description
-          address
-        }
-        createdByInfo {
-          id
-          name
-          lastName
-          email
-          phone
-          lastLogin
-          status
-          createdBy
-          roleId
-          roleInfo {
-            id
-            name
-            code
-            status
           }
         }
       }
@@ -362,12 +330,10 @@ export const GET_STOCK_HISTORY = gql`
         id
         stockId
         warehouseId
-        quantity
         type
         date
         stockBefore
         stockLater
-        createdBy
         stock {
           id
           productId
@@ -384,36 +350,6 @@ export const GET_STOCK_HISTORY = gql`
             description
             cost
             image
-            warehouses
-          }
-          warehouse {
-            id
-            name
-            description
-            address
-          }
-        }
-        warehouse {
-          id
-          name
-          description
-          address
-        }
-        createdByInfo {
-          id
-          name
-          lastName
-          email
-          phone
-          lastLogin
-          status
-          createdBy
-          roleId
-          roleInfo {
-            id
-            name
-            code
-            status
           }
         }
       }
@@ -481,9 +417,6 @@ export const GET_PRODUCTS_OUT_OF_WAREHOUSE = gql`
         suggetedPrice
         code
         description
-        cost
-        image
-        warehouses
       }
       totalRecords
       totalPages
@@ -510,24 +443,14 @@ export const GET_WAREHOUSE_STOCKS = gql`
         productId
         warehouseId
         quantity
-        securityStock
         lastStockEntry
         units
         product {
           id
           name
-          suggetedPrice
-          code
-          description
-          cost
-          image
-          warehouses
         }
         warehouse {
           id
-          name
-          description
-          address
         }
       }
       totalRecords
@@ -550,41 +473,12 @@ export const GET_PRODUCT_BY_ID = gql`
         id
         name
         suggetedPrice
-        code
-        description
-        cost
         image
-        warehouses
+        description
       }
     }
   }
 `
-// export const GET_PUBLIC_PRODUCTS = gql`
-//   query GetPublicProducts($paginationInput: PaginationInput!) {
-//     getPublicProducts(paginationInput: $paginationInput) {
-//       errorInput {
-//         message
-//         field
-//       }
-//       status
-//       message
-//       data {
-//         id
-//         name
-//         suggetedPrice
-//         code
-//         description
-//         cost
-//         image
-//         warehouses
-//       }
-//       totalRecords
-//       totalPages
-//       rows
-//       currentPage
-//     }
-//   }
-// `
 
 export const GET_BRANCH_PRODUCTS = gql`
   query GetBranchProductsPaginated(
@@ -612,25 +506,6 @@ export const GET_BRANCH_PRODUCTS = gql`
         product {
           id
           name
-          suggetedPrice
-          code
-          description
-          cost
-          image
-          warehouses
-        }
-        branch {
-          id
-          name
-          code
-          city
-          direction
-          phone
-          nit
-          cashId
-          cash {
-            id
-          }
         }
       }
       totalRecords
@@ -659,69 +534,6 @@ export const GET_BRANCH_PAGINATION = gql`
         nit
         visibleOnWeb
         cashId
-        cash {
-          id
-          branchId
-          amount
-          currentTurnId
-          isOpen
-          currentTurn {
-            id
-            cashId
-            isOpen
-            amountOfMovents
-            openInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              openBy
-              openByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-            closeInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              closeBy
-              closeByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-          }
-        }
       }
       totalRecords
       totalPages
@@ -837,56 +649,7 @@ export const GET_CASH_BY_ID = gql`
           cashId
           isOpen
           amountOfMovents
-          openInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            openBy
-            openByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
-                id
-                name
-                code
-                status
-              }
-            }
-          }
-          closeInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            closeBy
-            closeByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
-                id
-                name
-                code
-                status
-              }
-            }
-          }
+          
         }
       }
     }
@@ -910,25 +673,11 @@ export const GET_CASH_TURN_MOVEMENTS = gql`
         cashId
         amount
         date
-        type
         concept
-        createdBy
         createdByInfo {
           id
           name
-          lastName
-          email
-          phone
-          lastLogin
-          status
-          createdBy
-          roleId
-          roleInfo {
-            id
-            name
-            code
-            status
-          }
+          lastName          
         }
       }
       totalRecords
@@ -952,124 +701,20 @@ export const GET_SALES_PAGINATED = gql`
         branchId
         products {
           productId
-          price
-          qty
-          total
           product {
             id
             name
-            suggetedPrice
-            code
-            internalCode
-            description
-            cost
-            image
-            warehouses
           }
         }
-        paymentMethod
-        subTotal
-        total
-        discount
-        date
-        code
-        client
-        amountRecibed
-        change
-        observations
-        canceled
-        reason
-        canceledAt
-        createdBy
-        branch {
-          id
-          name
-          code
-          city
-          direction
-          phone
-          nit
-          cashId
-          cash {
-            id
-            branchId
-            amount
-            currentTurnId
-            isOpen
-            currentTurn {
-              id
-              cashId
-              isOpen
-              amountOfMovents
-              openInfo {
-                amount
-                physicialAmount
-                difference
-                date
-                observation
-                openBy
-                openByInfo {
-                  id
-                  name
-                  lastName
-                  email
-                  phone
-                  lastLogin
-                  status
-                  createdBy
-                  roleId
-                  roleInfo {
-                    id
-                    name
-                    code
-                    status
-                  }
-                }
-              }
-              closeInfo {
-                amount
-                physicialAmount
-                difference
-                date
-                observation
-                closeBy
-                closeByInfo {
-                  id
-                  name
-                  lastName
-                  email
-                  phone
-                  lastLogin
-                  status
-                  createdBy
-                  roleId
-                  roleInfo {
-                    id
-                    name
-                    code
-                    status
-                  }
-                }
-              }
-            }
-          }
-        }
+         total
+         discount
+         date
+         code
+         canceled
         createdByInfo {
           id
           name
           lastName
-          email
-          phone
-          lastLogin
-          status
-          createdBy
-          roleId
-          roleInfo {
-            id
-            name
-            code
-            status
-          }
         }
       }
       totalRecords
@@ -1112,125 +757,17 @@ export const GET_SALES_BY_ID = gql`
         branchId
         products {
           productId
-          price
           qty
           total
           product {
             id
             name
-            suggetedPrice
             code
-            internalCode
-            description
-            cost
             image
-            warehouses
           }
         }
-        paymentMethod
-        subTotal
-        total
-        discount
-        date
         code
-        client
-        amountRecibed
-        change
-        observations
-        canceled
-        reason
-        canceledAt
-        createdBy
-        branch {
-          id
-          name
-          code
-          city
-          direction
-          phone
-          nit
-          cashId
-          cash {
-            id
-            branchId
-            amount
-            currentTurnId
-            isOpen
-            currentTurn {
-              id
-              cashId
-              isOpen
-              amountOfMovents
-              openInfo {
-                amount
-                physicialAmount
-                difference
-                date
-                observation
-                openBy
-                openByInfo {
-                  id
-                  name
-                  lastName
-                  email
-                  phone
-                  lastLogin
-                  status
-                  createdBy
-                  roleId
-                  roleInfo {
-                    id
-                    name
-                    code
-                    status
-                  }
-                }
-              }
-              closeInfo {
-                amount
-                physicialAmount
-                difference
-                date
-                observation
-                closeBy
-                closeByInfo {
-                  id
-                  name
-                  lastName
-                  email
-                  phone
-                  lastLogin
-                  status
-                  createdBy
-                  roleId
-                  roleInfo {
-                    id
-                    name
-                    code
-                    status
-                  }
-                }
-              }
-            }
-          }
-        }
-        createdByInfo {
-          id
-          name
-          lastName
-          email
-          phone
-          lastLogin
-          status
-          createdBy
-          roleId
-          roleInfo {
-            id
-            name
-            code
-            status
-          }
-        }
+        total
       }
     }
   }
@@ -1292,8 +829,6 @@ export const GET_WAREHOUSESOFPRODUCT = gql`
       data {
         id
         name
-        description
-        address
       }
       totalRecords
       totalPages
@@ -1321,34 +856,10 @@ export const GET_PRODUCT_STOCK = gql`
       message
       data {
         id
-        productId
-        warehouseId
-        quantity
-        securityStock
-        lastStockEntry
-        units
-        product {
-          id
-          name
-          suggetedPrice
-          code
-          description
-          categoryId
-          cost
-          image
-          warehouses
-          category {
-            id
-            name
-            code
-          }
-        }
-        warehouse {
-          id
-          name
-          description
-          address
-        }
+         productId
+         warehouseId
+         quantity
+         units
       }
       totalRecords
       totalPages
@@ -1370,104 +881,23 @@ export const GET_PUBLIC_BRANCH_PRODUCTS = gql`
       }
       status
       message
-      data {
+      field
+    }
+    status
+    message
+    data {
+       id
+       branchId
+       productId
+       price
+      stock
+       isVisibleOnWeb
+       isVisibleOnMenu
+      product {
         id
-        branchId
-        productId
-        price
-        stock
-        isVisibleOnWeb
-        isVisibleOnMenu
-        product {
-          id
-          name
-          suggetedPrice
-          code
-          description
-          categoryId
-          cost
-          image
-          warehouses
-          category {
-            id
-            name
-            code
-          }
-        }
-        branch {
-          id
-          name
-          code
-          city
-          direction
-          phone
-          nit
-          visibleOnWeb
-          cashId
-          cash {
-            id
-            branchId
-            amount
-            currentTurnId
-            isOpen
-            currentTurn {
-              id
-              cashId
-              isOpen
-              amountOfMovents
-              openInfo {
-                amount
-                physicialAmount
-                difference
-                date
-                observation
-                openBy
-                openByInfo {
-                  id
-                  name
-                  lastName
-                  email
-                  phone
-                  lastLogin
-                  status
-                  createdBy
-                  roleId
-                  roleInfo {
-                    id
-                    name
-                    code
-                    status
-                  }
-                }
-              }
-              closeInfo {
-                amount
-                physicialAmount
-                difference
-                date
-                observation
-                closeBy
-                closeByInfo {
-                  id
-                  name
-                  lastName
-                  email
-                  phone
-                  lastLogin
-                  status
-                  createdBy
-                  roleId
-                  roleInfo {
-                    id
-                    name
-                    code
-                    status
-                  }
-                }
-              }
-            }
-          }
-        }
+         name
+         description
+         image
       }
       totalRecords
       totalPages

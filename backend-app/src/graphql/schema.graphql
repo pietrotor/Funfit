@@ -87,6 +87,9 @@ type Query {
   getSaleById(id: ObjectId!): SaleResponse
   getSalesPaginated(salesPaginationInput: SalesPaginationInput!): SalesResponse
   getSalesSummary(salesSummaryInput: SalesSummaryInput!): SalesSummaryResponse
+  # ORDER ================================
+  getOrderById(id: ObjectId!): OrderResponse
+  getOrdersPaginated(orderPaginationInput: OrderPaginationInput!): OrdersResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(
     paginationInput: PaginationInput!
@@ -149,6 +152,8 @@ type Mutation {
   # SALES =================================
   createSale(createSaleInput: CreateSaleInput!): SaleResponse
   cancelSale(cancelSaleInput: CancelSaleInput!): SaleResponse
+  # ORDERS =================================
+  acceptOrder(orderId: ObjectId!): OrderResponse
   # ========================= ECOMMERCE ROUTES ============================
   publicCreateCustomer(
     createCustomerInput: CreateCustomerInput!
@@ -341,6 +346,7 @@ type Sale {
   amountRecibed: Float!
   change: Float!
   observations: String
+  orderId: ObjectId
   canceled: Boolean
   reason: String
   createdBy: ObjectId
@@ -381,6 +387,8 @@ type Order {
   rejected: Boolean
   rejectedAt: Date
   rejectedBy: ObjectId
+  isSold: Boolean!
+  saleId: ObjectId
   # Fields Resolvers
   customerInfo: Customer
   addressInfo: Address
@@ -834,6 +842,8 @@ input CreateSaleInput {
   amountRecibed: Float!
   change: Float!
   observations: String
+  # if sale comes from order send this fild
+  orderId: ObjectId
 }
 input SalesSummaryInput {
   branchIds: [ObjectId!]!

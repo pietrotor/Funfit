@@ -297,6 +297,7 @@ export type CreateSaleInput = {
   date: Scalars['Date']['input'];
   discount: Scalars['Float']['input'];
   observations?: InputMaybe<Scalars['String']['input']>;
+  orderId?: InputMaybe<Scalars['ObjectId']['input']>;
   paymentMethod: PaymentMethodEnum;
   products: Array<SaleItemInput>;
   subTotal: Scalars['Float']['input'];
@@ -396,6 +397,7 @@ export type MeasurementUnits = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptOrder?: Maybe<OrderResponse>;
   cancelSale?: Maybe<SaleResponse>;
   closeCash?: Maybe<CashResponse>;
   creatStockMovement?: Maybe<StockResponse>;
@@ -425,6 +427,11 @@ export type Mutation = {
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
+};
+
+
+export type MutationAcceptOrderArgs = {
+  orderId: Scalars['ObjectId']['input'];
 };
 
 
@@ -596,6 +603,7 @@ export type Order = {
   deliveryMethod: DeliveryMethodEnum;
   discount: Scalars['Float']['output'];
   id: Scalars['ObjectId']['output'];
+  isSold: Scalars['Boolean']['output'];
   orderAcepted?: Maybe<Scalars['Boolean']['output']>;
   orderAceptedAt?: Maybe<Scalars['Date']['output']>;
   orderAceptedBy?: Maybe<Scalars['ObjectId']['output']>;
@@ -609,6 +617,7 @@ export type Order = {
   rejectedAt?: Maybe<Scalars['Date']['output']>;
   rejectedBy?: Maybe<Scalars['ObjectId']['output']>;
   rejectedByInfo?: Maybe<User>;
+  saleId?: Maybe<Scalars['ObjectId']['output']>;
   subTotal: Scalars['Float']['output'];
   total: Scalars['Float']['output'];
 };
@@ -700,6 +709,8 @@ export type Query = {
   getCategories?: Maybe<CategoriesResponse>;
   getCategoryById?: Maybe<CategoryResponse>;
   getConfiguration?: Maybe<ConfigurationResponse>;
+  getOrderById?: Maybe<OrderResponse>;
+  getOrdersPaginated?: Maybe<OrdersResponse>;
   getProductById?: Maybe<ProductResponse>;
   getProductStock?: Maybe<StocksResponse>;
   getProducts?: Maybe<ProductsResponse>;
@@ -763,6 +774,16 @@ export type QueryGetCategoriesArgs = {
 
 export type QueryGetCategoryByIdArgs = {
   id: Scalars['ObjectId']['input'];
+};
+
+
+export type QueryGetOrderByIdArgs = {
+  id: Scalars['ObjectId']['input'];
+};
+
+
+export type QueryGetOrdersPaginatedArgs = {
+  orderPaginationInput: OrderPaginationInput;
 };
 
 
@@ -924,6 +945,7 @@ export type Sale = {
   discount: Scalars['Float']['output'];
   id: Scalars['ObjectId']['output'];
   observations?: Maybe<Scalars['String']['output']>;
+  orderId?: Maybe<Scalars['ObjectId']['output']>;
   paymentMethod: PaymentMethodEnum;
   products: Array<SaleItem>;
   reason?: Maybe<Scalars['String']['output']>;
@@ -1759,6 +1781,7 @@ export type MeasurementUnitsResolvers<ContextType = any, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  acceptOrder?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<MutationAcceptOrderArgs, 'orderId'>>;
   cancelSale?: Resolver<Maybe<ResolversTypes['SaleResponse']>, ParentType, ContextType, RequireFields<MutationCancelSaleArgs, 'cancelSaleInput'>>;
   closeCash?: Resolver<Maybe<ResolversTypes['CashResponse']>, ParentType, ContextType, RequireFields<MutationCloseCashArgs, 'closeTurnInput'>>;
   creatStockMovement?: Resolver<Maybe<ResolversTypes['StockResponse']>, ParentType, ContextType, RequireFields<MutationCreatStockMovementArgs, 'createStockMovementInput'>>;
@@ -1816,6 +1839,7 @@ export type OrderResolvers<ContextType = any, ParentType extends ResolversParent
   deliveryMethod?: Resolver<ResolversTypes['DeliveryMethodEnum'], ParentType, ContextType>;
   discount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  isSold?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   orderAcepted?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   orderAceptedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   orderAceptedBy?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
@@ -1829,6 +1853,7 @@ export type OrderResolvers<ContextType = any, ParentType extends ResolversParent
   rejectedAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
   rejectedBy?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   rejectedByInfo?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  saleId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   subTotal?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   total?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -1900,6 +1925,8 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getCategories?: Resolver<Maybe<ResolversTypes['CategoriesResponse']>, ParentType, ContextType, RequireFields<QueryGetCategoriesArgs, 'paginationInput'>>;
   getCategoryById?: Resolver<Maybe<ResolversTypes['CategoryResponse']>, ParentType, ContextType, RequireFields<QueryGetCategoryByIdArgs, 'id'>>;
   getConfiguration?: Resolver<Maybe<ResolversTypes['ConfigurationResponse']>, ParentType, ContextType>;
+  getOrderById?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<QueryGetOrderByIdArgs, 'id'>>;
+  getOrdersPaginated?: Resolver<Maybe<ResolversTypes['OrdersResponse']>, ParentType, ContextType, RequireFields<QueryGetOrdersPaginatedArgs, 'orderPaginationInput'>>;
   getProductById?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<QueryGetProductByIdArgs, 'id'>>;
   getProductStock?: Resolver<Maybe<ResolversTypes['StocksResponse']>, ParentType, ContextType, RequireFields<QueryGetProductStockArgs, 'paginationInput' | 'productId'>>;
   getProducts?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsArgs, 'paginationInput'>>;
@@ -1970,6 +1997,7 @@ export type SaleResolvers<ContextType = any, ParentType extends ResolversParentT
   discount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   observations?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  orderId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   paymentMethod?: Resolver<ResolversTypes['PaymentMethodEnum'], ParentType, ContextType>;
   products?: Resolver<Array<ResolversTypes['SaleItem']>, ParentType, ContextType>;
   reason?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;

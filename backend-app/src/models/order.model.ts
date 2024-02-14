@@ -32,6 +32,8 @@ interface IOrder extends Document, IGeneric {
   orderAcepted: boolean
   orderAceptedAt: Date | null
   orderAceptedBy: objectId | null
+  isSold: boolean | null
+  saleId: objectId | null
   // Cancel fields
   reason: string | null
   rejected: boolean
@@ -39,7 +41,7 @@ interface IOrder extends Document, IGeneric {
   rejectedBy: objectId | null
 }
 
-interface IModelOrder extends Model<IOrder> {}
+interface IModelOrder extends Model<IOrder> { }
 
 const orderSchema = new Schema<IOrder>(
   {
@@ -133,6 +135,14 @@ const orderSchema = new Schema<IOrder>(
     rejectedBy: {
       type: Schema.Types.ObjectId,
       ref: 'User'
+    },
+    isSold: {
+      type: Boolean,
+      default: false
+    },
+    saleId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Sale'
     },
     // Generic Types
     status: { type: Boolean, default: true },

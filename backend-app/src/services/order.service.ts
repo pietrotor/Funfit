@@ -109,11 +109,11 @@ export class OrderService extends OrderRepository<objectId> {
     const [, customerInstance] = await Promise.all([
       branchCore.getBranchById(branchId),
       customerCore.getCustomerById(customerId),
-      async () => {
+      (async () => {
         if (addressId) {
           await addressCore.getAddressById(addressId)
         }
-      }
+      })()
     ])
 
     await Promise.all(
@@ -165,5 +165,14 @@ export class OrderService extends OrderRepository<objectId> {
       customerInstance.save()
     ])
     return orderInstanceSaved
+  }
+
+  async acceptOrder(orderId: objectId, acceptedBy?: objectId) {
+    const orderInstance = await this.getOrderById(orderId)
+    if (orderInstance.orderAcepted) throw new BadRequestError('EL pedido ya fue aceptado previamente')
+    orderInstance.orderAcepted = true
+    orderInstance.orderAceptedAt = new Date()
+    orderInstance.orderAceptedBy = acceptedBy || null
+    return await orderInstance.save()
   }
 }

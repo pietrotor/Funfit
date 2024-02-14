@@ -45,6 +45,13 @@ function CreateStock({ user }: ICreateStock) {
         filter: valueFilterProduct
       },
       warehouseId
+    },
+    onCompleted: data => {
+      console.log(data, 'data')
+    },
+    onError: error => {
+      console.log(error, 'error')
+      showSuccessToast('Error al obtener los productos', 'error')
     }
   })
 
