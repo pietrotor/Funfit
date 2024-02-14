@@ -1,9 +1,9 @@
 import React, { useState } from 'react'
-import { useRouter } from 'next/router'
+// import { useRouter } from 'next/router'
 import { Accordion, AccordionItem, Button, Image } from '@nextui-org/react'
-import { useAppDispatch, useAppSelector } from '@/store/index'
+// import { useAppDispatch, useAppSelector } from '@/store/index'
 import { TUserInfo } from '@/components/templates/OrderLayout/orderLayout'
-import { clearCart } from '@/store/slices'
+// import { clearCart } from '@/store/slices'
 export type activeDirection = {
   location: {
     lat: number
@@ -12,26 +12,22 @@ export type activeDirection = {
   address: string
 }
 type Props = {
-  goToStep: (e: number) => void
-  currentStepIndex: number
   userInfo: TUserInfo
   activeDirection: activeDirection
   send: any
 }
 
 function PaymentMethod({
-  goToStep,
-  currentStepIndex,
   userInfo,
   activeDirection,
   send
 }: Props) {
   const [selectedKeys, setSelectedKeys] = useState(false)
-  const cartItems = useAppSelector(state => state.cartReducer.cartItems)
+  /* const cartItems = useAppSelector(state => state.cartReducer.cartItems)
   const subTotal = useAppSelector(state => state.cartReducer.cartSubTotal)
   const branch = useAppSelector(state => state.ecommerceInformationReducer.name)
   const router = useRouter()
-  const dispatch = useAppDispatch()
+  const dispatch = useAppDispatch() */
 
   const download = (filename: string, content: any) => {
     try {
@@ -55,7 +51,7 @@ function PaymentMethod({
     }
   }
 
-  const handleNotification = () => {
+  /* const handleNotification = () => {
     dispatch(clearCart())
     const message = `El pedido consta de:\n${cartItems
       .map(
@@ -79,7 +75,7 @@ function PaymentMethod({
     )}`
     window.open(whatsappLink, '_blank')
     router.push('/gratitudePage')
-  }
+  } */
 
   return (
     <div className="flex h-full w-full flex-col justify-between space-y-5 p-5 text-center">
@@ -124,24 +120,6 @@ function PaymentMethod({
             y, cuando llegue, podrás pagar en ese momento.
           </AccordionItem>
         </Accordion>
-      </div>
-      <div className="flex items-center justify-between px-8 ">
-        <Button
-          onClick={() => goToStep(currentStepIndex - 1)}
-          color="primary"
-          className="w-1/4"
-        >
-          Atrás
-        </Button>
-        <div className="flex w-1/6 justify-between">
-          <Button
-            color="primary"
-            onClick={handleNotification}
-            className="w-full"
-          >
-            Finalizar
-          </Button>
-        </div>
       </div>
     </div>
   )

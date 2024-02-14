@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import {
   Accordion,
   AccordionItem,
-  Button,
   Radio,
   RadioGroup
 } from '@nextui-org/react'
@@ -13,16 +12,12 @@ import InputComponent from '@/components/atoms/Input'
 import { useAppSelector } from '@/store/index'
 
 type Props = {
-  goToStep: (e: number) => void
-  currentStepIndex: number
   activeDirection: { lat: number; lng: number }
   changeDirection: (p: activeDirection) => void
   send: any
 }
 
 function SendOrder({
-  goToStep,
-  currentStepIndex,
   activeDirection,
   changeDirection,
   send
@@ -48,9 +43,7 @@ function SendOrder({
     })
   }
 
-  // Función para actualizar las coordenadas cuando cambian en el estado
   useEffect(() => {
-    // Puedes realizar acciones aquí cuando las coordenadas cambian en el estado
     console.log('Coordenadas actualizadas:', activeDirection)
   }, [activeDirection])
 
@@ -61,13 +54,9 @@ function SendOrder({
     }
     console.log('Formulario enviado')
     setShowAlert(false)
-    handleNext()
     console.log(send.current)
   }
 
-  const handleNext = () => {
-    goToStep(currentStepIndex + 1)
-  }
   const handlePlace = (place: string, type: string) => {
     setSelectedPlace(type)
     send.current = {
@@ -101,6 +90,23 @@ function SendOrder({
             >
               <Radio value="Recoger en sucursal">Recoger en: {branch}</Radio>
             </RadioGroup>
+            <InputComponent
+                name="branchdetails"
+                control={control}
+                type="text"
+                placeholder="Detalles para el recojo"
+                isRequired
+                className='mt-3'
+                onValueChange={value =>
+                  handlePlace(value, 'Recoger en sucursal')
+                }
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Este campo es requerido'
+                  }
+                }}
+              />
           </AccordionItem>
           <AccordionItem
             key="2"
@@ -156,18 +162,6 @@ function SendOrder({
           <p className="text-red-500">Por favor, seleccione una opción</p>
         </div>
       )}
-      <div className="flex items-center justify-between  px-6 ">
-        <Button
-          onClick={() => goToStep(currentStepIndex - 1)}
-          color="primary"
-          className="w-1/4"
-        >
-          Atrás
-        </Button>
-        <Button color="primary" className="w-1/4" type="submit">
-          Siguiente
-        </Button>
-      </div>
     </form>
   )
 }

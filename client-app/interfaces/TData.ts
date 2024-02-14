@@ -14,15 +14,15 @@ export type TStockData = {
 }
 
 export type TDataBranch = {
-    id: any;
-    name: string;
-    code: string;
-    city: string;
-    direction: string;
-    phone?: string | null | undefined;
-    nit?: string | null | undefined;
-    cashId?: any;
-    visibleOnWeb: boolean;
+  id: any
+  name: string
+  code: string
+  city: string
+  direction: string
+  phone?: string | null | undefined
+  nit?: string | null | undefined
+  cashId?: any
+  visibleOnWeb: boolean
 }
 
 export type TProductBranchData = {
@@ -60,9 +60,38 @@ export type TDataSale = {
 }
 
 export type TSaleProduct = {
-    productId: string,
-    price: number,
-    qty: number,
-    total: number,
-    product: TValueProductData
+  productId: string
+  price: number
+  qty: number
+  total: number
+  product: TValueProductData
+}
+
+export type TCustomerData = {
+  name: string
+  lastname: string
+  phone: string
+  email?: string
+}
+
+export type TProductOrderData = {
+  branchProductId: string
+  price: number
+  productId: string
+  qty: number
+  total: number
+}
+
+export type TOrder = {
+  addressId: string
+  branchId: string
+  customerId: string
+  discount: number
+  deliveryMethod: string
+  orderDetails: string
+  paymentMethod: string
+  pickUpInformation: string
+  products: TProductOrderData[]
+  subTotal: number
+  total: number
 }

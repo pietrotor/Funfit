@@ -821,3 +821,24 @@ export const DELETE_CATEGORY = gql`
     }
   }
 `
+
+export const CREATE_CUSTOMER = gql`
+mutation PublicCreateCustomer($createCustomerInput: CreateCustomerInput!) {
+  publicCreateCustomer(createCustomerInput: $createCustomerInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      lastName
+      email
+      phone
+      ordersIds
+    }
+  }
+}
+`

@@ -18,6 +18,24 @@ export type Scalars = {
   Time: any;
 };
 
+export type Address = {
+  __typename?: 'Address';
+  customerId: Scalars['ObjectId'];
+  customerInfo?: Maybe<Customer>;
+  detail: Scalars['String'];
+  id: Scalars['ObjectId'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+};
+
+export type AddressResponse = ResponseBase & {
+  __typename?: 'AddressResponse';
+  data?: Maybe<Address>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
 export type Branch = {
   __typename?: 'Branch';
   cash?: Maybe<Cash>;
@@ -83,6 +101,13 @@ export type BranchsResponse = ResponseBase & {
   status: StatusEnum;
   totalPages?: Maybe<Scalars['Int']>;
   totalRecords?: Maybe<Scalars['Int']>;
+};
+
+export type CancelSaleInput = {
+  reason: Scalars['String'];
+  returnCash?: InputMaybe<Scalars['Boolean']>;
+  returnStock: Scalars['Boolean'];
+  saleId: Scalars['ObjectId'];
 };
 
 export type Cash = {
@@ -192,6 +217,13 @@ export type ConfigurationResponse = ResponseBase & {
   status: StatusEnum;
 };
 
+export type CreateAddressInput = {
+  customerId: Scalars['ObjectId'];
+  detail: Scalars['String'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+};
+
 export type CreateBranchInput = {
   city: Scalars['String'];
   code: Scalars['String'];
@@ -222,6 +254,27 @@ export type CreateBranchProductStockMovementInput = {
 
 export type CreateCategoryInput = {
   name: Scalars['String'];
+};
+
+export type CreateCustomerInput = {
+  email?: InputMaybe<Scalars['String']>;
+  lastName: Scalars['String'];
+  name: Scalars['String'];
+  phone: Scalars['String'];
+};
+
+export type CreateOrderInput = {
+  addressId?: InputMaybe<Scalars['ObjectId']>;
+  branchId: Scalars['ObjectId'];
+  customerId: Scalars['ObjectId'];
+  deliveryMethod: DeliveryMethodEnum;
+  discount: Scalars['Float'];
+  orderDetails?: InputMaybe<Scalars['String']>;
+  paymentMethod: PaymentMethodEnum;
+  pickUpInformation?: InputMaybe<Scalars['String']>;
+  products: Array<SaleItemInput>;
+  subTotal: Scalars['Float'];
+  total: Scalars['Float'];
 };
 
 export type CreateProductInput = {
@@ -288,6 +341,32 @@ export type CreateWarehouseInput = {
   name: Scalars['String'];
 };
 
+export type Customer = {
+  __typename?: 'Customer';
+  addressInfo: Array<Address>;
+  addressesIds: Array<Scalars['ObjectId']>;
+  email?: Maybe<Scalars['String']>;
+  id: Scalars['ObjectId'];
+  lastName: Scalars['String'];
+  lastOrderDate?: Maybe<Scalars['Date']>;
+  name: Scalars['String'];
+  ordersIds: Array<Scalars['ObjectId']>;
+  phone: Scalars['String'];
+};
+
+export type CustomerResponse = ResponseBase & {
+  __typename?: 'CustomerResponse';
+  data?: Maybe<Customer>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export enum DeliveryMethodEnum {
+  DELIVERY = 'DELIVERY',
+  PICKUP = 'PICKUP'
+}
+
 export type ErrorInput = {
   __typename?: 'ErrorInput';
   field?: Maybe<Scalars['String']>;
@@ -315,6 +394,7 @@ export type MeasurementUnits = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  cancelSale?: Maybe<SaleResponse>;
   closeCash?: Maybe<CashResponse>;
   creatStockMovement?: Maybe<StockResponse>;
   createBranch?: Maybe<BranchResponse>;
@@ -333,6 +413,9 @@ export type Mutation = {
   deleteProduct?: Maybe<ProductResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
   openCash?: Maybe<CashResponse>;
+  publicCreateAddress?: Maybe<AddressResponse>;
+  publicCreateCustomer?: Maybe<CustomerResponse>;
+  publicCreateOrder?: Maybe<OrderResponse>;
   updateBranch?: Maybe<BranchResponse>;
   updateBranchProduct?: Maybe<BranchProductResponse>;
   updateCategory?: Maybe<CategoryResponse>;
@@ -340,6 +423,11 @@ export type Mutation = {
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
+};
+
+
+export type MutationCancelSaleArgs = {
+  cancelSaleInput: CancelSaleInput;
 };
 
 
@@ -433,6 +521,21 @@ export type MutationOpenCashArgs = {
 };
 
 
+export type MutationPublicCreateAddressArgs = {
+  createAddressInput: CreateAddressInput;
+};
+
+
+export type MutationPublicCreateCustomerArgs = {
+  createCustomerInput: CreateCustomerInput;
+};
+
+
+export type MutationPublicCreateOrderArgs = {
+  createOrderInput: CreateOrderInput;
+};
+
+
 export type MutationUpdateBranchArgs = {
   updateBranchInput: UpdateBranchInput;
 };
@@ -477,6 +580,63 @@ export type OpenTurnInfo = {
   openBy?: Maybe<Scalars['ObjectId']>;
   openByInfo?: Maybe<User>;
   physicialAmount: Scalars['Float'];
+};
+
+export type Order = {
+  __typename?: 'Order';
+  addressId?: Maybe<Scalars['ObjectId']>;
+  addressInfo?: Maybe<Address>;
+  branchId: Scalars['ObjectId'];
+  code: Scalars['String'];
+  customerId: Scalars['ObjectId'];
+  customerInfo?: Maybe<Customer>;
+  date: Scalars['Date'];
+  deliveryMethod: DeliveryMethodEnum;
+  discount: Scalars['Float'];
+  id: Scalars['ObjectId'];
+  orderAcepted?: Maybe<Scalars['Boolean']>;
+  orderAceptedAt?: Maybe<Scalars['Date']>;
+  orderAceptedBy?: Maybe<Scalars['ObjectId']>;
+  orderAceptedByInfo?: Maybe<User>;
+  orderDetails?: Maybe<Scalars['String']>;
+  paymentMethod: PaymentMethodEnum;
+  pickUpInformation?: Maybe<Scalars['String']>;
+  products: Array<SaleItem>;
+  reason?: Maybe<Scalars['String']>;
+  rejected?: Maybe<Scalars['Boolean']>;
+  rejectedAt?: Maybe<Scalars['Date']>;
+  rejectedBy?: Maybe<Scalars['ObjectId']>;
+  rejectedByInfo?: Maybe<User>;
+  subTotal: Scalars['Float'];
+  total: Scalars['Float'];
+};
+
+export type OrderPaginationInput = {
+  branchId?: InputMaybe<Scalars['ObjectId']>;
+  filter?: InputMaybe<Scalars['String']>;
+  orderesAcepted?: InputMaybe<Scalars['Boolean']>;
+  page?: InputMaybe<Scalars['Int']>;
+  rows?: InputMaybe<Scalars['Int']>;
+};
+
+export type OrderResponse = ResponseBase & {
+  __typename?: 'OrderResponse';
+  data?: Maybe<Order>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type OrdersResponse = ResponseBase & {
+  __typename?: 'OrdersResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Order>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
 };
 
 export type PaginationInput = {
@@ -542,6 +702,7 @@ export type Query = {
   getProductStock?: Maybe<StocksResponse>;
   getProducts?: Maybe<ProductsResponse>;
   getProductsOutOfWarehouse?: Maybe<ProductsResponse>;
+  getPublicCustomerById?: Maybe<CustomerResponse>;
   getPublicProducts?: Maybe<BranchProductsResponse>;
   getRoles?: Maybe<RolesResponse>;
   getSaleById?: Maybe<SaleResponse>;
@@ -623,6 +784,11 @@ export type QueryGetProductsArgs = {
 export type QueryGetProductsOutOfWarehouseArgs = {
   paginationInput: PaginationInput;
   warehouseId: Scalars['ObjectId'];
+};
+
+
+export type QueryGetPublicCustomerByIdArgs = {
+  id: Scalars['ObjectId'];
 };
 
 
@@ -745,6 +911,8 @@ export type Sale = {
   branchId: Scalars['ObjectId'];
   canceled?: Maybe<Scalars['Boolean']>;
   canceledAt?: Maybe<Scalars['Date']>;
+  canceledBy?: Maybe<Scalars['ObjectId']>;
+  canceledByInfo?: Maybe<User>;
   change: Scalars['Float'];
   client?: Maybe<Scalars['String']>;
   code: Scalars['String'];
@@ -1226,6 +1394,13 @@ export type DeleteCategoryMutationVariables = Exact<{
 
 export type DeleteCategoryMutation = { __typename?: 'Mutation', deleteCategory?: { __typename?: 'CategoryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null };
 
+export type PublicCreateCustomerMutationVariables = Exact<{
+  createCustomerInput: CreateCustomerInput;
+}>;
+
+
+export type PublicCreateCustomerMutation = { __typename?: 'Mutation', publicCreateCustomer?: { __typename?: 'CustomerResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Customer', id: any, name: string, lastName: string, email?: string | null, phone: string, ordersIds: Array<any> } | null } | null };
+
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1440,6 +1615,13 @@ export type GetPublicProductsQueryVariables = Exact<{
 
 
 export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, category?: { __typename?: 'Category', id: any, name: string, code: string } | null } | null, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, visibleOnWeb: boolean, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null }> | null } | null };
+
+export type GetPublicCustomerByIdQueryVariables = Exact<{
+  getPublicCustomerByIdId: Scalars['ObjectId'];
+}>;
+
+
+export type GetPublicCustomerByIdQuery = { __typename?: 'Query', getPublicCustomerById?: { __typename?: 'CustomerResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Customer', id: any, name: string, lastName: string, email?: string | null, phone: string, lastOrderDate?: any | null, ordersIds: Array<any>, addressInfo: Array<{ __typename?: 'Address', id: any, latitude: number, longitude: number }> } | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -2764,6 +2946,52 @@ export function useDeleteCategoryMutation(baseOptions?: Apollo.MutationHookOptio
 export type DeleteCategoryMutationHookResult = ReturnType<typeof useDeleteCategoryMutation>;
 export type DeleteCategoryMutationResult = Apollo.MutationResult<DeleteCategoryMutation>;
 export type DeleteCategoryMutationOptions = Apollo.BaseMutationOptions<DeleteCategoryMutation, DeleteCategoryMutationVariables>;
+export const PublicCreateCustomerDocument = gql`
+    mutation PublicCreateCustomer($createCustomerInput: CreateCustomerInput!) {
+  publicCreateCustomer(createCustomerInput: $createCustomerInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      lastName
+      email
+      phone
+      ordersIds
+    }
+  }
+}
+    `;
+export type PublicCreateCustomerMutationFn = Apollo.MutationFunction<PublicCreateCustomerMutation, PublicCreateCustomerMutationVariables>;
+
+/**
+ * __usePublicCreateCustomerMutation__
+ *
+ * To run a mutation, you first call `usePublicCreateCustomerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePublicCreateCustomerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [publicCreateCustomerMutation, { data, loading, error }] = usePublicCreateCustomerMutation({
+ *   variables: {
+ *      createCustomerInput: // value for 'createCustomerInput'
+ *   },
+ * });
+ */
+export function usePublicCreateCustomerMutation(baseOptions?: Apollo.MutationHookOptions<PublicCreateCustomerMutation, PublicCreateCustomerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PublicCreateCustomerMutation, PublicCreateCustomerMutationVariables>(PublicCreateCustomerDocument, options);
+      }
+export type PublicCreateCustomerMutationHookResult = ReturnType<typeof usePublicCreateCustomerMutation>;
+export type PublicCreateCustomerMutationResult = Apollo.MutationResult<PublicCreateCustomerMutation>;
+export type PublicCreateCustomerMutationOptions = Apollo.BaseMutationOptions<PublicCreateCustomerMutation, PublicCreateCustomerMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {
@@ -5015,3 +5243,57 @@ export function useGetPublicProductsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetPublicProductsQueryHookResult = ReturnType<typeof useGetPublicProductsQuery>;
 export type GetPublicProductsLazyQueryHookResult = ReturnType<typeof useGetPublicProductsLazyQuery>;
 export type GetPublicProductsQueryResult = Apollo.QueryResult<GetPublicProductsQuery, GetPublicProductsQueryVariables>;
+export const GetPublicCustomerByIdDocument = gql`
+    query GetPublicCustomerById($getPublicCustomerByIdId: ObjectId!) {
+  getPublicCustomerById(id: $getPublicCustomerByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      lastName
+      email
+      phone
+      lastOrderDate
+      ordersIds
+      addressInfo {
+        id
+        latitude
+        longitude
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPublicCustomerByIdQuery__
+ *
+ * To run a query within a React component, call `useGetPublicCustomerByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublicCustomerByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublicCustomerByIdQuery({
+ *   variables: {
+ *      getPublicCustomerByIdId: // value for 'getPublicCustomerByIdId'
+ *   },
+ * });
+ */
+export function useGetPublicCustomerByIdQuery(baseOptions: Apollo.QueryHookOptions<GetPublicCustomerByIdQuery, GetPublicCustomerByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPublicCustomerByIdQuery, GetPublicCustomerByIdQueryVariables>(GetPublicCustomerByIdDocument, options);
+      }
+export function useGetPublicCustomerByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPublicCustomerByIdQuery, GetPublicCustomerByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPublicCustomerByIdQuery, GetPublicCustomerByIdQueryVariables>(GetPublicCustomerByIdDocument, options);
+        }
+export type GetPublicCustomerByIdQueryHookResult = ReturnType<typeof useGetPublicCustomerByIdQuery>;
+export type GetPublicCustomerByIdLazyQueryHookResult = ReturnType<typeof useGetPublicCustomerByIdLazyQuery>;
+export type GetPublicCustomerByIdQueryResult = Apollo.QueryResult<GetPublicCustomerByIdQuery, GetPublicCustomerByIdQueryVariables>;

@@ -1,9 +1,12 @@
 import React, { useRef, useState } from 'react'
+import { Button } from '@nextui-org/react'
+import { useForm } from 'react-hook-form'
 import Stepper, { Step } from '@/components/molecules/Stepper/stepper'
 import RegisterForm from '@/components/molecules/RegisterForm/registerForm'
 import SendOrder from '@/components/molecules/SendOreder/sendOrder'
 import PaymentMethod from '@/components/molecules/PaymentMethod/paymentMethod'
 import SideCart from '@/components/molecules/SideCart/sideCart'
+import { useCustomPublicCreateCurstomer } from '@/hooks/UseCustomerQuery'
 
 export type TUserInfo = {
   name: string
@@ -31,6 +34,8 @@ function OrderLayout() {
   const [currentStep, setCurrentStep] = useState<Step[]>(steps)
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
   const [userInfo, setUserInfo] = useState<TUserInfo>({} as TUserInfo)
+  const { control, handleSubmit, watch, setValue } = useForm()
+  const { handleCreatePublicCustomer } = useCustomPublicCreateCurstomer()
   const [activeDirection, setActiveDirection] = useState({
     location: {
       lat: -17.414,
@@ -38,7 +43,7 @@ function OrderLayout() {
     },
     address: ''
   })
-  console.log(activeDirection)
+  // console.log(activeDirection)
   const send = useRef({
     type: '',
     address: ''
@@ -61,43 +66,65 @@ function OrderLayout() {
     setCurrentStepIndex(stepIndex)
   }
 
+  const handleCustomerCreated = () => {
+    goToStep(currentStepIndex + 1)
+  }
+
+  const onSubmit = () => {
+    if (currentStepIndex === 0) {
+      setUserInfo({
+        name: watch('name'),
+        lastName: watch('lastName'),
+        email: watch('email'),
+        phone: watch('phone')
+      })
+      handleCreatePublicCustomer(userInfo, handleCustomerCreated)
+    }
+  }
   return (
     <div className="mx-6 flex min-h-screen items-center justify-between space-x-4 md:px-7">
-      <div className="flex w-full flex-col shadow-2xl lg:w-2/3">
+      <form
+        className="flex w-full flex-col  shadow-2xl lg:w-2/3"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <div className="h-24 rounded-md bg-white shadow-lg">
           <Stepper steps={currentStep} />
         </div>
-        <div className="rounded-md border bg-white shadow-lg h-96">
+        <div className="h-72 rounded-md border bg-white shadow-lg">
           {currentStep[0].isActive === 'active' ? (
-            <RegisterForm
-              goToStep={goToStep}
-              currentStepIndex={currentStepIndex}
-              setUserInfo = {setUserInfo}
-            />
+            <RegisterForm control={control} setValue={setValue} />
           ) : currentStep[1].isActive === 'active' ? (
             <SendOrder
-              goToStep={goToStep}
-              currentStepIndex={currentStepIndex}
               activeDirection={activeDirection.location}
-              changeDirection={(value) => setActiveDirection(value)}
+              changeDirection={value => setActiveDirection(value)}
               send={send}
             />
           ) : (
             <PaymentMethod
-              goToStep={goToStep}
-              currentStepIndex={currentStepIndex}
               userInfo={userInfo}
               activeDirection={activeDirection}
               send={send}
             />
           )}
         </div>
-      </div>
+        <div className="flex items-center justify-around  bg-white py-7">
+          <Button
+            onClick={() => goToStep(currentStepIndex - 1)}
+            color="primary"
+            className="w-1/4"
+          >
+            Atrás
+          </Button>
+          <Button color="primary" className="w-1/4" type="submit">
+            Siguiente
+          </Button>
+        </div>
+      </form>
       <div className="hidden flex-col justify-start shadow-2xl md:w-1/3 lg:flex">
         <div className="flex h-24 items-center justify-center border-b-2 bg-white shadow-md ">
           <h3 className="text-gray-500">Tus compras</h3>
         </div>
-        <div className=" overflow-y-auto  max-h-96">
+        <div className=" max-h-96  overflow-y-auto scrollbar-hide">
           <SideCart />
         </div>
       </div>

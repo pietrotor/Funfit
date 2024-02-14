@@ -104,7 +104,7 @@ export const ecommerceType = {
       parent: Customer,
       _: any,
       __: any
-    ): Promise<Address | null> {
+    ): Promise<Address[] | null> {
       if (parent.addressesIds) {
         const address = await Promise.all(
           parent.addressesIds.map(async addressId => {
