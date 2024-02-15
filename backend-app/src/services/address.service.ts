@@ -2,6 +2,7 @@ import { BadRequestError } from '@/lib/graphqlerrors'
 import { Address } from '../models'
 import { AddressRepository } from '../repositories'
 import { CreateAddressInput } from '@/graphql/graphql_types'
+import { customerCore } from '.'
 
 export class AddressService extends AddressRepository<objectId> {
   async getAddressById(id: objectId) {
@@ -26,7 +27,11 @@ export class AddressService extends AddressRepository<objectId> {
     createAddressInput: CreateAddressInput,
     createdBy?: objectId
   ) {
+    const { customerId } = createAddressInput
+    const customerInstance = await customerCore.getCustomerById(customerId)
     const addressInstance = new Address({ ...createAddressInput, createdBy })
+    customerInstance.addressesIds.push(addressInstance._id)
+    await customerInstance.save()
     return await addressInstance.save()
   }
 }
