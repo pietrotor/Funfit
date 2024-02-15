@@ -113,13 +113,13 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   })
 
   useEffect(() => {
-    const timerId = setInterval(() => {
-      getOrders()
-    }, 60000)
+    // const timerId = setInterval(() => {
+    //   getOrders()
+    // }, 60000)
 
-    return () => {
-      clearInterval(timerId)
-    }
+    // return () => {
+    //   clearInterval(timerId)
+    // }
   }, [])
 
   console.log(data?.getOrdersPaginated?.data, 'data')
