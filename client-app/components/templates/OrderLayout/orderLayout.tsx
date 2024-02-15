@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { Button } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import Stepper, { Step } from '@/components/molecules/Stepper/stepper'
@@ -7,6 +7,9 @@ import SendOrder from '@/components/molecules/SendOreder/sendOrder'
 import PaymentMethod from '@/components/molecules/PaymentMethod/paymentMethod'
 import SideCart from '@/components/molecules/SideCart/sideCart'
 import { useCustomPublicCreateCurstomer } from '@/hooks/UseCustomerQuery'
+import { CUSTOMER_ID } from '@/lib/constants'
+import { useGetPublicCustomerByIdLazyQuery } from '@/graphql/graphql-types'
+import { TCustomer } from '@/interfaces/TData'
 
 export type TUserInfo = {
   name: string
@@ -48,6 +51,29 @@ function OrderLayout() {
     type: '',
     address: ''
   })
+  const customerId = localStorage.getItem(CUSTOMER_ID)?.replace(/^"|"$/g, '')
+  console.log(customerId)
+  const [getCustomer, { data }] = useGetPublicCustomerByIdLazyQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      getPublicCustomerByIdId: customerId
+    },
+    onCompleted: data => {
+      setValue('name', data?.getPublicCustomerById?.data?.name)
+      setValue('lastName', data?.getPublicCustomerById?.data?.lastName)
+      setValue('email', data?.getPublicCustomerById?.data?.email)
+      setValue('phone', data?.getPublicCustomerById?.data?.phone)
+    },
+    onError: error => {
+      console.log(error)
+    }
+  })
+
+  useEffect(() => {
+    if (customerId) {
+      getCustomer()
+    }
+  }, [])
 
   const goToStep = (stepIndex: number) => {
     const updatedSteps = [...currentStep]
@@ -92,12 +118,13 @@ function OrderLayout() {
         </div>
         <div className="h-72 rounded-md border bg-white shadow-lg">
           {currentStep[0].isActive === 'active' ? (
-            <RegisterForm control={control} setValue={setValue} />
+            <RegisterForm control={control} />
           ) : currentStep[1].isActive === 'active' ? (
             <SendOrder
               activeDirection={activeDirection.location}
               changeDirection={value => setActiveDirection(value)}
               send={send}
+              customer={data?.getPublicCustomerById?.data as TCustomer}
             />
           ) : (
             <PaymentMethod

@@ -73,13 +73,6 @@ export type TSaleProduct = {
   product: TValueProductData
 }
 
-export type TCustomerData = {
-  name: string
-  lastname: string
-  phone: string
-  email?: string
-}
-
 export type TProductOrderData = {
   branchProductId: string
   price: number
@@ -100,4 +93,23 @@ export type TOrder = {
   products: TProductOrderData[]
   subTotal: number
   total: number
+}
+
+export type TaddressInfo = {
+    id: string
+    latitude: number
+    longitude: number
+    detail: string
+  }
+
+export type TCustomer = {
+    id: string
+    name: string
+    lastName: string
+    email?: string
+    phone: string
+    lastOrderDate: string
+    ordersIds: string[]
+    addressInfo: TaddressInfo[]
+    addressesIds: string[]
 }

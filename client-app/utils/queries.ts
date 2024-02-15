@@ -649,7 +649,6 @@ export const GET_CASH_BY_ID = gql`
           cashId
           isOpen
           amountOfMovents
-          
         }
       }
     }
@@ -677,7 +676,7 @@ export const GET_CASH_TURN_MOVEMENTS = gql`
         createdByInfo {
           id
           name
-          lastName          
+          lastName
         }
       }
       totalRecords
@@ -706,11 +705,11 @@ export const GET_SALES_PAGINATED = gql`
             name
           }
         }
-         total
-         discount
-         date
-         code
-         canceled
+        total
+        discount
+        date
+        code
+        canceled
         createdByInfo {
           id
           name
@@ -856,10 +855,10 @@ export const GET_PRODUCT_STOCK = gql`
       message
       data {
         id
-         productId
-         warehouseId
-         quantity
-         units
+        productId
+        warehouseId
+        quantity
+        units
       }
       totalRecords
       totalPages
@@ -886,18 +885,18 @@ export const GET_PUBLIC_BRANCH_PRODUCTS = gql`
     status
     message
     data {
-       id
-       branchId
-       productId
-       price
+      id
+      branchId
+      productId
+      price
       stock
-       isVisibleOnWeb
-       isVisibleOnMenu
+      isVisibleOnWeb
+      isVisibleOnMenu
       product {
         id
-         name
-         description
-         image
+        name
+        description
+        image
       }
       totalRecords
       totalPages
@@ -928,7 +927,9 @@ export const GET_PUBLIC_CUSTOMER_BY_ID = gql`
           id
           latitude
           longitude
+          detail
         }
+        addressesIds
       }
     }
   }

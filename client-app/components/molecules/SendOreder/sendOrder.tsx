@@ -1,31 +1,30 @@
 import React, { useEffect, useState } from 'react'
-import {
-  Accordion,
-  AccordionItem,
-  Radio,
-  RadioGroup
-} from '@nextui-org/react'
+import { Accordion, AccordionItem, Radio, RadioGroup } from '@nextui-org/react'
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
 import { useForm } from 'react-hook-form'
 import { activeDirection } from '../PaymentMethod/paymentMethod'
 import InputComponent from '@/components/atoms/Input'
 import { useAppSelector } from '@/store/index'
+import { TCustomer } from '@/interfaces/TData'
 
 type Props = {
   activeDirection: { lat: number; lng: number }
   changeDirection: (p: activeDirection) => void
   send: any
+  customer: TCustomer
 }
 
 function SendOrder({
   activeDirection,
   changeDirection,
-  send
+  send,
+  customer
 }: Props) {
   const [selectedKeys, setSelectedKeys] = useState(new Set(['0']))
   const [selectedPlace, setSelectedPlace] = useState('')
   const [showAlert, setShowAlert] = useState(false)
   const branch = useAppSelector(state => state.ecommerceInformationReducer.name)
+  console.log(branch)
   const { handleSubmit, control, watch } = useForm()
 
   const { isLoaded } = useJsApiLoader({
@@ -84,29 +83,27 @@ function SendOrder({
             <RadioGroup
               name="branch"
               onValueChange={setSelectedPlace}
-              onChange={(e) => handlePlace(e.target.value, 'Recoger en sucursal')}
+              onChange={e => handlePlace(e.target.value, 'Recoger en sucursal')}
               value={selectedPlace}
               color="secondary"
             >
               <Radio value="Recoger en sucursal">Recoger en: {branch}</Radio>
             </RadioGroup>
             <InputComponent
-                name="branchdetails"
-                control={control}
-                type="text"
-                placeholder="Detalles para el recojo"
-                isRequired
-                className='mt-3'
-                onValueChange={value =>
-                  handlePlace(value, 'Recoger en sucursal')
+              name="branchdetails"
+              control={control}
+              type="text"
+              placeholder="Detalles para el recojo"
+              isRequired
+              className="mt-3"
+              onValueChange={value => handlePlace(value, 'Recoger en sucursal')}
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Este campo es requerido'
                 }
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                  }
-                }}
-              />
+              }}
+            />
           </AccordionItem>
           <AccordionItem
             key="2"
@@ -119,7 +116,9 @@ function SendOrder({
                 name="delivery"
                 onValueChange={setSelectedPlace}
                 value={selectedPlace}
-                onChange={e => handlePlace(e.target.value, 'Entrega a domicilio')}
+                onChange={e =>
+                  handlePlace(e.target.value, 'Entrega a domicilio')
+                }
               >
                 <Radio value="Entrega a domicilio">Entrega a domicilio</Radio>
               </RadioGroup>

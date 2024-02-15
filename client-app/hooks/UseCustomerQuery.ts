@@ -20,13 +20,6 @@ export function useCustomPublicCreateCurstomer() {
         }
       },
       onCompleted: result => {
-        if (result.publicCreateCustomer?.status === StatusEnum.ERROR) {
-          showSuccessToast(
-            result.publicCreateCustomer.message ||
-              'Error en el registro de datos',
-            'error'
-          )
-        }
         if (result.publicCreateCustomer?.status === StatusEnum.OK) {
           localStorage.setItem(
             CUSTOMER_ID,
@@ -34,6 +27,9 @@ export function useCustomPublicCreateCurstomer() {
           )
           callback()
         }
+      },
+      onError: () => {
+        showSuccessToast('Error en el registro de datos', 'error')
       }
     })
   }

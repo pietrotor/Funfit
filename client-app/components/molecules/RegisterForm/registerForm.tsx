@@ -1,39 +1,12 @@
-import React, { useEffect } from 'react'
-import { Control, FieldValues, UseFormSetValue } from 'react-hook-form'
+import React from 'react'
+import { Control, FieldValues } from 'react-hook-form'
 import InputComponent from '@/components/atoms/Input'
-import { CUSTOMER_ID } from '@/lib/constants'
-import { useGetPublicCustomerByIdLazyQuery } from '@/graphql/graphql-types'
 
 type Props = {
   control: Control<FieldValues, any>
-  setValue: UseFormSetValue<FieldValues>
 }
 
-function RegisterForm({ control, setValue }: Props) {
-  const customerId = localStorage.getItem(CUSTOMER_ID)?.replace(/^"|"$/g, '')
-  console.log(customerId)
-  const [getCustomer] = useGetPublicCustomerByIdLazyQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      getPublicCustomerByIdId: customerId
-    },
-    onCompleted: data => {
-      setValue('name', data?.getPublicCustomerById?.data?.name)
-      setValue('lastName', data?.getPublicCustomerById?.data?.lastName)
-      setValue('email', data?.getPublicCustomerById?.data?.email)
-      setValue('phone', data?.getPublicCustomerById?.data?.phone)
-    },
-    onError: error => {
-      console.log(error)
-    }
-  })
-
-  useEffect(() => {
-    if (customerId) {
-      getCustomer()
-    }
-  }, [])
-
+function RegisterForm({ control }: Props) {
   return (
     <div className="flex h-full w-full flex-col space-y-5 p-5 text-center">
       <h2 className="text-gray-500">Datos de contacto</h2>
