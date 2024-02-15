@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Button } from '@nextui-org/react'
 import { useForm } from 'react-hook-form'
 import Stepper, { Step } from '@/components/molecules/Stepper/stepper'
@@ -9,7 +9,11 @@ import SideCart from '@/components/molecules/SideCart/sideCart'
 import { useCustomPublicCreateCurstomer } from '@/hooks/UseCustomerQuery'
 import { CUSTOMER_ID } from '@/lib/constants'
 import { useGetPublicCustomerByIdLazyQuery } from '@/graphql/graphql-types'
-import { TCustomer } from '@/interfaces/TData'
+import { TCustomer, TOrder } from '@/interfaces/TData'
+// import { useAppSelector } from '@/store/index'
+// import { useRouter } from 'next/router'
+// import { useDispatch } from 'react-redux'
+// import { clearCart } from '@/store/slices'
 
 export type TUserInfo = {
   name: string
@@ -33,12 +37,18 @@ function OrderLayout() {
       isActive: 'inactive'
     }
   ]
+  const customerId = localStorage.getItem(CUSTOMER_ID)?.replace(/^"|"$/g, '')
+  // const cartItems = useAppSelector(state => state.cartReducer.cartItems)
+  // const subTotal = useAppSelector(state => state.cartReducer.cartSubTotal)
+  // const branch = useAppSelector(state => state.ecommerceInformationReducer.name)
+  // const router = useRouter()
+  // const dispatch = useDispatch()
 
   const [currentStep, setCurrentStep] = useState<Step[]>(steps)
   const [currentStepIndex, setCurrentStepIndex] = useState<number>(0)
   const [userInfo, setUserInfo] = useState<TUserInfo>({} as TUserInfo)
-  const { control, handleSubmit, watch, setValue } = useForm()
-  const { handleCreatePublicCustomer } = useCustomPublicCreateCurstomer()
+  const [order, setOrder] = useState<TOrder>()
+  const [selectedOption, setSelectedOption] = useState('')
   const [activeDirection, setActiveDirection] = useState({
     location: {
       lat: -17.414,
@@ -46,13 +56,10 @@ function OrderLayout() {
     },
     address: ''
   })
-  // console.log(activeDirection)
-  const send = useRef({
-    type: '',
-    address: ''
-  })
-  const customerId = localStorage.getItem(CUSTOMER_ID)?.replace(/^"|"$/g, '')
-  console.log(customerId)
+
+  const { control, handleSubmit, watch, setValue } = useForm()
+  const { handleCreatePublicCustomer } = useCustomPublicCreateCurstomer()
+
   const [getCustomer, { data }] = useGetPublicCustomerByIdLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -101,7 +108,38 @@ function OrderLayout() {
         phone: watch('phone')
       })
       handleCreatePublicCustomer(userInfo, () => goToStep(currentStepIndex + 1))
-    }
+    } else if (currentStepIndex === 1) {
+      goToStep(currentStepIndex + 1)
+    }/* else if (currentStepIndex === 2) {
+      setOrder({
+        ...order,
+
+      })
+      const message = `El pedido consta de:\n${cartItems
+        .map(
+          item =>
+            ` ${item.quantity} unidades de ${item.productName} a ${
+              item.price
+            } Bs. con un total de ${item.price * item.quantity}`
+        )
+        .join(
+          '\n'
+        )}\n\nSubtotal: ${subTotal} Bs.\n\nInformación de contacto:\n* Cliente: ${
+        userInfo.name
+      } ${userInfo.lastName}\n* Teléfono: ${userInfo.phone}\n* Correo: ${
+        userInfo.email
+      }\n ${
+        send.current.type !== 'Entrega a domicilio'
+          ? `\nTipo de entrega: 'Recojo en Sucursal'\n Sucursal: ${branch}`
+          : `\nUbicación: \n https://maps.google.com/?q=${activeDirection.location.lat},${activeDirection.location.lng} \n Detalles: \n ${send.current.address}`
+      } `
+
+      const whatsappLink = `https://api.whatsapp.com/send?phone=76475010&text=${encodeURIComponent(
+        message
+      )}`
+      window.open(whatsappLink, '_blank')
+      router.push('/gratitudePage')
+    } */
   }
   return (
     <div className="mx-6 flex min-h-screen items-center justify-between space-x-4 md:px-7">
@@ -119,16 +157,20 @@ function OrderLayout() {
             <SendOrder
               activeDirection={activeDirection.location}
               changeDirection={value => setActiveDirection(value)}
-              send={send}
               customer={data?.getPublicCustomerById?.data as TCustomer}
               control={control}
               watch={watch}
+              setOrder={setOrder}
+              order={order as TOrder}
+              selectedOption={selectedOption}
+              setSelectedOption={setSelectedOption}
             />
           ) : (
             <PaymentMethod
               userInfo={userInfo}
               activeDirection={activeDirection}
-              send={send}
+              order={order as TOrder}
+              setOrder={setOrder}
             />
           )}
         </div>

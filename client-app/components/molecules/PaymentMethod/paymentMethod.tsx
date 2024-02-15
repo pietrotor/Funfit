@@ -3,6 +3,7 @@ import React, { useState } from 'react'
 import { Accordion, AccordionItem, Button, Image } from '@nextui-org/react'
 // import { useAppDispatch, useAppSelector } from '@/store/index'
 import { TUserInfo } from '@/components/templates/OrderLayout/orderLayout'
+import { TOrder } from '@/interfaces/TData'
 // import { clearCart } from '@/store/slices'
 export type activeDirection = {
   location: {
@@ -11,23 +12,20 @@ export type activeDirection = {
   }
   address: string
 }
-type Props = {
+type PaymentMethodProps = {
   userInfo: TUserInfo
   activeDirection: activeDirection
-  send: any
+  order: TOrder
+  setOrder: (order: TOrder) => void
 }
 
 function PaymentMethod({
   userInfo,
   activeDirection,
-  send
-}: Props) {
+  order,
+  setOrder
+}: PaymentMethodProps) {
   const [selectedKeys, setSelectedKeys] = useState(false)
-  /* const cartItems = useAppSelector(state => state.cartReducer.cartItems)
-  const subTotal = useAppSelector(state => state.cartReducer.cartSubTotal)
-  const branch = useAppSelector(state => state.ecommerceInformationReducer.name)
-  const router = useRouter()
-  const dispatch = useAppDispatch() */
 
   const download = (filename: string, content: any) => {
     try {
@@ -50,32 +48,6 @@ function PaymentMethod({
       console.error(error)
     }
   }
-
-  /* const handleNotification = () => {
-    dispatch(clearCart())
-    const message = `El pedido consta de:\n${cartItems
-      .map(
-        item =>
-          ` ${item.quantity} unidades de ${item.productName} a ${
-            item.price
-          } Bs. con un total de ${item.price * item.quantity}`
-      )
-      .join(
-        '\n'
-      )}\n\nSubtotal: ${subTotal} Bs.\n\nInformación de contacto:\n* Cliente: ${
-      userInfo.name
-    } ${userInfo.lastName}\n* Teléfono: ${userInfo.phone}\n* Correo: ${
-      userInfo.email
-    }\n ${
-      send.current.type !== 'Entrega a domicilio' ? `\nTipo de entrega: 'Recojo en Sucursal'\n Sucursal: ${branch}` : `\nUbicación: \n https://maps.google.com/?q=${activeDirection.location.lat},${activeDirection.location.lng} \n Detalles: \n ${send.current.address}`
-    } `
-
-    const whatsappLink = `https://api.whatsapp.com/send?phone=76475010&text=${encodeURIComponent(
-      message
-    )}`
-    window.open(whatsappLink, '_blank')
-    router.push('/gratitudePage')
-  } */
 
   return (
     <div className="flex h-full w-full flex-col justify-between space-y-5 p-5 text-center">

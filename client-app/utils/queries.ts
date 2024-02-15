@@ -932,7 +932,6 @@ export const GET_PUBLIC_CUSTOMER_BY_ID = gql`
           longitude
           detail
         }
-        addressesIds
       }
     }
   }

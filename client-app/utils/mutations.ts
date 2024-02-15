@@ -104,15 +104,15 @@ export const CREATE_BRANCH = gql`
 
 export const UPDATE_BRANCH = gql`
   mutation UpdateBranch($updateBranchInput: UpdateBranchInput!) {
-  updateBranch(updateBranchInput: $updateBranchInput) {
-    errorInput {
+    updateBranch(updateBranchInput: $updateBranchInput) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
     }
-    status
-    message
   }
-}
 `
 export const DELETE_BRANCH = gql`
   mutation DeleteBranch($deleteBranchId: ObjectId!) {
@@ -123,7 +123,6 @@ export const DELETE_BRANCH = gql`
       }
       status
       message
-  
     }
   }
 `
@@ -139,7 +138,6 @@ export const CREATE_BRANCH_PRODUCT = gql`
       }
       status
       message
-   
     }
   }
 `
@@ -155,7 +153,6 @@ export const UPDATE_BRANCH_PRODUCT = gql`
       }
       status
       message
-     
     }
   }
 `
@@ -168,7 +165,6 @@ export const OPEN_CASH = gql`
       }
       status
       message
-    
     }
   }
 `
@@ -181,7 +177,6 @@ export const CLOSE_CASH = gql`
       }
       status
       message
-    
     }
   }
 `
@@ -196,7 +191,6 @@ export const CREATE_CASH_MOVEMENT = gql`
       }
       status
       message
-      
     }
   }
 `
@@ -265,39 +259,52 @@ export const DELETE_CATEGORY = gql`
       }
       status
       message
+    }
   }
-}
 `
 export const CANCEL_SALE = gql`
-mutation CancelSale($cancelSaleInput: CancelSaleInput!) {
-  cancelSale(cancelSaleInput: $cancelSaleInput) {
-    errorInput {
+  mutation CancelSale($cancelSaleInput: CancelSaleInput!) {
+    cancelSale(cancelSaleInput: $cancelSaleInput) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
     }
-    status
-    message
   }
-}
 `
 
 export const CREATE_CUSTOMER = gql`
-mutation PublicCreateCustomer($createCustomerInput: CreateCustomerInput!) {
-  publicCreateCustomer(createCustomerInput: $createCustomerInput) {
-    errorInput {
+  mutation PublicCreateCustomer($createCustomerInput: CreateCustomerInput!) {
+    publicCreateCustomer(createCustomerInput: $createCustomerInput) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
-    }
-    status
-    message
-    data {
-      id
-      name
-      lastName
-      email
-      phone
-      ordersIds
+      data {
+        id
+        name
+        lastName
+        email
+        phone
+        ordersIds
+      }
     }
   }
-}
+`
+
+export const PUBLIC_CREATE_ORDER = gql`
+  mutation PublicCreateOrder($createOrderInput: CreateOrderInput!) {
+    publicCreateOrder(createOrderInput: $createOrderInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
 `
