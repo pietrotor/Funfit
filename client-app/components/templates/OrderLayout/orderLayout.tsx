@@ -92,10 +92,6 @@ function OrderLayout() {
     setCurrentStepIndex(stepIndex)
   }
 
-  const handleCustomerCreated = () => {
-    goToStep(currentStepIndex + 1)
-  }
-
   const onSubmit = () => {
     if (currentStepIndex === 0) {
       setUserInfo({
@@ -104,7 +100,7 @@ function OrderLayout() {
         email: watch('email'),
         phone: watch('phone')
       })
-      handleCreatePublicCustomer(userInfo, handleCustomerCreated)
+      handleCreatePublicCustomer(userInfo, () => goToStep(currentStepIndex + 1))
     }
   }
   return (
@@ -125,6 +121,8 @@ function OrderLayout() {
               changeDirection={value => setActiveDirection(value)}
               send={send}
               customer={data?.getPublicCustomerById?.data as TCustomer}
+              control={control}
+              watch={watch}
             />
           ) : (
             <PaymentMethod

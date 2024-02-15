@@ -880,23 +880,26 @@ export const GET_PUBLIC_BRANCH_PRODUCTS = gql`
       }
       status
       message
-      field
-    }
-    status
-    message
-    data {
-      id
-      branchId
-      productId
-      price
-      stock
-      isVisibleOnWeb
-      isVisibleOnMenu
-      product {
+      data {
         id
-        name
-        description
-        image
+        branchId
+        productId
+        price
+        stock
+        isVisibleOnWeb
+        isVisibleOnMenu
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          internalCode
+          description
+          categoryId
+          cost
+          image
+          warehouses
+        }
       }
       totalRecords
       totalPages

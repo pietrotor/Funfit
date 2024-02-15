@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { Accordion, AccordionItem, Radio, RadioGroup } from '@nextui-org/react'
 import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
-import { useForm } from 'react-hook-form'
+import { Control, FieldValues, UseFormWatch } from 'react-hook-form'
 import { activeDirection } from '../PaymentMethod/paymentMethod'
 import InputComponent from '@/components/atoms/Input'
 import { useAppSelector } from '@/store/index'
@@ -12,20 +12,22 @@ type Props = {
   changeDirection: (p: activeDirection) => void
   send: any
   customer: TCustomer
+  control: Control<FieldValues, any>
+  watch: UseFormWatch<FieldValues>
 }
 
 function SendOrder({
   activeDirection,
   changeDirection,
   send,
-  customer
+  customer,
+  control,
+  watch
 }: Props) {
   const [selectedKeys, setSelectedKeys] = useState(new Set(['0']))
-  const [selectedPlace, setSelectedPlace] = useState('')
-  const [showAlert, setShowAlert] = useState(false)
+  const [selectedOption, setSelectedOption] = useState('')
+  const [showAlert] = useState(false)
   const branch = useAppSelector(state => state.ecommerceInformationReducer.name)
-  console.log(branch)
-  const { handleSubmit, control, watch } = useForm()
 
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: 'AIzaSyDcrnsyWSi4kyUOyUujyL0zhmuOfyubZ9U' || ''
@@ -46,7 +48,7 @@ function SendOrder({
     console.log('Coordenadas actualizadas:', activeDirection)
   }, [activeDirection])
 
-  const onSubmit = () => {
+  /* const onSubmit = () => {
     if (send.current.type.trim() === '' || send.current.address.trim() === '') {
       setShowAlert(true)
       return
@@ -54,21 +56,10 @@ function SendOrder({
     console.log('Formulario enviado')
     setShowAlert(false)
     console.log(send.current)
-  }
-
-  const handlePlace = (place: string, type: string) => {
-    setSelectedPlace(type)
-    send.current = {
-      type,
-      address: place
-    }
-  }
+  } */
 
   return (
-    <form
-      className="flex h-full w-full flex-col justify-between space-y-5 p-5 text-center"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <div className="flex h-full w-full flex-col justify-between space-y-5 p-5 text-center">
       <div className="overflow-y-auto px-8">
         <h2 className="text-gray-500 md:pb-6">Datos de ubicación</h2>
         <Accordion
@@ -82,9 +73,15 @@ function SendOrder({
           >
             <RadioGroup
               name="branch"
-              onValueChange={setSelectedPlace}
-              onChange={e => handlePlace(e.target.value, 'Recoger en sucursal')}
-              value={selectedPlace}
+              onValueChange={setSelectedOption}
+              onChange={value => {
+                setSelectedOption(value.target.value)
+                send.current = {
+                  type: value,
+                  address: branch
+                }
+              }}
+              value={selectedOption}
               color="secondary"
             >
               <Radio value="Recoger en sucursal">Recoger en: {branch}</Radio>
@@ -96,7 +93,13 @@ function SendOrder({
               placeholder="Detalles para el recojo"
               isRequired
               className="mt-3"
-              onValueChange={value => handlePlace(value, 'Recoger en sucursal')}
+              onValueChange={value => {
+                setSelectedOption(value)
+                send.current = {
+                  type: 'Recoger en sucursal',
+                  address: branch
+                }
+              }}
               rules={{
                 required: {
                   value: true,
@@ -114,13 +117,22 @@ function SendOrder({
               <RadioGroup
                 color="secondary"
                 name="delivery"
-                onValueChange={setSelectedPlace}
-                value={selectedPlace}
-                onChange={e =>
-                  handlePlace(e.target.value, 'Entrega a domicilio')
-                }
+                onValueChange={setSelectedOption}
+                value={selectedOption}
+                onChange={value => {
+                  setSelectedOption(value.target.value)
+                  send.current = {
+                    type: value,
+                    address: watch('address')
+                  }
+                }}
               >
-                <Radio value="Entrega a domicilio">Entrega a domicilio</Radio>
+                {customer.addressInfo.map((address, index) => (
+                  <Radio key={index} value={address.id}>
+                    {address.detail}
+                  </Radio>
+                ))}
+                <Radio value="Otra dirección">Otra dirección</Radio>
               </RadioGroup>
 
               <div className="h-96 w-full">
@@ -140,11 +152,16 @@ function SendOrder({
                 name="address"
                 control={control}
                 type="text"
-                placeholder="Descripción de la dirección"
+                label="Descripción de la dirección"
                 isRequired
-                onValueChange={value =>
-                  handlePlace(value, 'Entrega a domicilio')
-                }
+                isDisabled={selectedOption !== 'Otra dirección'}
+                onValueChange={value => {
+                  setSelectedOption(value)
+                  send.current = {
+                    type: 'Entrega a domicilio',
+                    address: value
+                  }
+                }}
                 rules={{
                   required: {
                     value: true,
@@ -161,7 +178,7 @@ function SendOrder({
           <p className="text-red-500">Por favor, seleccione una opción</p>
         </div>
       )}
-    </form>
+    </div>
   )
 }
 
