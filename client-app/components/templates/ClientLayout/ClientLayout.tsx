@@ -21,6 +21,7 @@ import {
 import { setBranchInformation } from '@/store/slices/e-commerceInformation/e-commerceInformationSlice'
 import { SelectBranchProductsModal } from '@/components/atoms/modals/SelectBranchProductsModal'
 import { TDataBranch } from '@/interfaces/TData'
+import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 export type TClientLayoutProps = {
   children: React.ReactNode
 }
@@ -42,11 +43,10 @@ function ClientLayout({ children }: TClientLayoutProps) {
       getBranchByIdId: storedBranch
     },
     onCompleted: data => {
-      console.log(data.getBranchById?.data)
       dispatch(setBranchInformation(data.getBranchById?.data))
     },
-    onError: error => {
-      console.log(error)
+    onError: () => {
+      showSuccessToast('Error al obtener la sucursal', 'error')
     }
   })
 

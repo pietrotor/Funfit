@@ -1,10 +1,5 @@
-import React, { useState } from 'react'
-// import { useRouter } from 'next/router'
+import React from 'react'
 import { Accordion, AccordionItem, Button, Image } from '@nextui-org/react'
-// import { useAppDispatch, useAppSelector } from '@/store/index'
-import { TUserInfo } from '@/components/templates/OrderLayout/orderLayout'
-import { TOrder } from '@/interfaces/TData'
-// import { clearCart } from '@/store/slices'
 export type activeDirection = {
   location: {
     lat: number
@@ -13,20 +8,14 @@ export type activeDirection = {
   address: string
 }
 type PaymentMethodProps = {
-  userInfo: TUserInfo
-  activeDirection: activeDirection
-  order: TOrder
-  setOrder: (order: TOrder) => void
+  paymentMethod: boolean
+  setPaymentMethod: (paymentMethod: boolean) => void
 }
 
 function PaymentMethod({
-  userInfo,
-  activeDirection,
-  order,
-  setOrder
+  paymentMethod,
+  setPaymentMethod
 }: PaymentMethodProps) {
-  const [selectedKeys, setSelectedKeys] = useState(false)
-
   const download = (filename: string, content: any) => {
     try {
       fetch(content)
@@ -54,11 +43,11 @@ function PaymentMethod({
       <div className="overflow-y-auto px-8">
         <h2 className="text-gray-500 md:pb-6">Datos de contacto</h2>
         <Accordion
-          selectedKeys={selectedKeys ? ['1'] : ['2']}
-          onSelectionChange={() => setSelectedKeys(!selectedKeys)}
+          selectedKeys={paymentMethod ? ['qr'] : ['cash']}
+          onSelectionChange={() => setPaymentMethod(!paymentMethod)}
         >
           <AccordionItem
-            key="1"
+            key="qr"
             aria-label="Recoger de la sucursal"
             title="Pago mediante código QR"
           >
@@ -83,7 +72,7 @@ function PaymentMethod({
             </div>
           </AccordionItem>
           <AccordionItem
-            key="2"
+            key="cash"
             aria-label="Paga al recibir tu pedido"
             title="Paga al recibir tu pedido"
           >

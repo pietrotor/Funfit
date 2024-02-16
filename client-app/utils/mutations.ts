@@ -308,3 +308,19 @@ export const PUBLIC_CREATE_ORDER = gql`
     }
   }
 `
+
+export const PUBLIC_CREATE_ADDRESS = gql`
+  mutation PublicCreateAddress($createAddressInput: CreateAddressInput!) {
+    publicCreateAddress(createAddressInput: $createAddressInput) {
+      errorInput {
+        message
+        field
+      }
+      message
+      status
+      data {
+        id
+      }
+    }
+  }
+`

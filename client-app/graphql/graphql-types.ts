@@ -1659,6 +1659,13 @@ export type GetPublicCustomerByIdQueryVariables = Exact<{
 
 export type GetPublicCustomerByIdQuery = { __typename?: 'Query', getPublicCustomerById?: { __typename?: 'CustomerResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Customer', id: any, name: string, lastName: string, email?: string | null, phone: string, lastOrderDate?: any | null, ordersIds: Array<any>, addressInfo: Array<{ __typename?: 'Address', id: any, latitude: number, longitude: number, detail: string }> } | null } | null };
 
+export type PublicCreateAddressMutationVariables = Exact<{
+  createAddressInput: CreateAddressInput;
+}>;
+
+
+export type PublicCreateAddressMutation = { __typename?: 'Mutation', publicCreateAddress?: { __typename?: 'AddressResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Address', id: any } | null } | null };
+
 
 export const CreateUserDocument = gql`
     mutation CreateUser($userInput: UserInput!) {
@@ -4309,3 +4316,44 @@ export function useGetPublicCustomerByIdLazyQuery(baseOptions?: Apollo.LazyQuery
 export type GetPublicCustomerByIdQueryHookResult = ReturnType<typeof useGetPublicCustomerByIdQuery>;
 export type GetPublicCustomerByIdLazyQueryHookResult = ReturnType<typeof useGetPublicCustomerByIdLazyQuery>;
 export type GetPublicCustomerByIdQueryResult = Apollo.QueryResult<GetPublicCustomerByIdQuery, GetPublicCustomerByIdQueryVariables>;
+export const PublicCreateAddressDocument = gql`
+    mutation PublicCreateAddress($createAddressInput: CreateAddressInput!) {
+  publicCreateAddress(createAddressInput: $createAddressInput) {
+    errorInput {
+      message
+      field
+    }
+    message
+    status
+    data {
+      id
+    }
+  }
+}
+    `;
+export type PublicCreateAddressMutationFn = Apollo.MutationFunction<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>;
+
+/**
+ * __usePublicCreateAddressMutation__
+ *
+ * To run a mutation, you first call `usePublicCreateAddressMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePublicCreateAddressMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [publicCreateAddressMutation, { data, loading, error }] = usePublicCreateAddressMutation({
+ *   variables: {
+ *      createAddressInput: // value for 'createAddressInput'
+ *   },
+ * });
+ */
+export function usePublicCreateAddressMutation(baseOptions?: Apollo.MutationHookOptions<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>(PublicCreateAddressDocument, options);
+      }
+export type PublicCreateAddressMutationHookResult = ReturnType<typeof usePublicCreateAddressMutation>;
+export type PublicCreateAddressMutationResult = Apollo.MutationResult<PublicCreateAddressMutation>;
+export type PublicCreateAddressMutationOptions = Apollo.BaseMutationOptions<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>;

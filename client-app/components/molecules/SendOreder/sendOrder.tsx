@@ -56,10 +56,11 @@ function SendOrder({
             <RadioGroup
               name="branch"
               onValueChange={setSelectedOption}
-              onChange={value => {
+              onChange={event => {
                 setOrder({
                   ...order,
-                  deliveryMethod: value.target.value
+                  deliveryMethod: DeliveryMethodEnum.PICKUP,
+                  addressId: ''
                 })
               }}
               value={selectedOption}
@@ -70,23 +71,17 @@ function SendOrder({
               </Radio>
             </RadioGroup>
             <InputComponent
-              name="branchdetails"
+              name="pickUpInformation"
               control={control}
               type="text"
-              placeholder="Detalles para el recojo"
-              isRequired
+              label="Detalles para el recojo"
+              isDisabled={selectedOption !== DeliveryMethodEnum.PICKUP}
               className="mt-3"
               onValueChange={value => {
                 setOrder({
                   ...order,
-                  orderDetails: value
+                  pickUpInformation: value
                 })
-              }}
-              rules={{
-                required: {
-                  value: selectedOption === DeliveryMethodEnum.PICKUP,
-                  message: 'Este campo es requerido'
-                }
               }}
             />
           </AccordionItem>
@@ -97,11 +92,14 @@ function SendOrder({
                 name="delivery"
                 onValueChange={setSelectedOption}
                 value={selectedOption}
-                onChange={value => {
-                  setOrder({
-                    ...order,
-                    deliveryMethod: DeliveryMethodEnum.DELIVERY
-                  })
+                onChange={event => {
+                  if (event.target.value !== DeliveryMethodEnum.DELIVERY) {
+                    setOrder({
+                      ...order,
+                      deliveryMethod: DeliveryMethodEnum.DELIVERY,
+                      addressId: event.target.value
+                    })
+                  }
                 }}
               >
                 {customer.addressInfo.map((address, index) => (
@@ -120,12 +118,6 @@ function SendOrder({
                 label="Descripción de la dirección"
                 isRequired
                 isDisabled={selectedOption !== DeliveryMethodEnum.DELIVERY}
-                onValueChange={value => {
-                  setOrder({
-                    ...order,
-                    pickUpInformation: value
-                  })
-                }}
                 rules={{
                   required: {
                     value: selectedOption === DeliveryMethodEnum.DELIVERY,

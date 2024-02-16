@@ -1,5 +1,6 @@
 import { TValueProductData } from '@/components/atoms/modals/EditProductModal'
 import { TValuesWarehouses } from '@/components/atoms/modals/EditWarehouseModal'
+import { DeliveryMethodEnum, PaymentMethodEnum } from '@/graphql/graphql-types'
 
 export type TStockData = {
   id: string
@@ -82,14 +83,14 @@ export type TProductOrderData = {
 }
 
 export type TOrder = {
-  addressId: string
+  addressId?: string
   branchId: string
   customerId: string
   discount: number
-  deliveryMethod: string
-  orderDetails: string
-  paymentMethod: string
-  pickUpInformation: string
+  deliveryMethod: DeliveryMethodEnum
+  orderDetails?: string
+  paymentMethod: PaymentMethodEnum
+  pickUpInformation?: string
   products: TProductOrderData[]
   subTotal: number
   total: number

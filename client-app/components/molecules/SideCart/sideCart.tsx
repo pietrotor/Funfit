@@ -1,5 +1,6 @@
-import { Button, Textarea, Tooltip } from '@nextui-org/react'
-import { useRef, useState } from 'react'
+import { Button, Tooltip } from '@nextui-org/react'
+import React, { useRef, useState } from 'react'
+import { Control, FieldValues, UseFormWatch } from 'react-hook-form'
 import Images from '@/components/atoms/Image/Image'
 
 import IconSelector from '@/components/atoms/IconSelector'
@@ -12,8 +13,14 @@ import {
   updateCartDetails,
   updateCartSubTotal
 } from '@/store/slices'
+import InputComponent from '@/components/atoms/Input'
 
-function SideCart() {
+type SideCartProps = {
+  control: Control<FieldValues, any>
+  watch: UseFormWatch<FieldValues>
+}
+
+function SideCart({ control, watch }: SideCartProps) {
   const dispatch = useAppDispatch()
   const cartItems = useAppSelector(state => state.cartReducer.cartItems)
   const details = useAppSelector(state => state.cartReducer.cartDetails)
@@ -29,19 +36,21 @@ function SideCart() {
   }
   const updateSubTotal = (action: string, item: TCartItem) => {
     if (action === 'remove') {
+      totalPrice.current -= item.price * item.quantity
       dispatch(removeFromCart(item))
     }
     if (action === 'increase') {
+      totalPrice.current += item.price
       dispatch(increaseCart(item))
     }
     if (action === 'decrease') {
+      totalPrice.current -= item.price
       dispatch(decreaseCart(item))
     }
-    totalPrice.current = cartItems.reduce(
-      (total, item) => total + item.price,
-      0
-    )
     dispatch(updateCartSubTotal(totalPrice.current))
+  }
+  const handleDetails = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setNewDetails(e.target.value)
   }
 
   return (
@@ -58,7 +67,7 @@ function SideCart() {
                 src={`${item.pictureUrl}`}
                 radius="md"
                 alt="Banner de la empresa"
-                className="w-44 h-20"
+                className="h-20 w-44"
                 removeWrapper={true}
               />
               <section className=" flex w-full items-center justify-between">
@@ -113,16 +122,20 @@ function SideCart() {
         {cartItems.length > 0 ? (
           <div className="w-full px-5 py-3">
             {showTextArea ? (
-              <div className="flex w-full items-center justify-between">
-                <Textarea
-                  className="w-4/6"
+              <div className="flex w-full items-center">
+                <InputComponent
+                  name="orderDetails"
+                  type="textArea"
+                  label='Especificaciones'
+                  control={control}
                   value={newDetails}
-                  onChange={e => setNewDetails(e.target.value)}
-                  variant="faded"
+                  onChange={() => handleDetails}
+                  variant="bordered"
                 />
                 <Button
-                  className=" w-1/6 cursor-pointer border-2 bg-white"
+                  className="ms-2 cursor-pointer border-2 bg-white"
                   onClick={() => saveDetails()}
+                  isIconOnly
                 >
                   <IconSelector name="check" color="text-secondary" />
                 </Button>
@@ -135,9 +148,9 @@ function SideCart() {
                   placement="bottom"
                 >
                   <Button
-                    className=" w-1/6 cursor-pointer border-2 bg-white "
                     isIconOnly
                     onClick={() => setShowTextArea(!showTextArea)}
+                    variant='bordered'
                   >
                     <IconSelector name="edit" color="text-primary" />
                   </Button>
