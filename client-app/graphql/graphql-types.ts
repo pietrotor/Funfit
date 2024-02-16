@@ -18,6 +18,24 @@ export type Scalars = {
   Time: any;
 };
 
+export type Address = {
+  __typename?: 'Address';
+  customerId: Scalars['ObjectId'];
+  customerInfo?: Maybe<Customer>;
+  detail: Scalars['String'];
+  id: Scalars['ObjectId'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+};
+
+export type AddressResponse = ResponseBase & {
+  __typename?: 'AddressResponse';
+  data?: Maybe<Address>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
 export type Branch = {
   __typename?: 'Branch';
   cash?: Maybe<Cash>;
@@ -199,6 +217,13 @@ export type ConfigurationResponse = ResponseBase & {
   status: StatusEnum;
 };
 
+export type CreateAddressInput = {
+  customerId: Scalars['ObjectId'];
+  detail: Scalars['String'];
+  latitude: Scalars['Float'];
+  longitude: Scalars['Float'];
+};
+
 export type CreateBranchInput = {
   city: Scalars['String'];
   code: Scalars['String'];
@@ -229,6 +254,27 @@ export type CreateBranchProductStockMovementInput = {
 
 export type CreateCategoryInput = {
   name: Scalars['String'];
+};
+
+export type CreateCustomerInput = {
+  email?: InputMaybe<Scalars['String']>;
+  lastName: Scalars['String'];
+  name: Scalars['String'];
+  phone: Scalars['String'];
+};
+
+export type CreateOrderInput = {
+  addressId?: InputMaybe<Scalars['ObjectId']>;
+  branchId: Scalars['ObjectId'];
+  customerId: Scalars['ObjectId'];
+  deliveryMethod: DeliveryMethodEnum;
+  discount: Scalars['Float'];
+  orderDetails?: InputMaybe<Scalars['String']>;
+  paymentMethod: PaymentMethodEnum;
+  pickUpInformation?: InputMaybe<Scalars['String']>;
+  products: Array<SaleItemInput>;
+  subTotal: Scalars['Float'];
+  total: Scalars['Float'];
 };
 
 export type CreateProductInput = {
@@ -295,6 +341,32 @@ export type CreateWarehouseInput = {
   name: Scalars['String'];
 };
 
+export type Customer = {
+  __typename?: 'Customer';
+  addressInfo?: Maybe<Address>;
+  addressesIds: Array<Scalars['ObjectId']>;
+  email?: Maybe<Scalars['String']>;
+  id: Scalars['ObjectId'];
+  lastName: Scalars['String'];
+  lastOrderDate?: Maybe<Scalars['Date']>;
+  name: Scalars['String'];
+  ordersIds: Array<Scalars['ObjectId']>;
+  phone: Scalars['String'];
+};
+
+export type CustomerResponse = ResponseBase & {
+  __typename?: 'CustomerResponse';
+  data?: Maybe<Customer>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export enum DeliveryMethodEnum {
+  DELIVERY = 'DELIVERY',
+  PICKUP = 'PICKUP'
+}
+
 export type ErrorInput = {
   __typename?: 'ErrorInput';
   field?: Maybe<Scalars['String']>;
@@ -341,6 +413,9 @@ export type Mutation = {
   deleteProduct?: Maybe<ProductResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
   openCash?: Maybe<CashResponse>;
+  publicCreateAddress?: Maybe<AddressResponse>;
+  publicCreateCustomer?: Maybe<CustomerResponse>;
+  publicCreateOrder?: Maybe<OrderResponse>;
   updateBranch?: Maybe<BranchResponse>;
   updateBranchProduct?: Maybe<BranchProductResponse>;
   updateCategory?: Maybe<CategoryResponse>;
@@ -446,6 +521,21 @@ export type MutationOpenCashArgs = {
 };
 
 
+export type MutationPublicCreateAddressArgs = {
+  createAddressInput: CreateAddressInput;
+};
+
+
+export type MutationPublicCreateCustomerArgs = {
+  createCustomerInput: CreateCustomerInput;
+};
+
+
+export type MutationPublicCreateOrderArgs = {
+  createOrderInput: CreateOrderInput;
+};
+
+
 export type MutationUpdateBranchArgs = {
   updateBranchInput: UpdateBranchInput;
 };
@@ -490,6 +580,63 @@ export type OpenTurnInfo = {
   openBy?: Maybe<Scalars['ObjectId']>;
   openByInfo?: Maybe<User>;
   physicialAmount: Scalars['Float'];
+};
+
+export type Order = {
+  __typename?: 'Order';
+  addressId?: Maybe<Scalars['ObjectId']>;
+  addressInfo?: Maybe<Address>;
+  branchId: Scalars['ObjectId'];
+  code: Scalars['String'];
+  customerId: Scalars['ObjectId'];
+  customerInfo?: Maybe<Customer>;
+  date: Scalars['Date'];
+  deliveryMethod: DeliveryMethodEnum;
+  discount: Scalars['Float'];
+  id: Scalars['ObjectId'];
+  orderAcepted?: Maybe<Scalars['Boolean']>;
+  orderAceptedAt?: Maybe<Scalars['Date']>;
+  orderAceptedBy?: Maybe<Scalars['ObjectId']>;
+  orderAceptedByInfo?: Maybe<User>;
+  orderDetails?: Maybe<Scalars['String']>;
+  paymentMethod: PaymentMethodEnum;
+  pickUpInformation?: Maybe<Scalars['String']>;
+  products: Array<SaleItem>;
+  reason?: Maybe<Scalars['String']>;
+  rejected?: Maybe<Scalars['Boolean']>;
+  rejectedAt?: Maybe<Scalars['Date']>;
+  rejectedBy?: Maybe<Scalars['ObjectId']>;
+  rejectedByInfo?: Maybe<User>;
+  subTotal: Scalars['Float'];
+  total: Scalars['Float'];
+};
+
+export type OrderPaginationInput = {
+  branchId?: InputMaybe<Scalars['ObjectId']>;
+  filter?: InputMaybe<Scalars['String']>;
+  orderesAcepted?: InputMaybe<Scalars['Boolean']>;
+  page?: InputMaybe<Scalars['Int']>;
+  rows?: InputMaybe<Scalars['Int']>;
+};
+
+export type OrderResponse = ResponseBase & {
+  __typename?: 'OrderResponse';
+  data?: Maybe<Order>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type OrdersResponse = ResponseBase & {
+  __typename?: 'OrdersResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Order>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
 };
 
 export type PaginationInput = {
@@ -551,10 +698,13 @@ export type Query = {
   getCategories?: Maybe<CategoriesResponse>;
   getCategoryById?: Maybe<CategoryResponse>;
   getConfiguration?: Maybe<ConfigurationResponse>;
+  getOrderById?: Maybe<OrderResponse>;
+  getOrdersPaginated?: Maybe<OrdersResponse>;
   getProductById?: Maybe<ProductResponse>;
   getProductStock?: Maybe<StocksResponse>;
   getProducts?: Maybe<ProductsResponse>;
   getProductsOutOfWarehouse?: Maybe<ProductsResponse>;
+  getPublicCustomerById?: Maybe<CustomerResponse>;
   getPublicProducts?: Maybe<BranchProductsResponse>;
   getRoles?: Maybe<RolesResponse>;
   getSaleById?: Maybe<SaleResponse>;
@@ -616,6 +766,16 @@ export type QueryGetCategoryByIdArgs = {
 };
 
 
+export type QueryGetOrderByIdArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetOrdersPaginatedArgs = {
+  orderPaginationInput: OrderPaginationInput;
+};
+
+
 export type QueryGetProductByIdArgs = {
   id: Scalars['ObjectId'];
 };
@@ -636,6 +796,11 @@ export type QueryGetProductsArgs = {
 export type QueryGetProductsOutOfWarehouseArgs = {
   paginationInput: PaginationInput;
   warehouseId: Scalars['ObjectId'];
+};
+
+
+export type QueryGetPublicCustomerByIdArgs = {
+  id: Scalars['ObjectId'];
 };
 
 
@@ -1462,6 +1627,13 @@ export type GetPublicProductsQueryVariables = Exact<{
 
 
 export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, description: string, image?: string | null } | null }> | null } | null };
+
+export type GetOrdersPaginatedQueryVariables = Exact<{
+  orderPaginationInput: OrderPaginationInput;
+}>;
+
+
+export type GetOrdersPaginatedQuery = { __typename?: 'Query', getOrdersPaginated?: { __typename?: 'OrdersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Order', total: number, subTotal: number, discount: number, id: any, orderAcepted?: boolean | null, orderAceptedAt?: any | null, orderAceptedBy?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', image?: string | null, id: any, name: string, suggetedPrice: number, description: string } | null }> }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -3968,3 +4140,70 @@ export function useGetPublicProductsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetPublicProductsQueryHookResult = ReturnType<typeof useGetPublicProductsQuery>;
 export type GetPublicProductsLazyQueryHookResult = ReturnType<typeof useGetPublicProductsLazyQuery>;
 export type GetPublicProductsQueryResult = Apollo.QueryResult<GetPublicProductsQuery, GetPublicProductsQueryVariables>;
+export const GetOrdersPaginatedDocument = gql`
+    query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
+  getOrdersPaginated(orderPaginationInput: $orderPaginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      total
+      subTotal
+      products {
+        branchProductId
+        productId
+        price
+        qty
+        total
+        product {
+          image
+          id
+          name
+          suggetedPrice
+          description
+        }
+      }
+      discount
+      id
+      orderAcepted
+      orderAceptedAt
+      orderAceptedBy
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetOrdersPaginatedQuery__
+ *
+ * To run a query within a React component, call `useGetOrdersPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOrdersPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetOrdersPaginatedQuery({
+ *   variables: {
+ *      orderPaginationInput: // value for 'orderPaginationInput'
+ *   },
+ * });
+ */
+export function useGetOrdersPaginatedQuery(baseOptions: Apollo.QueryHookOptions<GetOrdersPaginatedQuery, GetOrdersPaginatedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetOrdersPaginatedQuery, GetOrdersPaginatedQueryVariables>(GetOrdersPaginatedDocument, options);
+      }
+export function useGetOrdersPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrdersPaginatedQuery, GetOrdersPaginatedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetOrdersPaginatedQuery, GetOrdersPaginatedQueryVariables>(GetOrdersPaginatedDocument, options);
+        }
+export type GetOrdersPaginatedQueryHookResult = ReturnType<typeof useGetOrdersPaginatedQuery>;
+export type GetOrdersPaginatedLazyQueryHookResult = ReturnType<typeof useGetOrdersPaginatedLazyQuery>;
+export type GetOrdersPaginatedQueryResult = Apollo.QueryResult<GetOrdersPaginatedQuery, GetOrdersPaginatedQueryVariables>;

@@ -4,14 +4,18 @@ import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import Sidebar, { TMenuStructure } from './sidebar'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
-import ToastComponent from '@/components/atoms/Toast/toasts'
+import ToastComponent, {
+  showSuccessToast
+} from '@/components/atoms/Toast/toasts'
 import {
+  StatusEnum,
   useGetBranchesPaginatedLazyQuery,
-  useGetConfigurationLazyQuery
+  useGetConfigurationLazyQuery,
+  useGetOrdersPaginatedLazyQuery
 } from '@/graphql/graphql-types'
 
 import { useAppDispatch, useAppSelector } from '@/store/index'
-import { setBusiness } from '@/store/slices'
+import { setBusiness, setOrder } from '@/store/slices'
 import BackButton from '@/components/atoms/BackButton/intex'
 import { setBranch, setBranches } from '@/store/slices/branches/branchSlice'
 import { DropDown } from '@/components/atoms/DropDown'
@@ -21,7 +25,7 @@ type TAdministrationLayoutProps = {
   showBackButton?: boolean
   onSubmit?: () => void
   profileButton?: boolean
-  user:any
+  user: any
 }
 
 const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
@@ -31,6 +35,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   profileButton = true,
   user
 }) => {
+  const [orderData, setOrderData] = useState<TPointOfSaleData[]>()
   const { business } = useAppSelector(state => state.configuration)
   const { branches, currentBranch } = useAppSelector(
     state => state.branchReducer
@@ -82,6 +87,77 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     Cookies.remove('sao-sess')
     router.push('/administration-panel/login')
   }
+
+  const [getOrders, { data }] = useGetOrdersPaginatedLazyQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      orderPaginationInput: {
+        orderesAcepted: false
+      }
+    },
+    onCompleted(data) {
+      console.log(data, 'data')
+      if (data.getOrdersPaginated?.status === StatusEnum.ERROR) {
+        showSuccessToast(
+          data?.getOrdersPaginated?.message || 'Error al obtener las ordenes',
+          'error'
+        )
+        return
+      }
+      handleOrder()
+      dispatch(setOrder(data.getOrdersPaginated?.data))
+    },
+    onError(error) {
+      console.log('🚀 ~ file: index.tsx:31 ~ onError ~ error:', error)
+    }
+  })
+
+  useEffect(() => {
+    // const timerId = setInterval(() => {
+    //   getOrders()
+    // }, 60000)
+
+    // return () => {
+    //   clearInterval(timerId)
+    // }
+  }, [])
+
+  console.log(data?.getOrdersPaginated?.data, 'data')
+  const handleOrder = () => {
+    const datosTransformados = data?.getOrdersPaginated?.data?.map(order => {
+      return {
+        products: order.products.map(product => {
+          return {
+            id: product.product?.id,
+            branchId: product.branchProductId,
+            productId: product.productId,
+            price: product.price,
+            isVisibleOnWeb: true,
+            isVisibleOnMenu: true,
+            quantity: product.qty,
+            product: {
+              id: product.product?.id || '',
+              name: product.product?.name || '',
+              description: product.product?.description || ''
+            },
+            stock: product.qty,
+            total: product.total
+          }
+        }
+        ),
+        subTotal: order.subTotal,
+        total: order.total,
+        discount: order.discount
+      }
+    })
+
+    console.log(datosTransformados, 'datosTransformados')
+    setOrderData(datosTransformados as TPointOfSaleData[])
+    console.log(orderData, 'orderData')
+  }
+  useEffect(() => {
+
+  }, [])
 
   const dataToPass: TPointOfSaleData = {
     products: [
@@ -278,22 +354,25 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
               <ToastComponent />
               <div className="flex items-center">
                 <DropDown
+                  onClick={() => { getOrders() }}
                   IconButtonName="Notifications"
-                  values={[
-                    {
-                      label: 'Notificaciones',
-                      value: 'notifications',
-                      icon: 'PointOfSale',
-                      handleClick: () => {
-                        router.push({
-                          pathname: '/administration-panel/point-of-sale',
-                          query: { data: JSON.stringify(dataToPass) }
-                        })
-                      },
-                      counter: 2
-                    }
-                  ]}
-                  counter={0}
+                  values={
+                    data?.getOrdersPaginated?.data?.map((order, idx) => {
+                      return {
+                        label: `Orden ${order.products[0]?.product?.name}`,
+                        value: order.id,
+                        icon: 'Notifications',
+                        handleClick: () => {
+                          router.push({
+                            pathname: '/administration-panel/point-of-sale',
+                            query: { data: JSON.stringify(dataToPass) }
+                          })
+                        },
+                        counter: 0
+                      }
+                    }) || []
+                  }
+                  counter={data?.getOrdersPaginated?.data?.length || 0}
                   avatar="https://static.vecteezy.com/system/resources/previews/000/376/699/original/notification-vector-icon.jpg"
                 />
                 <DropDown
@@ -320,7 +399,9 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
                 />
               </div>
             </div>
-            <div className="h-full w-full ps-5 md:pt-16 lg:pt-5">{children}</div>
+            <div className="h-full w-full ps-5 md:pt-16 lg:pt-5">
+              {children}
+            </div>
           </div>
         </main>
       ) : (

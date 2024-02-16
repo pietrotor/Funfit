@@ -27,6 +27,7 @@ type DropDownProps = {
   counter?: number
   className?: string
   fill?: boolean
+  onClick?: () => void
 }
 export const DropDown = ({
   label,
@@ -36,16 +37,17 @@ export const DropDown = ({
   user,
   counter,
   className,
-  fill
+  fill,
+  onClick
 }: DropDownProps) => {
   return (
     <div className={` mt-8 md:me-4 ${className}`}>
       <Dropdown placement="bottom-end">
-        <DropdownTrigger>
+        <DropdownTrigger >
           <div>
             {avatar ? (
-              <Badge content={counter} color='primary' size='lg'>
-                <div className='cursor-pointer p-white rounded-full border-double border-gray-300 bg-gray-300 p-2'>
+              <Badge content={counter} color='primary' size='lg' >
+                <div onClick={onClick} className='cursor-pointer p-white rounded-full border-double border-gray-300 bg-gray-300 p-2'>
                 <IconSelector name={IconButtonName} />
               </div>
               </Badge>
