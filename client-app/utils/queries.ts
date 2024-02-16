@@ -936,3 +936,43 @@ export const GET_PUBLIC_CUSTOMER_BY_ID = gql`
     }
   }
 `
+export const GET_ORDER_PAGINATED = gql`
+query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
+  getOrdersPaginated(orderPaginationInput: $orderPaginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      total
+      subTotal
+      products {
+        branchProductId
+        productId
+        price
+        qty
+        total
+        product {
+          image
+          id
+          name
+          suggetedPrice
+          description
+        }
+      }
+      discount
+      id
+      orderAcepted
+      orderAceptedAt
+      orderAceptedBy
+      
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+`

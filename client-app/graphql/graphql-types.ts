@@ -1437,6 +1437,13 @@ export type PublicCreateOrderMutationVariables = Exact<{
 
 export type PublicCreateOrderMutation = { __typename?: 'Mutation', publicCreateOrder?: { __typename?: 'OrderResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
+export type PublicCreateAddressMutationVariables = Exact<{
+  createAddressInput: CreateAddressInput;
+}>;
+
+
+export type PublicCreateAddressMutation = { __typename?: 'Mutation', publicCreateAddress?: { __typename?: 'AddressResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Address', id: any } | null } | null };
+
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1659,12 +1666,12 @@ export type GetPublicCustomerByIdQueryVariables = Exact<{
 
 export type GetPublicCustomerByIdQuery = { __typename?: 'Query', getPublicCustomerById?: { __typename?: 'CustomerResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Customer', id: any, name: string, lastName: string, email?: string | null, phone: string, lastOrderDate?: any | null, ordersIds: Array<any>, addressInfo: Array<{ __typename?: 'Address', id: any, latitude: number, longitude: number, detail: string }> } | null } | null };
 
-export type PublicCreateAddressMutationVariables = Exact<{
-  createAddressInput: CreateAddressInput;
+export type GetOrdersPaginatedQueryVariables = Exact<{
+  orderPaginationInput: OrderPaginationInput;
 }>;
 
 
-export type PublicCreateAddressMutation = { __typename?: 'Mutation', publicCreateAddress?: { __typename?: 'AddressResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Address', id: any } | null } | null };
+export type GetOrdersPaginatedQuery = { __typename?: 'Query', getOrdersPaginated?: { __typename?: 'OrdersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Order', total: number, subTotal: number, discount: number, id: any, orderAcepted?: boolean | null, orderAceptedAt?: any | null, orderAceptedBy?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', image?: string | null, id: any, name: string, suggetedPrice: number, description: string } | null }> }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -2552,6 +2559,47 @@ export function usePublicCreateOrderMutation(baseOptions?: Apollo.MutationHookOp
 export type PublicCreateOrderMutationHookResult = ReturnType<typeof usePublicCreateOrderMutation>;
 export type PublicCreateOrderMutationResult = Apollo.MutationResult<PublicCreateOrderMutation>;
 export type PublicCreateOrderMutationOptions = Apollo.BaseMutationOptions<PublicCreateOrderMutation, PublicCreateOrderMutationVariables>;
+export const PublicCreateAddressDocument = gql`
+    mutation PublicCreateAddress($createAddressInput: CreateAddressInput!) {
+  publicCreateAddress(createAddressInput: $createAddressInput) {
+    errorInput {
+      message
+      field
+    }
+    message
+    status
+    data {
+      id
+    }
+  }
+}
+    `;
+export type PublicCreateAddressMutationFn = Apollo.MutationFunction<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>;
+
+/**
+ * __usePublicCreateAddressMutation__
+ *
+ * To run a mutation, you first call `usePublicCreateAddressMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePublicCreateAddressMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [publicCreateAddressMutation, { data, loading, error }] = usePublicCreateAddressMutation({
+ *   variables: {
+ *      createAddressInput: // value for 'createAddressInput'
+ *   },
+ * });
+ */
+export function usePublicCreateAddressMutation(baseOptions?: Apollo.MutationHookOptions<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>(PublicCreateAddressDocument, options);
+      }
+export type PublicCreateAddressMutationHookResult = ReturnType<typeof usePublicCreateAddressMutation>;
+export type PublicCreateAddressMutationResult = Apollo.MutationResult<PublicCreateAddressMutation>;
+export type PublicCreateAddressMutationOptions = Apollo.BaseMutationOptions<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {
@@ -4316,44 +4364,70 @@ export function useGetPublicCustomerByIdLazyQuery(baseOptions?: Apollo.LazyQuery
 export type GetPublicCustomerByIdQueryHookResult = ReturnType<typeof useGetPublicCustomerByIdQuery>;
 export type GetPublicCustomerByIdLazyQueryHookResult = ReturnType<typeof useGetPublicCustomerByIdLazyQuery>;
 export type GetPublicCustomerByIdQueryResult = Apollo.QueryResult<GetPublicCustomerByIdQuery, GetPublicCustomerByIdQueryVariables>;
-export const PublicCreateAddressDocument = gql`
-    mutation PublicCreateAddress($createAddressInput: CreateAddressInput!) {
-  publicCreateAddress(createAddressInput: $createAddressInput) {
+export const GetOrdersPaginatedDocument = gql`
+    query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
+  getOrdersPaginated(orderPaginationInput: $orderPaginationInput) {
     errorInput {
       message
       field
     }
-    message
     status
+    message
     data {
+      total
+      subTotal
+      products {
+        branchProductId
+        productId
+        price
+        qty
+        total
+        product {
+          image
+          id
+          name
+          suggetedPrice
+          description
+        }
+      }
+      discount
       id
+      orderAcepted
+      orderAceptedAt
+      orderAceptedBy
     }
+    totalRecords
+    totalPages
+    rows
+    currentPage
   }
 }
     `;
-export type PublicCreateAddressMutationFn = Apollo.MutationFunction<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>;
 
 /**
- * __usePublicCreateAddressMutation__
+ * __useGetOrdersPaginatedQuery__
  *
- * To run a mutation, you first call `usePublicCreateAddressMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `usePublicCreateAddressMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
+ * To run a query within a React component, call `useGetOrdersPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetOrdersPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const [publicCreateAddressMutation, { data, loading, error }] = usePublicCreateAddressMutation({
+ * const { data, loading, error } = useGetOrdersPaginatedQuery({
  *   variables: {
- *      createAddressInput: // value for 'createAddressInput'
+ *      orderPaginationInput: // value for 'orderPaginationInput'
  *   },
  * });
  */
-export function usePublicCreateAddressMutation(baseOptions?: Apollo.MutationHookOptions<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>) {
+export function useGetOrdersPaginatedQuery(baseOptions: Apollo.QueryHookOptions<GetOrdersPaginatedQuery, GetOrdersPaginatedQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>(PublicCreateAddressDocument, options);
+        return Apollo.useQuery<GetOrdersPaginatedQuery, GetOrdersPaginatedQueryVariables>(GetOrdersPaginatedDocument, options);
       }
-export type PublicCreateAddressMutationHookResult = ReturnType<typeof usePublicCreateAddressMutation>;
-export type PublicCreateAddressMutationResult = Apollo.MutationResult<PublicCreateAddressMutation>;
-export type PublicCreateAddressMutationOptions = Apollo.BaseMutationOptions<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>;
+export function useGetOrdersPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetOrdersPaginatedQuery, GetOrdersPaginatedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetOrdersPaginatedQuery, GetOrdersPaginatedQueryVariables>(GetOrdersPaginatedDocument, options);
+        }
+export type GetOrdersPaginatedQueryHookResult = ReturnType<typeof useGetOrdersPaginatedQuery>;
+export type GetOrdersPaginatedLazyQueryHookResult = ReturnType<typeof useGetOrdersPaginatedLazyQuery>;
+export type GetOrdersPaginatedQueryResult = Apollo.QueryResult<GetOrdersPaginatedQuery, GetOrdersPaginatedQueryVariables>;
