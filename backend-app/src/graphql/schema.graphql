@@ -5,6 +5,10 @@ enum StatusEnum {
   OK
   ERROR
 }
+enum RoleTypeEnum {
+  ADMINISTRATOR
+  SALESMAN
+}
 enum StockMovementTypeEnum {
   INWARD
   OUTWARD
@@ -182,6 +186,7 @@ type Role {
   name: String!
   code: String!
   status: Boolean!
+  type: RoleTypeEnum!
 }
 type User {
   id: ObjectId!

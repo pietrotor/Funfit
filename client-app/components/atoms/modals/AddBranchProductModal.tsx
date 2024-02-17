@@ -34,7 +34,9 @@ export const AddBranchProductModal = ({
   const [getProducts, { data, loading }] = useGetProductsLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
-      paginationInput: {}
+      paginationInput: {
+        rows: 500
+      }
     }
   })
   const [getBranchProducts, { data: branchProductData }] =
@@ -67,11 +69,13 @@ export const AddBranchProductModal = ({
   const disabledProducts = () => {
     const disabledKeys: string[] = []
     data?.getProducts?.data?.forEach(product => {
-      branchProductData?.getBranchProductsPaginated?.data?.forEach(branchProduct => {
-        if (product.id === branchProduct.productId) {
-          disabledKeys.push(product.name)
+      branchProductData?.getBranchProductsPaginated?.data?.forEach(
+        branchProduct => {
+          if (product.id === branchProduct.productId) {
+            disabledKeys.push(product.name)
+          }
         }
-      })
+      )
     })
     return disabledKeys
   }

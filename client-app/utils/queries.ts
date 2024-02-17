@@ -39,6 +39,25 @@ export const LOGIN = gql`
     }
   }
 `
+export const GET_ROLES = gql`
+  query GetRoles($paginationInput: PaginationInput!) {
+    getRoles(paginationInput: $paginationInput) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data {
+        id
+        name
+        code
+        status
+        type
+      }
+    }
+  }
+`
 export const CURRENT_USER = gql`
   query CurrentUser {
     currentUser {
@@ -63,6 +82,7 @@ export const CURRENT_USER = gql`
           name
           code
           status
+          type
         }
       }
     }
@@ -88,6 +108,9 @@ export const GET_USERS = gql`
         status
         createdBy
         roleId
+        roleInfo {
+          name
+        }
       }
       totalRecords
       totalPages
@@ -649,7 +672,6 @@ export const GET_CASH_BY_ID = gql`
           cashId
           isOpen
           amountOfMovents
-          
         }
       }
     }
@@ -677,7 +699,7 @@ export const GET_CASH_TURN_MOVEMENTS = gql`
         createdByInfo {
           id
           name
-          lastName          
+          lastName
         }
       }
       totalRecords
@@ -706,11 +728,11 @@ export const GET_SALES_PAGINATED = gql`
             name
           }
         }
-         total
-         discount
-         date
-         code
-         canceled
+        total
+        discount
+        date
+        code
+        canceled
         createdByInfo {
           id
           name
@@ -856,10 +878,10 @@ export const GET_PRODUCT_STOCK = gql`
       message
       data {
         id
-         productId
-         warehouseId
-         quantity
-         units
+        productId
+        warehouseId
+        quantity
+        units
       }
       totalRecords
       totalPages
@@ -870,35 +892,38 @@ export const GET_PRODUCT_STOCK = gql`
 `
 
 export const GET_PUBLIC_BRANCH_PRODUCTS = gql`
-query GetPublicProducts($paginationInput: PaginationInput!, $branchId: ObjectId!) {
-  getPublicProducts(paginationInput: $paginationInput, branchId: $branchId) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-       id
-       branchId
-       productId
-       price
-      stock
-       isVisibleOnWeb
-       isVisibleOnMenu
-      product {
-        id
-         name
-         description
-         image
+  query GetPublicProducts(
+    $paginationInput: PaginationInput!
+    $branchId: ObjectId!
+  ) {
+    getPublicProducts(paginationInput: $paginationInput, branchId: $branchId) {
+      errorInput {
+        message
+        field
       }
+      status
+      message
+      data {
+        id
+        branchId
+        productId
+        price
+        stock
+        isVisibleOnWeb
+        isVisibleOnMenu
+        product {
+          id
+          name
+          description
+          image
+        }
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
     }
-    totalRecords
-    totalPages
-    rows
-    currentPage
   }
-}
 `
 export const GET_ORDER_PAGINATED = gql`
 query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
@@ -933,10 +958,5 @@ query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
       orderAceptedBy
       
     }
-    totalRecords
-    totalPages
-    rows
-    currentPage
   }
-}
 `

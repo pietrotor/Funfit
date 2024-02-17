@@ -1,7 +1,8 @@
 import { useForm } from 'react-hook-form'
 import { Button, Image } from '@nextui-org/react'
 import { useRouter } from 'next/router'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
+import { GetServerSideProps } from 'next'
 import { useAppSelector } from '@/store/index'
 
 import Input from '@/components/atoms/Input'
@@ -16,20 +17,15 @@ import ComboInput from '@/components/atoms/ComboInput'
 import { TValueProductData } from '@/components/atoms/modals/EditProductModal'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import Selector from '@/components/atoms/InputSelector'
-import { GetServerSideProps } from 'next'
 import { authUserHeader } from '@/utils/verificationUser'
 
 interface ICreateStock {
   user: any
 }
 function CreateStock({ user }: ICreateStock) {
-  const [filterProduct] = useState<string>('')
+  const [filterProduct, setFilterProduct] = useState<string>('')
   const [productsData, setProductsData] = useState<TValueProductData>()
-  // const [warehouseData /* ,setWarehousesData */] = useState<TValuesWarehouses>(
-  //   {}
-  // )
   const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
-  // const { measurementUnits } = useAppSelector(state => state.configuration)
   const units = useAppSelector(
     state => state.configuration.business?.measurementUnits
   )
@@ -85,10 +81,6 @@ function CreateStock({ user }: ICreateStock) {
     })
     console.log('send')
   }
-  useEffect(() => {
-    console.log(productsData, 'data')
-    console.log(watch('product'), 'watch')
-  }, [productsData])
   return (
     <AdministrationLayout user={user} showBackButton={true}>
       <div className="w-full"></div>
@@ -121,17 +113,13 @@ function CreateStock({ user }: ICreateStock) {
               label="Producto"
               value={productsData?.name || ''}
               onChange={value => {
-                setProductsData(
-                  data?.getProductsOutOfWarehouse?.data?.find(
-                    product => product.name === value
-                  ) as TValueProductData
-                )
+                setFilterProduct(value)
               }}
               options={
                 data?.getProductsOutOfWarehouse?.data?.map(product => ({
                   label: product.name,
                   value: product.name
-                })) || [{ label: 'Cargando..', value: 'Cargando..' }]
+                })) || []
               }
             />
             <Input
