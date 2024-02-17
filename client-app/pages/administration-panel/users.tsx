@@ -70,7 +70,8 @@ function CreateUserForm({ user }: ICreateUserForm) {
             name: values.name,
             lastName: values.lastName,
             email: values.email,
-            phone: values.phone
+            phone: values.phone,
+            roleId: values.roleId
           }
         },
         onCompleted: data => {
@@ -155,6 +156,7 @@ function CreateUserForm({ user }: ICreateUserForm) {
             { name: 'Usuario' },
             { name: 'Email' },
             { name: 'Teléfono' },
+            { name: 'Rol' },
             { name: 'Acciones' }
           ]}
           items={(data?.getUsers?.data || []).map((user, idx) => ({
@@ -172,6 +174,11 @@ function CreateUserForm({ user }: ICreateUserForm) {
               </div>,
               <div key={idx} className="text-sm">
                 {user.phone}
+              </div>,
+              <div key={idx}>
+                <p className="m-auto w-fit rounded-full bg-secondary px-3 py-1 font-bold text-white">
+                  {user.roleInfo?.name}
+                </p>
               </div>,
               <div key={idx} className="flex justify-center space-x-1">
                 <ButtonComponent

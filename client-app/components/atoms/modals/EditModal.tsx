@@ -2,12 +2,15 @@ import { useForm } from 'react-hook-form'
 import { useEffect } from 'react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
+import Selector from '../InputSelector'
+import { useGetRolesLazyQuery } from '@/graphql/graphql-types'
 export type TValueUserData = {
   id?: string
   name?: string
   lastName?: string
   email?: string
   phone?: string
+  roleId?: string
 }
 
 type EditModalProps = {
@@ -23,23 +26,41 @@ export const EditModal = ({
   values,
   handleSendUpdateUser
 }: EditModalProps) => {
-  const { handleSubmit, watch, control, reset } = useForm()
+  const { handleSubmit, watch, control, reset, setValue } = useForm()
+  const [getRoles, { data: roles }] = useGetRolesLazyQuery({
+    onError(error) {
+      console.log('🚀 ~ onError ~ error:', error)
+    }
+  })
   const onSubmit = () => {
     handleSendUpdateUser({
       id: values.id,
       name: watch('name'),
       lastName: watch('lastName'),
       email: watch('email'),
-      phone: watch('phone')
+      phone: watch('phone'),
+      roleId: watch('roleId')
     })
   }
   useEffect(() => {
-    reset({
-      name: values.name,
-      lastName: values.lastName,
-      email: values.email,
-      phone: values.phone
+    getRoles({
+      variables: {
+        paginationInput: {}
+      },
+      onCompleted() {
+        setValue('roleId', values.roleId)
+      }
     })
+    if (values) {
+      console.log('🚀 ~ useEffect ~ values:', values)
+      reset({
+        name: values.name,
+        lastName: values.lastName,
+        email: values.email,
+        phone: values.phone,
+        roleId: values.roleId
+      })
+    }
   }, [values])
   return (
     <MyModal
@@ -120,6 +141,22 @@ export const EditModal = ({
               value: /^[0-9]+$/,
               message: 'El celular solo puede contener numeros'
             },
+            required: {
+              value: true,
+              message: 'Este campo es obligatorio'
+            }
+          }}
+        />
+        <Selector
+          control={control}
+          options={(roles?.getRoles?.data || []).map(role => ({
+            label: role!.name,
+            value: role!.id
+          }))}
+          defaultValue={values.roleId}
+          name="roleId"
+          label="Seleccione un rol"
+          rules={{
             required: {
               value: true,
               message: 'Este campo es obligatorio'

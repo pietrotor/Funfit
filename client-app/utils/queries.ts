@@ -108,6 +108,9 @@ export const GET_USERS = gql`
         status
         createdBy
         roleId
+        roleInfo {
+          name
+        }
       }
       totalRecords
       totalPages
