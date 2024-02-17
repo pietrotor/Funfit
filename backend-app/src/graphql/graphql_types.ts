@@ -730,7 +730,13 @@ export type Role = {
   id: Scalars['ObjectId']['output'];
   name: Scalars['String']['output'];
   status: Scalars['Boolean']['output'];
+  type: RoleTypeEnum;
 };
+
+export enum RoleTypeEnum {
+  ADMINISTRATOR = 'ADMINISTRATOR',
+  SALESMAN = 'SALESMAN'
+}
 
 export type RolesResponse = ResponseBase & {
   __typename?: 'RolesResponse';
@@ -1210,6 +1216,7 @@ export type ResolversTypes = {
   Response: ResolverTypeWrapper<Response>;
   ResponseBase: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['ResponseBase']>;
   Role: ResolverTypeWrapper<Role>;
+  RoleTypeEnum: RoleTypeEnum;
   RolesResponse: ResolverTypeWrapper<RolesResponse>;
   Sale: ResolverTypeWrapper<Sale>;
   SaleItem: ResolverTypeWrapper<SaleItem>;
@@ -1656,6 +1663,7 @@ export type RoleResolvers<ContextType = any, ParentType extends ResolversParentT
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['RoleTypeEnum'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

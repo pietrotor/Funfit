@@ -39,6 +39,25 @@ export const LOGIN = gql`
     }
   }
 `
+export const GET_ROLES = gql`
+  query GetRoles($paginationInput: PaginationInput!) {
+    getRoles(paginationInput: $paginationInput) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data {
+        id
+        name
+        code
+        status
+        type
+      }
+    }
+  }
+`
 export const CURRENT_USER = gql`
   query CurrentUser {
     currentUser {
@@ -63,6 +82,7 @@ export const CURRENT_USER = gql`
           name
           code
           status
+          type
         }
       }
     }
@@ -1359,117 +1379,120 @@ export const GET_PRODUCT_STOCK = gql`
 `
 
 export const GET_PUBLIC_BRANCH_PRODUCTS = gql`
-query GetPublicProducts($paginationInput: PaginationInput!, $branchId: ObjectId!) {
-  getPublicProducts(paginationInput: $paginationInput, branchId: $branchId) {
-    errorInput {
+  query GetPublicProducts(
+    $paginationInput: PaginationInput!
+    $branchId: ObjectId!
+  ) {
+    getPublicProducts(paginationInput: $paginationInput, branchId: $branchId) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
-    }
-    status
-    message
-    data {
-      id
-      branchId
-      productId
-      price
-      stock
-      isVisibleOnWeb
-      isVisibleOnMenu
-      product {
+      data {
         id
-        name
-        suggetedPrice
-        code
-        description
-        categoryId
-        cost
-        image
-        warehouses
-        category {
+        branchId
+        productId
+        price
+        stock
+        isVisibleOnWeb
+        isVisibleOnMenu
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          description
+          categoryId
+          cost
+          image
+          warehouses
+          category {
+            id
+            name
+            code
+          }
+        }
+        branch {
           id
           name
           code
-        }
-      }
-      branch {
-        id
-        name
-        code
-        city
-        direction
-        phone
-        nit
-        visibleOnWeb
-        cashId
-        cash {
-          id
-          branchId
-          amount
-          currentTurnId
-          isOpen
-          currentTurn {
+          city
+          direction
+          phone
+          nit
+          visibleOnWeb
+          cashId
+          cash {
             id
-            cashId
+            branchId
+            amount
+            currentTurnId
             isOpen
-            amountOfMovents
-            openInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              openBy
-              openByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
+            currentTurn {
+              id
+              cashId
+              isOpen
+              amountOfMovents
+              openInfo {
+                amount
+                physicialAmount
+                difference
+                date
+                observation
+                openBy
+                openByInfo {
                   id
                   name
-                  code
+                  lastName
+                  email
+                  phone
+                  lastLogin
                   status
+                  createdBy
+                  roleId
+                  roleInfo {
+                    id
+                    name
+                    code
+                    status
+                  }
                 }
               }
-            }
-            closeInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              closeBy
-              closeByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
+              closeInfo {
+                amount
+                physicialAmount
+                difference
+                date
+                observation
+                closeBy
+                closeByInfo {
                   id
                   name
-                  code
+                  lastName
+                  email
+                  phone
+                  lastLogin
                   status
+                  createdBy
+                  roleId
+                  roleInfo {
+                    id
+                    name
+                    code
+                    status
+                  }
                 }
               }
             }
           }
         }
       }
+      totalRecords
+      totalPages
+      rows
+      currentPage
     }
-    totalRecords
-    totalPages
-    rows
-    currentPage
   }
-}
 `
