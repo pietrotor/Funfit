@@ -7,7 +7,10 @@ import SubMenu from './SubMenu'
 import IconSelector, { TSvgNames } from '@/components/atoms/IconSelector'
 import { ICurrentUser } from '@/interfaces/currentUser.interface'
 import { SelectBranchModal } from '@/components/atoms/modals/SelectBranchModal'
-import { useGetBranchesPaginatedLazyQuery } from '@/graphql/graphql-types'
+import {
+  RoleTypeEnum,
+  useGetBranchesPaginatedLazyQuery
+} from '@/graphql/graphql-types'
 import { useAppDispatch, useAppSelector } from '@/store/index'
 import { setBranch, setBranches } from '@/store/slices/branches/branchSlice'
 
@@ -16,10 +19,12 @@ export type TMenuStructure = {
   link?: string
   icon: TSvgNames
   onClick?: () => void
+  permissions: RoleTypeEnum[]
   subMenu?: {
     text: string
     link?: string
     icon: TSvgNames
+    permissions: RoleTypeEnum[]
   }[]
 }[]
 
@@ -180,8 +185,11 @@ const Sidebar: React.FC<TSidebarProps> = ({
           <div>
             <div
               onClick={() => {
-                getBranch()
-                handleChangeBranch.onOpen()
+                console.log('🚀 ~ user.roleInfo:', user.roleInfo)
+                if (user.roleInfo?.type === RoleTypeEnum.ADMINISTRATOR) {
+                  getBranch()
+                  handleChangeBranch.onOpen()
+                }
               }}
               className="flex w-full cursor-pointer items-center gap-3 overflow-hidden bg-secondary px-10 pt-5 text-tertiary"
             >

@@ -9,13 +9,14 @@ import { showSuccessToast } from '../Toast/toasts'
 import ComboInput from '../ComboInput'
 import {
   StockMovementTypeEnum,
-  useGetProductStockLazyQuery,
+  useGetProductStockQuery,
   useGetWarehousesOfProductLazyQuery
 } from '@/graphql/graphql-types'
 import 'react-circular-progressbar/dist/styles.css'
 import { useCreateBranchProductStockMovement } from '@/hooks/UseStockMovementQuery'
 import { useAppSelector } from '@/store/index'
 import { TProductBranchData } from '@/interfaces/TData'
+import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 type ModalProps = {
   productBranch: TProductBranchData
   isOpen: boolean
@@ -32,11 +33,15 @@ export const MoveBranchStockModal = ({
   )
 
   const { control, handleSubmit, watch, reset } = useForm()
+  const [filterProduct, setFilterProduct] = useState<string>('')
   const [getWarehouses, { data }] = useGetWarehousesOfProductLazyQuery()
-  const [getStockWarehouse, { data: stockData }] = useGetProductStockLazyQuery({
+  const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
+  const { data: stockData } = useGetProductStockQuery({
     fetchPolicy: 'network-only',
     variables: {
-      paginationInput: {},
+      paginationInput: {
+        filter: valueFilterProduct
+      },
       productId: productBranch?.productId,
       warehouseId: warehouseData?.id
     },
@@ -58,14 +63,12 @@ export const MoveBranchStockModal = ({
 
   useEffect(() => {
     if (isOpen) {
-      reset(
-        {
-          warehouseId: '',
-          movementType: '',
-          quantity: '',
-          observation: ''
-        }
-      )
+      reset({
+        warehouseId: '',
+        movementType: '',
+        quantity: '',
+        observation: ''
+      })
     }
   }, [isOpen])
 
@@ -148,12 +151,7 @@ export const MoveBranchStockModal = ({
             <ComboInput
               value={warehouseData?.name || ''}
               onChange={value => {
-                setWarehouseData(
-                  data?.getWarehousesOfProduct?.data?.find(
-                    product => product.name === value
-                  ) as TValuesWarehouses
-                )
-                getStockWarehouse()
+                setFilterProduct(value)
               }}
               control={control}
               options={

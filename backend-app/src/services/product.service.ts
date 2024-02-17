@@ -54,15 +54,29 @@ export class ProductService extends ProductRepository<objectId> {
     paginationInput: PaginationInput,
     warehouseId: objectId
   ) {
-    const filterArgs = {
+    const warehouseFilter = {
       warehouses: {
         $nin: [warehouseId]
       }
     }
+    const { filter } = paginationInput
+    if (filter) {
+      const filterArgs = {
+        $or: [
+          { name: { $regex: filter, $options: 'i' } },
+          { code: { $regex: filter, $options: 'i' } }
+        ]
+      }
+      return await getInstancesPagination<IProduct, IModelProduct>(
+        Product,
+        paginationInput,
+        { ...filterArgs, ...warehouseFilter }
+      )
+    }
     return await getInstancesPagination<IProduct, IModelProduct>(
       Product,
       paginationInput,
-      filterArgs
+      warehouseFilter
     )
   }
 
