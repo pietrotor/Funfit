@@ -56,7 +56,7 @@ const ComboInput: React.FC<ComboInputProps> = ({
             onSelectionChange={(e) => { onSelectionChange && onSelectionChange(e) }}
             defaultSelectedKey={defaultValue}
             disabledKeys={disabledKeys}
-            onClick={onClick}
+            onOpenChange={onClick}
             list="options"
             onInputChange={e => {
               field.onChange(e)
