@@ -9,7 +9,7 @@ import { showSuccessToast } from '../Toast/toasts'
 import ComboInput from '../ComboInput'
 import {
   StockMovementTypeEnum,
-  useGetProductStockQuery,
+  useGetProductStockLazyQuery,
   useGetWarehousesOfProductLazyQuery
 } from '@/graphql/graphql-types'
 import 'react-circular-progressbar/dist/styles.css'
@@ -36,15 +36,8 @@ export const MoveBranchStockModal = ({
   const [filterProduct, setFilterProduct] = useState<string>('')
   const [getWarehouses, { data }] = useGetWarehousesOfProductLazyQuery()
   const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
-  const { data: stockData } = useGetProductStockQuery({
+  const [getProductStock, { data: stockData }] = useGetProductStockLazyQuery({
     fetchPolicy: 'network-only',
-    variables: {
-      paginationInput: {
-        filter: valueFilterProduct
-      },
-      productId: productBranch?.productId,
-      warehouseId: warehouseData?.id
-    },
     onCompleted: data => {
       if (data.getProductStock?.status === 'ERROR') {
         showSuccessToast(
@@ -63,6 +56,15 @@ export const MoveBranchStockModal = ({
 
   useEffect(() => {
     if (isOpen) {
+      getProductStock({
+        variables: {
+          paginationInput: {
+            filter: valueFilterProduct
+          },
+          productId: productBranch?.productId,
+          warehouseId: warehouseData?.id
+        }
+      })
       reset({
         warehouseId: '',
         movementType: '',

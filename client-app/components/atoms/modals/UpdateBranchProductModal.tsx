@@ -39,12 +39,13 @@ function UpdateBranchProductModal({
       }
     })
 
-  const onSubmit = handleSubmit(data => {
+  const onSubmit = handleSubmit(form => {
+    console.log('🚀 ~ onSubmit ~ data:', data)
     updateBranchProductMutation({
       variables: {
         updateBranchProductInput: {
           id: data.id,
-          price: data.price
+          price: parseFloat((form.price as any)?.toString())
         }
       },
       onCompleted(data) {
