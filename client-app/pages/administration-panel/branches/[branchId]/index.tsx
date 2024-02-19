@@ -251,11 +251,13 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
         onClose={handleAddBranchProduct.onClose}
         onAdd={() => refetch()}
       />
-      <MoveBranchStockModal
-        productBranch={editProduct as TProductBranchData}
-        isOpen={handleMoveStock.isOpen}
-        onClose={handleMoveStock.onClose}
-      />
+      {handleMoveStock.isOpen && (
+        <MoveBranchStockModal
+          productBranch={editProduct as TProductBranchData}
+          isOpen={handleMoveStock.isOpen}
+          onClose={handleMoveStock.onClose}
+        />
+      )}
       <UpdateBranchProductModal
         data={{
           id: editProduct?.id,
