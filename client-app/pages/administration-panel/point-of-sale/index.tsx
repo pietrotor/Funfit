@@ -1,14 +1,15 @@
 import { useEffect, useState } from 'react'
 import { Spinner } from '@nextui-org/react'
 import { useRouter } from 'next/router'
+import { GetServerSideProps } from 'next'
 import PointOfSaleCard from '@/components/molecules/Card/PointOfSaleCard'
 import AdministrationLayout from '@/components/templates/layouts'
 import SalesReceipt from '@/components/organisms/SalesReceipt'
 import { useGetBranchProductPOSQuery } from '@/hooks/UseBranchQuery'
 import { TProductBranchData } from '@/interfaces/TData'
 import { useAppSelector } from '@/store/index'
-import { GetServerSideProps } from 'next'
 import { authUserHeader } from '@/utils/verificationUser'
+import Search from '@/components/molecules/Search'
 
 export type TPointOfSaleData = {
   products: TProductBranchData[]
@@ -25,7 +26,7 @@ function PointOfSale({ user }: PointOfSaleProps) {
   const { data: dataPassed } = router.query
   const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
   const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
-  const { loading, data } = useGetBranchProductPOSQuery(branchId)
+  const { loading, data, setFilter } = useGetBranchProductPOSQuery(branchId)
   const [selectedProducts, setSelectedProducts] = useState<TPointOfSaleData>(
     parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
   )
@@ -98,9 +99,9 @@ function PointOfSale({ user }: PointOfSaleProps) {
     <AdministrationLayout user={user} profileButton={false}>
       <section className="flex h-full w-full ">
         <div className="w-2/3 border-1 border-secondary/30  bg-secondary/10 p-4">
-          {/* <div className="flex w-full">
+          <div className="flex w-full">
             <Search setFilter={setFilter} />
-          </div> */}
+          </div>
           {loading && (
             <div className="flex h-[95vh] items-center justify-center overflow-y-auto scrollbar-hide ">
               <Spinner label="Cargando..." color="primary" />

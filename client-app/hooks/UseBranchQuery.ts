@@ -63,7 +63,7 @@ export const useCreateBranchProductQuery = () => {
 export const useGetBranchProductQuery = (branchId: string) => {
   const [variables, setVariables] = useState<PaginationInterfaceState>()
   const [filter, setFilter] = useState<string>()
-  const filterDebounced = UseDebouncedValue(filter, 2000)
+  const filterDebounced = UseDebouncedValue(filter, 800)
   const { data, loading, refetch } = useGetBranchProductsPaginatedQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -108,7 +108,7 @@ export const useGetBranchProductQuery = (branchId: string) => {
 
 export const useGetBranchProductPOSQuery = (branchId: string) => {
   const [filter, setFilter] = useState<string>()
-  const filterDebounced = UseDebouncedValue(filter, 2000)
+  const filterDebounced = UseDebouncedValue(filter, 800)
   const { data, loading } = useGetBranchProductsPaginatedQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -138,20 +138,26 @@ export const useGetBranchProductPOSQuery = (branchId: string) => {
 export const useUpdateBranchProductQuery = () => {
   const [variables, setVariables] = useState<PaginationInterfaceState>()
   const [updateBranchProduct] = useUpdateBranchProductMutation()
-  const handleUpdateBranchProduct = (data: BranchProductData, field: string) => {
+  const handleUpdateBranchProduct = (
+    data: BranchProductData,
+    field: string
+  ) => {
     updateBranchProduct({
       variables: {
         updateBranchProductInput: {
           id: data.id,
-          isVisibleOnMenu: field === 'menu' ? !data.isVisibleOnMenu : data.isVisibleOnMenu,
-          isVisibleOnWeb: field === 'web' ? !data.isVisibleOnWeb : data.isVisibleOnWeb,
+          isVisibleOnMenu:
+            field === 'menu' ? !data.isVisibleOnMenu : data.isVisibleOnMenu,
+          isVisibleOnWeb:
+            field === 'web' ? !data.isVisibleOnWeb : data.isVisibleOnWeb,
           price: data.price
         }
       },
       onCompleted: result => {
         if (result.updateBranchProduct?.status === StatusEnum.ERROR) {
           showSuccessToast(
-            result.updateBranchProduct.message || 'No se pudo actualizar el producto',
+            result.updateBranchProduct.message ||
+              'No se pudo actualizar el producto',
             'error'
           )
         }
