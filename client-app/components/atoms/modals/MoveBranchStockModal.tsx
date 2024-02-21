@@ -2,14 +2,13 @@ import { useForm } from 'react-hook-form'
 import { useEffect, useState } from 'react'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import { MyModal } from './MyModal'
-import { TValuesWarehouses } from './EditWarehouseModal'
 import Selector from '../InputSelector'
 import InputComponent from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
 import ComboInput from '../ComboInput'
 import {
   StockMovementTypeEnum,
-  useGetProductStockQuery,
+  useGetProductStockLazyQuery,
   useGetWarehousesOfProductLazyQuery
 } from '@/graphql/graphql-types'
 import 'react-circular-progressbar/dist/styles.css'
@@ -27,24 +26,17 @@ export const MoveBranchStockModal = ({
   onClose,
   productBranch
 }: ModalProps) => {
-  const [warehouseData, setWarehouseData] = useState<TValuesWarehouses>()
+  const [warehouseData, setWarehouseData] = useState<string>()
   const branchIdSelected = useAppSelector(
     state => state.branchReducer.currentBranch.id
   )
 
   const { control, handleSubmit, watch, reset } = useForm()
-  const [filterProduct, setFilterProduct] = useState<string>('')
+  const [filterWarehouse, setFilterWarehouse] = useState<string>('')
   const [getWarehouses, { data }] = useGetWarehousesOfProductLazyQuery()
-  const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
-  const { data: stockData } = useGetProductStockQuery({
+  const valuefilterWarehouse = UseDebouncedValue(filterWarehouse, 500)
+  const [getProductStock, { data: stockData }] = useGetProductStockLazyQuery({
     fetchPolicy: 'network-only',
-    variables: {
-      paginationInput: {
-        filter: valueFilterProduct
-      },
-      productId: productBranch?.productId,
-      warehouseId: warehouseData?.id
-    },
     onCompleted: data => {
       if (data.getProductStock?.status === 'ERROR') {
         showSuccessToast(
@@ -72,7 +64,29 @@ export const MoveBranchStockModal = ({
     }
   }, [isOpen])
 
-  const { handleCreateBranchStockMovement } =
+  useEffect(() => {
+    if (!productBranch) return
+    getWarehouses({
+      fetchPolicy: 'network-only',
+      variables: {
+        paginationInput: {
+          filter: valuefilterWarehouse
+        },
+        productId: productBranch.productId
+      },
+      onCompleted: data => {
+        if (data.getWarehousesOfProduct?.status === 'ERROR') {
+          showSuccessToast(
+            data.getWarehousesOfProduct?.message ||
+              'Error al cargar los productos',
+            'error'
+          )
+        }
+      }
+    })
+  }, [valuefilterWarehouse])
+
+  const { handleCreateBranchStockMovement, loading } =
     useCreateBranchProductStockMovement()
   const handleCancel = () => {
     setWarehouseData(undefined)
@@ -101,7 +115,7 @@ export const MoveBranchStockModal = ({
     const stockD = stockData?.getProductStock?.data?.find(
       stock =>
         stock.productId === productBranch.productId &&
-        stock.warehouseId === warehouseData?.id
+        stock.warehouseId === warehouseData
     )
     if (watch('movementType') === StockMovementTypeEnum.OUTWARD) {
       return stockD && stockD.quantity + parseInt(watch('quantity'))
@@ -124,7 +138,9 @@ export const MoveBranchStockModal = ({
         date: watch('date'),
         observation: watch('observation'),
         stockId: stockData?.getProductStock?.data?.find(
-          stock => stock.productId === productBranch.productId
+          stock =>
+            stock.productId === productBranch.productId &&
+            stock.warehouseId === warehouseData
         )?.id
       },
       onClose,
@@ -139,6 +155,7 @@ export const MoveBranchStockModal = ({
       onSubmit={onSubmit}
       color="warning"
       isOpen={isOpen}
+      loading={loading}
       onClose={onClose}
       title="Mover stock"
       message="Ingrese los datos del stock a mover"
@@ -149,9 +166,8 @@ export const MoveBranchStockModal = ({
         <div className="grid grid-cols-2 gap-2">
           <div className="space-y-3">
             <ComboInput
-              value={warehouseData?.name || ''}
               onChange={value => {
-                setFilterProduct(value)
+                setFilterWarehouse(value)
               }}
               control={control}
               options={
@@ -163,6 +179,16 @@ export const MoveBranchStockModal = ({
               name="warehouseId"
               onClick={() => {
                 handleGetWarehouses()
+              }}
+              onSelectionChange={value => {
+                setWarehouseData(value)
+                getProductStock({
+                  variables: {
+                    paginationInput: {},
+                    productId: productBranch.productId,
+                    warehouseId: value
+                  }
+                })
               }}
               label="Seleccione el almacén"
               rules={{
@@ -241,7 +267,7 @@ export const MoveBranchStockModal = ({
                   stockData?.getProductStock?.data?.find(
                     stock =>
                       stock.productId === productBranch.productId &&
-                      stock.warehouseId === warehouseData?.id
+                      stock.warehouseId === warehouseData
                   )?.quantity ||
                   0
                 }
@@ -249,14 +275,14 @@ export const MoveBranchStockModal = ({
                   stockData?.getProductStock?.data?.find(
                     stock =>
                       stock.productId === productBranch.productId &&
-                      stock.warehouseId === warehouseData?.id
+                      stock.warehouseId === warehouseData
                   )?.quantity
                 }
                 text={`${
                   stockData?.getProductStock?.data?.find(
                     stock =>
                       stock.productId === productBranch.productId &&
-                      stock.warehouseId === warehouseData?.id
+                      stock.warehouseId === warehouseData
                   )?.quantity || 'No hay stock'
                 }`}
                 styles={{
@@ -280,7 +306,7 @@ export const MoveBranchStockModal = ({
                 stockData?.getProductStock?.data?.find(
                   stock =>
                     stock.productId === productBranch.productId &&
-                    stock.warehouseId === warehouseData?.id
+                    stock.warehouseId === warehouseData
                 )?.units
               ) : (
                 <p className="text-center text-red-500">

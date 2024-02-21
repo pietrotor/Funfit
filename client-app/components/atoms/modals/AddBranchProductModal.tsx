@@ -44,7 +44,9 @@ export const AddBranchProductModal = ({
       fetchPolicy: 'network-only',
       variables: {
         branchId: branchId as string,
-        paginationInput: {}
+        paginationInput: {
+          rows: 500
+        }
       }
     })
 

@@ -10,7 +10,9 @@ import { useAppSelector } from '@/store/index'
 import ResponsiveSaleModal from '@/components/atoms/modals/ResponsiveSaleModal'
 import ButtonComponent from '@/components/atoms/Button'
 import { authUserHeader } from '@/utils/verificationUser'
-import { useGetBranchProductsPaginatedLazyQuery } from '@/graphql/graphql-types'
+
+import Search from '@/components/molecules/Search'
+import { useGetBranchProductPOSQuery } from '@/hooks/UseBranchQuery'
 
 export type TPointOfSaleData = {
   products: TProductBranchData[]
@@ -27,13 +29,7 @@ function PointOfSale({ user }: PointOfSaleProps) {
   const { data: dataPassed } = router.query
   const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
   const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
-  const [getproducts, { data, loading }] = useGetBranchProductsPaginatedLazyQuery({
-    fetchPolicy: 'network-only',
-    variables: {
-      branchId,
-      paginationInput: {}
-    }
-  })
+  const { loading, data, setFilter } = useGetBranchProductPOSQuery(branchId)
   const [selectedProducts, setSelectedProducts] = useState<TPointOfSaleData>(
     parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
   )
@@ -97,36 +93,33 @@ function PointOfSale({ user }: PointOfSaleProps) {
     )
   }, [router.query])
 
-  useEffect(() => {
-    if (branchId) getproducts()
-  }, [branchId])
-
   return (
     <AdministrationLayout user={user} profileButton={false}>
-      <section className="h-full w-full flex-col md:flex md:flex-row  ">
-        <div className="w-full border-1 border-secondary/30 bg-secondary/10  p-4 md:w-2/3">
-          {/* <div className="flex w-full">
+      <section className="flex h-full w-full ">
+        <div className="w-2/3 border-1 border-secondary/30  bg-secondary/10 p-4">
+          <div className="flex w-full">
             <Search setFilter={setFilter} />
-          </div> */}
+          </div>
           {loading && (
             <div className="flex h-[90vh] items-center justify-center overflow-y-auto scrollbar-hide ">
               <Spinner label="Cargando..." color="primary" />
             </div>
           )}
           <div className="grid max-h-[90vh] grid-cols-2 gap-3 overflow-y-auto scrollbar-hide md:grid-cols-3 md:gap-4 md:p-4 ">
-            {!loading && data?.getBranchProductsPaginated?.data?.map(item => (
-              <PointOfSaleCard
-                key={item.id}
-                product={item as TProductBranchData}
-                quantity={
-                  selectedProducts?.products?.find(
-                    product => product.productId === item.productId
-                  )?.quantity || 0
-                }
-                isLoading={loading}
-                handleSelected={() => handleSelected(item.productId)}
-              />
-            ))}
+            {!loading &&
+              data?.getBranchProductsPaginated?.data?.map(item => (
+                <PointOfSaleCard
+                  key={item.id}
+                  product={item as TProductBranchData}
+                  quantity={
+                    selectedProducts?.products?.find(
+                      product => product.productId === item.productId
+                    )?.quantity || 0
+                  }
+                  isLoading={loading}
+                  handleSelected={() => handleSelected(item.productId)}
+                />
+              ))}
           </div>
           <ButtonComponent
             className="mt-4 block w-full bg-secondary font-extrabold text-white md:hidden"
