@@ -946,8 +946,8 @@ query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
     status
     message
     data {
-      total
-      subTotal
+      id
+      branchId
       products {
         branchProductId
         productId
@@ -955,24 +955,55 @@ query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
         qty
         total
         product {
-          image
           id
           name
           suggetedPrice
+          code
+          internalCode
           description
+          categoryId
+          cost
+          image
+          warehouses
         }
       }
+      deliveryMethod
+      paymentMethod
+      subTotal
+      total
       discount
-      id
+      date
+      code
+      customerId
+      addressId
+      pickUpInformation
+      orderDetails
       orderAcepted
       orderAceptedAt
       orderAceptedBy
-      
+      reason
+      rejected
+      rejectedAt
+      rejectedBy
+      isSold
+      saleId
     }
     totalRecords
     totalPages
     rows
     currentPage
+  }
+}
+`
+export const ACCEPT_ORDER = gql`
+mutation AcceptOrder($orderId: ObjectId!) {
+  acceptOrder(orderId: $orderId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
   }
 }
 `

@@ -6,17 +6,19 @@ interface IProductsListModalProps {
   isOpen: boolean
   values: TSaleProduct[]
   onClose: () => void
+  order?: boolean
 }
 
 function ProductListModal({
   isOpen,
   values,
-  onClose
+  onClose,
+  order = false
 }: IProductsListModalProps) {
   return (
     <MyModal
-      title="Lista de productos vendidos"
-      message="A continuación se muestra la lista de productos de la venta"
+      title="Lista de productos"
+      message="A continuación se muestra la lista de productos"
       isForm={false}
       onSubmit={onClose}
       isOpen={isOpen}
@@ -37,11 +39,23 @@ function ProductListModal({
                 <p className="flex items-center justify-center ">
                   <Images
                     alt="No image available"
-                    src={product?.product?.image || 'https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg'}
+                    src={
+                      product?.product?.image ||
+                      'https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg'
+                    }
                     className="me-3 h-16 w-16 rounded-md object-cover  "
                   />
                   {product.product.name}{' '}
                 </p>
+                {order ? (
+                  <p className="flex items-center justify-center ">
+                    {product.qty} x Bs.{product.price}
+                  </p>
+                ) : (
+                  <p className="flex items-center justify-center ">
+                    {product.qty}
+                  </p>
+                )}
               </li>
             ))}
           </ul>

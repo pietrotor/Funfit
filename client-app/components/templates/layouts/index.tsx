@@ -166,8 +166,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         branchId: '1',
         productId: '1',
         price: 100,
-        isVisibleOnWeb: true,
-        isVisibleOnMenu: true,
         quantity: 1,
         product: {
           id: '1',
@@ -182,8 +180,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         branchId: '1',
         productId: '2',
         price: 200,
-        isVisibleOnWeb: true,
-        isVisibleOnMenu: true,
         quantity: 2,
         product: {
           id: '2',
@@ -199,8 +195,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         productId: '3',
         price: 300,
         quantity: 1,
-        isVisibleOnWeb: true,
-        isVisibleOnMenu: true,
         product: {
           id: '3',
           name: 'Producto 3',
@@ -293,6 +287,11 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       icon: 'PointOfSale',
       text: 'Punto de venta',
       link: '/administration-panel/point-of-sale'
+    },
+    {
+      icon: 'Basket-shopping',
+      text: 'Pedidos',
+      link: '/administration-panel/order'
     }
   ]
   useEffect(() => {

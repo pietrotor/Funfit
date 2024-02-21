@@ -1671,7 +1671,14 @@ export type GetOrdersPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetOrdersPaginatedQuery = { __typename?: 'Query', getOrdersPaginated?: { __typename?: 'OrdersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Order', total: number, subTotal: number, discount: number, id: any, orderAcepted?: boolean | null, orderAceptedAt?: any | null, orderAceptedBy?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', image?: string | null, id: any, name: string, suggetedPrice: number, description: string } | null }> }> | null } | null };
+export type GetOrdersPaginatedQuery = { __typename?: 'Query', getOrdersPaginated?: { __typename?: 'OrdersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Order', id: any, branchId: any, deliveryMethod: DeliveryMethodEnum, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, customerId: any, addressId?: any | null, pickUpInformation?: string | null, orderDetails?: string | null, orderAcepted?: boolean | null, orderAceptedAt?: any | null, orderAceptedBy?: any | null, reason?: string | null, rejected?: boolean | null, rejectedAt?: any | null, rejectedBy?: any | null, isSold: boolean, saleId?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }> }> | null } | null };
+
+export type AcceptOrderMutationVariables = Exact<{
+  orderId: Scalars['ObjectId'];
+}>;
+
+
+export type AcceptOrderMutation = { __typename?: 'Mutation', acceptOrder?: { __typename?: 'OrderResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -4374,8 +4381,8 @@ export const GetOrdersPaginatedDocument = gql`
     status
     message
     data {
-      total
-      subTotal
+      id
+      branchId
       products {
         branchProductId
         productId
@@ -4383,18 +4390,38 @@ export const GetOrdersPaginatedDocument = gql`
         qty
         total
         product {
-          image
           id
           name
           suggetedPrice
+          code
+          internalCode
           description
+          categoryId
+          cost
+          image
+          warehouses
         }
       }
+      deliveryMethod
+      paymentMethod
+      subTotal
+      total
       discount
-      id
+      date
+      code
+      customerId
+      addressId
+      pickUpInformation
+      orderDetails
       orderAcepted
       orderAceptedAt
       orderAceptedBy
+      reason
+      rejected
+      rejectedAt
+      rejectedBy
+      isSold
+      saleId
     }
     totalRecords
     totalPages
@@ -4431,3 +4458,41 @@ export function useGetOrdersPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetOrdersPaginatedQueryHookResult = ReturnType<typeof useGetOrdersPaginatedQuery>;
 export type GetOrdersPaginatedLazyQueryHookResult = ReturnType<typeof useGetOrdersPaginatedLazyQuery>;
 export type GetOrdersPaginatedQueryResult = Apollo.QueryResult<GetOrdersPaginatedQuery, GetOrdersPaginatedQueryVariables>;
+export const AcceptOrderDocument = gql`
+    mutation AcceptOrder($orderId: ObjectId!) {
+  acceptOrder(orderId: $orderId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type AcceptOrderMutationFn = Apollo.MutationFunction<AcceptOrderMutation, AcceptOrderMutationVariables>;
+
+/**
+ * __useAcceptOrderMutation__
+ *
+ * To run a mutation, you first call `useAcceptOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acceptOrderMutation, { data, loading, error }] = useAcceptOrderMutation({
+ *   variables: {
+ *      orderId: // value for 'orderId'
+ *   },
+ * });
+ */
+export function useAcceptOrderMutation(baseOptions?: Apollo.MutationHookOptions<AcceptOrderMutation, AcceptOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AcceptOrderMutation, AcceptOrderMutationVariables>(AcceptOrderDocument, options);
+      }
+export type AcceptOrderMutationHookResult = ReturnType<typeof useAcceptOrderMutation>;
+export type AcceptOrderMutationResult = Apollo.MutationResult<AcceptOrderMutation>;
+export type AcceptOrderMutationOptions = Apollo.BaseMutationOptions<AcceptOrderMutation, AcceptOrderMutationVariables>;
