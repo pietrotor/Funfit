@@ -420,6 +420,7 @@ export type Mutation = {
   publicCreateAddress?: Maybe<AddressResponse>;
   publicCreateCustomer?: Maybe<CustomerResponse>;
   publicCreateOrder?: Maybe<OrderResponse>;
+  rejectOrder?: Maybe<OrderResponse>;
   updateBranch?: Maybe<BranchResponse>;
   updateBranchProduct?: Maybe<BranchProductResponse>;
   updateCategory?: Maybe<CategoryResponse>;
@@ -542,6 +543,11 @@ export type MutationPublicCreateCustomerArgs = {
 
 export type MutationPublicCreateOrderArgs = {
   createOrderInput: CreateOrderInput;
+};
+
+
+export type MutationRejectOrderArgs = {
+  orderId: Scalars['ObjectId']['input'];
 };
 
 
@@ -1811,6 +1817,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   publicCreateAddress?: Resolver<Maybe<ResolversTypes['AddressResponse']>, ParentType, ContextType, RequireFields<MutationPublicCreateAddressArgs, 'createAddressInput'>>;
   publicCreateCustomer?: Resolver<Maybe<ResolversTypes['CustomerResponse']>, ParentType, ContextType, RequireFields<MutationPublicCreateCustomerArgs, 'createCustomerInput'>>;
   publicCreateOrder?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<MutationPublicCreateOrderArgs, 'createOrderInput'>>;
+  rejectOrder?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<MutationRejectOrderArgs, 'orderId'>>;
   updateBranch?: Resolver<Maybe<ResolversTypes['BranchResponse']>, ParentType, ContextType, RequireFields<MutationUpdateBranchArgs, 'updateBranchInput'>>;
   updateBranchProduct?: Resolver<Maybe<ResolversTypes['BranchProductResponse']>, ParentType, ContextType, RequireFields<MutationUpdateBranchProductArgs, 'updateBranchProductInput'>>;
   updateCategory?: Resolver<Maybe<ResolversTypes['CategoryResponse']>, ParentType, ContextType, RequireFields<MutationUpdateCategoryArgs, 'updateCategoryInput'>>;

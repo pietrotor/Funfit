@@ -93,7 +93,9 @@ type Query {
   getSalesSummary(salesSummaryInput: SalesSummaryInput!): SalesSummaryResponse
   # ORDER ================================
   getOrderById(id: ObjectId!): OrderResponse
-  getOrdersPaginated(orderPaginationInput: OrderPaginationInput!): OrdersResponse
+  getOrdersPaginated(
+    orderPaginationInput: OrderPaginationInput!
+  ): OrdersResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(
     paginationInput: PaginationInput!
@@ -158,6 +160,7 @@ type Mutation {
   cancelSale(cancelSaleInput: CancelSaleInput!): SaleResponse
   # ORDERS =================================
   acceptOrder(orderId: ObjectId!): OrderResponse
+  rejectOrder(orderId: ObjectId!): OrderResponse
   # ========================= ECOMMERCE ROUTES ============================
   publicCreateCustomer(
     createCustomerInput: CreateCustomerInput!

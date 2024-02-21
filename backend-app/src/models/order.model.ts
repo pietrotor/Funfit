@@ -32,7 +32,7 @@ interface IOrder extends Document, IGeneric {
   orderAcepted: boolean
   orderAceptedAt: Date | null
   orderAceptedBy: objectId | null
-  isSold: boolean | null
+  isSold: boolean
   saleId: objectId | null
   // Cancel fields
   reason: string | null
@@ -41,7 +41,7 @@ interface IOrder extends Document, IGeneric {
   rejectedBy: objectId | null
 }
 
-interface IModelOrder extends Model<IOrder> { }
+interface IModelOrder extends Model<IOrder> {}
 
 const orderSchema = new Schema<IOrder>(
   {
