@@ -934,30 +934,30 @@ export const GET_PUBLIC_BRANCH_PRODUCTS = gql`
 
 export const GET_PUBLIC_CUSTOMER_BY_ID = gql`
   query GetPublicCustomerById($getPublicCustomerByIdId: ObjectId!) {
-    getPublicCustomerById(id: $getPublicCustomerByIdId) {
-      errorInput {
-        message
-        field
-      }
-      status
+  getPublicCustomerById(id: $getPublicCustomerByIdId) {
+    errorInput {
       message
-      data {
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      lastName
+      email
+      phone
+      lastOrderDate
+      ordersIds
+      addressInfo {
         id
-        name
-        lastName
-        email
-        phone
-        lastOrderDate
-        ordersIds
-        addressInfo {
-          id
-          latitude
-          longitude
-          detail
-        }
+        latitude
+        longitude
+        detail
       }
     }
   }
+}
 `
 export const GET_ORDER_PAGINATED = gql`
 query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
@@ -1019,28 +1019,6 @@ query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
         lastOrderDate
         addressesIds
         ordersIds
-      }
-      orderAceptedByInfo {
-        id
-        name
-        lastName
-        email
-        phone
-        lastLogin
-        status
-        createdBy
-        roleId
-      }
-      rejectedByInfo {
-        id
-        name
-        lastName
-        email
-        phone
-        lastLogin
-        status
-        createdBy
-        roleId
       }
     }
     totalRecords
