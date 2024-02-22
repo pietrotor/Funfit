@@ -70,6 +70,10 @@ function CreateStock({ user }: ICreateStock) {
           'success'
         )
         router.back()
+      },
+      onError(error) {
+        console.log('🚀 ~ onError ~ error:', error)
+        showSuccessToast('No se pudo crear el stock de este producto', 'error')
       }
     })
     console.log('send')
@@ -107,6 +111,11 @@ function CreateStock({ user }: ICreateStock) {
               value={productsData?.name || ''}
               onChange={value => {
                 setFilterProduct(value)
+                setProductsData(
+                  data?.getProductsOutOfWarehouse?.data?.find(
+                    product => product.name === value
+                  ) as TValueProductData
+                )
               }}
               options={
                 data?.getProductsOutOfWarehouse?.data?.map(product => ({
@@ -176,10 +185,10 @@ function CreateStock({ user }: ICreateStock) {
           </Button>
         </form>
         <div
-          className={`absolute  grid grid-cols-2 place-items-center gap-x-2 py-6 ps-4 transition-all duration-300 ${
+          className={`absolute grid grid-cols-2 place-items-center gap-x-2 py-6 ps-4 transition-all duration-300 ${
             !productsData
               ? 'invisible md:left-1 '
-              : 'md:left-unit-7xl lg:left-unit-8xl xl:left-unit-9xl'
+              : 'md:left-unit-7xl lg:left-unit-8xl xl:left-auto xl:right-0'
           }`}
         >
           <div className="">
