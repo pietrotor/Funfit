@@ -6,10 +6,12 @@ import {
   StatusEnum,
   useAcceptOrderMutation,
   useGetOrdersPaginatedQuery,
-  usePublicCreateOrderMutation
+  usePublicCreateOrderMutation,
+  useRejectOrderMutation
 } from '@/graphql/graphql-types'
 import { TOrder } from '@/interfaces/TData'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
+import { useRouter } from 'next/router'
 
 export const useCustomPublicCreateOrder = () => {
   const [createOrder] = usePublicCreateOrderMutation()
@@ -46,7 +48,8 @@ export const useCustomPublicCreateOrder = () => {
 
 export const useCustomGetOrdersPaginated = (
   branchId: string,
-  orderesAcepted: boolean
+  orderesAcepted: boolean,
+  ordersRejected?: boolean
 ) => {
   const [variables, setVariables] = useState<PaginationInterfaceState>()
   const [filter, setFilter] = useState<string>()
@@ -89,8 +92,10 @@ export const useCustomGetOrdersPaginated = (
 
 export const useCustomAcceptOrder = () => {
   const [acceptOrder] = useAcceptOrderMutation()
+  const router = useRouter()
 
-  const handleAcceptOrder = (orderId: string, order:TPointOfSaleData, callback: () => void) => {
+  const handleAcceptOrder = (orderId: string, order:TPointOfSaleData) => {
+    console.log(order)
     acceptOrder({
       variables: {
         orderId
@@ -99,7 +104,10 @@ export const useCustomAcceptOrder = () => {
         if (result.acceptOrder?.status === StatusEnum.OK) {
           showSuccessToast('Pedido aceptado', 'success')
         }
-        callback()
+        router.push({
+          pathname: '/administration-panel/point-of-sale',
+          query: { data: JSON.stringify(order) }
+        })
       },
       onError: error => {
         showSuccessToast(error.message, 'error')
@@ -108,4 +116,28 @@ export const useCustomAcceptOrder = () => {
   }
 
   return { handleAcceptOrder }
+}
+
+export const useCustomRejectOrder = () => {
+  const [rejectOrder] = useRejectOrderMutation()
+
+  const handleRejectOrder = (orderId: string) => {
+    rejectOrder({
+      variables: {
+        orderId
+      },
+      onCompleted: result => {
+        if (result.rejectOrder?.status === StatusEnum.OK) {
+          showSuccessToast('Pedido rechazado', 'success')
+        } else {
+          showSuccessToast(result.rejectOrder?.message || 'Error al rechazar la orden', 'error')
+        }
+      },
+      onError: error => {
+        showSuccessToast(error.message, 'error')
+      }
+    })
+  }
+
+  return { handleRejectOrder }
 }

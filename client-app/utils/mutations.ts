@@ -324,3 +324,29 @@ export const PUBLIC_CREATE_ADDRESS = gql`
     }
   }
 `
+
+export const ACCEPT_ORDER = gql`
+  mutation AcceptOrder($orderId: ObjectId!) {
+    acceptOrder(orderId: $orderId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
+`
+
+export const REJECT_ORDER = gql`
+  mutation RejectOrder($orderId: ObjectId!) {
+    rejectOrder(orderId: $orderId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
+`

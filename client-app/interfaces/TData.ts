@@ -31,6 +31,8 @@ export type TProductBranchData = {
   branchId: string
   productId: string
   price: number
+  isVisibleOnWeb: boolean
+  isVisibleOnMenu: boolean
   product?: TValueProductData
   warehouses?: string[]
   quantity?: number

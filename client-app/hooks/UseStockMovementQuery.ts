@@ -10,7 +10,7 @@ import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 export const useCreateBranchProductStockMovement = () => {
   const [variables, setVariables] = useState<PaginationInterfaceState>()
 
-  const [createBranchStockMovement] =
+  const [createBranchStockMovement, { loading }] =
     useCreateBranchProductStockMovementMutation()
 
   const handleCreateBranchStockMovement = (
@@ -61,6 +61,7 @@ export const useCreateBranchProductStockMovement = () => {
   return {
     handleCreateBranchStockMovement,
     variables,
-    setVariables
+    setVariables,
+    loading
   }
 }

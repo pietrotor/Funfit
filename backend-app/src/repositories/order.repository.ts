@@ -16,4 +16,5 @@ export abstract class OrderRepository<T> {
   ): Promise<IOrder | OutErrorResponse>
 
   abstract acceptOrder(orderId: T): Promise<IOrder | OutErrorResponse>
+  abstract rejectOrder(orderId: T): Promise<IOrder | OutErrorResponse>
 }

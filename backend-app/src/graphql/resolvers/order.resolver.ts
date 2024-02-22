@@ -10,7 +10,12 @@ import {
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
-import { addressCore, customerCore, orderCore, userCore } from '@/services/index'
+import {
+  addressCore,
+  customerCore,
+  orderCore,
+  userCore
+} from '@/services/index'
 
 // ========================================== Queries ====================================================
 const getOrderById = async (
@@ -51,10 +56,35 @@ const acceptOrder = async (
 ): Promise<OrderResponse> => {
   try {
     const { orderId } = args
-    const orderInstance = await orderCore.acceptOrder(orderId, context.req.currentUser?.id)
+    const orderInstance = await orderCore.acceptOrder(
+      orderId,
+      context.req.currentUser?.id
+    )
     return {
       status: StatusEnum.OK,
       message: 'Pedido aceptado',
+      data: orderInstance
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
+
+const rejectOrder = async (
+  _: any,
+  args: { orderId: objectId },
+  context: ContextGraphQl
+): Promise<OrderResponse> => {
+  try {
+    const { orderId } = args
+    const orderInstance = await orderCore.rejectOrder(
+      orderId,
+      context.req.currentUser?.id
+    )
+    return {
+      status: StatusEnum.OK,
+      message: 'Pedido rechazado',
       data: orderInstance
     }
   } catch (error) {
@@ -68,16 +98,13 @@ export const orderQuery = {
   getOrderById
 }
 export const orderMutation = {
-  acceptOrder
+  acceptOrder,
+  rejectOrder
 }
 
 export const orderType = {
   Order: {
-    async addressInfo(
-      parent: Order,
-      _: any,
-      __: any
-    ): Promise<Address | null> {
+    async addressInfo(parent: Order, _: any, __: any): Promise<Address | null> {
       if (parent.addressId) {
         return await addressCore.getAddressByIdInstance(parent.addressId)
       }
@@ -103,11 +130,7 @@ export const orderType = {
       }
       return null
     },
-    async rejectedByInfo(
-      parent: Order,
-      _: any,
-      __: any
-    ): Promise<User | null> {
+    async rejectedByInfo(parent: Order, _: any, __: any): Promise<User | null> {
       if (parent.rejectedBy) {
         return await userCore.getUserByIdInstance(parent.rejectedBy)
       }

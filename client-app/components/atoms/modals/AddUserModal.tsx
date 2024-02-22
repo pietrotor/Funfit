@@ -1,8 +1,14 @@
 import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 import { showSuccessToast } from '../Toast/toasts'
-import { StatusEnum, useCreateUserMutation } from '@/graphql/graphql-types'
+import Selector from '../InputSelector'
+import {
+  StatusEnum,
+  useCreateUserMutation,
+  useGetRolesLazyQuery
+} from '@/graphql/graphql-types'
 type ModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -11,6 +17,11 @@ type ModalProps = {
 
 export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
   const [createUser, { loading }] = useCreateUserMutation()
+  const [getRoles, { data: roles }] = useGetRolesLazyQuery({
+    onError(error) {
+      console.log('🚀 ~ onError ~ error:', error)
+    }
+  })
   const { handleSubmit, watch, control, reset } = useForm()
   const onSubmit = async () => {
     try {
@@ -22,7 +33,7 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
             email: watch('email'),
             password: watch('password'),
             phone: watch('phone'),
-            roleId: '5f9aee5b0d11b13b443b91d2'
+            roleId: watch('roleId')
           }
         },
         onCompleted: data => {
@@ -46,6 +57,15 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
     } catch (error) {}
     console.log(watch())
   }
+
+  useEffect(() => {
+    getRoles({
+      variables: {
+        paginationInput: {}
+      }
+    })
+  }, [])
+
   const handleCancel = () => {
     reset()
     onClose()
@@ -67,10 +87,8 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
       handleSubmit={handleSubmit}
       onSubmit={onSubmit}
     >
-      <div
-        className="flex w-full flex-col items-center p-9 text-gray-500"
-      >
-        <div className="flex w-full flex-col md:space-y-0 space-y-2 md:grid md:grid-cols-2 md:gap-5">
+      <div className="flex w-full flex-col items-center p-9 text-gray-500">
+        <div className="flex w-full flex-col space-y-2 md:grid md:grid-cols-2 md:gap-5 md:space-y-0">
           <Input
             control={control}
             name="name"
@@ -156,6 +174,23 @@ export const AddUserModal = ({ isOpen, onClose, onAddUser }: ModalProps) => {
                 value === watch('password') || 'Las contraseñas no coinciden'
             }}
           />
+          <div className="col-span-1 md:col-span-2">
+            <Selector
+              control={control}
+              options={(roles?.getRoles?.data || []).map(role => ({
+                label: role!.name,
+                value: role!.id
+              }))}
+              name="roleId"
+              label="Seleccione un rol"
+              rules={{
+                required: {
+                  value: true,
+                  message: 'Este campo es obligatorio'
+                }
+              }}
+            />
+          </div>
         </div>
       </div>
     </MyModal>

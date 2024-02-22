@@ -29,8 +29,6 @@ function SalesReceipt({
         branchId: '1',
         productId: '1',
         quantity: 1,
-        isVisibleOnMenu: true,
-        isVisibleOnWeb: true,
         product: {
           id: '1',
           name: 'Producto 1'
@@ -44,8 +42,6 @@ function SalesReceipt({
         branchId: '1',
         productId: '2',
         quantity: 1,
-        isVisibleOnMenu: true,
-        isVisibleOnWeb: true,
         product: {
           id: '2',
           name: 'Producto 2'

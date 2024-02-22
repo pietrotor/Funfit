@@ -169,10 +169,23 @@ export class OrderService extends OrderRepository<objectId> {
 
   async acceptOrder(orderId: objectId, acceptedBy?: objectId) {
     const orderInstance = await this.getOrderById(orderId)
-    if (orderInstance.orderAcepted) throw new BadRequestError('EL pedido ya fue aceptado previamente')
+    if (orderInstance.orderAcepted)
+      throw new BadRequestError('EL pedido ya fue aceptado previamente')
     orderInstance.orderAcepted = true
     orderInstance.orderAceptedAt = new Date()
     orderInstance.orderAceptedBy = acceptedBy || null
+    return await orderInstance.save()
+  }
+
+  async rejectOrder(orderId: objectId, acceptedBy?: objectId) {
+    const orderInstance = await this.getOrderById(orderId)
+    if (orderInstance.isSold)
+      throw new BadRequestError('No se puede rechazar un pedido ya vendido')
+    if (orderInstance.rejected)
+      throw new BadRequestError('El pedido ya fue rechazado previamente')
+    orderInstance.rejected = true
+    orderInstance.rejectedAt = new Date()
+    orderInstance.rejectedBy = acceptedBy || null
     return await orderInstance.save()
   }
 }

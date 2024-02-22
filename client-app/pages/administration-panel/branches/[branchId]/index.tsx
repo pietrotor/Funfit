@@ -20,6 +20,7 @@ import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { StatusEnum, useUpdateBranchMutation } from '@/graphql/graphql-types'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import { authUserHeader } from '@/utils/verificationUser'
+import { UpdateBranchProductModal } from '@/components/atoms/modals/UpdateBranchProductModal'
 
 interface ProductOnBranchProps {
   user: any
@@ -31,6 +32,7 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
   const [isAviable, setIsAviable] = useState<boolean>(false)
   const handleAddBranchProduct = useDisclosure()
   const handleMoveStock = useDisclosure()
+  const handleUpdatePrice = useDisclosure()
   const { loading, data, refetch, variables, setVariables, setFilter } =
     useGetBranchProductQuery(branchId as string)
   const { handleUpdateBranchProduct } = useUpdateBranchProductQuery()
@@ -76,6 +78,11 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
   const handleEdit = (productBranch: TProductBranchData) => () => {
     setEditProduct(productBranch)
     handleMoveStock.onOpen()
+  }
+
+  const handleEditPrice = (productBranch: TProductBranchData) => () => {
+    setEditProduct(productBranch)
+    handleUpdatePrice.onOpen()
   }
 
   return (
@@ -190,20 +197,35 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
                 >
                   {productBranch.isVisibleOnWeb ? 'Sí' : 'No'}
                 </Switch>,
-                <ButtonComponent
-                  key={idx}
-                  onClick={handleEdit(productBranch as TProductBranchData)}
-                  type="eye"
-                  showTooltip
-                  tooltipText="Mover Stock"
-                  className="px-3"
-                >
-                  <IconSelector
-                    name="Stock"
-                    color="text-secondary"
-                    width="w-5"
-                  />
-                </ButtonComponent>
+                <div key={idx} className="flex gap-2">
+                  <ButtonComponent
+                    onClick={handleEdit(productBranch as TProductBranchData)}
+                    type="eye"
+                    showTooltip
+                    tooltipText="Mover Stock"
+                    className="px-3"
+                  >
+                    <IconSelector
+                      name="Stock"
+                      color="text-secondary"
+                      width="w-5"
+                    />
+                  </ButtonComponent>
+                  <ButtonComponent
+                    onClick={handleEditPrice(
+                      productBranch as TProductBranchData
+                    )}
+                    type="edit"
+                    showTooltip
+                    tooltipText="Editar Precio"
+                  >
+                    <IconSelector
+                      name="edit"
+                      color="text-primary"
+                      width="w-8"
+                    />
+                  </ButtonComponent>
+                </div>
               ]
             })
           )}
@@ -229,10 +251,21 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
         onClose={handleAddBranchProduct.onClose}
         onAdd={() => refetch()}
       />
-      <MoveBranchStockModal
-        productBranch={editProduct as TProductBranchData}
-        isOpen={handleMoveStock.isOpen}
-        onClose={handleMoveStock.onClose}
+      {handleMoveStock.isOpen && (
+        <MoveBranchStockModal
+          productBranch={editProduct as TProductBranchData}
+          isOpen={handleMoveStock.isOpen}
+          onClose={handleMoveStock.onClose}
+        />
+      )}
+      <UpdateBranchProductModal
+        data={{
+          id: editProduct?.id,
+          price: editProduct?.price
+        }}
+        isOpen={handleUpdatePrice.isOpen}
+        onClose={handleUpdatePrice.onClose}
+        onSuccess={() => refetch()}
       />
     </AdministrationLayout>
   )

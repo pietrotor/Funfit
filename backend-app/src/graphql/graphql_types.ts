@@ -420,6 +420,7 @@ export type Mutation = {
   publicCreateAddress?: Maybe<AddressResponse>;
   publicCreateCustomer?: Maybe<CustomerResponse>;
   publicCreateOrder?: Maybe<OrderResponse>;
+  rejectOrder?: Maybe<OrderResponse>;
   updateBranch?: Maybe<BranchResponse>;
   updateBranchProduct?: Maybe<BranchProductResponse>;
   updateCategory?: Maybe<CategoryResponse>;
@@ -542,6 +543,11 @@ export type MutationPublicCreateCustomerArgs = {
 
 export type MutationPublicCreateOrderArgs = {
   createOrderInput: CreateOrderInput;
+};
+
+
+export type MutationRejectOrderArgs = {
+  orderId: Scalars['ObjectId']['input'];
 };
 
 
@@ -917,7 +923,13 @@ export type Role = {
   id: Scalars['ObjectId']['output'];
   name: Scalars['String']['output'];
   status: Scalars['Boolean']['output'];
+  type: RoleTypeEnum;
 };
+
+export enum RoleTypeEnum {
+  ADMINISTRATOR = 'ADMINISTRATOR',
+  SALESMAN = 'SALESMAN'
+}
 
 export type RolesResponse = ResponseBase & {
   __typename?: 'RolesResponse';
@@ -1413,6 +1425,7 @@ export type ResolversTypes = {
   Response: ResolverTypeWrapper<Response>;
   ResponseBase: ResolverTypeWrapper<ResolversInterfaceTypes<ResolversTypes>['ResponseBase']>;
   Role: ResolverTypeWrapper<Role>;
+  RoleTypeEnum: RoleTypeEnum;
   RolesResponse: ResolverTypeWrapper<RolesResponse>;
   Sale: ResolverTypeWrapper<Sale>;
   SaleItem: ResolverTypeWrapper<SaleItem>;
@@ -1804,6 +1817,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   publicCreateAddress?: Resolver<Maybe<ResolversTypes['AddressResponse']>, ParentType, ContextType, RequireFields<MutationPublicCreateAddressArgs, 'createAddressInput'>>;
   publicCreateCustomer?: Resolver<Maybe<ResolversTypes['CustomerResponse']>, ParentType, ContextType, RequireFields<MutationPublicCreateCustomerArgs, 'createCustomerInput'>>;
   publicCreateOrder?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<MutationPublicCreateOrderArgs, 'createOrderInput'>>;
+  rejectOrder?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<MutationRejectOrderArgs, 'orderId'>>;
   updateBranch?: Resolver<Maybe<ResolversTypes['BranchResponse']>, ParentType, ContextType, RequireFields<MutationUpdateBranchArgs, 'updateBranchInput'>>;
   updateBranchProduct?: Resolver<Maybe<ResolversTypes['BranchProductResponse']>, ParentType, ContextType, RequireFields<MutationUpdateBranchProductArgs, 'updateBranchProductInput'>>;
   updateCategory?: Resolver<Maybe<ResolversTypes['CategoryResponse']>, ParentType, ContextType, RequireFields<MutationUpdateCategoryArgs, 'updateCategoryInput'>>;
@@ -1969,6 +1983,7 @@ export type RoleResolvers<ContextType = any, ParentType extends ResolversParentT
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['RoleTypeEnum'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 

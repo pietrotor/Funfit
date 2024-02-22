@@ -418,6 +418,7 @@ export type Mutation = {
   publicCreateAddress?: Maybe<AddressResponse>;
   publicCreateCustomer?: Maybe<CustomerResponse>;
   publicCreateOrder?: Maybe<OrderResponse>;
+  rejectOrder?: Maybe<OrderResponse>;
   updateBranch?: Maybe<BranchResponse>;
   updateBranchProduct?: Maybe<BranchProductResponse>;
   updateCategory?: Maybe<CategoryResponse>;
@@ -540,6 +541,11 @@ export type MutationPublicCreateCustomerArgs = {
 
 export type MutationPublicCreateOrderArgs = {
   createOrderInput: CreateOrderInput;
+};
+
+
+export type MutationRejectOrderArgs = {
+  orderId: Scalars['ObjectId'];
 };
 
 
@@ -915,7 +921,13 @@ export type Role = {
   id: Scalars['ObjectId'];
   name: Scalars['String'];
   status: Scalars['Boolean'];
+  type: RoleTypeEnum;
 };
+
+export enum RoleTypeEnum {
+  ADMINISTRATOR = 'ADMINISTRATOR',
+  SALESMAN = 'SALESMAN'
+}
 
 export type RolesResponse = ResponseBase & {
   __typename?: 'RolesResponse';
@@ -1444,6 +1456,13 @@ export type PublicCreateAddressMutationVariables = Exact<{
 
 export type PublicCreateAddressMutation = { __typename?: 'Mutation', publicCreateAddress?: { __typename?: 'AddressResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Address', id: any } | null } | null };
 
+export type AcceptOrderMutationVariables = Exact<{
+  orderId: Scalars['ObjectId'];
+}>;
+
+
+export type AcceptOrderMutation = { __typename?: 'Mutation', acceptOrder?: { __typename?: 'OrderResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1456,17 +1475,24 @@ export type LoginQueryVariables = Exact<{
 
 export type LoginQuery = { __typename?: 'Query', login?: { __typename?: 'LoginResponse', message?: string | null, status: StatusEnum, token?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null } | null };
 
+export type GetRolesQueryVariables = Exact<{
+  paginationInput: PaginationInput;
+}>;
+
+
+export type GetRolesQuery = { __typename?: 'Query', getRoles?: { __typename?: 'RolesResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: Array<{ __typename?: 'Role', id: any, name: string, code: string, status: boolean, type: RoleTypeEnum } | null> | null } | null };
+
 export type CurrentUserQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typename?: 'UserResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null };
+export type CurrentUserQuery = { __typename?: 'Query', currentUser?: { __typename?: 'UserResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean, type: RoleTypeEnum } | null } | null } | null };
 
 export type GetUsersQueryVariables = Exact<{
   paginationInput: PaginationInput;
 }>;
 
 
-export type GetUsersQuery = { __typename?: 'Query', getUsers?: { __typename?: 'UsersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: Array<{ __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any }> | null } | null };
+export type GetUsersQuery = { __typename?: 'Query', getUsers?: { __typename?: 'UsersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: Array<{ __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', name: string } | null }> | null } | null };
 
 export type GetProductsQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -1671,14 +1697,14 @@ export type GetOrdersPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetOrdersPaginatedQuery = { __typename?: 'Query', getOrdersPaginated?: { __typename?: 'OrdersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Order', id: any, branchId: any, deliveryMethod: DeliveryMethodEnum, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, customerId: any, addressId?: any | null, pickUpInformation?: string | null, orderDetails?: string | null, orderAcepted?: boolean | null, orderAceptedAt?: any | null, orderAceptedBy?: any | null, reason?: string | null, rejected?: boolean | null, rejectedAt?: any | null, rejectedBy?: any | null, isSold: boolean, saleId?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }> }> | null } | null };
+export type GetOrdersPaginatedQuery = { __typename?: 'Query', getOrdersPaginated?: { __typename?: 'OrdersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Order', id: any, branchId: any, deliveryMethod: DeliveryMethodEnum, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, customerId: any, addressId?: any | null, pickUpInformation?: string | null, orderDetails?: string | null, orderAcepted?: boolean | null, orderAceptedAt?: any | null, orderAceptedBy?: any | null, reason?: string | null, rejected?: boolean | null, rejectedAt?: any | null, rejectedBy?: any | null, isSold: boolean, saleId?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, customerInfo?: { __typename?: 'Customer', id: any, name: string, lastName: string, email?: string | null, phone: string, lastOrderDate?: any | null, addressesIds: Array<any>, ordersIds: Array<any> } | null, orderAceptedByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any } | null, rejectedByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any } | null }> | null } | null };
 
-export type AcceptOrderMutationVariables = Exact<{
+export type RejectOrderMutationVariables = Exact<{
   orderId: Scalars['ObjectId'];
 }>;
 
 
-export type AcceptOrderMutation = { __typename?: 'Mutation', acceptOrder?: { __typename?: 'OrderResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+export type RejectOrderMutation = { __typename?: 'Mutation', rejectOrder?: { __typename?: 'OrderResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -2607,6 +2633,44 @@ export function usePublicCreateAddressMutation(baseOptions?: Apollo.MutationHook
 export type PublicCreateAddressMutationHookResult = ReturnType<typeof usePublicCreateAddressMutation>;
 export type PublicCreateAddressMutationResult = Apollo.MutationResult<PublicCreateAddressMutation>;
 export type PublicCreateAddressMutationOptions = Apollo.BaseMutationOptions<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>;
+export const AcceptOrderDocument = gql`
+    mutation AcceptOrder($orderId: ObjectId!) {
+  acceptOrder(orderId: $orderId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type AcceptOrderMutationFn = Apollo.MutationFunction<AcceptOrderMutation, AcceptOrderMutationVariables>;
+
+/**
+ * __useAcceptOrderMutation__
+ *
+ * To run a mutation, you first call `useAcceptOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acceptOrderMutation, { data, loading, error }] = useAcceptOrderMutation({
+ *   variables: {
+ *      orderId: // value for 'orderId'
+ *   },
+ * });
+ */
+export function useAcceptOrderMutation(baseOptions?: Apollo.MutationHookOptions<AcceptOrderMutation, AcceptOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AcceptOrderMutation, AcceptOrderMutationVariables>(AcceptOrderDocument, options);
+      }
+export type AcceptOrderMutationHookResult = ReturnType<typeof useAcceptOrderMutation>;
+export type AcceptOrderMutationResult = Apollo.MutationResult<AcceptOrderMutation>;
+export type AcceptOrderMutationOptions = Apollo.BaseMutationOptions<AcceptOrderMutation, AcceptOrderMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {
@@ -2701,6 +2765,53 @@ export function useLoginLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<Logi
 export type LoginQueryHookResult = ReturnType<typeof useLoginQuery>;
 export type LoginLazyQueryHookResult = ReturnType<typeof useLoginLazyQuery>;
 export type LoginQueryResult = Apollo.QueryResult<LoginQuery, LoginQueryVariables>;
+export const GetRolesDocument = gql`
+    query GetRoles($paginationInput: PaginationInput!) {
+  getRoles(paginationInput: $paginationInput) {
+    errorInput {
+      field
+      message
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      status
+      type
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetRolesQuery__
+ *
+ * To run a query within a React component, call `useGetRolesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRolesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRolesQuery({
+ *   variables: {
+ *      paginationInput: // value for 'paginationInput'
+ *   },
+ * });
+ */
+export function useGetRolesQuery(baseOptions: Apollo.QueryHookOptions<GetRolesQuery, GetRolesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetRolesQuery, GetRolesQueryVariables>(GetRolesDocument, options);
+      }
+export function useGetRolesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRolesQuery, GetRolesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetRolesQuery, GetRolesQueryVariables>(GetRolesDocument, options);
+        }
+export type GetRolesQueryHookResult = ReturnType<typeof useGetRolesQuery>;
+export type GetRolesLazyQueryHookResult = ReturnType<typeof useGetRolesLazyQuery>;
+export type GetRolesQueryResult = Apollo.QueryResult<GetRolesQuery, GetRolesQueryVariables>;
 export const CurrentUserDocument = gql`
     query CurrentUser {
   currentUser {
@@ -2725,6 +2836,7 @@ export const CurrentUserDocument = gql`
         name
         code
         status
+        type
       }
     }
   }
@@ -2776,6 +2888,9 @@ export const GetUsersDocument = gql`
       status
       createdBy
       roleId
+      roleInfo {
+        name
+      }
     }
     totalRecords
     totalPages
@@ -4422,6 +4537,38 @@ export const GetOrdersPaginatedDocument = gql`
       rejectedBy
       isSold
       saleId
+      customerInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastOrderDate
+        addressesIds
+        ordersIds
+      }
+      orderAceptedByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+      }
+      rejectedByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+      }
     }
     totalRecords
     totalPages
@@ -4458,9 +4605,9 @@ export function useGetOrdersPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetOrdersPaginatedQueryHookResult = ReturnType<typeof useGetOrdersPaginatedQuery>;
 export type GetOrdersPaginatedLazyQueryHookResult = ReturnType<typeof useGetOrdersPaginatedLazyQuery>;
 export type GetOrdersPaginatedQueryResult = Apollo.QueryResult<GetOrdersPaginatedQuery, GetOrdersPaginatedQueryVariables>;
-export const AcceptOrderDocument = gql`
-    mutation AcceptOrder($orderId: ObjectId!) {
-  acceptOrder(orderId: $orderId) {
+export const RejectOrderDocument = gql`
+    mutation RejectOrder($orderId: ObjectId!) {
+  rejectOrder(orderId: $orderId) {
     errorInput {
       message
       field
@@ -4470,29 +4617,29 @@ export const AcceptOrderDocument = gql`
   }
 }
     `;
-export type AcceptOrderMutationFn = Apollo.MutationFunction<AcceptOrderMutation, AcceptOrderMutationVariables>;
+export type RejectOrderMutationFn = Apollo.MutationFunction<RejectOrderMutation, RejectOrderMutationVariables>;
 
 /**
- * __useAcceptOrderMutation__
+ * __useRejectOrderMutation__
  *
- * To run a mutation, you first call `useAcceptOrderMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useAcceptOrderMutation` returns a tuple that includes:
+ * To run a mutation, you first call `useRejectOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRejectOrderMutation` returns a tuple that includes:
  * - A mutate function that you can call at any time to execute the mutation
  * - An object with fields that represent the current status of the mutation's execution
  *
  * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
  *
  * @example
- * const [acceptOrderMutation, { data, loading, error }] = useAcceptOrderMutation({
+ * const [rejectOrderMutation, { data, loading, error }] = useRejectOrderMutation({
  *   variables: {
  *      orderId: // value for 'orderId'
  *   },
  * });
  */
-export function useAcceptOrderMutation(baseOptions?: Apollo.MutationHookOptions<AcceptOrderMutation, AcceptOrderMutationVariables>) {
+export function useRejectOrderMutation(baseOptions?: Apollo.MutationHookOptions<RejectOrderMutation, RejectOrderMutationVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<AcceptOrderMutation, AcceptOrderMutationVariables>(AcceptOrderDocument, options);
+        return Apollo.useMutation<RejectOrderMutation, RejectOrderMutationVariables>(RejectOrderDocument, options);
       }
-export type AcceptOrderMutationHookResult = ReturnType<typeof useAcceptOrderMutation>;
-export type AcceptOrderMutationResult = Apollo.MutationResult<AcceptOrderMutation>;
-export type AcceptOrderMutationOptions = Apollo.BaseMutationOptions<AcceptOrderMutation, AcceptOrderMutationVariables>;
+export type RejectOrderMutationHookResult = ReturnType<typeof useRejectOrderMutation>;
+export type RejectOrderMutationResult = Apollo.MutationResult<RejectOrderMutation>;
+export type RejectOrderMutationOptions = Apollo.BaseMutationOptions<RejectOrderMutation, RejectOrderMutationVariables>;

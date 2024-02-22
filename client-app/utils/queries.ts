@@ -39,6 +39,25 @@ export const LOGIN = gql`
     }
   }
 `
+export const GET_ROLES = gql`
+  query GetRoles($paginationInput: PaginationInput!) {
+    getRoles(paginationInput: $paginationInput) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data {
+        id
+        name
+        code
+        status
+        type
+      }
+    }
+  }
+`
 export const CURRENT_USER = gql`
   query CurrentUser {
     currentUser {
@@ -63,6 +82,7 @@ export const CURRENT_USER = gql`
           name
           code
           status
+          type
         }
       }
     }
@@ -88,6 +108,9 @@ export const GET_USERS = gql`
         status
         createdBy
         roleId
+        roleInfo {
+          name
+        }
       }
       totalRecords
       totalPages
@@ -987,23 +1010,43 @@ query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
       rejectedBy
       isSold
       saleId
+      customerInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastOrderDate
+        addressesIds
+        ordersIds
+      }
+      orderAceptedByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+      }
+      rejectedByInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastLogin
+        status
+        createdBy
+        roleId
+      }
     }
     totalRecords
     totalPages
     rows
     currentPage
-  }
-}
-`
-export const ACCEPT_ORDER = gql`
-mutation AcceptOrder($orderId: ObjectId!) {
-  acceptOrder(orderId: $orderId) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
   }
 }
 `

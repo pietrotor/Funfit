@@ -12,6 +12,7 @@ import { BranchProduct, IBranchProduct, IModelBranchProduct } from '../models'
 import { BranchProductRepository } from '../repositories'
 import { branchCore, productCore } from '.'
 import { branchUseCaseCore } from 'useCase'
+import Product from '@/models/product.model'
 
 export class BranchProductService extends BranchProductRepository<objectId> {
   async getBranchesProductsPaginated(
@@ -20,14 +21,21 @@ export class BranchProductService extends BranchProductRepository<objectId> {
   ) {
     const { filter } = paginationInput
     if (filter) {
-      const filterArgs = {
-        $or: [{ name: { $regex: filter, $options: 'i' } }],
-        branchId
-      }
+      const products = await Product.find({
+        deleted: false,
+        $or: [
+          { name: { $regex: filter, $options: 'i' } },
+          { code: { $regex: filter, $options: 'i' } }
+        ],
+        branchesIds: {
+          $in: [branchId]
+        }
+      })
+      const productsIds = products.map(product => product._id)
       return await getInstancesPagination<IBranchProduct, IModelBranchProduct>(
         BranchProduct,
         paginationInput,
-        filterArgs
+        { productId: productsIds, branchId, deleted: false }
       )
     }
     const extraArgs = {
@@ -89,7 +97,9 @@ export class BranchProductService extends BranchProductRepository<objectId> {
       createdBy
     })
     branchInstance.productsIds.push(productId)
+    await branchInstance.save()
     productInstance.branchesIds.push(branchId)
+    await productInstance.save()
     return await branchProductInstance.save()
   }
 

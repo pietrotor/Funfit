@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import Sidebar, { TMenuStructure } from './sidebar'
@@ -8,6 +8,7 @@ import ToastComponent, {
   showSuccessToast
 } from '@/components/atoms/Toast/toasts'
 import {
+  RoleTypeEnum,
   StatusEnum,
   useGetBranchesPaginatedLazyQuery,
   useGetConfigurationLazyQuery,
@@ -19,13 +20,14 @@ import { setBusiness, setOrder } from '@/store/slices'
 import BackButton from '@/components/atoms/BackButton/intex'
 import { setBranch, setBranches } from '@/store/slices/branches/branchSlice'
 import { DropDown } from '@/components/atoms/DropDown'
+import { ICurrentUser } from '@/interfaces/currentUser.interface'
 
 type TAdministrationLayoutProps = {
   children: React.ReactNode
   showBackButton?: boolean
   onSubmit?: () => void
   profileButton?: boolean
-  user: any
+  user: ICurrentUser
 }
 
 const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
@@ -116,7 +118,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     // const timerId = setInterval(() => {
     //   getOrders()
     // }, 60000)
-
     // return () => {
     //   clearInterval(timerId)
     // }
@@ -143,8 +144,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
             stock: product.qty,
             total: product.total
           }
-        }
-        ),
+        }),
         subTotal: order.subTotal,
         total: order.total,
         discount: order.discount
@@ -155,9 +155,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     setOrderData(datosTransformados as TPointOfSaleData[])
     console.log(orderData, 'orderData')
   }
-  useEffect(() => {
-
-  }, [])
+  useEffect(() => {}, [])
 
   const dataToPass: TPointOfSaleData = {
     products: [
@@ -167,6 +165,8 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         productId: '1',
         price: 100,
         quantity: 1,
+        isVisibleOnMenu: true,
+        isVisibleOnWeb: true,
         product: {
           id: '1',
           name: 'Producto 1',
@@ -181,6 +181,8 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         productId: '2',
         price: 200,
         quantity: 2,
+        isVisibleOnMenu: true,
+        isVisibleOnWeb: true,
         product: {
           id: '2',
           name: 'Producto 2',
@@ -195,6 +197,8 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         productId: '3',
         price: 300,
         quantity: 1,
+        isVisibleOnMenu: true,
+        isVisibleOnWeb: true,
         product: {
           id: '3',
           name: 'Producto 3',
@@ -212,88 +216,123 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     {
       icon: 'home',
       text: 'Inicio',
-      link: '/'
+      link: '/',
+      permissions: [RoleTypeEnum.ADMINISTRATOR]
     },
     {
       icon: 'Admin',
       text: 'Administrar',
+      permissions: [RoleTypeEnum.ADMINISTRATOR],
       subMenu: [
         {
           icon: 'users',
           text: 'Usuarios',
-          link: '/administration-panel/users'
+          link: '/administration-panel/users',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
         },
         {
           icon: 'Box',
           text: 'Productos',
-          link: '/administration-panel/products'
+          link: '/administration-panel/products',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
         }
       ]
     },
     {
       icon: 'Configuration',
       text: 'Configuración',
+      permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN],
       subMenu: [
         {
           icon: 'Branch',
           text: 'Sucursales',
-          link: '/administration-panel/branches'
+          link: '/administration-panel/branches',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
         },
         {
           icon: 'Bussines',
           text: 'Almacenes',
-          link: '/administration-panel/warehouses'
+          link: '/administration-panel/warehouses',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
         },
         {
           icon: 'Cash',
           text: 'Caja',
-          link: '/administration-panel/cash'
+          link: '/administration-panel/cash',
+          permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
         },
         {
           icon: 'Admin',
           text: 'Categorías',
-          link: '/administration-panel/categories'
+          link: '/administration-panel/categories',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
         }
       ]
     },
     {
       icon: 'Store',
       text: 'Ventas',
+      permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN],
       subMenu: [
         {
           icon: 'Admin',
           text: 'Reportes',
-          link: '/administration-panel/sales'
+          link: '/administration-panel/sales',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
         },
         {
           icon: 'Admin',
           text: 'Ventas diarias',
-          link: '/administration-panel/dailySale'
+          link: '/administration-panel/dailySale',
+          permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
         }
       ]
     },
     {
       icon: 'TrunkAndBox',
       text: 'Produccion',
+      permissions: [RoleTypeEnum.ADMINISTRATOR],
       subMenu: [
         {
           icon: 'Recipe',
           text: 'Recetas',
-          link: '/administration-panel/recipies'
+          link: '/administration-panel/recipies',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
         }
       ]
     },
     {
       icon: 'PointOfSale',
       text: 'Punto de venta',
-      link: '/administration-panel/point-of-sale'
+      link: '/administration-panel/point-of-sale',
+      permissions: [RoleTypeEnum.ADMINISTRATOR]
     },
     {
       icon: 'Basket-shopping',
       text: 'Pedidos',
-      link: '/administration-panel/order'
+      link: '/administration-panel/order',
+      permissions: [RoleTypeEnum.ADMINISTRATOR]
     }
   ]
+
+  const buildMenu = useMemo(() => {
+    const roleType = user.roleInfo?.type
+    console.log('🚀 ~ buildMenu ~ roleType:', roleType)
+    const menuBuilded: TMenuStructure = []
+    if (!roleType) return []
+    menu.forEach(page => {
+      if (page.permissions.includes(roleType)) {
+        menuBuilded.push({
+          ...page,
+          subMenu: page.subMenu?.filter(item =>
+            item.permissions.includes(roleType)
+          )
+        })
+      }
+    })
+    return menuBuilded
+  }, [user.roleInfo?.type])
+
   useEffect(() => {
     if (!business) {
       getConfiguration()
@@ -336,8 +375,8 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         >
           <Sidebar
             onSubmit={onSubmit}
-            user={{ name: user?.name }}
-            menu={menu}
+            user={user}
+            menu={buildMenu}
             isSidebarOpen={sidebarOpen}
             setSidebar={setsidebarOpen}
           />
@@ -353,7 +392,9 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
               <ToastComponent />
               <div className="flex items-center">
                 <DropDown
-                  onClick={() => { getOrders() }}
+                  onClick={() => {
+                    getOrders()
+                  }}
                   IconButtonName="Notifications"
                   values={
                     data?.getOrdersPaginated?.data?.map((order, idx) => {
