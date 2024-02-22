@@ -48,8 +48,7 @@ export const useCustomPublicCreateOrder = () => {
 
 export const useCustomGetOrdersPaginated = (
   branchId: string,
-  orderesAcepted: boolean,
-  ordersRejected?: boolean
+  orderesAcepted: boolean
 ) => {
   const [variables, setVariables] = useState<PaginationInterfaceState>()
   const [filter, setFilter] = useState<string>()
