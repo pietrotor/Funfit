@@ -413,7 +413,7 @@ type Customer {
   addressesIds: [ObjectId!]!
   ordersIds: [ObjectId!]!
   # Fields Resolvers
-  addressInfo: Address
+  addressInfo: [Address!]!
 }
 type Address {
   id: ObjectId!

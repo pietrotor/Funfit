@@ -14,6 +14,7 @@ function SelectedProductItem({
   setSelectedProducts
 }: SelectedProductItemProps) {
   const increment = (id: string) => {
+    console.log(id)
     setSelectedProducts({
       products: selectedProducts.products.map(item => {
         if (item.productId === id) {
@@ -29,7 +30,6 @@ function SelectedProductItem({
       total: selectedProducts.total + item.price,
       discount: selectedProducts.discount
     })
-    console.log(selectedProducts)
   }
 
   const decrement = (id: string) => {

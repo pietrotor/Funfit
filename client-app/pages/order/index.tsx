@@ -24,7 +24,7 @@ function Order() {
     return (
       <div className="h-full">
         <ClientLayout>
-          <OrderLayout />
+          <OrderLayout/>
         </ClientLayout>
       </div>
     )

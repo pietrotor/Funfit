@@ -164,9 +164,9 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         branchId: '1',
         productId: '1',
         price: 100,
-        isVisibleOnWeb: true,
-        isVisibleOnMenu: true,
         quantity: 1,
+        isVisibleOnMenu: true,
+        isVisibleOnWeb: true,
         product: {
           id: '1',
           name: 'Producto 1',
@@ -180,9 +180,9 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         branchId: '1',
         productId: '2',
         price: 200,
-        isVisibleOnWeb: true,
-        isVisibleOnMenu: true,
         quantity: 2,
+        isVisibleOnMenu: true,
+        isVisibleOnWeb: true,
         product: {
           id: '2',
           name: 'Producto 2',
@@ -197,8 +197,8 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         productId: '3',
         price: 300,
         quantity: 1,
-        isVisibleOnWeb: true,
         isVisibleOnMenu: true,
+        isVisibleOnWeb: true,
         product: {
           id: '3',
           name: 'Producto 3',
@@ -305,7 +305,13 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       icon: 'PointOfSale',
       text: 'Punto de venta',
       link: '/administration-panel/point-of-sale',
-      permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
+      permissions: [RoleTypeEnum.ADMINISTRATOR]
+    },
+    {
+      icon: 'Basket-shopping',
+      text: 'Pedidos',
+      link: '/administration-panel/order',
+      permissions: [RoleTypeEnum.ADMINISTRATOR]
     }
   ]
 

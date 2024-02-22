@@ -93,6 +93,17 @@ function PointOfSale({ user }: PointOfSaleProps) {
     )
   }, [router.query])
 
+  useEffect(() => {
+    if (selectedProducts && selectedProducts.products.length > 0) {
+      selectedProducts.products.forEach(product => {
+        product.stock = data?.getBranchProductsPaginated?.data?.find(
+          item => item.productId === product.productId
+        )?.stock
+      })
+    }
+    console.log(selectedProducts)
+  }, [selectedProducts])
+
   return (
     <AdministrationLayout user={user} profileButton={false}>
       <section className="flex h-full w-full ">

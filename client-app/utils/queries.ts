@@ -914,8 +914,14 @@ export const GET_PUBLIC_BRANCH_PRODUCTS = gql`
         product {
           id
           name
+          suggetedPrice
+          code
+          internalCode
           description
+          categoryId
+          cost
           image
+          warehouses
         }
       }
       totalRecords
@@ -924,6 +930,34 @@ export const GET_PUBLIC_BRANCH_PRODUCTS = gql`
       currentPage
     }
   }
+`
+
+export const GET_PUBLIC_CUSTOMER_BY_ID = gql`
+  query GetPublicCustomerById($getPublicCustomerByIdId: ObjectId!) {
+  getPublicCustomerById(id: $getPublicCustomerByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      lastName
+      email
+      phone
+      lastOrderDate
+      ordersIds
+      addressInfo {
+        id
+        latitude
+        longitude
+        detail
+      }
+    }
+  }
+}
 `
 export const GET_ORDER_PAGINATED = gql`
 query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
@@ -935,8 +969,8 @@ query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
     status
     message
     data {
-      total
-      subTotal
+      id
+      branchId
       products {
         branchProductId
         productId
@@ -944,19 +978,53 @@ query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
         qty
         total
         product {
-          image
           id
           name
           suggetedPrice
+          code
+          internalCode
           description
+          categoryId
+          cost
+          image
+          warehouses
         }
       }
+      deliveryMethod
+      paymentMethod
+      subTotal
+      total
       discount
-      id
+      date
+      code
+      customerId
+      addressId
+      pickUpInformation
+      orderDetails
       orderAcepted
       orderAceptedAt
       orderAceptedBy
-      
+      reason
+      rejected
+      rejectedAt
+      rejectedBy
+      isSold
+      saleId
+      customerInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastOrderDate
+        addressesIds
+        ordersIds
+      }
     }
+    totalRecords
+    totalPages
+    rows
+    currentPage
   }
+}
 `

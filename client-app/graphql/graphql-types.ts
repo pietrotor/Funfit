@@ -295,6 +295,7 @@ export type CreateSaleInput = {
   date: Scalars['Date'];
   discount: Scalars['Float'];
   observations?: InputMaybe<Scalars['String']>;
+  orderId?: InputMaybe<Scalars['ObjectId']>;
   paymentMethod: PaymentMethodEnum;
   products: Array<SaleItemInput>;
   subTotal: Scalars['Float'];
@@ -343,7 +344,7 @@ export type CreateWarehouseInput = {
 
 export type Customer = {
   __typename?: 'Customer';
-  addressInfo?: Maybe<Address>;
+  addressInfo: Array<Address>;
   addressesIds: Array<Scalars['ObjectId']>;
   email?: Maybe<Scalars['String']>;
   id: Scalars['ObjectId'];
@@ -394,6 +395,7 @@ export type MeasurementUnits = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  acceptOrder?: Maybe<OrderResponse>;
   cancelSale?: Maybe<SaleResponse>;
   closeCash?: Maybe<CashResponse>;
   creatStockMovement?: Maybe<StockResponse>;
@@ -416,6 +418,7 @@ export type Mutation = {
   publicCreateAddress?: Maybe<AddressResponse>;
   publicCreateCustomer?: Maybe<CustomerResponse>;
   publicCreateOrder?: Maybe<OrderResponse>;
+  rejectOrder?: Maybe<OrderResponse>;
   updateBranch?: Maybe<BranchResponse>;
   updateBranchProduct?: Maybe<BranchProductResponse>;
   updateCategory?: Maybe<CategoryResponse>;
@@ -423,6 +426,11 @@ export type Mutation = {
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
+};
+
+
+export type MutationAcceptOrderArgs = {
+  orderId: Scalars['ObjectId'];
 };
 
 
@@ -536,6 +544,11 @@ export type MutationPublicCreateOrderArgs = {
 };
 
 
+export type MutationRejectOrderArgs = {
+  orderId: Scalars['ObjectId'];
+};
+
+
 export type MutationUpdateBranchArgs = {
   updateBranchInput: UpdateBranchInput;
 };
@@ -594,6 +607,7 @@ export type Order = {
   deliveryMethod: DeliveryMethodEnum;
   discount: Scalars['Float'];
   id: Scalars['ObjectId'];
+  isSold: Scalars['Boolean'];
   orderAcepted?: Maybe<Scalars['Boolean']>;
   orderAceptedAt?: Maybe<Scalars['Date']>;
   orderAceptedBy?: Maybe<Scalars['ObjectId']>;
@@ -607,6 +621,7 @@ export type Order = {
   rejectedAt?: Maybe<Scalars['Date']>;
   rejectedBy?: Maybe<Scalars['ObjectId']>;
   rejectedByInfo?: Maybe<User>;
+  saleId?: Maybe<Scalars['ObjectId']>;
   subTotal: Scalars['Float'];
   total: Scalars['Float'];
 };
@@ -940,6 +955,7 @@ export type Sale = {
   discount: Scalars['Float'];
   id: Scalars['ObjectId'];
   observations?: Maybe<Scalars['String']>;
+  orderId?: Maybe<Scalars['ObjectId']>;
   paymentMethod: PaymentMethodEnum;
   products: Array<SaleItem>;
   reason?: Maybe<Scalars['String']>;
@@ -1419,6 +1435,41 @@ export type CancelSaleMutationVariables = Exact<{
 
 export type CancelSaleMutation = { __typename?: 'Mutation', cancelSale?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
+export type PublicCreateCustomerMutationVariables = Exact<{
+  createCustomerInput: CreateCustomerInput;
+}>;
+
+
+export type PublicCreateCustomerMutation = { __typename?: 'Mutation', publicCreateCustomer?: { __typename?: 'CustomerResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Customer', id: any, name: string, lastName: string, email?: string | null, phone: string, ordersIds: Array<any> } | null } | null };
+
+export type PublicCreateOrderMutationVariables = Exact<{
+  createOrderInput: CreateOrderInput;
+}>;
+
+
+export type PublicCreateOrderMutation = { __typename?: 'Mutation', publicCreateOrder?: { __typename?: 'OrderResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
+export type PublicCreateAddressMutationVariables = Exact<{
+  createAddressInput: CreateAddressInput;
+}>;
+
+
+export type PublicCreateAddressMutation = { __typename?: 'Mutation', publicCreateAddress?: { __typename?: 'AddressResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Address', id: any } | null } | null };
+
+export type AcceptOrderMutationVariables = Exact<{
+  orderId: Scalars['ObjectId'];
+}>;
+
+
+export type AcceptOrderMutation = { __typename?: 'Mutation', acceptOrder?: { __typename?: 'OrderResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
+export type RejectOrderMutationVariables = Exact<{
+  orderId: Scalars['ObjectId'];
+}>;
+
+
+export type RejectOrderMutation = { __typename?: 'Mutation', rejectOrder?: { __typename?: 'OrderResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1639,14 +1690,21 @@ export type GetPublicProductsQueryVariables = Exact<{
 }>;
 
 
-export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, description: string, image?: string | null } | null }> | null } | null };
+export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }> | null } | null };
+
+export type GetPublicCustomerByIdQueryVariables = Exact<{
+  getPublicCustomerByIdId: Scalars['ObjectId'];
+}>;
+
+
+export type GetPublicCustomerByIdQuery = { __typename?: 'Query', getPublicCustomerById?: { __typename?: 'CustomerResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Customer', id: any, name: string, lastName: string, email?: string | null, phone: string, lastOrderDate?: any | null, ordersIds: Array<any>, addressInfo: Array<{ __typename?: 'Address', id: any, latitude: number, longitude: number, detail: string }> } | null } | null };
 
 export type GetOrdersPaginatedQueryVariables = Exact<{
   orderPaginationInput: OrderPaginationInput;
 }>;
 
 
-export type GetOrdersPaginatedQuery = { __typename?: 'Query', getOrdersPaginated?: { __typename?: 'OrdersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Order', total: number, subTotal: number, discount: number, id: any, orderAcepted?: boolean | null, orderAceptedAt?: any | null, orderAceptedBy?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', image?: string | null, id: any, name: string, suggetedPrice: number, description: string } | null }> }> | null } | null };
+export type GetOrdersPaginatedQuery = { __typename?: 'Query', getOrdersPaginated?: { __typename?: 'OrdersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Order', id: any, branchId: any, deliveryMethod: DeliveryMethodEnum, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, customerId: any, addressId?: any | null, pickUpInformation?: string | null, orderDetails?: string | null, orderAcepted?: boolean | null, orderAceptedAt?: any | null, orderAceptedBy?: any | null, reason?: string | null, rejected?: boolean | null, rejectedAt?: any | null, rejectedBy?: any | null, isSold: boolean, saleId?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, customerInfo?: { __typename?: 'Customer', id: any, name: string, lastName: string, email?: string | null, phone: string, lastOrderDate?: any | null, addressesIds: Array<any>, ordersIds: Array<any> } | null }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -2450,6 +2508,207 @@ export function useCancelSaleMutation(baseOptions?: Apollo.MutationHookOptions<C
 export type CancelSaleMutationHookResult = ReturnType<typeof useCancelSaleMutation>;
 export type CancelSaleMutationResult = Apollo.MutationResult<CancelSaleMutation>;
 export type CancelSaleMutationOptions = Apollo.BaseMutationOptions<CancelSaleMutation, CancelSaleMutationVariables>;
+export const PublicCreateCustomerDocument = gql`
+    mutation PublicCreateCustomer($createCustomerInput: CreateCustomerInput!) {
+  publicCreateCustomer(createCustomerInput: $createCustomerInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      lastName
+      email
+      phone
+      ordersIds
+    }
+  }
+}
+    `;
+export type PublicCreateCustomerMutationFn = Apollo.MutationFunction<PublicCreateCustomerMutation, PublicCreateCustomerMutationVariables>;
+
+/**
+ * __usePublicCreateCustomerMutation__
+ *
+ * To run a mutation, you first call `usePublicCreateCustomerMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePublicCreateCustomerMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [publicCreateCustomerMutation, { data, loading, error }] = usePublicCreateCustomerMutation({
+ *   variables: {
+ *      createCustomerInput: // value for 'createCustomerInput'
+ *   },
+ * });
+ */
+export function usePublicCreateCustomerMutation(baseOptions?: Apollo.MutationHookOptions<PublicCreateCustomerMutation, PublicCreateCustomerMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PublicCreateCustomerMutation, PublicCreateCustomerMutationVariables>(PublicCreateCustomerDocument, options);
+      }
+export type PublicCreateCustomerMutationHookResult = ReturnType<typeof usePublicCreateCustomerMutation>;
+export type PublicCreateCustomerMutationResult = Apollo.MutationResult<PublicCreateCustomerMutation>;
+export type PublicCreateCustomerMutationOptions = Apollo.BaseMutationOptions<PublicCreateCustomerMutation, PublicCreateCustomerMutationVariables>;
+export const PublicCreateOrderDocument = gql`
+    mutation PublicCreateOrder($createOrderInput: CreateOrderInput!) {
+  publicCreateOrder(createOrderInput: $createOrderInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type PublicCreateOrderMutationFn = Apollo.MutationFunction<PublicCreateOrderMutation, PublicCreateOrderMutationVariables>;
+
+/**
+ * __usePublicCreateOrderMutation__
+ *
+ * To run a mutation, you first call `usePublicCreateOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePublicCreateOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [publicCreateOrderMutation, { data, loading, error }] = usePublicCreateOrderMutation({
+ *   variables: {
+ *      createOrderInput: // value for 'createOrderInput'
+ *   },
+ * });
+ */
+export function usePublicCreateOrderMutation(baseOptions?: Apollo.MutationHookOptions<PublicCreateOrderMutation, PublicCreateOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PublicCreateOrderMutation, PublicCreateOrderMutationVariables>(PublicCreateOrderDocument, options);
+      }
+export type PublicCreateOrderMutationHookResult = ReturnType<typeof usePublicCreateOrderMutation>;
+export type PublicCreateOrderMutationResult = Apollo.MutationResult<PublicCreateOrderMutation>;
+export type PublicCreateOrderMutationOptions = Apollo.BaseMutationOptions<PublicCreateOrderMutation, PublicCreateOrderMutationVariables>;
+export const PublicCreateAddressDocument = gql`
+    mutation PublicCreateAddress($createAddressInput: CreateAddressInput!) {
+  publicCreateAddress(createAddressInput: $createAddressInput) {
+    errorInput {
+      message
+      field
+    }
+    message
+    status
+    data {
+      id
+    }
+  }
+}
+    `;
+export type PublicCreateAddressMutationFn = Apollo.MutationFunction<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>;
+
+/**
+ * __usePublicCreateAddressMutation__
+ *
+ * To run a mutation, you first call `usePublicCreateAddressMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePublicCreateAddressMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [publicCreateAddressMutation, { data, loading, error }] = usePublicCreateAddressMutation({
+ *   variables: {
+ *      createAddressInput: // value for 'createAddressInput'
+ *   },
+ * });
+ */
+export function usePublicCreateAddressMutation(baseOptions?: Apollo.MutationHookOptions<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>(PublicCreateAddressDocument, options);
+      }
+export type PublicCreateAddressMutationHookResult = ReturnType<typeof usePublicCreateAddressMutation>;
+export type PublicCreateAddressMutationResult = Apollo.MutationResult<PublicCreateAddressMutation>;
+export type PublicCreateAddressMutationOptions = Apollo.BaseMutationOptions<PublicCreateAddressMutation, PublicCreateAddressMutationVariables>;
+export const AcceptOrderDocument = gql`
+    mutation AcceptOrder($orderId: ObjectId!) {
+  acceptOrder(orderId: $orderId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type AcceptOrderMutationFn = Apollo.MutationFunction<AcceptOrderMutation, AcceptOrderMutationVariables>;
+
+/**
+ * __useAcceptOrderMutation__
+ *
+ * To run a mutation, you first call `useAcceptOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useAcceptOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [acceptOrderMutation, { data, loading, error }] = useAcceptOrderMutation({
+ *   variables: {
+ *      orderId: // value for 'orderId'
+ *   },
+ * });
+ */
+export function useAcceptOrderMutation(baseOptions?: Apollo.MutationHookOptions<AcceptOrderMutation, AcceptOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<AcceptOrderMutation, AcceptOrderMutationVariables>(AcceptOrderDocument, options);
+      }
+export type AcceptOrderMutationHookResult = ReturnType<typeof useAcceptOrderMutation>;
+export type AcceptOrderMutationResult = Apollo.MutationResult<AcceptOrderMutation>;
+export type AcceptOrderMutationOptions = Apollo.BaseMutationOptions<AcceptOrderMutation, AcceptOrderMutationVariables>;
+export const RejectOrderDocument = gql`
+    mutation RejectOrder($orderId: ObjectId!) {
+  rejectOrder(orderId: $orderId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type RejectOrderMutationFn = Apollo.MutationFunction<RejectOrderMutation, RejectOrderMutationVariables>;
+
+/**
+ * __useRejectOrderMutation__
+ *
+ * To run a mutation, you first call `useRejectOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useRejectOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [rejectOrderMutation, { data, loading, error }] = useRejectOrderMutation({
+ *   variables: {
+ *      orderId: // value for 'orderId'
+ *   },
+ * });
+ */
+export function useRejectOrderMutation(baseOptions?: Apollo.MutationHookOptions<RejectOrderMutation, RejectOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<RejectOrderMutation, RejectOrderMutationVariables>(RejectOrderDocument, options);
+      }
+export type RejectOrderMutationHookResult = ReturnType<typeof useRejectOrderMutation>;
+export type RejectOrderMutationResult = Apollo.MutationResult<RejectOrderMutation>;
+export type RejectOrderMutationOptions = Apollo.BaseMutationOptions<RejectOrderMutation, RejectOrderMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {
@@ -4164,8 +4423,14 @@ export const GetPublicProductsDocument = gql`
       product {
         id
         name
+        suggetedPrice
+        code
+        internalCode
         description
+        categoryId
+        cost
         image
+        warehouses
       }
     }
     totalRecords
@@ -4204,6 +4469,61 @@ export function useGetPublicProductsLazyQuery(baseOptions?: Apollo.LazyQueryHook
 export type GetPublicProductsQueryHookResult = ReturnType<typeof useGetPublicProductsQuery>;
 export type GetPublicProductsLazyQueryHookResult = ReturnType<typeof useGetPublicProductsLazyQuery>;
 export type GetPublicProductsQueryResult = Apollo.QueryResult<GetPublicProductsQuery, GetPublicProductsQueryVariables>;
+export const GetPublicCustomerByIdDocument = gql`
+    query GetPublicCustomerById($getPublicCustomerByIdId: ObjectId!) {
+  getPublicCustomerById(id: $getPublicCustomerByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      lastName
+      email
+      phone
+      lastOrderDate
+      ordersIds
+      addressInfo {
+        id
+        latitude
+        longitude
+        detail
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPublicCustomerByIdQuery__
+ *
+ * To run a query within a React component, call `useGetPublicCustomerByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublicCustomerByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublicCustomerByIdQuery({
+ *   variables: {
+ *      getPublicCustomerByIdId: // value for 'getPublicCustomerByIdId'
+ *   },
+ * });
+ */
+export function useGetPublicCustomerByIdQuery(baseOptions: Apollo.QueryHookOptions<GetPublicCustomerByIdQuery, GetPublicCustomerByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPublicCustomerByIdQuery, GetPublicCustomerByIdQueryVariables>(GetPublicCustomerByIdDocument, options);
+      }
+export function useGetPublicCustomerByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPublicCustomerByIdQuery, GetPublicCustomerByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPublicCustomerByIdQuery, GetPublicCustomerByIdQueryVariables>(GetPublicCustomerByIdDocument, options);
+        }
+export type GetPublicCustomerByIdQueryHookResult = ReturnType<typeof useGetPublicCustomerByIdQuery>;
+export type GetPublicCustomerByIdLazyQueryHookResult = ReturnType<typeof useGetPublicCustomerByIdLazyQuery>;
+export type GetPublicCustomerByIdQueryResult = Apollo.QueryResult<GetPublicCustomerByIdQuery, GetPublicCustomerByIdQueryVariables>;
 export const GetOrdersPaginatedDocument = gql`
     query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
   getOrdersPaginated(orderPaginationInput: $orderPaginationInput) {
@@ -4214,8 +4534,8 @@ export const GetOrdersPaginatedDocument = gql`
     status
     message
     data {
-      total
-      subTotal
+      id
+      branchId
       products {
         branchProductId
         productId
@@ -4223,18 +4543,48 @@ export const GetOrdersPaginatedDocument = gql`
         qty
         total
         product {
-          image
           id
           name
           suggetedPrice
+          code
+          internalCode
           description
+          categoryId
+          cost
+          image
+          warehouses
         }
       }
+      deliveryMethod
+      paymentMethod
+      subTotal
+      total
       discount
-      id
+      date
+      code
+      customerId
+      addressId
+      pickUpInformation
+      orderDetails
       orderAcepted
       orderAceptedAt
       orderAceptedBy
+      reason
+      rejected
+      rejectedAt
+      rejectedBy
+      isSold
+      saleId
+      customerInfo {
+        id
+        name
+        lastName
+        email
+        phone
+        lastOrderDate
+        addressesIds
+        ordersIds
+      }
     }
     totalRecords
     totalPages

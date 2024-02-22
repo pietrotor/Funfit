@@ -1,9 +1,5 @@
-import React, { useState } from 'react'
-import { useRouter } from 'next/router'
+import React from 'react'
 import { Accordion, AccordionItem, Button, Image } from '@nextui-org/react'
-import { useAppDispatch, useAppSelector } from '@/store/index'
-import { TUserInfo } from '@/components/templates/OrderLayout/orderLayout'
-import { clearCart } from '@/store/slices'
 export type activeDirection = {
   location: {
     lat: number
@@ -11,28 +7,15 @@ export type activeDirection = {
   }
   address: string
 }
-type Props = {
-  goToStep: (e: number) => void
-  currentStepIndex: number
-  userInfo: TUserInfo
-  activeDirection: activeDirection
-  send: any
+type PaymentMethodProps = {
+  paymentMethod: boolean
+  setPaymentMethod: (paymentMethod: boolean) => void
 }
 
 function PaymentMethod({
-  goToStep,
-  currentStepIndex,
-  userInfo,
-  activeDirection,
-  send
-}: Props) {
-  const [selectedKeys, setSelectedKeys] = useState(false)
-  const cartItems = useAppSelector(state => state.cartReducer.cartItems)
-  const subTotal = useAppSelector(state => state.cartReducer.cartSubTotal)
-  const branch = useAppSelector(state => state.ecommerceInformationReducer.name)
-  const router = useRouter()
-  const dispatch = useAppDispatch()
-
+  paymentMethod,
+  setPaymentMethod
+}: PaymentMethodProps) {
   const download = (filename: string, content: any) => {
     try {
       fetch(content)
@@ -55,42 +38,16 @@ function PaymentMethod({
     }
   }
 
-  const handleNotification = () => {
-    dispatch(clearCart())
-    const message = `El pedido consta de:\n${cartItems
-      .map(
-        item =>
-          ` ${item.quantity} unidades de ${item.productName} a ${
-            item.price
-          } Bs. con un total de ${item.price * item.quantity}`
-      )
-      .join(
-        '\n'
-      )}\n\nSubtotal: ${subTotal} Bs.\n\nInformación de contacto:\n* Cliente: ${
-      userInfo.name
-    } ${userInfo.lastName}\n* Teléfono: ${userInfo.phone}\n* Correo: ${
-      userInfo.email
-    }\n ${
-      send.current.type !== 'Entrega a domicilio' ? `\nTipo de entrega: 'Recojo en Sucursal'\n Sucursal: ${branch}` : `\nUbicación: \n https://maps.google.com/?q=${activeDirection.location.lat},${activeDirection.location.lng} \n Detalles: \n ${send.current.address}`
-    } `
-
-    const whatsappLink = `https://api.whatsapp.com/send?phone=76475010&text=${encodeURIComponent(
-      message
-    )}`
-    window.open(whatsappLink, '_blank')
-    router.push('/gratitudePage')
-  }
-
   return (
     <div className="flex h-full w-full flex-col justify-between space-y-5 p-5 text-center">
       <div className="overflow-y-auto px-8">
         <h2 className="text-gray-500 md:pb-6">Datos de contacto</h2>
         <Accordion
-          selectedKeys={selectedKeys ? ['1'] : ['2']}
-          onSelectionChange={() => setSelectedKeys(!selectedKeys)}
+          selectedKeys={paymentMethod ? ['qr'] : ['cash']}
+          onSelectionChange={() => setPaymentMethod(!paymentMethod)}
         >
           <AccordionItem
-            key="1"
+            key="qr"
             aria-label="Recoger de la sucursal"
             title="Pago mediante código QR"
           >
@@ -115,7 +72,7 @@ function PaymentMethod({
             </div>
           </AccordionItem>
           <AccordionItem
-            key="2"
+            key="cash"
             aria-label="Paga al recibir tu pedido"
             title="Paga al recibir tu pedido"
           >
@@ -124,24 +81,6 @@ function PaymentMethod({
             y, cuando llegue, podrás pagar en ese momento.
           </AccordionItem>
         </Accordion>
-      </div>
-      <div className="flex items-center justify-between px-8 ">
-        <Button
-          onClick={() => goToStep(currentStepIndex - 1)}
-          color="primary"
-          className="w-1/4"
-        >
-          Atrás
-        </Button>
-        <div className="flex w-1/6 justify-between">
-          <Button
-            color="primary"
-            onClick={handleNotification}
-            className="w-full"
-          >
-            Finalizar
-          </Button>
-        </div>
       </div>
     </div>
   )
