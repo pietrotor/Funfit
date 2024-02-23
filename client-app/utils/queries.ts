@@ -934,97 +934,159 @@ export const GET_PUBLIC_BRANCH_PRODUCTS = gql`
 
 export const GET_PUBLIC_CUSTOMER_BY_ID = gql`
   query GetPublicCustomerById($getPublicCustomerByIdId: ObjectId!) {
-  getPublicCustomerById(id: $getPublicCustomerByIdId) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-    data {
-      id
-      name
-      lastName
-      email
-      phone
-      lastOrderDate
-      ordersIds
-      addressInfo {
-        id
-        latitude
-        longitude
-        detail
+    getPublicCustomerById(id: $getPublicCustomerByIdId) {
+      errorInput {
+        message
+        field
       }
-    }
-  }
-}
-`
-export const GET_ORDER_PAGINATED = gql`
-query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
-  getOrdersPaginated(orderPaginationInput: $orderPaginationInput) {
-    errorInput {
+      status
       message
-      field
-    }
-    status
-    message
-    data {
-      id
-      branchId
-      products {
-        branchProductId
-        productId
-        price
-        qty
-        total
-        product {
-          id
-          name
-          suggetedPrice
-          code
-          internalCode
-          description
-          categoryId
-          cost
-          image
-          warehouses
-        }
-      }
-      deliveryMethod
-      paymentMethod
-      subTotal
-      total
-      discount
-      date
-      code
-      customerId
-      addressId
-      pickUpInformation
-      orderDetails
-      orderAcepted
-      orderAceptedAt
-      orderAceptedBy
-      reason
-      rejected
-      rejectedAt
-      rejectedBy
-      isSold
-      saleId
-      customerInfo {
+      data {
         id
         name
         lastName
         email
         phone
         lastOrderDate
-        addressesIds
         ordersIds
+        addressInfo {
+          id
+          latitude
+          longitude
+          detail
+        }
       }
     }
-    totalRecords
-    totalPages
-    rows
-    currentPage
   }
-}
+`
+export const GET_ORDER_PAGINATED = gql`
+  query GetOrdersPaginated($orderPaginationInput: OrderPaginationInput!) {
+    getOrdersPaginated(orderPaginationInput: $orderPaginationInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        branchId
+        products {
+          branchProductId
+          productId
+          price
+          qty
+          total
+          product {
+            id
+            name
+            suggetedPrice
+            code
+            internalCode
+            description
+            categoryId
+            cost
+            image
+            warehouses
+          }
+        }
+        deliveryMethod
+        paymentMethod
+        subTotal
+        total
+        discount
+        date
+        code
+        customerId
+        addressId
+        pickUpInformation
+        orderDetails
+        orderAcepted
+        orderAceptedAt
+        orderAceptedBy
+        reason
+        rejected
+        rejectedAt
+        rejectedBy
+        isSold
+        saleId
+        customerInfo {
+          id
+          name
+          lastName
+          email
+          phone
+          lastOrderDate
+          addressesIds
+          ordersIds
+        }
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+
+export const GET_DISTRIBUTORS_PAGINATED = gql`
+  query GetDistributorsPaginated($paginationInput: PaginationInput!) {
+    getDistributorsPaginated(paginationInput: $paginationInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        code
+        address
+        email
+        phone
+        nit
+        socialReason
+        ownerInformation {
+          name
+          lastName
+          phone
+          address
+        }
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+
+export const GET_DISTRIBUTOR_BY_ID = gql`
+  query GetDistributorById($getDistributorByIdId: ObjectId!) {
+    getDistributorById(id: $getDistributorByIdId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        code
+        address
+        email
+        phone
+        nit
+        socialReason
+        ownerInformation {
+          name
+          lastName
+          phone
+          address
+        }
+      }
+    }
+  }
 `

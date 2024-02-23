@@ -350,3 +350,29 @@ export const REJECT_ORDER = gql`
     }
   }
 `
+
+export const CREATE_DISTRIBUTOR = gql`
+  mutation CreateDistributor($createDistributorInput: CreateDistributorInput!) {
+    createDistributor(createDistributorInput: $createDistributorInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
+`
+
+export const UPDATE_DISTRIBUTOR = gql`
+  mutation UpdateDistributor($updateDistributorInput: UpdateDistributorInput!) {
+    updateDistributor(updateDistributorInput: $updateDistributorInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
+`

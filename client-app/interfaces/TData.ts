@@ -114,3 +114,20 @@ export type TCustomer = {
     addressInfo: TaddressInfo[]
     addressesIds: string[]
 }
+
+export type TDistributor = {
+  id?: string
+  name: string
+  nit?: string
+  phone: string
+  email?: string
+  address: string
+  socialReason?: string
+  code: string
+  ownerInformation: {
+    name: string
+    lastName?: string
+    address?: string
+    phone?: string
+  }
+}
