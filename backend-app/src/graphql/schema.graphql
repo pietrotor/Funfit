@@ -96,6 +96,11 @@ type Query {
   getOrdersPaginated(
     orderPaginationInput: OrderPaginationInput!
   ): OrdersResponse
+  # DISTRIBUTOR ================================
+  getDistributorById(id: ObjectId!): DistributorResponse
+  getDistributorsPaginated(
+    PaginationInput: PaginationInput!
+  ): DistributorsResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(
     paginationInput: PaginationInput!
@@ -161,6 +166,13 @@ type Mutation {
   # ORDERS =================================
   acceptOrder(orderId: ObjectId!): OrderResponse
   rejectOrder(orderId: ObjectId!): OrderResponse
+  # DISTRIBUTOR =================================
+  createDistributor(
+    createDistributorInput: CreateDistributorInput!
+  ): DistributorResponse
+  updateDistributor(
+    updateDistributorInput: UpdateDistributorInput!
+  ): DistributorResponse
   # ========================= ECOMMERCE ROUTES ============================
   publicCreateCustomer(
     createCustomerInput: CreateCustomerInput!
@@ -424,6 +436,23 @@ type Address {
   # Fields Resolvers
   customerInfo: Customer
 }
+type DistributorOwnerInformation {
+  name: String!
+  lastName: String
+  phone: String
+  address: String
+}
+type Distributor {
+  id: ObjectId!
+  name: String!
+  code: String!
+  address: String!
+  email: String
+  phone: String!
+  nit: String
+  socialReason: String
+  ownerInformation: DistributorOwnerInformation!
+}
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
   errorInput: [ErrorInput!]
@@ -650,6 +679,22 @@ type OrderResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: Order
+}
+type DistributorsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Distributor!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type DistributorResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Distributor
 }
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
@@ -896,4 +941,38 @@ input CreateOrderInput {
   addressId: ObjectId
   pickUpInformation: String
   orderDetails: String
+}
+input CreateDistrbutorOwnerInformationInput {
+  name: String!
+  lastName: String
+  phone: String
+  address: String
+}
+input CreateDistributorInput {
+  name: String!
+  code: String!
+  address: String!
+  email: String
+  phone: String!
+  nit: String
+  socialReason: String
+  ownerInformation: CreateDistrbutorOwnerInformationInput!
+}
+input UpdateDistrbutorOwnerInformationInput {
+  name: String
+  lastName: String
+  phone: String
+  address: String
+}
+input UpdateDistributorInput {
+  id: ObjectId!
+  name: String
+  code: String
+  address: String
+  email: String
+  phone: String
+  nit: String
+  socialReason: String
+  status: Boolean
+  ownerInformation: UpdateDistrbutorOwnerInformationInput
 }

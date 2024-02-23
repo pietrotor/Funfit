@@ -41,8 +41,11 @@ import {
   ecommerceType
 } from './ecommerce.resolver'
 import {
-  orderMutation, orderQuery, orderType
-} from './order.resolver'
+  distributorMutation,
+  distributorQuery,
+  distributorType
+} from './distributor.resolver'
+import { orderMutation, orderQuery, orderType } from './order.resolver'
 
 const resolvers: Resolvers<ContextGraphQl> = {
   Date: dateTimeScalar,
@@ -61,6 +64,7 @@ const resolvers: Resolvers<ContextGraphQl> = {
   ...categoryType,
   ...ecommerceType,
   ...orderType,
+  ...distributorType,
   Query: {
     ...userQuery,
     ...roleQuery,
@@ -75,7 +79,8 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...saleQuery,
     ...categoryQuery,
     ...ecommerceQuery,
-    ...orderQuery
+    ...orderQuery,
+    ...distributorQuery
   },
   Mutation: {
     ...userMutation,
@@ -90,7 +95,8 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...saleMutation,
     ...categoryMutation,
     ...ecommerceMutation,
-    ...orderMutation
+    ...orderMutation,
+    ...distributorMutation
   }
 }
 
