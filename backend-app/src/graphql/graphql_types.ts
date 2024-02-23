@@ -862,7 +862,7 @@ export type QueryGetDistributorByIdArgs = {
 
 
 export type QueryGetDistributorsPaginatedArgs = {
-  PaginationInput: PaginationInput;
+  paginationInput: PaginationInput;
 };
 
 
@@ -2102,7 +2102,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getCategoryById?: Resolver<Maybe<ResolversTypes['CategoryResponse']>, ParentType, ContextType, RequireFields<QueryGetCategoryByIdArgs, 'id'>>;
   getConfiguration?: Resolver<Maybe<ResolversTypes['ConfigurationResponse']>, ParentType, ContextType>;
   getDistributorById?: Resolver<Maybe<ResolversTypes['DistributorResponse']>, ParentType, ContextType, RequireFields<QueryGetDistributorByIdArgs, 'id'>>;
-  getDistributorsPaginated?: Resolver<Maybe<ResolversTypes['DistributorsResponse']>, ParentType, ContextType, RequireFields<QueryGetDistributorsPaginatedArgs, 'PaginationInput'>>;
+  getDistributorsPaginated?: Resolver<Maybe<ResolversTypes['DistributorsResponse']>, ParentType, ContextType, RequireFields<QueryGetDistributorsPaginatedArgs, 'paginationInput'>>;
   getOrderById?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<QueryGetOrderByIdArgs, 'id'>>;
   getOrdersPaginated?: Resolver<Maybe<ResolversTypes['OrdersResponse']>, ParentType, ContextType, RequireFields<QueryGetOrdersPaginatedArgs, 'orderPaginationInput'>>;
   getProductById?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<QueryGetProductByIdArgs, 'id'>>;

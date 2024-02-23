@@ -99,7 +99,7 @@ type Query {
   # DISTRIBUTOR ================================
   getDistributorById(id: ObjectId!): DistributorResponse
   getDistributorsPaginated(
-    PaginationInput: PaginationInput!
+    paginationInput: PaginationInput!
   ): DistributorsResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(
