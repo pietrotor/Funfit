@@ -46,40 +46,45 @@ const ComboInput: React.FC<ComboInputProps> = ({
       render={({ field, formState: { errors } }) => (
         <div className="w-full">
           <div className="">
-          <Autocomplete
-            {...field}
-            variant={'bordered'}
-            name={name}
-            label={label}
-            className={`${value ? 'border-gray-900' : 'border-gray-300'} w-full`}
-            radius='sm'
-            onSelectionChange={(e) => { onSelectionChange && onSelectionChange(e) }}
-            defaultSelectedKey={defaultValue}
-            disabledKeys={disabledKeys}
-            onOpenChange={onClick}
-            list="options"
-            onInputChange={e => {
-              field.onChange(e)
-              onChange && onChange(e)
-            }}
-            placeholder={`Selecciona o escribe ${label.toLowerCase()}`}
-          >
-            {options.map((option) => (
+            <Autocomplete
+              {...field}
+              variant={'bordered'}
+              name={name}
+              label={label}
+              className={`${
+                value ? 'border-gray-900' : 'border-gray-300'
+              } w-full`}
+              radius="sm"
+              onSelectionChange={e => {
+                console.log('🚀 ~ e:', e)
+                onSelectionChange && onSelectionChange(e)
+              }}
+              defaultSelectedKey={defaultValue}
+              disabledKeys={disabledKeys}
+              onOpenChange={onClick}
+              list="options"
+              onInputChange={e => {
+                field.onChange(e)
+                onChange && onChange(e)
+              }}
+              placeholder={`Selecciona o escribe ${label.toLowerCase()}`}
+            >
+              {options.map(option => (
                 <AutocompleteItem key={option.value} value={option.value}>
                   {option.label}
                 </AutocompleteItem>
-            ))}
+              ))}
             </Autocomplete>
           </div>
           <ErrorMessage
-              errors={errors}
-              name={name}
-              render={({ message }) => (
-                <p className="ml-2 font-semibold text-red-500">
-                  {message ? message.toString() : 'Este campo es obligatorio'}
-                </p>
-              )}
-            />
+            errors={errors}
+            name={name}
+            render={({ message }) => (
+              <p className="ml-2 font-semibold text-red-500">
+                {message ? message.toString() : 'Este campo es obligatorio'}
+              </p>
+            )}
+          />
         </div>
       )}
     />
