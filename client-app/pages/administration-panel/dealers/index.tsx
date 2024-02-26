@@ -68,12 +68,12 @@ function Dealers({ user }: BranchesProps) {
           titles={[
             { name: '#' },
             { name: 'Nombre' },
-            { name: 'Código' },
             { name: 'Dirección' },
             { name: 'Correo' },
             { name: 'Teléfono' },
             { name: 'Nit' },
             { name: 'Razón social' },
+            { name: 'Propietario' },
             { name: 'Acciones' }
           ]}
           items={(data?.getDistributorsPaginated?.data || []).map(
@@ -88,10 +88,7 @@ function Dealers({ user }: BranchesProps) {
                 <div key={idx} className="text-center text-sm">
                   {distributor.name}
                 </div>,
-                <div key={idx} className="text-center text-sm">
-                  {distributor.code}
-                </div>,
-                <div key={idx} className="text-center text-sm">
+                <div key={idx} className="text-center text-sm w-[7vw]">
                   {distributor.address}
                 </div>,
                 <div key={idx} className="text-center text-sm">
@@ -105,6 +102,14 @@ function Dealers({ user }: BranchesProps) {
                 </div>,
                 <div key={idx} className="text-center text-sm">
                   {distributor.socialReason}
+                </div>,
+                <div key={idx} className="flex flex-col text-center text-sm w-[7vw]">
+                  <p>
+                    {distributor.ownerInformation.name}{' '}
+                    {distributor.ownerInformation.lastName}
+                  </p>
+                  <p> {distributor.ownerInformation.phone}</p>
+                  <p>{distributor.ownerInformation.address}</p>
                 </div>,
                 <div key={idx} className="flex justify-center space-x-1">
                   <ButtonComponent
