@@ -263,6 +263,24 @@ export type CreateCustomerInput = {
   phone: Scalars['String'];
 };
 
+export type CreateDistrbutorOwnerInformationInput = {
+  address?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  phone?: InputMaybe<Scalars['String']>;
+};
+
+export type CreateDistributorInput = {
+  address: Scalars['String'];
+  code: Scalars['String'];
+  email?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  nit?: InputMaybe<Scalars['String']>;
+  ownerInformation: CreateDistrbutorOwnerInformationInput;
+  phone: Scalars['String'];
+  socialReason?: InputMaybe<Scalars['String']>;
+};
+
 export type CreateOrderInput = {
   addressId?: InputMaybe<Scalars['ObjectId']>;
   branchId: Scalars['ObjectId'];
@@ -368,6 +386,47 @@ export enum DeliveryMethodEnum {
   PICKUP = 'PICKUP'
 }
 
+export type Distributor = {
+  __typename?: 'Distributor';
+  address: Scalars['String'];
+  code: Scalars['String'];
+  email?: Maybe<Scalars['String']>;
+  id: Scalars['ObjectId'];
+  name: Scalars['String'];
+  nit?: Maybe<Scalars['String']>;
+  ownerInformation: DistributorOwnerInformation;
+  phone: Scalars['String'];
+  socialReason?: Maybe<Scalars['String']>;
+};
+
+export type DistributorOwnerInformation = {
+  __typename?: 'DistributorOwnerInformation';
+  address?: Maybe<Scalars['String']>;
+  lastName?: Maybe<Scalars['String']>;
+  name: Scalars['String'];
+  phone?: Maybe<Scalars['String']>;
+};
+
+export type DistributorResponse = ResponseBase & {
+  __typename?: 'DistributorResponse';
+  data?: Maybe<Distributor>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type DistributorsResponse = ResponseBase & {
+  __typename?: 'DistributorsResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Distributor>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
+};
+
 export type ErrorInput = {
   __typename?: 'ErrorInput';
   field?: Maybe<Scalars['String']>;
@@ -404,6 +463,7 @@ export type Mutation = {
   createBranchProductStockMovement?: Maybe<BranchProductResponse>;
   createCashMovement?: Maybe<CashTurnMovementResponse>;
   createCategory?: Maybe<CategoryResponse>;
+  createDistributor?: Maybe<DistributorResponse>;
   createProduct?: Maybe<ProductResponse>;
   createSale?: Maybe<SaleResponse>;
   createStock?: Maybe<StockResponse>;
@@ -423,6 +483,7 @@ export type Mutation = {
   updateBranchProduct?: Maybe<BranchProductResponse>;
   updateCategory?: Maybe<CategoryResponse>;
   updateConfiguration?: Maybe<ConfigurationResponse>;
+  updateDistributor?: Maybe<DistributorResponse>;
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
@@ -471,6 +532,11 @@ export type MutationCreateCashMovementArgs = {
 
 export type MutationCreateCategoryArgs = {
   createCategoryInput: CreateCategoryInput;
+};
+
+
+export type MutationCreateDistributorArgs = {
+  createDistributorInput: CreateDistributorInput;
 };
 
 
@@ -566,6 +632,11 @@ export type MutationUpdateCategoryArgs = {
 
 export type MutationUpdateConfigurationArgs = {
   updateConfigurationInput: UpdateConfigurationInput;
+};
+
+
+export type MutationUpdateDistributorArgs = {
+  updateDistributorInput: UpdateDistributorInput;
 };
 
 
@@ -713,6 +784,8 @@ export type Query = {
   getCategories?: Maybe<CategoriesResponse>;
   getCategoryById?: Maybe<CategoryResponse>;
   getConfiguration?: Maybe<ConfigurationResponse>;
+  getDistributorById?: Maybe<DistributorResponse>;
+  getDistributorsPaginated?: Maybe<DistributorsResponse>;
   getOrderById?: Maybe<OrderResponse>;
   getOrdersPaginated?: Maybe<OrdersResponse>;
   getProductById?: Maybe<ProductResponse>;
@@ -778,6 +851,16 @@ export type QueryGetCategoriesArgs = {
 
 export type QueryGetCategoryByIdArgs = {
   id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetDistributorByIdArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetDistributorsPaginatedArgs = {
+  paginationInput: PaginationInput;
 };
 
 
@@ -1175,6 +1258,26 @@ export type UpdateConfigurationInput = {
   web?: InputMaybe<Scalars['String']>;
 };
 
+export type UpdateDistrbutorOwnerInformationInput = {
+  address?: InputMaybe<Scalars['String']>;
+  lastName?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  phone?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateDistributorInput = {
+  address?: InputMaybe<Scalars['String']>;
+  code?: InputMaybe<Scalars['String']>;
+  email?: InputMaybe<Scalars['String']>;
+  id: Scalars['ObjectId'];
+  name?: InputMaybe<Scalars['String']>;
+  nit?: InputMaybe<Scalars['String']>;
+  ownerInformation?: InputMaybe<UpdateDistrbutorOwnerInformationInput>;
+  phone?: InputMaybe<Scalars['String']>;
+  socialReason?: InputMaybe<Scalars['String']>;
+  status?: InputMaybe<Scalars['Boolean']>;
+};
+
 export type UpdateMeasurementUnitsInput = {
   name: Scalars['String'];
   shortName: Scalars['String'];
@@ -1470,6 +1573,13 @@ export type RejectOrderMutationVariables = Exact<{
 
 export type RejectOrderMutation = { __typename?: 'Mutation', rejectOrder?: { __typename?: 'OrderResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
+export type CreateDistributorMutationVariables = Exact<{
+  createDistributorInput: CreateDistributorInput;
+}>;
+
+
+export type CreateDistributorMutation = { __typename?: 'Mutation', createDistributor?: { __typename?: 'DistributorResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1705,6 +1815,27 @@ export type GetOrdersPaginatedQueryVariables = Exact<{
 
 
 export type GetOrdersPaginatedQuery = { __typename?: 'Query', getOrdersPaginated?: { __typename?: 'OrdersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Order', id: any, branchId: any, deliveryMethod: DeliveryMethodEnum, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, customerId: any, addressId?: any | null, pickUpInformation?: string | null, orderDetails?: string | null, orderAcepted?: boolean | null, orderAceptedAt?: any | null, orderAceptedBy?: any | null, reason?: string | null, rejected?: boolean | null, rejectedAt?: any | null, rejectedBy?: any | null, isSold: boolean, saleId?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, customerInfo?: { __typename?: 'Customer', id: any, name: string, lastName: string, email?: string | null, phone: string, lastOrderDate?: any | null, addressesIds: Array<any>, ordersIds: Array<any> } | null }> | null } | null };
+
+export type GetDistributorsPaginatedQueryVariables = Exact<{
+  paginationInput: PaginationInput;
+}>;
+
+
+export type GetDistributorsPaginatedQuery = { __typename?: 'Query', getDistributorsPaginated?: { __typename?: 'DistributorsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Distributor', id: any, name: string, code: string, address: string, email?: string | null, phone: string, nit?: string | null, socialReason?: string | null, ownerInformation: { __typename?: 'DistributorOwnerInformation', name: string, lastName?: string | null, phone?: string | null, address?: string | null } }> | null } | null };
+
+export type GetDistributorByIdQueryVariables = Exact<{
+  getDistributorByIdId: Scalars['ObjectId'];
+}>;
+
+
+export type GetDistributorByIdQuery = { __typename?: 'Query', getDistributorById?: { __typename?: 'DistributorResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Distributor', id: any, name: string, code: string, address: string, email?: string | null, phone: string, nit?: string | null, socialReason?: string | null, ownerInformation: { __typename?: 'DistributorOwnerInformation', name: string, lastName?: string | null, phone?: string | null, address?: string | null } } | null } | null };
+
+export type UpdateDistributorMutationVariables = Exact<{
+  updateDistributorInput: UpdateDistributorInput;
+}>;
+
+
+export type UpdateDistributorMutation = { __typename?: 'Mutation', updateDistributor?: { __typename?: 'DistributorResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -2709,6 +2840,44 @@ export function useRejectOrderMutation(baseOptions?: Apollo.MutationHookOptions<
 export type RejectOrderMutationHookResult = ReturnType<typeof useRejectOrderMutation>;
 export type RejectOrderMutationResult = Apollo.MutationResult<RejectOrderMutation>;
 export type RejectOrderMutationOptions = Apollo.BaseMutationOptions<RejectOrderMutation, RejectOrderMutationVariables>;
+export const CreateDistributorDocument = gql`
+    mutation CreateDistributor($createDistributorInput: CreateDistributorInput!) {
+  createDistributor(createDistributorInput: $createDistributorInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type CreateDistributorMutationFn = Apollo.MutationFunction<CreateDistributorMutation, CreateDistributorMutationVariables>;
+
+/**
+ * __useCreateDistributorMutation__
+ *
+ * To run a mutation, you first call `useCreateDistributorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDistributorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDistributorMutation, { data, loading, error }] = useCreateDistributorMutation({
+ *   variables: {
+ *      createDistributorInput: // value for 'createDistributorInput'
+ *   },
+ * });
+ */
+export function useCreateDistributorMutation(baseOptions?: Apollo.MutationHookOptions<CreateDistributorMutation, CreateDistributorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateDistributorMutation, CreateDistributorMutationVariables>(CreateDistributorDocument, options);
+      }
+export type CreateDistributorMutationHookResult = ReturnType<typeof useCreateDistributorMutation>;
+export type CreateDistributorMutationResult = Apollo.MutationResult<CreateDistributorMutation>;
+export type CreateDistributorMutationOptions = Apollo.BaseMutationOptions<CreateDistributorMutation, CreateDistributorMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {
@@ -4621,3 +4790,157 @@ export function useGetOrdersPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetOrdersPaginatedQueryHookResult = ReturnType<typeof useGetOrdersPaginatedQuery>;
 export type GetOrdersPaginatedLazyQueryHookResult = ReturnType<typeof useGetOrdersPaginatedLazyQuery>;
 export type GetOrdersPaginatedQueryResult = Apollo.QueryResult<GetOrdersPaginatedQuery, GetOrdersPaginatedQueryVariables>;
+export const GetDistributorsPaginatedDocument = gql`
+    query GetDistributorsPaginated($paginationInput: PaginationInput!) {
+  getDistributorsPaginated(paginationInput: $paginationInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      address
+      email
+      phone
+      nit
+      socialReason
+      ownerInformation {
+        name
+        lastName
+        phone
+        address
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetDistributorsPaginatedQuery__
+ *
+ * To run a query within a React component, call `useGetDistributorsPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDistributorsPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDistributorsPaginatedQuery({
+ *   variables: {
+ *      paginationInput: // value for 'paginationInput'
+ *   },
+ * });
+ */
+export function useGetDistributorsPaginatedQuery(baseOptions: Apollo.QueryHookOptions<GetDistributorsPaginatedQuery, GetDistributorsPaginatedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDistributorsPaginatedQuery, GetDistributorsPaginatedQueryVariables>(GetDistributorsPaginatedDocument, options);
+      }
+export function useGetDistributorsPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDistributorsPaginatedQuery, GetDistributorsPaginatedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDistributorsPaginatedQuery, GetDistributorsPaginatedQueryVariables>(GetDistributorsPaginatedDocument, options);
+        }
+export type GetDistributorsPaginatedQueryHookResult = ReturnType<typeof useGetDistributorsPaginatedQuery>;
+export type GetDistributorsPaginatedLazyQueryHookResult = ReturnType<typeof useGetDistributorsPaginatedLazyQuery>;
+export type GetDistributorsPaginatedQueryResult = Apollo.QueryResult<GetDistributorsPaginatedQuery, GetDistributorsPaginatedQueryVariables>;
+export const GetDistributorByIdDocument = gql`
+    query GetDistributorById($getDistributorByIdId: ObjectId!) {
+  getDistributorById(id: $getDistributorByIdId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+      address
+      email
+      phone
+      nit
+      socialReason
+      ownerInformation {
+        name
+        lastName
+        phone
+        address
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDistributorByIdQuery__
+ *
+ * To run a query within a React component, call `useGetDistributorByIdQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDistributorByIdQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDistributorByIdQuery({
+ *   variables: {
+ *      getDistributorByIdId: // value for 'getDistributorByIdId'
+ *   },
+ * });
+ */
+export function useGetDistributorByIdQuery(baseOptions: Apollo.QueryHookOptions<GetDistributorByIdQuery, GetDistributorByIdQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDistributorByIdQuery, GetDistributorByIdQueryVariables>(GetDistributorByIdDocument, options);
+      }
+export function useGetDistributorByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDistributorByIdQuery, GetDistributorByIdQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDistributorByIdQuery, GetDistributorByIdQueryVariables>(GetDistributorByIdDocument, options);
+        }
+export type GetDistributorByIdQueryHookResult = ReturnType<typeof useGetDistributorByIdQuery>;
+export type GetDistributorByIdLazyQueryHookResult = ReturnType<typeof useGetDistributorByIdLazyQuery>;
+export type GetDistributorByIdQueryResult = Apollo.QueryResult<GetDistributorByIdQuery, GetDistributorByIdQueryVariables>;
+export const UpdateDistributorDocument = gql`
+    mutation UpdateDistributor($updateDistributorInput: UpdateDistributorInput!) {
+  updateDistributor(updateDistributorInput: $updateDistributorInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type UpdateDistributorMutationFn = Apollo.MutationFunction<UpdateDistributorMutation, UpdateDistributorMutationVariables>;
+
+/**
+ * __useUpdateDistributorMutation__
+ *
+ * To run a mutation, you first call `useUpdateDistributorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateDistributorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateDistributorMutation, { data, loading, error }] = useUpdateDistributorMutation({
+ *   variables: {
+ *      updateDistributorInput: // value for 'updateDistributorInput'
+ *   },
+ * });
+ */
+export function useUpdateDistributorMutation(baseOptions?: Apollo.MutationHookOptions<UpdateDistributorMutation, UpdateDistributorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateDistributorMutation, UpdateDistributorMutationVariables>(UpdateDistributorDocument, options);
+      }
+export type UpdateDistributorMutationHookResult = ReturnType<typeof useUpdateDistributorMutation>;
+export type UpdateDistributorMutationResult = Apollo.MutationResult<UpdateDistributorMutation>;
+export type UpdateDistributorMutationOptions = Apollo.BaseMutationOptions<UpdateDistributorMutation, UpdateDistributorMutationVariables>;
