@@ -8,7 +8,7 @@ type SelectWareHouseModalProps = {
   onClose: () => void
   selectedDistributor: TpointOfSaleDistributor
   setSelectDistributor: (values: TpointOfSaleDistributor) => void
-  getProduct: () => void
+  getProduct: any
 }
 
 export const SelectPOSDistributorModal = ({
@@ -19,13 +19,20 @@ export const SelectPOSDistributorModal = ({
   getProduct
 }: SelectWareHouseModalProps) => {
   const [step, setStep] = useState<String>('warehouses')
+  const [errorMessage, setErrorMessage] = useState('')
 
   const onSubmit = () => {
-    if (step === 'warehouses') {
-      setStep('ditributors')
+    if (selectedDistributor.distributor || selectedDistributor.warehouse) {
+      if (step === 'warehouses') {
+        setStep('ditributors')
+        setErrorMessage('')
+      } else {
+        onClose()
+        getProduct()
+        setErrorMessage('')
+      }
     } else {
-      onClose()
-      getProduct()
+      setErrorMessage('Selecciona un almacén o distribuidor')
     }
   }
 
@@ -81,6 +88,9 @@ export const SelectPOSDistributorModal = ({
           setSelectDistributor={setSelectDistributor}
         />
       ) : null}
+      {errorMessage && (
+        <div className="text-sm text-center text-red-500">{errorMessage}</div>
+      )}
     </MyModal>
   )
 }

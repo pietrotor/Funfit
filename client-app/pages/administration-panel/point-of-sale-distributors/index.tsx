@@ -110,6 +110,7 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
       })
     }
   }, [selectedProducts])
+
   return (
     <AdministrationLayout user={user} profileButton={false}>
       <section className="flex h-full w-full ">
@@ -163,7 +164,7 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
         onClose={handleSelectWarehouseModal.onClose}
         selectedDistributor={selectedDistributors}
         setSelectDistributor={setSelectedDistributors}
-        getProducts={getProducts}
+        getProduct={getProducts}
       />
     </AdministrationLayout>
   )
