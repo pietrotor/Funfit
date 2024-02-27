@@ -3,7 +3,7 @@ import IconSelector from '@/components/atoms/IconSelector'
 import Input from '@/components/atoms/Input'
 
 type SearchProps = {
-  setFilter: (e: string) => void
+  setFilter?: (e: string) => void
 }
 
 const Search: React.FC<SearchProps> = ({ setFilter }: SearchProps) => {
@@ -18,7 +18,7 @@ const Search: React.FC<SearchProps> = ({ setFilter }: SearchProps) => {
         size="sm"
         placeholder="Buscar producto"
         variant="flat"
-        onValueChange={(e) => setFilter(e)}
+        onValueChange={(e) => setFilter(e) }
       />
     </div>
   )
