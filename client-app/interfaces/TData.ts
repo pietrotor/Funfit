@@ -131,3 +131,8 @@ export type TDistributor = {
     phone?: string
   }
 }
+
+export type TpointOfSaleDistributor = {
+  distributor: string
+  warehouse: string
+}
