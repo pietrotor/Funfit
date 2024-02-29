@@ -18,7 +18,7 @@ const Search: React.FC<SearchProps> = ({ setFilter }: SearchProps) => {
         size="sm"
         placeholder="Buscar producto"
         variant="flat"
-        onValueChange={(e) => setFilter(e)}
+        onValueChange={(e) => setFilter(e) }
       />
     </div>
   )

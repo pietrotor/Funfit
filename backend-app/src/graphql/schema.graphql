@@ -101,6 +101,9 @@ type Query {
   getDistributorsPaginated(
     paginationInput: PaginationInput!
   ): DistributorsResponse
+  # PRICELISTS ================================
+  getPriceListById(id: ObjectId!): PriceListResponse
+  getPriceListsPaginated(paginationInput: PaginationInput!): PriceListsResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(
     paginationInput: PaginationInput!
@@ -173,6 +176,16 @@ type Mutation {
   updateDistributor(
     updateDistributorInput: UpdateDistributorInput!
   ): DistributorResponse
+  # PRICELISTS ==================================
+  createPriceList(
+    createPriceListInput: CreatePriceListInput!
+  ): PriceListResponse
+  updatePriceList(
+    updatePriceListInput: UpdatePriceListInput!
+  ): PriceListResponse
+  deletePriceList(
+    updatePriceListInput: UpdatePriceListInput!
+  ): PriceListResponse
   # ========================= ECOMMERCE ROUTES ============================
   publicCreateCustomer(
     createCustomerInput: CreateCustomerInput!
@@ -453,6 +466,18 @@ type Distributor {
   socialReason: String
   ownerInformation: DistributorOwnerInformation!
 }
+type Price {
+  id: ObjectId!
+  productId: ObjectId!
+  priceListId: ObjectId!
+  price: Float!
+}
+type PriceList {
+  id: ObjectId!
+  name: String!
+  description: String
+  productsIds: [ObjectId!]!
+}
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
   errorInput: [ErrorInput!]
@@ -695,6 +720,22 @@ type DistributorResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: Distributor
+}
+type PriceListsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [PriceList!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type PriceListResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: PriceList
 }
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
@@ -975,4 +1016,22 @@ input UpdateDistributorInput {
   socialReason: String
   status: Boolean
   ownerInformation: UpdateDistrbutorOwnerInformationInput
+}
+input CreatePriceInput {
+  productId: ObjectId!
+  price: Float!
+}
+input UpdatePriceInput {
+  id: ObjectId!
+  productId: ObjectId
+  price: Float
+}
+input CreatePriceListInput {
+  name: String!
+  description: String
+}
+input UpdatePriceListInput {
+  id: ObjectId!
+  name: String
+  description: String
 }

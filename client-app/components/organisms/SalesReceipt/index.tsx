@@ -28,6 +28,8 @@ function SalesReceipt({
         price: 100,
         branchId: '1',
         productId: '1',
+        isVisibleOnMenu: true,
+        isVisibleOnWeb: true,
         quantity: 1,
         product: {
           id: '1',
@@ -41,6 +43,8 @@ function SalesReceipt({
         price: 200,
         branchId: '1',
         productId: '2',
+        isVisibleOnMenu: true,
+        isVisibleOnWeb: true,
         quantity: 1,
         product: {
           id: '2',
