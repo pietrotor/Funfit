@@ -183,9 +183,7 @@ type Mutation {
   updatePriceList(
     updatePriceListInput: UpdatePriceListInput!
   ): PriceListResponse
-  deletePriceList(
-    updatePriceListInput: UpdatePriceListInput!
-  ): PriceListResponse
+  deletePriceList(id: ObjectId!): PriceListResponse
   # ========================= ECOMMERCE ROUTES ============================
   publicCreateCustomer(
     createCustomerInput: CreateCustomerInput!
