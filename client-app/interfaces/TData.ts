@@ -136,3 +136,9 @@ export type TpointOfSaleDistributor = {
   distributor: string
   warehouse: string
 }
+
+export type TPriceList = {
+  id: string
+  name: string
+  description: string
+}

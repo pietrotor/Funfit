@@ -140,7 +140,7 @@ function Dealers({ user }: BranchesProps) {
           isOpen={handleEditModal.isOpen}
           onClose={handleEditModal.onClose}
           values={edit}
-          onAdd={refetch}
+          onEdit={refetch}
         />
       </div>
     </AdministrationLayout>

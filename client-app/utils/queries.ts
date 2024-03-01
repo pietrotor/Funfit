@@ -1090,3 +1090,26 @@ export const GET_DISTRIBUTOR_BY_ID = gql`
     }
   }
 `
+
+export const GET_PRICE_LIST = gql`
+  query GetPriceListsPaginated($paginationInput: PaginationInput!) {
+    getPriceListsPaginated(paginationInput: $paginationInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        description
+        productsIds
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`

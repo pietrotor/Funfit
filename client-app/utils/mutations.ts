@@ -376,3 +376,42 @@ export const UPDATE_DISTRIBUTOR = gql`
     }
   }
 `
+
+export const CREATE_PRICE_LIST = gql`
+  mutation CreatePriceList($createPriceListInput: CreatePriceListInput!) {
+    createPriceList(createPriceListInput: $createPriceListInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
+`
+
+export const UPDATE_PRICE_LIST = gql`
+  mutation UpdatePriceList($updatePriceListInput: UpdatePriceListInput!) {
+    updatePriceList(updatePriceListInput: $updatePriceListInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
+`
+
+export const DELETE_PRICE_LIST = gql`
+  mutation DeletePriceList($updatePriceListInput: UpdatePriceListInput!) {
+    deletePriceList(updatePriceListInput: $updatePriceListInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
+`

@@ -8,14 +8,14 @@ import { useCustomUpdateDistributor } from '@/hooks/UseDistributorsQuery'
 type TEditDistributorModalProps = {
   isOpen: boolean
   onClose: () => void
-  onAdd: () => void
+  onEdit: () => void
   values: TDistributor
 }
 
 export const EditDistributorModal = ({
   isOpen,
   onClose,
-  onAdd,
+  onEdit,
   values
 }: TEditDistributorModalProps) => {
   const { handleSubmit, watch, control, reset } = useForm()
@@ -38,7 +38,7 @@ export const EditDistributorModal = ({
         address: watch('ownerAddress')
       }
     })
-    onAdd()
+    onEdit()
     onClose()
     reset()
   }
@@ -61,7 +61,7 @@ export const EditDistributorModal = ({
 
   return (
     <MyModal
-      title="Editar usuario"
+      title="Editar distribuidor"
       message="Por favor ingrese los datos del distribuidor a editar"
       handleCancel={onClose}
       color="warning"
@@ -87,6 +87,10 @@ export const EditDistributorModal = ({
                 required: {
                   value: true,
                   message: 'El nombre es requerido'
+                },
+                pattern: {
+                  value: /^[a-zA-ZÁáÉéÍíÓóÚúÜüÑñ\s]+$/,
+                  message: 'Solo se permiten letras'
                 }
               }}
             />
@@ -146,6 +150,10 @@ export const EditDistributorModal = ({
             required: {
               value: true,
               message: 'La dirección es requerida'
+            },
+            pattern: {
+              value: /^[a-zA-ZÁáÉéÍíÓóÚúÜüÑñ\s]+$/,
+              message: 'Solo se permiten letras'
             }
           }}
         />
@@ -164,6 +172,10 @@ export const EditDistributorModal = ({
                   required: {
                     value: true,
                     message: 'El nombre del propietario es requerido'
+                  },
+                  pattern: {
+                    value: /^[a-zA-ZÁáÉéÍíÓóÚúÜüÑñ\s]+$/,
+                    message: 'Solo se permiten letras'
                   }
                 }}
               />

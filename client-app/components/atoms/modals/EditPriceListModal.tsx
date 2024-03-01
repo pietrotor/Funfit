@@ -1,44 +1,62 @@
 import { useForm } from 'react-hook-form'
+import { useEffect } from 'react'
 import { MyModal } from './MyModal'
-import Input from '../Input'
-import { useCustomCreatePriceList } from '@/hooks/UsePriceListQuery'
+import InputComponent from '../Input'
+import { TPriceList } from '@/interfaces/TData'
+import { useCustomUpdatePriceList } from '@/hooks/UsePriceListQuery'
 
-type ModalProps = {
+type TEditPriceListModal = {
   isOpen: boolean
   onClose: () => void
-  onAdd: () => void
+  onEdit: () => void
+  values: TPriceList
 }
 
-export const AddListModal = ({ isOpen, onClose, onAdd }: ModalProps) => {
-  const { handleCreatePriceList, loading } = useCustomCreatePriceList()
-  const { handleSubmit, control, watch, reset } = useForm()
+export const EditPriceListModal = ({
+  isOpen,
+  onClose,
+  onEdit,
+  values
+}: TEditPriceListModal) => {
+  const { handleSubmit, watch, control, reset } = useForm()
+  const { handleUpdatePriceList } = useCustomUpdatePriceList()
+
   const onSubmit = () => {
-    handleCreatePriceList(watch('name'), watch('description'))
-    reset()
+    handleUpdatePriceList({
+      id: values.id,
+      name: watch('name'),
+      description: watch('description')
+    })
     onClose()
-    onAdd()
-  }
-  const handleCancel = () => {
+    onEdit()
     reset()
-    onClose()
   }
+
+  useEffect(() => {
+    reset({
+      name: values.name,
+      description: values.description
+    })
+  }, [values])
+
   return (
     <MyModal
-      title="Agregar lista de precios"
-      message="Ingrese los datos de la nueva lista de precios"
-      color="success"
-      handleCancel={handleCancel}
-      loading={loading}
+      title="Editar Lista de precios"
+      message="Por favor ingrese los datos de la lista de precios a editar"
+      handleCancel={onClose}
+      color="warning"
+      loading={false}
       isOpen={isOpen}
+      size="2xl"
       onClose={onClose}
-      size="xl"
+      hideCloseButton={false}
       control={control}
-      handleSubmit={handleSubmit}
+      watch={watch}
       onSubmit={onSubmit}
-      reset={reset}
+      handleSubmit={handleSubmit}
     >
       <div className="flex w-full flex-col items-center space-y-2 px-6 py-2 md:space-y-2">
-        <Input
+        <InputComponent
           control={control}
           name="name"
           type="text"
@@ -54,7 +72,7 @@ export const AddListModal = ({ isOpen, onClose, onAdd }: ModalProps) => {
             }
           }}
         />
-        <Input
+        <InputComponent
           control={control}
           name="description"
           type="textArea"

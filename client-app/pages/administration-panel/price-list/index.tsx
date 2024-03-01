@@ -5,65 +5,58 @@ import { useRouter } from 'next/router'
 
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
-import {
-  EditWarehouseModal,
-  TValuesWarehouses
-} from '@/components/atoms/modals/EditWarehouseModal'
-import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
-import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { AddListModal } from '@/components/atoms/modals/AddListModal'
+import {
+  useCustomDeletePriceList,
+  useCustomGetPriceListPaginatedQuery
+} from '@/hooks/UsePriceListQuery'
+import { TPriceList } from '@/interfaces/TData'
+import { EditPriceListModal } from '@/components/atoms/modals/EditPriceListModal'
+import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
-interface WarehousesProps {
+interface PriceListProps {
   user: any
 }
 
-function PriceList({ user }: WarehousesProps) {
-  const [edit, setEdit] = useState<TValuesWarehouses>({})
-  const [variables, setVariables] = useState<PaginationInterfaceState>({
-    rows: 5,
-    filter: '',
-    currentPage: 1
-  })
-  const [filter, setFilter] = useState<string>('')
+function PriceList({ user }: PriceListProps) {
+  const [edit, setEdit] = useState<TPriceList>({} as TPriceList)
   const handleEditModal = useDisclosure()
   const handleAddModal = useDisclosure()
+  const handleConfirmModal = useDisclosure()
+
+  const { handleDeletePriceList } = useCustomDeletePriceList()
   const router = useRouter()
 
-  const handleSendUpdateWarehouse = (values: TValuesWarehouses) => {
+  const { data, loading, setVariables, setFilter, variables, refetch } =
+    useCustomGetPriceListPaginatedQuery()
+
+  const handleUpdatPriceList = (values: TPriceList) => {
     setEdit(values)
-    handleEditModal.onClose()
-    showSuccessToast('Almacén actualizado correctamente', 'success')
-    console.log(filter)
-  }
-
-  const data = [
-    {
-      id: '1',
-      name: 'Lista 1',
-      description: 'Descripción 1'
-    },
-    {
-      id: '2',
-      name: 'Lista 2',
-      description: 'Descripción 2'
-    },
-    {
-      id: '3',
-      name: 'Lista 3',
-      description: 'Descripción 3'
-    }
-  ]
-
-  const handleUpdateWarehouse = (idList: string) => {
     handleEditModal.onOpen()
   }
 
   const handleChangeRow = (row: number) => {
     setVariables({ ...variables, rows: row, currentPage: 1 })
+  }
+
+  const handleDeleteWarehouse = (priceListId: number) => {
+    const priceList = data?.getPriceListsPaginated?.data?.find(
+      priceList => priceList.id === priceListId
+    )
+    setEdit(priceList as TPriceList)
+
+    handleConfirmModal.onOpen()
+  }
+
+  const handleConfirmDelete = () => {
+    console.log(edit.id)
+    handleDeletePriceList(edit.id)
+    handleConfirmModal.onClose()
+    refetch()
   }
 
   return (
@@ -93,62 +86,96 @@ function PriceList({ user }: WarehousesProps) {
             setVariables({ ...variables, currentPage: 1 })
           }}
           totalItems={variables?.totalRecords}
+          isLoading={loading}
           titles={[
             { name: '#' },
             { name: 'Nombre' },
             { name: 'Descripción' },
             { name: 'Acciones' }
           ]}
-          items={(data || []).map((list, idx) => ({
-            content: [
-              <h3 key={idx} className="text-sm">
-                {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
-                  idx +
-                  1}
-              </h3>,
-              <div key={idx} className="text-left text-sm">
-                {list.name}
-              </div>,
-              <div key={idx} className="text-left text-sm">
-                {list.description}
-              </div>,
-              <div key={idx} className="flex justify-center space-x-1">
-                <ButtonComponent
-                  onClick={() =>
-                    router.push(
-                      `/administration-panel/price-list/${list.id}`
-                    )
-                  }
-                  type="eye"
-                  showTooltip
-                  tooltipText="Ver Lista de precios"
-                >
-                  <IconSelector name="eye" color="text-secondary" width="w-8" />
-                </ButtonComponent>
-                <ButtonComponent
-                  onClick={() => handleUpdateWarehouse(list.id)}
-                  type="edit"
-                  showTooltip
-                  tooltipText="Editar Lista de precios"
-                >
-                  <IconSelector name="edit" color="text-primary" width="w-8" />
-                </ButtonComponent>
-              </div>
-            ]
-          }))}
+          items={(data?.getPriceListsPaginated?.data || []).map(
+            (list, idx) => ({
+              content: [
+                <h3 key={idx} className="text-sm">
+                  {((variables?.currentPage || 0) - 1) *
+                    (variables?.rows || 0) +
+                    idx +
+                    1}
+                </h3>,
+                <div key={idx} className="text-left text-sm">
+                  {list.name}
+                </div>,
+                <div key={idx} className="text-left text-sm">
+                  {list.description}
+                </div>,
+                <div key={idx} className="flex justify-center space-x-1">
+                  <ButtonComponent
+                    onClick={() =>
+                      router.push(`/administration-panel/price-list/${list.id}`)
+                    }
+                    type="eye"
+                    showTooltip
+                    tooltipText="Ver Lista de precios"
+                  >
+                    <IconSelector
+                      name="eye"
+                      color="text-secondary"
+                      width="w-8"
+                    />
+                  </ButtonComponent>
+                  <ButtonComponent
+                    onClick={() => handleUpdatPriceList(list as TPriceList)}
+                    type="edit"
+                    showTooltip
+                    tooltipText="Editar Lista de precios"
+                  >
+                    <IconSelector
+                      name="edit"
+                      color="text-primary"
+                      width="w-8"
+                    />
+                  </ButtonComponent>
+                  <ButtonComponent
+                    onClick={() => handleDeleteWarehouse(list.id)}
+                    type="delete"
+                    showTooltip
+                    tooltipText="Eliminar"
+                  >
+                    <IconSelector
+                      name="trash"
+                      color="text-danger"
+                      width="w-8"
+                    />
+                  </ButtonComponent>
+                </div>
+              ]
+            })
+          )}
         />
 
         <AddListModal
           isOpen={handleAddModal.isOpen}
           onClose={handleAddModal.onClose}
-          onAddWarehouse={() => {}}
+          onAdd={refetch}
         />
 
-        <EditWarehouseModal
+        <EditPriceListModal
           isOpen={handleEditModal.isOpen}
           onClose={handleEditModal.onClose}
+          onEdit={refetch}
           values={edit}
-          handleSendUpdateWarehouse={handleSendUpdateWarehouse}
+        />
+
+        <ConfirmModal
+          isOpen={handleConfirmModal.isOpen}
+          onClose={handleConfirmModal.onClose}
+          title="Eliminar almacén"
+          message={`¿Esta seguro de eliminar a ${edit?.name}?`}
+          onConfirm={handleConfirmDelete}
+          cancelText="Cancelar"
+          color="error"
+          confirmText="Eliminar"
+          name="trash"
         />
       </div>
     </AdministrationLayout>

@@ -328,7 +328,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     {
       icon: 'Dealer',
       text: 'Punto de venta a distribuidores',
-      link: '/administration-panel/point-of-sale-distributors',
+      link: '/administration-panel/pos-distributors',
       permissions: [RoleTypeEnum.ADMINISTRATOR]
     }
   ]

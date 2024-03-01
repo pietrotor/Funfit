@@ -69,6 +69,10 @@ export const AddDistributorModal = ({
                 required: {
                   value: true,
                   message: 'El nombre es requerido'
+                },
+                pattern: {
+                  value: /^[a-zA-ZÁáÉéÍíÓóÚúÜüÑñ\s]+$/,
+                  message: 'Solo se permiten letras'
                 }
               }}
             />
@@ -128,6 +132,10 @@ export const AddDistributorModal = ({
             required: {
               value: true,
               message: 'La dirección es requerida'
+            },
+            pattern: {
+              value: /^[a-zA-ZÁáÉéÍíÓóÚúÜüÑñ\s]+$/,
+              message: 'Solo se permiten letras'
             }
           }}
         />
