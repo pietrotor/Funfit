@@ -80,7 +80,7 @@ export const useCustomCreatePriceList = () => {
 export const useCustomUpdatePriceList = () => {
   const [updatePriceList, { loading }] = useUpdatePriceListMutation()
 
-  const handleUpdatePriceList = (data: TPriceList) => {
+  const handleUpdatePriceList = (data: TPriceList, callback: () => void) => {
     updatePriceList({
       variables: {
         updatePriceListInput: {
@@ -95,9 +95,13 @@ export const useCustomUpdatePriceList = () => {
             'Lista de precios actualizada exitosamente',
             'success'
           )
+          callback()
+        } else {
+          showSuccessToast('Error al actualizar la lista de precios', 'error')
         }
       },
       onError: error => {
+        console.log(error)
         showSuccessToast(
           error.message || 'Error al actualizar la lista de precios',
           'error'
@@ -112,16 +116,17 @@ export const useCustomUpdatePriceList = () => {
 export const useCustomDeletePriceList = () => {
   const [deletePriceList, { loading }] = useDeletePriceListMutation()
 
-  const handleDeletePriceList = (id: string) => {
+  const handleDeletePriceList = (id: string, callback: () => void) => {
     deletePriceList({
       variables: {
-        updatePriceListInput: {
+        deletePriceListId: {
           id
         }
       },
       onCompleted: result => {
         if (result.deletePriceList?.status === StatusEnum.OK) {
           showSuccessToast('Lista de precios eliminada exitosamente', 'success')
+          callback()
         }
       },
       onError: error => {

@@ -26,7 +26,7 @@ export const EditPriceListModal = ({
       id: values.id,
       name: watch('name'),
       description: watch('description')
-    })
+    }, onEdit)
     onClose()
     onEdit()
     reset()

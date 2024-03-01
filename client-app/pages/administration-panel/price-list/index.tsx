@@ -53,10 +53,8 @@ function PriceList({ user }: PriceListProps) {
   }
 
   const handleConfirmDelete = () => {
-    console.log(edit.id)
-    handleDeletePriceList(edit.id)
+    handleDeletePriceList(edit.id, refetch)
     handleConfirmModal.onClose()
-    refetch()
   }
 
   return (

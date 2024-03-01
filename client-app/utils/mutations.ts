@@ -404,8 +404,8 @@ export const UPDATE_PRICE_LIST = gql`
 `
 
 export const DELETE_PRICE_LIST = gql`
-  mutation DeletePriceList($updatePriceListInput: UpdatePriceListInput!) {
-    deletePriceList(updatePriceListInput: $updatePriceListInput) {
+  mutation DeletePriceList($deletePriceListId: ObjectId!) {
+    deletePriceList(id: $deletePriceListId) {
       errorInput {
         message
         field

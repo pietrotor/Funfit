@@ -599,7 +599,7 @@ export type MutationDeleteCategoryArgs = {
 
 
 export type MutationDeletePriceListArgs = {
-  updatePriceListInput: UpdatePriceListInput;
+  id: Scalars['ObjectId'];
 };
 
 
@@ -1668,6 +1668,34 @@ export type CreateDistributorMutationVariables = Exact<{
 
 export type CreateDistributorMutation = { __typename?: 'Mutation', createDistributor?: { __typename?: 'DistributorResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
+export type UpdateDistributorMutationVariables = Exact<{
+  updateDistributorInput: UpdateDistributorInput;
+}>;
+
+
+export type UpdateDistributorMutation = { __typename?: 'Mutation', updateDistributor?: { __typename?: 'DistributorResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
+export type CreatePriceListMutationVariables = Exact<{
+  createPriceListInput: CreatePriceListInput;
+}>;
+
+
+export type CreatePriceListMutation = { __typename?: 'Mutation', createPriceList?: { __typename?: 'PriceListResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
+export type UpdatePriceListMutationVariables = Exact<{
+  updatePriceListInput: UpdatePriceListInput;
+}>;
+
+
+export type UpdatePriceListMutation = { __typename?: 'Mutation', updatePriceList?: { __typename?: 'PriceListResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
+export type DeletePriceListMutationVariables = Exact<{
+  deletePriceListId: Scalars['ObjectId'];
+}>;
+
+
+export type DeletePriceListMutation = { __typename?: 'Mutation', deletePriceList?: { __typename?: 'PriceListResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1917,34 +1945,6 @@ export type GetDistributorByIdQueryVariables = Exact<{
 
 
 export type GetDistributorByIdQuery = { __typename?: 'Query', getDistributorById?: { __typename?: 'DistributorResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Distributor', id: any, name: string, code: string, address: string, email?: string | null, phone: string, nit?: string | null, socialReason?: string | null, ownerInformation: { __typename?: 'DistributorOwnerInformation', name: string, lastName?: string | null, phone?: string | null, address?: string | null } } | null } | null };
-
-export type UpdateDistributorMutationVariables = Exact<{
-  updateDistributorInput: UpdateDistributorInput;
-}>;
-
-
-export type UpdateDistributorMutation = { __typename?: 'Mutation', updateDistributor?: { __typename?: 'DistributorResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
-
-export type CreatePriceListMutationVariables = Exact<{
-  createPriceListInput: CreatePriceListInput;
-}>;
-
-
-export type CreatePriceListMutation = { __typename?: 'Mutation', createPriceList?: { __typename?: 'PriceListResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
-
-export type UpdatePriceListMutationVariables = Exact<{
-  updatePriceListInput: UpdatePriceListInput;
-}>;
-
-
-export type UpdatePriceListMutation = { __typename?: 'Mutation', updatePriceList?: { __typename?: 'PriceListResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
-
-export type DeletePriceListMutationVariables = Exact<{
-  updatePriceListInput: UpdatePriceListInput;
-}>;
-
-
-export type DeletePriceListMutation = { __typename?: 'Mutation', deletePriceList?: { __typename?: 'PriceListResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type GetPriceListsPaginatedQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -2994,6 +2994,158 @@ export function useCreateDistributorMutation(baseOptions?: Apollo.MutationHookOp
 export type CreateDistributorMutationHookResult = ReturnType<typeof useCreateDistributorMutation>;
 export type CreateDistributorMutationResult = Apollo.MutationResult<CreateDistributorMutation>;
 export type CreateDistributorMutationOptions = Apollo.BaseMutationOptions<CreateDistributorMutation, CreateDistributorMutationVariables>;
+export const UpdateDistributorDocument = gql`
+    mutation UpdateDistributor($updateDistributorInput: UpdateDistributorInput!) {
+  updateDistributor(updateDistributorInput: $updateDistributorInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type UpdateDistributorMutationFn = Apollo.MutationFunction<UpdateDistributorMutation, UpdateDistributorMutationVariables>;
+
+/**
+ * __useUpdateDistributorMutation__
+ *
+ * To run a mutation, you first call `useUpdateDistributorMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateDistributorMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateDistributorMutation, { data, loading, error }] = useUpdateDistributorMutation({
+ *   variables: {
+ *      updateDistributorInput: // value for 'updateDistributorInput'
+ *   },
+ * });
+ */
+export function useUpdateDistributorMutation(baseOptions?: Apollo.MutationHookOptions<UpdateDistributorMutation, UpdateDistributorMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateDistributorMutation, UpdateDistributorMutationVariables>(UpdateDistributorDocument, options);
+      }
+export type UpdateDistributorMutationHookResult = ReturnType<typeof useUpdateDistributorMutation>;
+export type UpdateDistributorMutationResult = Apollo.MutationResult<UpdateDistributorMutation>;
+export type UpdateDistributorMutationOptions = Apollo.BaseMutationOptions<UpdateDistributorMutation, UpdateDistributorMutationVariables>;
+export const CreatePriceListDocument = gql`
+    mutation CreatePriceList($createPriceListInput: CreatePriceListInput!) {
+  createPriceList(createPriceListInput: $createPriceListInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type CreatePriceListMutationFn = Apollo.MutationFunction<CreatePriceListMutation, CreatePriceListMutationVariables>;
+
+/**
+ * __useCreatePriceListMutation__
+ *
+ * To run a mutation, you first call `useCreatePriceListMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePriceListMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPriceListMutation, { data, loading, error }] = useCreatePriceListMutation({
+ *   variables: {
+ *      createPriceListInput: // value for 'createPriceListInput'
+ *   },
+ * });
+ */
+export function useCreatePriceListMutation(baseOptions?: Apollo.MutationHookOptions<CreatePriceListMutation, CreatePriceListMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePriceListMutation, CreatePriceListMutationVariables>(CreatePriceListDocument, options);
+      }
+export type CreatePriceListMutationHookResult = ReturnType<typeof useCreatePriceListMutation>;
+export type CreatePriceListMutationResult = Apollo.MutationResult<CreatePriceListMutation>;
+export type CreatePriceListMutationOptions = Apollo.BaseMutationOptions<CreatePriceListMutation, CreatePriceListMutationVariables>;
+export const UpdatePriceListDocument = gql`
+    mutation UpdatePriceList($updatePriceListInput: UpdatePriceListInput!) {
+  updatePriceList(updatePriceListInput: $updatePriceListInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type UpdatePriceListMutationFn = Apollo.MutationFunction<UpdatePriceListMutation, UpdatePriceListMutationVariables>;
+
+/**
+ * __useUpdatePriceListMutation__
+ *
+ * To run a mutation, you first call `useUpdatePriceListMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePriceListMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePriceListMutation, { data, loading, error }] = useUpdatePriceListMutation({
+ *   variables: {
+ *      updatePriceListInput: // value for 'updatePriceListInput'
+ *   },
+ * });
+ */
+export function useUpdatePriceListMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePriceListMutation, UpdatePriceListMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePriceListMutation, UpdatePriceListMutationVariables>(UpdatePriceListDocument, options);
+      }
+export type UpdatePriceListMutationHookResult = ReturnType<typeof useUpdatePriceListMutation>;
+export type UpdatePriceListMutationResult = Apollo.MutationResult<UpdatePriceListMutation>;
+export type UpdatePriceListMutationOptions = Apollo.BaseMutationOptions<UpdatePriceListMutation, UpdatePriceListMutationVariables>;
+export const DeletePriceListDocument = gql`
+    mutation DeletePriceList($deletePriceListId: ObjectId!) {
+  deletePriceList(id: $deletePriceListId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type DeletePriceListMutationFn = Apollo.MutationFunction<DeletePriceListMutation, DeletePriceListMutationVariables>;
+
+/**
+ * __useDeletePriceListMutation__
+ *
+ * To run a mutation, you first call `useDeletePriceListMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePriceListMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePriceListMutation, { data, loading, error }] = useDeletePriceListMutation({
+ *   variables: {
+ *      deletePriceListId: // value for 'deletePriceListId'
+ *   },
+ * });
+ */
+export function useDeletePriceListMutation(baseOptions?: Apollo.MutationHookOptions<DeletePriceListMutation, DeletePriceListMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeletePriceListMutation, DeletePriceListMutationVariables>(DeletePriceListDocument, options);
+      }
+export type DeletePriceListMutationHookResult = ReturnType<typeof useDeletePriceListMutation>;
+export type DeletePriceListMutationResult = Apollo.MutationResult<DeletePriceListMutation>;
+export type DeletePriceListMutationOptions = Apollo.BaseMutationOptions<DeletePriceListMutation, DeletePriceListMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {
@@ -5022,158 +5174,6 @@ export function useGetDistributorByIdLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetDistributorByIdQueryHookResult = ReturnType<typeof useGetDistributorByIdQuery>;
 export type GetDistributorByIdLazyQueryHookResult = ReturnType<typeof useGetDistributorByIdLazyQuery>;
 export type GetDistributorByIdQueryResult = Apollo.QueryResult<GetDistributorByIdQuery, GetDistributorByIdQueryVariables>;
-export const UpdateDistributorDocument = gql`
-    mutation UpdateDistributor($updateDistributorInput: UpdateDistributorInput!) {
-  updateDistributor(updateDistributorInput: $updateDistributorInput) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-  }
-}
-    `;
-export type UpdateDistributorMutationFn = Apollo.MutationFunction<UpdateDistributorMutation, UpdateDistributorMutationVariables>;
-
-/**
- * __useUpdateDistributorMutation__
- *
- * To run a mutation, you first call `useUpdateDistributorMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateDistributorMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateDistributorMutation, { data, loading, error }] = useUpdateDistributorMutation({
- *   variables: {
- *      updateDistributorInput: // value for 'updateDistributorInput'
- *   },
- * });
- */
-export function useUpdateDistributorMutation(baseOptions?: Apollo.MutationHookOptions<UpdateDistributorMutation, UpdateDistributorMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateDistributorMutation, UpdateDistributorMutationVariables>(UpdateDistributorDocument, options);
-      }
-export type UpdateDistributorMutationHookResult = ReturnType<typeof useUpdateDistributorMutation>;
-export type UpdateDistributorMutationResult = Apollo.MutationResult<UpdateDistributorMutation>;
-export type UpdateDistributorMutationOptions = Apollo.BaseMutationOptions<UpdateDistributorMutation, UpdateDistributorMutationVariables>;
-export const CreatePriceListDocument = gql`
-    mutation CreatePriceList($createPriceListInput: CreatePriceListInput!) {
-  createPriceList(createPriceListInput: $createPriceListInput) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-  }
-}
-    `;
-export type CreatePriceListMutationFn = Apollo.MutationFunction<CreatePriceListMutation, CreatePriceListMutationVariables>;
-
-/**
- * __useCreatePriceListMutation__
- *
- * To run a mutation, you first call `useCreatePriceListMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreatePriceListMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createPriceListMutation, { data, loading, error }] = useCreatePriceListMutation({
- *   variables: {
- *      createPriceListInput: // value for 'createPriceListInput'
- *   },
- * });
- */
-export function useCreatePriceListMutation(baseOptions?: Apollo.MutationHookOptions<CreatePriceListMutation, CreatePriceListMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreatePriceListMutation, CreatePriceListMutationVariables>(CreatePriceListDocument, options);
-      }
-export type CreatePriceListMutationHookResult = ReturnType<typeof useCreatePriceListMutation>;
-export type CreatePriceListMutationResult = Apollo.MutationResult<CreatePriceListMutation>;
-export type CreatePriceListMutationOptions = Apollo.BaseMutationOptions<CreatePriceListMutation, CreatePriceListMutationVariables>;
-export const UpdatePriceListDocument = gql`
-    mutation UpdatePriceList($updatePriceListInput: UpdatePriceListInput!) {
-  updatePriceList(updatePriceListInput: $updatePriceListInput) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-  }
-}
-    `;
-export type UpdatePriceListMutationFn = Apollo.MutationFunction<UpdatePriceListMutation, UpdatePriceListMutationVariables>;
-
-/**
- * __useUpdatePriceListMutation__
- *
- * To run a mutation, you first call `useUpdatePriceListMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePriceListMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updatePriceListMutation, { data, loading, error }] = useUpdatePriceListMutation({
- *   variables: {
- *      updatePriceListInput: // value for 'updatePriceListInput'
- *   },
- * });
- */
-export function useUpdatePriceListMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePriceListMutation, UpdatePriceListMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdatePriceListMutation, UpdatePriceListMutationVariables>(UpdatePriceListDocument, options);
-      }
-export type UpdatePriceListMutationHookResult = ReturnType<typeof useUpdatePriceListMutation>;
-export type UpdatePriceListMutationResult = Apollo.MutationResult<UpdatePriceListMutation>;
-export type UpdatePriceListMutationOptions = Apollo.BaseMutationOptions<UpdatePriceListMutation, UpdatePriceListMutationVariables>;
-export const DeletePriceListDocument = gql`
-    mutation DeletePriceList($updatePriceListInput: UpdatePriceListInput!) {
-  deletePriceList(updatePriceListInput: $updatePriceListInput) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-  }
-}
-    `;
-export type DeletePriceListMutationFn = Apollo.MutationFunction<DeletePriceListMutation, DeletePriceListMutationVariables>;
-
-/**
- * __useDeletePriceListMutation__
- *
- * To run a mutation, you first call `useDeletePriceListMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeletePriceListMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deletePriceListMutation, { data, loading, error }] = useDeletePriceListMutation({
- *   variables: {
- *      updatePriceListInput: // value for 'updatePriceListInput'
- *   },
- * });
- */
-export function useDeletePriceListMutation(baseOptions?: Apollo.MutationHookOptions<DeletePriceListMutation, DeletePriceListMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeletePriceListMutation, DeletePriceListMutationVariables>(DeletePriceListDocument, options);
-      }
-export type DeletePriceListMutationHookResult = ReturnType<typeof useDeletePriceListMutation>;
-export type DeletePriceListMutationResult = Apollo.MutationResult<DeletePriceListMutation>;
-export type DeletePriceListMutationOptions = Apollo.BaseMutationOptions<DeletePriceListMutation, DeletePriceListMutationVariables>;
 export const GetPriceListsPaginatedDocument = gql`
     query GetPriceListsPaginated($paginationInput: PaginationInput!) {
   getPriceListsPaginated(paginationInput: $paginationInput) {
