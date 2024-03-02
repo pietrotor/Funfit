@@ -1,6 +1,6 @@
 import { Button, Tooltip } from '@nextui-org/react'
 import React, { useRef, useState } from 'react'
-import { Control, FieldValues, UseFormWatch } from 'react-hook-form'
+import { Control, FieldValues } from 'react-hook-form'
 import Images from '@/components/atoms/Image/Image'
 
 import IconSelector from '@/components/atoms/IconSelector'
@@ -14,13 +14,19 @@ import {
   updateCartSubTotal
 } from '@/store/slices'
 import InputComponent from '@/components/atoms/Input'
+import { TDetails } from '@/components/templates/OrderLayout/orderLayout'
 
 type SideCartProps = {
   control: Control<FieldValues, any>
-  watch: UseFormWatch<FieldValues>
+  details: TDetails
+  setDetails: (details: TDetails) => void
 }
 
-function SideCart({ control, watch }: SideCartProps) {
+function SideCart({
+  control,
+  details: orderDetails,
+  setDetails
+}: SideCartProps) {
   const dispatch = useAppDispatch()
   const cartItems = useAppSelector(state => state.cartReducer.cartItems)
   const details = useAppSelector(state => state.cartReducer.cartDetails)
@@ -126,11 +132,14 @@ function SideCart({ control, watch }: SideCartProps) {
                 <InputComponent
                   name="orderDetails"
                   type="textArea"
-                  label='Especificaciones'
+                  label="Especificaciones"
                   control={control}
                   value={newDetails}
                   onChange={() => handleDetails}
                   variant="bordered"
+                  onValueChange={value =>
+                    setDetails({ ...orderDetails, orderDetails: value })
+                  }
                 />
                 <Button
                   className="ms-2 cursor-pointer border-2 bg-white"
@@ -150,7 +159,7 @@ function SideCart({ control, watch }: SideCartProps) {
                   <Button
                     isIconOnly
                     onClick={() => setShowTextArea(!showTextArea)}
-                    variant='bordered'
+                    variant="bordered"
                   >
                     <IconSelector name="edit" color="text-primary" />
                   </Button>

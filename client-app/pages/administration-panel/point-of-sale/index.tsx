@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Spinner, useDisclosure } from '@nextui-org/react'
+import { Pagination, Spinner, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
 import { GetServerSideProps } from 'next'
 import PointOfSaleCard from '@/components/molecules/Card/PointOfSaleCard'
@@ -29,7 +29,8 @@ function PointOfSale({ user }: PointOfSaleProps) {
   const { data: dataPassed } = router.query
   const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
   const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
-  const { loading, data, setFilter } = useGetBranchProductPOSQuery(branchId)
+  const { loading, data, setFilter, setVariables, variables } =
+    useGetBranchProductPOSQuery(branchId)
   const [selectedProducts, setSelectedProducts] = useState<TPointOfSaleData>(
     parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
   )
@@ -107,7 +108,7 @@ function PointOfSale({ user }: PointOfSaleProps) {
   return (
     <AdministrationLayout user={user} profileButton={false}>
       <section className="flex h-full w-full ">
-        <div className="w-2/3 border-1 border-secondary/30  bg-secondary/10 p-4">
+        <div className="flex w-2/3 flex-col  items-center border-1 border-secondary/30 bg-secondary/10 p-4">
           <div className="flex w-full">
             <Search setFilter={setFilter} />
           </div>
@@ -132,6 +133,17 @@ function PointOfSale({ user }: PointOfSaleProps) {
                 />
               ))}
           </div>
+          <Pagination
+            color="secondary"
+            size='lg'
+            isCompact
+            showControls
+            total={variables?.totalPages || 1}
+            page={variables?.currentPage || 1}
+            onChange={page => {
+              setVariables({ ...variables, currentPage: page })
+            }}
+          />
           <ButtonComponent
             className="mt-4 block w-full bg-secondary font-extrabold text-white md:hidden"
             onClick={handleResponsiveSaleModal.onOpen}

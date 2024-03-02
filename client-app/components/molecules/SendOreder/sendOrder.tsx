@@ -7,6 +7,7 @@ import InputComponent from '@/components/atoms/Input'
 import { useAppSelector } from '@/store/index'
 import { TCustomer, TOrder } from '@/interfaces/TData'
 import { DeliveryMethodEnum } from '@/graphql/graphql-types'
+import { TDetails } from '@/components/templates/OrderLayout/orderLayout'
 
 type Props = {
   activeDirection: { lat: number; lng: number }
@@ -18,6 +19,8 @@ type Props = {
   setOrder: (order: TOrder) => void
   selectedOption: string
   setSelectedOption: (selectedOption: string) => void
+  details: TDetails
+  setDetails: (details: TDetails) => void
 }
 
 function SendOrder({
@@ -29,7 +32,9 @@ function SendOrder({
   order,
   setOrder,
   selectedOption,
-  setSelectedOption
+  setSelectedOption,
+  details,
+  setDetails
 }: Props) {
   const branch = useAppSelector(state => state.ecommerceInformationReducer.name)
 
@@ -80,6 +85,10 @@ function SendOrder({
               onValueChange={value => {
                 setOrder({
                   ...order,
+                  pickUpInformation: value
+                })
+                setDetails({
+                  ...details,
                   pickUpInformation: value
                 })
               }}

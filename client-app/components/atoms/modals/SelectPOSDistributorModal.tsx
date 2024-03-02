@@ -22,7 +22,7 @@ export const SelectPOSDistributorModal = ({
   const [errorMessage, setErrorMessage] = useState('')
 
   const onSubmit = () => {
-    if (selectedDistributor.distributor || selectedDistributor.warehouse) {
+    if (selectedDistributor.distributor && selectedDistributor.warehouse) {
       if (step === 'warehouses') {
         setStep('ditributors')
         setErrorMessage('')
