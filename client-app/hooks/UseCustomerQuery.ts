@@ -13,6 +13,7 @@ export function useCustomPublicCreateCurstomer() {
   const [createCustomerInput] = usePublicCreateCustomerMutation()
 
   const handleCreatePublicCustomer = (data: CreateCustomerInput, callback: () => void) => {
+    console.log(data)
     createCustomerInput({
       variables: {
         createCustomerInput: {

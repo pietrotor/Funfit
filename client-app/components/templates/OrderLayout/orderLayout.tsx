@@ -32,6 +32,11 @@ export type TUserInfo = {
   phone: string
 }
 
+export type TDetails = {
+  pickUpInformation: string
+  orderDetails: string
+}
+
 function OrderLayout() {
   const steps: Step[] = [
     {
@@ -61,6 +66,10 @@ function OrderLayout() {
   const [selectedOption, setSelectedOption] = useState('')
   const [paymentMethod, setPaymentMethod] = useState(false)
   const [publicProducts, setPublicProducts] = useState<TProductBranchData[]>()
+  const [details, setDetails] = useState<TDetails>({
+    pickUpInformation: '',
+    orderDetails: ''
+  })
   const [activeDirection, setActiveDirection] = useState({
     location: {
       lat: -17.414,
@@ -260,12 +269,14 @@ function OrderLayout() {
       )
       .join(
         '\n'
-      )}\n\nSubtotal: ${subTotal} Bs.\n\nInformación de contacto:\n* Cliente: ${watch(
-      'name'
-    )} ${watch('lastName')}\n* Teléfono: ${watch('phone')}\n* Correo: ${watch(
-      'email'
-    )}\n ${
-      order?.deliveryMethod === DeliveryMethodEnum.PICKUP ? `\nTipo de entrega: 'Recojo en Sucursal'\n Sucursal: ${branch}\nDetalle del Recojo: ${watch('pickUpInformation')}` : `\nUbicación: \n https://maps.google.com/?q=${activeDirection.location.lat},${activeDirection.location.lng} \n Detalles: \n ${watch('orderDetails')}`} `
+      )}\n\nSubtotal: ${subTotal} Bs.\n\nInformación de contacto:\n* Cliente: ${data
+      ?.getPublicCustomerById?.data?.name} ${data?.getPublicCustomerById?.data
+      ?.lastName}\n* Teléfono: ${data?.getPublicCustomerById?.data
+      ?.phone}\n* Correo: ${data?.getPublicCustomerById?.data?.email}\n ${
+      order?.deliveryMethod === DeliveryMethodEnum.PICKUP ? `\nTipo de entrega: 'Recojo en Sucursal'\n Sucursal: ${branch}\nDetalle del Recojo: ${details.pickUpInformation}` : `\nUbicación: \n https://maps.google.com/?q=${
+            activeDirection.location.lat
+          },${activeDirection.location.lng} \n Detalles: \n ${details.pickUpInformation}`
+    } `
 
     const whatsappLink = `https://api.whatsapp.com/send?phone=76475010&text=${encodeURIComponent(
       message
@@ -297,6 +308,8 @@ function OrderLayout() {
               setSelectedOption={setSelectedOption}
               order={order as TOrder}
               setOrder={setOrder}
+              details={details}
+              setDetails={setDetails}
             />
           ) : (
             <PaymentMethod
@@ -323,7 +336,11 @@ function OrderLayout() {
           <h3 className="text-gray-500">Tus compras</h3>
         </div>
         <div className=" max-h-96  overflow-y-auto scrollbar-hide">
-          <SideCart control={control} watch={watch} />
+          <SideCart
+            control={control}
+            details={details}
+            setDetails={setDetails}
+          />
         </div>
       </div>
     </form>
