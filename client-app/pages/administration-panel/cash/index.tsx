@@ -245,9 +245,9 @@ function Cash({ user }: CashProps) {
           isOpen={handleMovementModal.isOpen}
           onConfirm={() => {
             refetch()
+            cash.refetch()
             setVariables({ ...variables, currentPage: 1 })
-          }
-          }
+          }}
         />
         <CloseCashRegister
           cashId={cashId}
