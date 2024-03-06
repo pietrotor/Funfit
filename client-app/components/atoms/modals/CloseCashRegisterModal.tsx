@@ -29,7 +29,7 @@ export const CloseCashRegister = ({
       variables: {
         closeTurnInput: {
           cashId,
-          amount: parseInt(watch('physicialAmount')),
+          amount: data?.getCashById?.data?.amount || 0,
           observation: watch('details'),
           updateToPhysicialAmount: updateAmount,
           difference: parseFloat(handleDiference()),
@@ -57,8 +57,8 @@ export const CloseCashRegister = ({
   }
   const handleDiference = () => {
     return (
-      (data?.getCashById?.data?.amount || 0) -
-      parseInt(watch('physicialAmount') || 0)
+      (data?.getCashById?.data?.amount! || 0) -
+      parseFloat(watch('physicialAmount') || 0)
     ).toString()
   }
   return (

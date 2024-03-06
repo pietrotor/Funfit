@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 import { Button, Image } from '@nextui-org/react'
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { GetServerSideProps } from 'next'
 import { useAppSelector } from '@/store/index'
 
@@ -10,11 +10,11 @@ import AdministrationLayout from '@/components/templates/layouts'
 import {
   StatusEnum,
   useCreateStockMutation,
+  useGetProductByIdLazyQuery,
   useGetProductsOutOfWarehouseLazyQuery
 } from '@/graphql/graphql-types'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import ComboInput from '@/components/atoms/ComboInput'
-import { TValueProductData } from '@/components/atoms/modals/EditProductModal'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import Selector from '@/components/atoms/InputSelector'
 import { authUserHeader } from '@/utils/verificationUser'
@@ -24,7 +24,7 @@ interface ICreateStock {
 }
 function CreateStock({ user }: ICreateStock) {
   const [filterProduct, setFilterProduct] = useState<string>('')
-  const [productsData, setProductsData] = useState<TValueProductData>()
+  const [productsData, setProductsData] = useState<string>()
   const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
   const units = useAppSelector(
     state => state.configuration.business?.measurementUnits
@@ -34,6 +34,13 @@ function CreateStock({ user }: ICreateStock) {
   const { control, handleSubmit, watch, reset } = useForm()
   const router = useRouter()
   const { warehouseId } = router.query
+
+  const [getProductById, { data: productInfo }] = useGetProductByIdLazyQuery({
+    onError(error) {
+      console.log('🚀 ~ onError ~ error:', error)
+    }
+  })
+
   const [getProducts, { data }] = useGetProductsOutOfWarehouseLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -51,13 +58,22 @@ function CreateStock({ user }: ICreateStock) {
     }
   })
 
+  useEffect(() => {
+    if (!productsData) return
+    getProductById({
+      variables: {
+        getProductByIdId: productsData
+      }
+    })
+  }, [productsData])
+
   const onSubmit = () => {
     CreateStock({
       variables: {
         createStockInput: {
           quantity: parseInt(watch('quantity')),
           units: watch('units'),
-          productId: productsData?.id,
+          productId: productsData,
           securityStock: parseInt(watch('securityStock')),
           warehouseId
         }
@@ -88,7 +104,7 @@ function CreateStock({ user }: ICreateStock) {
   return (
     <AdministrationLayout user={user} showBackButton={true}>
       <div className="w-full"></div>
-      <div className="absolute right-5 top-20 ms-5 mt-5 flex h-[75%] w-[90%] transform flex-col items-start justify-center bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center lg:right-0">
+      <div className="flex h-screen w-full transform justify-center bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center lg:right-0">
         <div
           className={`${
             productsData
@@ -98,12 +114,12 @@ function CreateStock({ user }: ICreateStock) {
         />
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className={` relative z-30 flex h-full  w-full flex-col items-center justify-center border bg-slate-50/100 px-16  py-9 transition-all  duration-700 md:w-[43%]  ${
-            productsData ? '' : ''
-          }`}
+          className={
+            'relative z-30 flex h-full w-full flex-1 flex-col items-center justify-center border bg-slate-50/100  px-16 py-9  transition-all duration-700  '
+          }
         >
           <h3 className="mb-7"> Registrar producto </h3>
-          <div className="max-w-full space-y-3">
+          <div className="w-full space-y-3">
             <ComboInput
               rules={{
                 required: {
@@ -115,19 +131,14 @@ function CreateStock({ user }: ICreateStock) {
               name="product"
               onClick={getProducts}
               label="Producto"
-              value={productsData?.name || ''}
               onChange={value => {
                 setFilterProduct(value)
-                setProductsData(
-                  data?.getProductsOutOfWarehouse?.data?.find(
-                    product => product.name === value
-                  ) as TValueProductData
-                )
               }}
+              onSelectionChange={value => setProductsData(value)}
               options={
                 data?.getProductsOutOfWarehouse?.data?.map(product => ({
                   label: product.name,
-                  value: product.name
+                  value: product.id
                 })) || []
               }
             />
@@ -184,7 +195,7 @@ function CreateStock({ user }: ICreateStock) {
           </div>
           <Button
             isLoading={loading}
-            className="my-6  h-12 w-4/5 rounded-md bg-secondary/80 px-5 text-xl text-white transition duration-300 hover:bg-secondary"
+            className="my-6 h-12 w-full rounded-md bg-secondary/80 px-5 text-xl text-white transition duration-300 hover:bg-secondary"
             type="submit"
             onClick={() => {}}
           >
@@ -192,16 +203,16 @@ function CreateStock({ user }: ICreateStock) {
           </Button>
         </form>
         <div
-          className={`absolute grid grid-cols-2 place-items-center gap-x-2 py-6 ps-4 transition-all duration-300 ${
+          className={`hidden w-full flex-1 grid-cols-1 gap-x-2 py-6 ps-4 transition-all duration-300 lg:grid lg:grid-cols-2 lg:place-items-center ${
             !productsData
               ? 'invisible md:left-1 '
-              : 'md:left-unit-7xl lg:left-unit-8xl xl:left-auto xl:right-0'
+              : 'md:left-unit-7xl lg:left-unit-9xl xl:right-0'
           }`}
         >
           <div className="">
             <Input
               required={false}
-              value={productsData?.description || ''}
+              value={productInfo?.getProductById?.data?.description || ''}
               variant="bordered"
               type="textArea"
               name="description"
@@ -214,13 +225,16 @@ function CreateStock({ user }: ICreateStock) {
                 required={false}
                 name="code"
                 label="Código"
-                value={productsData?.code}
+                value={productInfo?.getProductById?.data?.code}
                 disabled={true}
                 customeClassName="cursor-not-allowed"
               />
               <Input
                 required={false}
-                value={productsData?.suggetedPrice?.toString() || ''}
+                value={
+                  productInfo?.getProductById?.data?.suggetedPrice?.toString() ||
+                  ''
+                }
                 name="sudgestedPrice"
                 label="precio sugerido (Bs)"
                 disabled={true}
@@ -232,7 +246,7 @@ function CreateStock({ user }: ICreateStock) {
             <Image
               className="mt-3 rounded-md border-2 border-gray-300"
               src={
-                productsData?.image ||
+                productInfo?.getProductById?.data?.image ||
                 'https://st.depositphotos.com/2934765/53192/v/600/depositphotos_531920820-stock-illustration-photo-available-vector-icon-default.jpg'
               }
               alt="image product"

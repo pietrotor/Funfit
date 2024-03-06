@@ -37,7 +37,7 @@ export const CashMovimentModal = ({
     createCashMovement({
       variables: {
         createTurnMovementInput: {
-          amount: parseInt(watch('physicialAmount')),
+          amount: parseFloat(watch('physicialAmount')),
           cashId,
           concept: watch('details'),
           type: watch('movement'),
@@ -71,19 +71,17 @@ export const CashMovimentModal = ({
   const handleChangeValue = () => {
     if (watch('movement') === TurnMovementTypeEnum.ADD) {
       return (
-        parseInt(watch('physicialAmount')) + data?.getCashById?.data?.amount! ||
-        0
+        parseFloat(watch('physicialAmount') || 0) +
+          data?.getCashById?.data?.amount! || 0
       ).toString()
     }
     if (
       watch('movement') === TurnMovementTypeEnum.WITHDRAW ||
       watch('movement') === TurnMovementTypeEnum.ADJUST
     ) {
-      console.log('value')
-
       return (
         (data?.getCashById?.data?.amount! || 0) -
-        parseInt(watch('physicialAmount'))
+        parseFloat(watch('physicialAmount') || 0)
       ).toString()
     }
   }
@@ -137,6 +135,7 @@ export const CashMovimentModal = ({
                     height={'h-full'}
                     variant="underlined"
                     isRequired={false}
+                    min={0}
                     rules={{
                       required: {
                         value: true,

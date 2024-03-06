@@ -56,7 +56,8 @@ export const OpenCashRegister = ({
   }
   const handleDiference = () => {
     return (
-      data?.getCashById?.data?.amount! - parseInt(watch('physicialAmount')) || 0
+      data?.getCashById?.data?.amount! - parseFloat(watch('physicialAmount')) ||
+      0
     ).toString()
   }
 

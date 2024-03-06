@@ -35,10 +35,9 @@ function CashPaymentMethod({
       setPayment({
         paymentMethod: 'cash',
         cash: parseFloat(cash),
-        change:
-          parseFloat(cash) > total ? parseFloat(cash) - total : 0
+        change: parseFloat(cash) > total ? parseFloat(cash) - total : 0
       })
-      setValue('amountRecibed', cash)
+      setValue('amountRecibed', parseFloat(cash))
     } else {
       setPayment({
         paymentMethod: 'cash',
@@ -95,7 +94,7 @@ function CashPaymentMethod({
               <Button
                 variant="flat"
                 color="secondary"
-                className="border-2 hover:border-secondary text-lg text-gray-500"
+                className="border-2 text-lg text-gray-500 hover:border-secondary"
                 onClick={() => handleCash(total.toString())}
               >
                 {total}
@@ -103,7 +102,7 @@ function CashPaymentMethod({
               <Button
                 variant="flat"
                 color="secondary"
-                className="border-2 hover:border-secondary text-lg text-gray-500"
+                className="border-2 text-lg text-gray-500 hover:border-secondary"
                 onClick={() =>
                   handleCash(handleMultipleOfFive(total).toString())
                 }
@@ -113,7 +112,7 @@ function CashPaymentMethod({
               <Button
                 variant="flat"
                 color="secondary"
-                className="border-2 hover:border-secondary text-lg text-gray-500"
+                className="border-2 text-lg text-gray-500 hover:border-secondary"
                 onClick={() =>
                   handleCash((handleMultipleOfFive(total) + 5).toString())
                 }
