@@ -299,6 +299,7 @@ export type CreateOrderInput = {
 
 export type CreatePriceInput = {
   price: Scalars['Float']['input'];
+  priceListId: Scalars['ObjectId']['input'];
   productId: Scalars['ObjectId']['input'];
 };
 
@@ -374,7 +375,7 @@ export type CreateWarehouseInput = {
 
 export type Customer = {
   __typename?: 'Customer';
-  addressInfo: Array<Address>;
+  addressInfo?: Maybe<Array<Address>>;
   addressesIds: Array<Scalars['ObjectId']['output']>;
   email?: Maybe<Scalars['String']['output']>;
   id: Scalars['ObjectId']['output'];
@@ -476,6 +477,7 @@ export type Mutation = {
   createCashMovement?: Maybe<CashTurnMovementResponse>;
   createCategory?: Maybe<CategoryResponse>;
   createDistributor?: Maybe<DistributorResponse>;
+  createPrice?: Maybe<PriceResponse>;
   createPriceList?: Maybe<PriceListResponse>;
   createProduct?: Maybe<ProductResponse>;
   createSale?: Maybe<SaleResponse>;
@@ -485,6 +487,8 @@ export type Mutation = {
   deleteBranch?: Maybe<BranchResponse>;
   deleteBranchProduct?: Maybe<BranchProductResponse>;
   deleteCategory?: Maybe<CategoryResponse>;
+  deletePrice?: Maybe<PriceResponse>;
+  deletePriceList?: Maybe<PriceListResponse>;
   deleteProduct?: Maybe<ProductResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
   openCash?: Maybe<CashResponse>;
@@ -497,6 +501,7 @@ export type Mutation = {
   updateCategory?: Maybe<CategoryResponse>;
   updateConfiguration?: Maybe<ConfigurationResponse>;
   updateDistributor?: Maybe<DistributorResponse>;
+  updatePrice?: Maybe<PriceResponse>;
   updatePriceList?: Maybe<PriceListResponse>;
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
@@ -554,6 +559,11 @@ export type MutationCreateDistributorArgs = {
 };
 
 
+export type MutationCreatePriceArgs = {
+  createPriceInput: CreatePriceInput;
+};
+
+
 export type MutationCreatePriceListArgs = {
   createPriceListInput: CreatePriceListInput;
 };
@@ -595,6 +605,16 @@ export type MutationDeleteBranchProductArgs = {
 
 
 export type MutationDeleteCategoryArgs = {
+  id: Scalars['ObjectId']['input'];
+};
+
+
+export type MutationDeletePriceArgs = {
+  id: Scalars['ObjectId']['input'];
+};
+
+
+export type MutationDeletePriceListArgs = {
   id: Scalars['ObjectId']['input'];
 };
 
@@ -656,6 +676,11 @@ export type MutationUpdateConfigurationArgs = {
 
 export type MutationUpdateDistributorArgs = {
   updateDistributorInput: UpdateDistributorInput;
+};
+
+
+export type MutationUpdatePriceArgs = {
+  updatePriceInput: UpdatePriceInput;
 };
 
 
@@ -765,7 +790,9 @@ export type Price = {
   __typename?: 'Price';
   id: Scalars['ObjectId']['output'];
   price: Scalars['Float']['output'];
+  priceList?: Maybe<PriceList>;
   priceListId: Scalars['ObjectId']['output'];
+  product?: Maybe<Product>;
   productId: Scalars['ObjectId']['output'];
 };
 
@@ -789,6 +816,33 @@ export type PriceListsResponse = ResponseBase & {
   __typename?: 'PriceListsResponse';
   currentPage?: Maybe<Scalars['Int']['output']>;
   data?: Maybe<Array<PriceList>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']['output']>;
+  rows?: Maybe<Scalars['Int']['output']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']['output']>;
+  totalRecords?: Maybe<Scalars['Int']['output']>;
+};
+
+export type PricePaginationInput = {
+  filter?: InputMaybe<Scalars['String']['input']>;
+  page?: InputMaybe<Scalars['Int']['input']>;
+  priceListId: Scalars['ObjectId']['input'];
+  rows?: InputMaybe<Scalars['Int']['input']>;
+};
+
+export type PriceResponse = ResponseBase & {
+  __typename?: 'PriceResponse';
+  data?: Maybe<Price>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']['output']>;
+  status: StatusEnum;
+};
+
+export type PricesResponse = ResponseBase & {
+  __typename?: 'PricesResponse';
+  currentPage?: Maybe<Scalars['Int']['output']>;
+  data?: Maybe<Array<Price>>;
   errorInput?: Maybe<Array<ErrorInput>>;
   message?: Maybe<Scalars['String']['output']>;
   rows?: Maybe<Scalars['Int']['output']>;
@@ -848,9 +902,14 @@ export type Query = {
   getDistributorsPaginated?: Maybe<DistributorsResponse>;
   getOrderById?: Maybe<OrderResponse>;
   getOrdersPaginated?: Maybe<OrdersResponse>;
+  getPriceById?: Maybe<PriceResponse>;
+  getPriceListById?: Maybe<PriceListResponse>;
+  getPriceListsPaginated?: Maybe<PriceListsResponse>;
+  getPricesPaginated?: Maybe<PricesResponse>;
   getProductById?: Maybe<ProductResponse>;
   getProductStock?: Maybe<StocksResponse>;
   getProducts?: Maybe<ProductsResponse>;
+  getProductsOutOfPriceList?: Maybe<ProductsResponse>;
   getProductsOutOfWarehouse?: Maybe<ProductsResponse>;
   getPublicCustomerById?: Maybe<CustomerResponse>;
   getPublicProducts?: Maybe<BranchProductsResponse>;
@@ -934,6 +993,26 @@ export type QueryGetOrdersPaginatedArgs = {
 };
 
 
+export type QueryGetPriceByIdArgs = {
+  id: Scalars['ObjectId']['input'];
+};
+
+
+export type QueryGetPriceListByIdArgs = {
+  id: Scalars['ObjectId']['input'];
+};
+
+
+export type QueryGetPriceListsPaginatedArgs = {
+  paginationInput: PaginationInput;
+};
+
+
+export type QueryGetPricesPaginatedArgs = {
+  pricePaginationInput: PricePaginationInput;
+};
+
+
 export type QueryGetProductByIdArgs = {
   id: Scalars['ObjectId']['input'];
 };
@@ -948,6 +1027,12 @@ export type QueryGetProductStockArgs = {
 
 export type QueryGetProductsArgs = {
   paginationInput: PaginationInput;
+};
+
+
+export type QueryGetProductsOutOfPriceListArgs = {
+  paginationInput: PaginationInput;
+  priceListId: Scalars['ObjectId']['input'];
 };
 
 
@@ -1532,7 +1617,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  ResponseBase: ( AddressResponse ) | ( BranchProductResponse ) | ( BranchProductsResponse ) | ( BranchResponse ) | ( BranchsResponse ) | ( CashResponse ) | ( CashTurnMovementResponse ) | ( CashTurnMovementsResponse ) | ( CategoriesResponse ) | ( CategoryResponse ) | ( ConfigurationResponse ) | ( CustomerResponse ) | ( DistributorResponse ) | ( DistributorsResponse ) | ( LoginResponse ) | ( OrderResponse ) | ( OrdersResponse ) | ( PriceListResponse ) | ( PriceListsResponse ) | ( ProductResponse ) | ( ProductsResponse ) | ( Response ) | ( RolesResponse ) | ( SaleResponse ) | ( SalesResponse ) | ( SalesSummaryResponse ) | ( StockResponse ) | ( StocksHistoryResponse ) | ( StocksResponse ) | ( UserResponse ) | ( UsersResponse ) | ( WarehouseResponse ) | ( WarehousesResponse );
+  ResponseBase: ( AddressResponse ) | ( BranchProductResponse ) | ( BranchProductsResponse ) | ( BranchResponse ) | ( BranchsResponse ) | ( CashResponse ) | ( CashTurnMovementResponse ) | ( CashTurnMovementsResponse ) | ( CategoriesResponse ) | ( CategoryResponse ) | ( ConfigurationResponse ) | ( CustomerResponse ) | ( DistributorResponse ) | ( DistributorsResponse ) | ( LoginResponse ) | ( OrderResponse ) | ( OrdersResponse ) | ( PriceListResponse ) | ( PriceListsResponse ) | ( PriceResponse ) | ( PricesResponse ) | ( ProductResponse ) | ( ProductsResponse ) | ( Response ) | ( RolesResponse ) | ( SaleResponse ) | ( SalesResponse ) | ( SalesSummaryResponse ) | ( StockResponse ) | ( StocksHistoryResponse ) | ( StocksResponse ) | ( UserResponse ) | ( UsersResponse ) | ( WarehouseResponse ) | ( WarehousesResponse );
 };
 
 /** Mapping between all available schema types and the resolvers types */
@@ -1603,6 +1688,9 @@ export type ResolversTypes = {
   PriceList: ResolverTypeWrapper<PriceList>;
   PriceListResponse: ResolverTypeWrapper<PriceListResponse>;
   PriceListsResponse: ResolverTypeWrapper<PriceListsResponse>;
+  PricePaginationInput: PricePaginationInput;
+  PriceResponse: ResolverTypeWrapper<PriceResponse>;
+  PricesResponse: ResolverTypeWrapper<PricesResponse>;
   Product: ResolverTypeWrapper<Product>;
   ProductResponse: ResolverTypeWrapper<ProductResponse>;
   ProductsResponse: ResolverTypeWrapper<ProductsResponse>;
@@ -1722,6 +1810,9 @@ export type ResolversParentTypes = {
   PriceList: PriceList;
   PriceListResponse: PriceListResponse;
   PriceListsResponse: PriceListsResponse;
+  PricePaginationInput: PricePaginationInput;
+  PriceResponse: PriceResponse;
+  PricesResponse: PricesResponse;
   Product: Product;
   ProductResponse: ProductResponse;
   ProductsResponse: ProductsResponse;
@@ -1954,7 +2045,7 @@ export type ConfigurationResponseResolvers<ContextType = any, ParentType extends
 };
 
 export type CustomerResolvers<ContextType = any, ParentType extends ResolversParentTypes['Customer'] = ResolversParentTypes['Customer']> = {
-  addressInfo?: Resolver<Array<ResolversTypes['Address']>, ParentType, ContextType>;
+  addressInfo?: Resolver<Maybe<Array<ResolversTypes['Address']>>, ParentType, ContextType>;
   addressesIds?: Resolver<Array<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
@@ -2050,6 +2141,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createCashMovement?: Resolver<Maybe<ResolversTypes['CashTurnMovementResponse']>, ParentType, ContextType, RequireFields<MutationCreateCashMovementArgs, 'createTurnMovementInput'>>;
   createCategory?: Resolver<Maybe<ResolversTypes['CategoryResponse']>, ParentType, ContextType, RequireFields<MutationCreateCategoryArgs, 'createCategoryInput'>>;
   createDistributor?: Resolver<Maybe<ResolversTypes['DistributorResponse']>, ParentType, ContextType, RequireFields<MutationCreateDistributorArgs, 'createDistributorInput'>>;
+  createPrice?: Resolver<Maybe<ResolversTypes['PriceResponse']>, ParentType, ContextType, RequireFields<MutationCreatePriceArgs, 'createPriceInput'>>;
   createPriceList?: Resolver<Maybe<ResolversTypes['PriceListResponse']>, ParentType, ContextType, RequireFields<MutationCreatePriceListArgs, 'createPriceListInput'>>;
   createProduct?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationCreateProductArgs, 'createProductInput'>>;
   createSale?: Resolver<Maybe<ResolversTypes['SaleResponse']>, ParentType, ContextType, RequireFields<MutationCreateSaleArgs, 'createSaleInput'>>;
@@ -2059,6 +2151,8 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deleteBranch?: Resolver<Maybe<ResolversTypes['BranchResponse']>, ParentType, ContextType, RequireFields<MutationDeleteBranchArgs, 'id'>>;
   deleteBranchProduct?: Resolver<Maybe<ResolversTypes['BranchProductResponse']>, ParentType, ContextType, RequireFields<MutationDeleteBranchProductArgs, 'id'>>;
   deleteCategory?: Resolver<Maybe<ResolversTypes['CategoryResponse']>, ParentType, ContextType, RequireFields<MutationDeleteCategoryArgs, 'id'>>;
+  deletePrice?: Resolver<Maybe<ResolversTypes['PriceResponse']>, ParentType, ContextType, RequireFields<MutationDeletePriceArgs, 'id'>>;
+  deletePriceList?: Resolver<Maybe<ResolversTypes['PriceListResponse']>, ParentType, ContextType, RequireFields<MutationDeletePriceListArgs, 'id'>>;
   deleteProduct?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationDeleteProductArgs, 'id'>>;
   deleteWarehouse?: Resolver<Maybe<ResolversTypes['WarehouseResponse']>, ParentType, ContextType, RequireFields<MutationDeleteWarehouseArgs, 'id'>>;
   openCash?: Resolver<Maybe<ResolversTypes['CashResponse']>, ParentType, ContextType, RequireFields<MutationOpenCashArgs, 'createTurnInput'>>;
@@ -2071,6 +2165,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateCategory?: Resolver<Maybe<ResolversTypes['CategoryResponse']>, ParentType, ContextType, RequireFields<MutationUpdateCategoryArgs, 'updateCategoryInput'>>;
   updateConfiguration?: Resolver<Maybe<ResolversTypes['ConfigurationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateConfigurationArgs, 'updateConfigurationInput'>>;
   updateDistributor?: Resolver<Maybe<ResolversTypes['DistributorResponse']>, ParentType, ContextType, RequireFields<MutationUpdateDistributorArgs, 'updateDistributorInput'>>;
+  updatePrice?: Resolver<Maybe<ResolversTypes['PriceResponse']>, ParentType, ContextType, RequireFields<MutationUpdatePriceArgs, 'updatePriceInput'>>;
   updatePriceList?: Resolver<Maybe<ResolversTypes['PriceListResponse']>, ParentType, ContextType, RequireFields<MutationUpdatePriceListArgs, 'updatePriceListInput'>>;
   updateProduct?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationUpdateProductArgs, 'updateProductInput'>>;
   updateUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'deleteInput' | 'updateUserInput'>>;
@@ -2146,7 +2241,9 @@ export type OrdersResponseResolvers<ContextType = any, ParentType extends Resolv
 export type PriceResolvers<ContextType = any, ParentType extends ResolversParentTypes['Price'] = ResolversParentTypes['Price']> = {
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  priceList?: Resolver<Maybe<ResolversTypes['PriceList']>, ParentType, ContextType>;
   priceListId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
   productId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -2170,6 +2267,26 @@ export type PriceListResponseResolvers<ContextType = any, ParentType extends Res
 export type PriceListsResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['PriceListsResponse'] = ResolversParentTypes['PriceListsResponse']> = {
   currentPage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   data?: Resolver<Maybe<Array<ResolversTypes['PriceList']>>, ParentType, ContextType>;
+  errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  rows?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
+  totalPages?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  totalRecords?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PriceResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['PriceResponse'] = ResolversParentTypes['PriceResponse']> = {
+  data?: Resolver<Maybe<ResolversTypes['Price']>, ParentType, ContextType>;
+  errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type PricesResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['PricesResponse'] = ResolversParentTypes['PricesResponse']> = {
+  currentPage?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  data?: Resolver<Maybe<Array<ResolversTypes['Price']>>, ParentType, ContextType>;
   errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   rows?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
@@ -2229,9 +2346,14 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getDistributorsPaginated?: Resolver<Maybe<ResolversTypes['DistributorsResponse']>, ParentType, ContextType, RequireFields<QueryGetDistributorsPaginatedArgs, 'paginationInput'>>;
   getOrderById?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<QueryGetOrderByIdArgs, 'id'>>;
   getOrdersPaginated?: Resolver<Maybe<ResolversTypes['OrdersResponse']>, ParentType, ContextType, RequireFields<QueryGetOrdersPaginatedArgs, 'orderPaginationInput'>>;
+  getPriceById?: Resolver<Maybe<ResolversTypes['PriceResponse']>, ParentType, ContextType, RequireFields<QueryGetPriceByIdArgs, 'id'>>;
+  getPriceListById?: Resolver<Maybe<ResolversTypes['PriceListResponse']>, ParentType, ContextType, RequireFields<QueryGetPriceListByIdArgs, 'id'>>;
+  getPriceListsPaginated?: Resolver<Maybe<ResolversTypes['PriceListsResponse']>, ParentType, ContextType, RequireFields<QueryGetPriceListsPaginatedArgs, 'paginationInput'>>;
+  getPricesPaginated?: Resolver<Maybe<ResolversTypes['PricesResponse']>, ParentType, ContextType, RequireFields<QueryGetPricesPaginatedArgs, 'pricePaginationInput'>>;
   getProductById?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<QueryGetProductByIdArgs, 'id'>>;
   getProductStock?: Resolver<Maybe<ResolversTypes['StocksResponse']>, ParentType, ContextType, RequireFields<QueryGetProductStockArgs, 'paginationInput' | 'productId'>>;
   getProducts?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsArgs, 'paginationInput'>>;
+  getProductsOutOfPriceList?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsOutOfPriceListArgs, 'paginationInput' | 'priceListId'>>;
   getProductsOutOfWarehouse?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsOutOfWarehouseArgs, 'paginationInput' | 'warehouseId'>>;
   getPublicCustomerById?: Resolver<Maybe<ResolversTypes['CustomerResponse']>, ParentType, ContextType, RequireFields<QueryGetPublicCustomerByIdArgs, 'id'>>;
   getPublicProducts?: Resolver<Maybe<ResolversTypes['BranchProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetPublicProductsArgs, 'branchId' | 'paginationInput'>>;
@@ -2260,7 +2382,7 @@ export type ResponseResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type ResponseBaseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResponseBase'] = ResolversParentTypes['ResponseBase']> = {
-  __resolveType: TypeResolveFn<'AddressResponse' | 'BranchProductResponse' | 'BranchProductsResponse' | 'BranchResponse' | 'BranchsResponse' | 'CashResponse' | 'CashTurnMovementResponse' | 'CashTurnMovementsResponse' | 'CategoriesResponse' | 'CategoryResponse' | 'ConfigurationResponse' | 'CustomerResponse' | 'DistributorResponse' | 'DistributorsResponse' | 'LoginResponse' | 'OrderResponse' | 'OrdersResponse' | 'PriceListResponse' | 'PriceListsResponse' | 'ProductResponse' | 'ProductsResponse' | 'Response' | 'RolesResponse' | 'SaleResponse' | 'SalesResponse' | 'SalesSummaryResponse' | 'StockResponse' | 'StocksHistoryResponse' | 'StocksResponse' | 'UserResponse' | 'UsersResponse' | 'WarehouseResponse' | 'WarehousesResponse', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'AddressResponse' | 'BranchProductResponse' | 'BranchProductsResponse' | 'BranchResponse' | 'BranchsResponse' | 'CashResponse' | 'CashTurnMovementResponse' | 'CashTurnMovementsResponse' | 'CategoriesResponse' | 'CategoryResponse' | 'ConfigurationResponse' | 'CustomerResponse' | 'DistributorResponse' | 'DistributorsResponse' | 'LoginResponse' | 'OrderResponse' | 'OrdersResponse' | 'PriceListResponse' | 'PriceListsResponse' | 'PriceResponse' | 'PricesResponse' | 'ProductResponse' | 'ProductsResponse' | 'Response' | 'RolesResponse' | 'SaleResponse' | 'SalesResponse' | 'SalesSummaryResponse' | 'StockResponse' | 'StocksHistoryResponse' | 'StocksResponse' | 'UserResponse' | 'UsersResponse' | 'WarehouseResponse' | 'WarehousesResponse', ParentType, ContextType>;
   errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
@@ -2548,6 +2670,8 @@ export type Resolvers<ContextType = any> = {
   PriceList?: PriceListResolvers<ContextType>;
   PriceListResponse?: PriceListResponseResolvers<ContextType>;
   PriceListsResponse?: PriceListsResponseResolvers<ContextType>;
+  PriceResponse?: PriceResponseResolvers<ContextType>;
+  PricesResponse?: PricesResponseResolvers<ContextType>;
   Product?: ProductResolvers<ContextType>;
   ProductResponse?: ProductResponseResolvers<ContextType>;
   ProductsResponse?: ProductsResponseResolvers<ContextType>;

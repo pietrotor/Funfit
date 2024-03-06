@@ -1,12 +1,14 @@
 import { useForm } from 'react-hook-form'
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 import { MyModal } from './MyModal'
 
-import { TValueProductData } from './EditProductModal'
 import { showSuccessToast } from '../Toast/toasts'
 import Input from '../Input'
 import ComboInput from '../ComboInput'
 import {
+  StatusEnum,
+  useCreatePriceMutation,
   useGetProductsLazyQuery
 } from '@/graphql/graphql-types'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
@@ -14,17 +16,19 @@ import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 type ModalProps = {
   isOpen: boolean
   onClose: () => void
-  onAddWarehouse: () => void
+  onAddPrice: () => void
 }
 
 export const AddListProductModal = ({
   isOpen,
   onClose,
-  onAddWarehouse
+  onAddPrice
 }: ModalProps) => {
-  const { handleSubmit, control, reset } = useForm()
+  const router = useRouter()
+  const { priceListId } = router.query
+  const { handleSubmit, control, reset, watch } = useForm()
   const [filterProduct, setFilterProduct] = useState<string>('')
-  const [productsData, setProductsData] = useState<TValueProductData>()
+  const [productId, setProductId] = useState()
   const valueFilterProduct = UseDebouncedValue(filterProduct, 500)
 
   const [getProducts, { data }] = useGetProductsLazyQuery({
@@ -43,8 +47,33 @@ export const AddListProductModal = ({
     }
   })
 
+  const [createPrice, { loading }] = useCreatePriceMutation({
+    onError(error) {
+      showSuccessToast('Error al crear el precio', 'error')
+      console.log('🚀 ~ onError ~ error:', error)
+    }
+  })
+
+  console.log(watch())
+
   const onSubmit = () => {
-    console.log('submit')
+    createPrice({
+      variables: {
+        createPriceInput: {
+          price: parseFloat(watch('price')),
+          priceListId: priceListId!,
+          productId
+        }
+      },
+      onCompleted(data) {
+        if (data.createPrice?.status !== StatusEnum.OK) {
+          return showSuccessToast(data.createPrice?.message!, 'error')
+        }
+        showSuccessToast(data.createPrice?.message!, 'success')
+        onAddPrice()
+        onClose()
+      }
+    })
   }
   const handleCancel = () => {
     reset()
@@ -59,6 +88,7 @@ export const AddListProductModal = ({
       isOpen={isOpen}
       onClose={onClose}
       size="2xl"
+      loading={loading}
       control={control}
       handleSubmit={handleSubmit}
       onSubmit={onSubmit}
@@ -73,28 +103,25 @@ export const AddListProductModal = ({
             }
           }}
           control={control}
-          name="product"
+          name="productId"
           onClick={getProducts}
           label="Producto"
-          value={productsData?.name || ''}
           onChange={value => {
             setFilterProduct(value)
-            setProductsData(
-              data?.getProducts?.data?.find(
-                product => product.name === value
-              ) as TValueProductData
-            )
+          }}
+          onSelectionChange={value => {
+            setProductId(value)
           }}
           options={
             data?.getProducts?.data?.map(product => ({
               label: product.name,
-              value: product.name
+              value: product.id
             })) || []
           }
         />
         <Input
           control={control}
-          name="description"
+          name="price"
           type="text"
           label="Precio"
           rules={{

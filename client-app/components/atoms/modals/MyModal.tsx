@@ -107,26 +107,65 @@ export const MyModal = ({
                 <div className="sm:flex sm:items-start">
                   <div
                     className={`mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full ${
-                      color === 'success' ? 'bg-green-100' : color === 'warning' ? 'bg-yellow-100' : color === 'error' ? 'bg-red-100' : color === 'information' ? 'bg-green-100' : color === 'secondary' ? 'bg-secondary' : `bg-${bgIconColor}`
+                      color === 'success'
+                        ? 'bg-green-100'
+                        : color === 'warning'
+                          ? 'bg-yellow-100'
+                          : color === 'error'
+                            ? 'bg-red-100'
+                            : color === 'information'
+                              ? 'bg-green-100'
+                              : color === 'secondary'
+                                ? 'bg-secondary'
+                                : `bg-${bgIconColor}`
                     } sm:mx-0 sm:h-10 sm:w-10`}
                   >
                     <IconSelector
                       name={
-                        color === 'success' ? 'Plus' : color === 'warning' ? 'edit' : color === 'error' ? 'trash' : color === 'information' ? 'eye' : color === 'secondary' ? 'Cash' : `${icon}`
+                        color === 'success'
+                          ? 'Plus'
+                          : color === 'warning'
+                            ? 'edit'
+                            : color === 'error'
+                              ? 'trash'
+                              : color === 'information'
+                                ? 'eye'
+                                : color === 'secondary'
+                                  ? 'Cash'
+                                  : `${icon}`
                       }
                       width="w-6"
                       height="h-6"
                       className={`${
-                        color === 'success' ? 'text-green-600' : color === 'warning' ? 'text-yellow-600' : color === 'error' ? 'text-red-600' : color === 'information' ? 'text-green-600' : color === 'secondary' ? 'text-lg text-white' : 'text-blue-600'
+                        color === 'success'
+                          ? 'text-green-600'
+                          : color === 'warning'
+                            ? 'text-yellow-600'
+                            : color === 'error'
+                              ? 'text-red-600'
+                              : color === 'information'
+                                ? 'text-green-600'
+                                : color === 'secondary'
+                                  ? 'text-lg text-white'
+                                  : 'text-blue-600'
                       }`}
                     />
                   </div>
                   <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                     <h3
                       className={`text-lg font-medium leading-6 text-gray-900 ${
-                        color === 'success' ? 'text-green-600' : color === 'warning' ? 'text-yellow-600' : color === 'error' ? 'text-red-600' : color === 'information' ? 'text-green-600' : color === 'secondary' ? 'text-lg text-gray-500' : `text-${textColor}`
-                      }`
-                    }
+                        color === 'success'
+                          ? 'text-green-600'
+                          : color === 'warning'
+                            ? 'text-yellow-600'
+                            : color === 'error'
+                              ? 'text-red-600'
+                              : color === 'information'
+                                ? 'text-green-600'
+                                : color === 'secondary'
+                                  ? 'text-lg text-gray-500'
+                                  : `text-${textColor}`
+                      }`}
                       id="modal-headline"
                     >
                       {title}
@@ -140,7 +179,7 @@ export const MyModal = ({
               {isForm ? (
                 <form onSubmit={handleSubmit(onSubmit)}>
                   {children}
-                  <div className="justify-between items-center bg-gray-50 px-8 py-3 sm:flex  sm:flex-row-reverse sm:px-6 mt-3">
+                  <div className="mt-3 items-center justify-between bg-gray-50 px-8 py-3  sm:flex sm:flex-row-reverse sm:px-6">
                     <div className="md:space-x-3 ">
                       <ButtonComponent
                         typeOf="submit"
@@ -149,7 +188,15 @@ export const MyModal = ({
                         showTooltip={false}
                         disabled={successButtonDisabled}
                         className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
-                          color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : color === 'secondary' ? 'bg-secondary/100 hover:bg-secondary focus:ring-secondary' : `bg-${colorButon} hover:bg-${hoverButon} focus:ring-${focusButon}`
+                          color === 'success'
+                            ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
+                            : color === 'warning'
+                              ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500'
+                              : color === 'error'
+                                ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
+                                : color === 'secondary'
+                                  ? 'bg-secondary/100 hover:bg-secondary focus:ring-secondary'
+                                  : `bg-${colorButon} hover:bg-${hoverButon} focus:ring-${focusButon}`
                         }`}
                       >
                         {textSuccessButton}
@@ -158,7 +205,13 @@ export const MyModal = ({
                         showTooltip={false}
                         onClick={handleCancel}
                         className={`mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base font-medium text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:mt-0 sm:w-auto sm:text-sm ${
-                          color === 'success' ? 'hover:bg-green-100 focus:ring-green-500' : color === 'warning' ? 'hover:bg-yellow-100 focus:ring-yellow-500' : color === 'error' ? 'hover:bg-red-100 focus:ring-red-500' : 'hover:bg-blue-100 focus:ring-blue-500'
+                          color === 'success'
+                            ? 'hover:bg-green-100 focus:ring-green-500'
+                            : color === 'warning'
+                              ? 'hover:bg-yellow-100 focus:ring-yellow-500'
+                              : color === 'error'
+                                ? 'hover:bg-red-100 focus:ring-red-500'
+                                : 'hover:bg-blue-100 focus:ring-blue-500'
                         }`}
                       >
                         {textCancelButton}
@@ -172,7 +225,13 @@ export const MyModal = ({
                         disabled={backButtonDisabled}
                         showTooltip={false}
                         className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
-                          color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : 'border-2 border-gray-300 text-lg text-gray-500 hover:border-secondary focus:ring-blue-500'
+                          color === 'success'
+                            ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
+                            : color === 'warning'
+                              ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500'
+                              : color === 'error'
+                                ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
+                                : 'border-2 border-gray-300 text-lg text-gray-500 hover:border-secondary focus:ring-blue-500'
                         }`}
                       >
                         <IconSelector name="arrow-left" />
@@ -185,8 +244,10 @@ export const MyModal = ({
                 <div>
                   {children}
                   <div
-                    className={`bg-gray-50 px-8 py-3 sm:flex mt-4 ${
-                      !errorMessage ? 'sm:flex-row-reverse' : 'items-center justify-between'
+                    className={`mt-4 bg-gray-50 px-8 py-3 sm:flex ${
+                      !errorMessage
+                        ? 'sm:flex-row-reverse'
+                        : 'items-center justify-between'
                     }   sm:px-6`}
                   >
                     {textBackButton && (
@@ -197,7 +258,13 @@ export const MyModal = ({
                         disabled={backButtonDisabled}
                         showTooltip={false}
                         className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
-                          color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : 'border-2 border-gray-300 text-lg text-gray-500 hover:border-secondary focus:ring-blue-500'
+                          color === 'success'
+                            ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
+                            : color === 'warning'
+                              ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500'
+                              : color === 'error'
+                                ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
+                                : 'border-2 border-gray-300 text-lg text-gray-500 hover:border-secondary focus:ring-blue-500'
                         }`}
                       >
                         <IconSelector name="arrow-left" />
@@ -213,23 +280,37 @@ export const MyModal = ({
                     <div className="space-x-3">
                       {!hideSuccessButton && (
                         <ButtonComponent
-                        typeOf="submit"
-                        onClick={handleSubmit}
-                        isLoading={loading}
-                        showTooltip={false}
-                        className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
-                          color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : color === 'secondary' ? 'bg-secondary/100 hover:bg-secondary focus:ring-secondary' : `bg-${colorButon} hover:bg-${hoverButon} focus:ring-${focusButon}`
-                        }`}
-                      >
-                        {textSuccessButton}
-                      </ButtonComponent>
+                          typeOf="submit"
+                          onClick={handleSubmit}
+                          isLoading={loading}
+                          showTooltip={false}
+                          className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
+                            color === 'success'
+                              ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
+                              : color === 'warning'
+                                ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500'
+                                : color === 'error'
+                                  ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
+                                  : color === 'secondary'
+                                    ? 'bg-secondary/100 hover:bg-secondary focus:ring-secondary'
+                                    : `bg-${colorButon} hover:bg-${hoverButon} focus:ring-${focusButon}`
+                          }`}
+                        >
+                          {textSuccessButton}
+                        </ButtonComponent>
                       )}
                       {!hideCancelButton && (
                         <ButtonComponent
                           showTooltip={false}
                           onClick={handleCancel}
                           className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
-                            color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : 'border-2 border-gray-300 text-lg text-gray-500 hover:border-secondary focus:ring-blue-500'
+                            color === 'success'
+                              ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
+                              : color === 'warning'
+                                ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500'
+                                : color === 'error'
+                                  ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
+                                  : 'border-2 border-gray-300 text-lg text-gray-500 hover:border-secondary focus:ring-blue-500'
                           }`}
                         >
                           {textCancelButton}

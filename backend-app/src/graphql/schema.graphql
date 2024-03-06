@@ -47,6 +47,10 @@ type Query {
     paginationInput: PaginationInput!
     warehouseId: ObjectId!
   ): ProductsResponse
+  getProductsOutOfPriceList(
+    paginationInput: PaginationInput!
+    priceListId: ObjectId!
+  ): ProductsResponse
   # WAREHOUSES =======================================
   getWarehouses(paginationInput: PaginationInput!): WarehousesResponse
   getWarehouseById(id: ObjectId!): WarehouseResponse
@@ -104,6 +108,11 @@ type Query {
   # PRICELISTS ================================
   getPriceListById(id: ObjectId!): PriceListResponse
   getPriceListsPaginated(paginationInput: PaginationInput!): PriceListsResponse
+  # PRICE ================================
+  getPriceById(id: ObjectId!): PriceResponse
+  getPricesPaginated(
+    pricePaginationInput: PricePaginationInput!
+  ): PricesResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(
     paginationInput: PaginationInput!
@@ -184,6 +193,10 @@ type Mutation {
     updatePriceListInput: UpdatePriceListInput!
   ): PriceListResponse
   deletePriceList(id: ObjectId!): PriceListResponse
+  # PRICELISTS ==================================
+  createPrice(createPriceInput: CreatePriceInput!): PriceResponse
+  updatePrice(updatePriceInput: UpdatePriceInput!): PriceResponse
+  deletePrice(id: ObjectId!): PriceResponse
   # ========================= ECOMMERCE ROUTES ============================
   publicCreateCustomer(
     createCustomerInput: CreateCustomerInput!
@@ -436,7 +449,7 @@ type Customer {
   addressesIds: [ObjectId!]!
   ordersIds: [ObjectId!]!
   # Fields Resolvers
-  addressInfo: [Address!]!
+  addressInfo: [Address!]
 }
 type Address {
   id: ObjectId!
@@ -469,6 +482,9 @@ type Price {
   productId: ObjectId!
   priceListId: ObjectId!
   price: Float!
+  # Field Resolvers
+  product: Product
+  priceList: PriceList
 }
 type PriceList {
   id: ObjectId!
@@ -734,6 +750,22 @@ type PriceListResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: PriceList
+}
+type PricesResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Price!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type PriceResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Price
 }
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
@@ -1017,12 +1049,19 @@ input UpdateDistributorInput {
 }
 input CreatePriceInput {
   productId: ObjectId!
+  priceListId: ObjectId!
   price: Float!
 }
 input UpdatePriceInput {
   id: ObjectId!
   productId: ObjectId
   price: Float
+}
+input PricePaginationInput {
+  rows: Int
+  page: Int
+  filter: String
+  priceListId: ObjectId!
 }
 input CreatePriceListInput {
   name: String!

@@ -415,3 +415,39 @@ export const DELETE_PRICE_LIST = gql`
     }
   }
 `
+export const CREATE_PRICE = gql`
+  mutation CreatePrice($createPriceInput: CreatePriceInput!) {
+    createPrice(createPriceInput: $createPriceInput) {
+      errorInput {
+        message
+        field
+      }
+      message
+      status
+    }
+  }
+`
+export const UPDATE_PRICE = gql`
+  mutation UpdatePrice($updatePriceInput: UpdatePriceInput!) {
+    updatePrice(updatePriceInput: $updatePriceInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
+`
+export const DELETE_PRICE = gql`
+  mutation DeletePrice($id: ObjectId!) {
+    deletePrice(id: $id) {
+      errorInput {
+        message
+        field
+      }
+      message
+      status
+    }
+  }
+`

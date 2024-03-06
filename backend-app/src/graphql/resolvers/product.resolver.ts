@@ -73,6 +73,21 @@ const getProductsOutOfWarehouse = async (
     return errorHandler(error)
   }
 }
+const getProductsOutOfPriceList = async (
+  _: any,
+  args: { paginationInput: PaginationInput; priceListId: objectId }
+): Promise<ProductsResponse> => {
+  try {
+    const { paginationInput, priceListId } = args
+    return await productCore.getProductsOutOfPriceList(
+      paginationInput,
+      priceListId
+    )
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
 // ========================================== Mutations ====================================================
 const createProduct = async (
   _: any,
@@ -138,7 +153,8 @@ export const productQuery = {
   getProducts,
   getPublicProducts,
   getProductById,
-  getProductsOutOfWarehouse
+  getProductsOutOfWarehouse,
+  getProductsOutOfPriceList
 }
 export const productMutation = {
   createProduct,

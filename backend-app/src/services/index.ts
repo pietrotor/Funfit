@@ -17,6 +17,7 @@ import { AddressService } from './address.service'
 import { OrderService } from './order.service'
 import { DistributorService } from './distributor.service'
 import { PriceListService } from './priceList.service'
+import { PriceService } from './price.service'
 
 export const configurationCore = new ConfigurationService()
 export const userCore = new UserService()
@@ -37,3 +38,4 @@ export const customerCore = new CustomerService()
 export const orderCore = new OrderService()
 export const distributorCore = new DistributorService()
 export const priceListCore = new PriceListService()
+export const priceCore = new PriceService()

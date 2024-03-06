@@ -1113,3 +1113,67 @@ export const GET_PRICE_LIST = gql`
     }
   }
 `
+export const GET_PRICES = gql`
+  query GetPricesPaginated($pricePaginationInput: PricePaginationInput!) {
+    getPricesPaginated(pricePaginationInput: $pricePaginationInput) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data {
+        id
+        productId
+        priceListId
+        price
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          internalCode
+          description
+          categoryId
+          cost
+          image
+          warehouses
+        }
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+export const GET_PRICE_BY_ID = gql`
+  query GetPriceById($id: ObjectId!) {
+    getPriceById(id: $id) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data {
+        id
+        productId
+        priceListId
+        price
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          internalCode
+          description
+          categoryId
+          cost
+          image
+          warehouses
+        }
+      }
+    }
+  }
+`

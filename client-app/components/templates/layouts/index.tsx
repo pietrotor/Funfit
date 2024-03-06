@@ -383,7 +383,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   return (
     <>
       <Head>
-        <title>Page Title 1</title>
+        <title>FunFit</title>
       </Head>
       {business && branches.length !== 0 && currentBranch.id !== '' ? (
         <main
