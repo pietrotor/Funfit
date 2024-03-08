@@ -1,5 +1,10 @@
 import { useForm } from 'react-hook-form'
-import { Button, Image } from '@nextui-org/react'
+import {
+  Autocomplete,
+  AutocompleteItem,
+  Button,
+  Image
+} from '@nextui-org/react'
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
 import { GetServerSideProps } from 'next'
@@ -14,7 +19,6 @@ import {
   useGetProductsOutOfWarehouseLazyQuery
 } from '@/graphql/graphql-types'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
-import ComboInput from '@/components/atoms/ComboInput'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import Selector from '@/components/atoms/InputSelector'
 import { authUserHeader } from '@/utils/verificationUser'
@@ -29,7 +33,6 @@ function CreateStock({ user }: ICreateStock) {
   const units = useAppSelector(
     state => state.configuration.business?.measurementUnits
   )
-  console.log(units, 'units')
   const [CreateStock, { loading }] = useCreateStockMutation()
   const { control, handleSubmit, watch, reset } = useForm()
   const router = useRouter()
@@ -42,7 +45,7 @@ function CreateStock({ user }: ICreateStock) {
   })
 
   const [getProducts, { data }] = useGetProductsOutOfWarehouseLazyQuery({
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
     variables: {
       paginationInput: {
         filter: valueFilterProduct
@@ -54,6 +57,7 @@ function CreateStock({ user }: ICreateStock) {
   useEffect(() => {
     if (!productsData) return
     getProductById({
+      fetchPolicy: 'cache-first',
       variables: {
         getProductByIdId: productsData
       }
@@ -113,28 +117,30 @@ function CreateStock({ user }: ICreateStock) {
         >
           <h3 className="mb-7"> Registrar producto </h3>
           <div className="w-full space-y-3">
-            <ComboInput
-              rules={{
-                required: {
-                  value: true,
-                  message: 'Este campo es requerido'
-                }
+            <Autocomplete
+              variant={'bordered'}
+              label={'Producto'}
+              value={productsData}
+              className={`${
+                productsData ? 'border-gray-900' : 'border-gray-300'
+              } w-full`}
+              radius="sm"
+              onSelectionChange={e => {
+                setProductsData(e as any)
               }}
-              control={control}
-              name="product"
-              onClick={getProducts}
-              label="Producto"
-              onChange={value => {
-                setFilterProduct(value)
+              onOpenChange={() => getProducts()}
+              list="options"
+              onInputChange={e => {
+                setFilterProduct(e)
               }}
-              onSelectionChange={value => setProductsData(value)}
-              options={
-                data?.getProductsOutOfWarehouse?.data?.map(product => ({
-                  label: product.name,
-                  value: product.id
-                })) || []
-              }
-            />
+              placeholder={'Selecciona un producto'}
+            >
+              {(data?.getProductsOutOfWarehouse?.data || []).map(item => (
+                <AutocompleteItem key={item.id} value={item.id}>
+                  {item.name}
+                </AutocompleteItem>
+              ))}
+            </Autocomplete>
             <Input
               control={control}
               name="securityStock"

@@ -2,8 +2,9 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
-import { useDisclosure } from '@nextui-org/react'
+import { useDisclosure } from '@nextui-org/use-disclosure'
 
+import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { MoveStockModal } from '@/components/atoms/modals/MoveStockModal'
@@ -15,7 +16,6 @@ import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { TStockData } from '@/interfaces/TData'
 import { WarehouseRoute } from '@/utils/routes'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
-import { GetServerSideProps } from 'next'
 import { authUserHeader } from '@/utils/verificationUser'
 
 interface WarehouseProps {
