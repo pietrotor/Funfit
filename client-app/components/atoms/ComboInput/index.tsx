@@ -56,6 +56,7 @@ const ComboInput: React.FC<ComboInputProps> = ({
               } w-full`}
               radius="sm"
               onSelectionChange={e => {
+                console.log('🚀 ~ e:', e)
                 onSelectionChange && onSelectionChange(e)
               }}
               defaultSelectedKey={defaultValue}
@@ -68,8 +69,8 @@ const ComboInput: React.FC<ComboInputProps> = ({
               }}
               placeholder={`Selecciona o escribe ${label.toLowerCase()}`}
             >
-              {options.map((option, index) => (
-                <AutocompleteItem key={index} value={option.value}>
+              {options.map(option => (
+                <AutocompleteItem key={option.value} value={option.value}>
                   {option.label}
                 </AutocompleteItem>
               ))}

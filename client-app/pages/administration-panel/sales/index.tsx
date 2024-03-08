@@ -56,12 +56,12 @@ function Sales({ user }: SalesProps) {
   }, [currentBranch])
 
   const [getUsers, { data: users }] = useGetUsersLazyQuery({
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-first',
     variables: {
       paginationInput: {}
     }
   })
-  const { data, setVariables, variables } = UseGetCustomSalesPaginated(
+  const { data, setVariables, variables, loading } = UseGetCustomSalesPaginated(
     branchSelected.id
   )
 
@@ -106,7 +106,7 @@ function Sales({ user }: SalesProps) {
           </RadioGroup>
         </InformationCard>
 
-        <div className="mt-10 gap-2 grid-cols-2 md:space-y-0 grid md:grid-cols-5 md:gap-4">
+        <div className="mt-10 grid grid-cols-2 gap-2 md:grid-cols-5 md:gap-4 md:space-y-0">
           <InputComponent
             isRequired={false}
             name="initialDate"
@@ -145,12 +145,19 @@ function Sales({ user }: SalesProps) {
               }))
             }}
           />
-          <div className="md:col-start-5 col-start-1 md:col-end-6 col-end-3 rounded-md bg-white ">
+          <div className="col-start-1 col-end-3 rounded-md bg-white md:col-start-5 md:col-end-6 ">
             <ComboInput
               label="Vendedor"
               name="seller"
               control={control}
-              onSelectionChange={e => setVariables({ ...variables, saleBy: e })}
+              onSelectionChange={e => {
+                setVariables({ ...variables, saleBy: e })
+                setSummaryVariables(prevVariables => ({
+                  ...prevVariables,
+                  branchIds: [currentBranch.id],
+                  saleBy: e
+                }))
+              }}
               onClick={() => getUsers()}
               options={
                 users?.getUsers?.data?.map(user => ({
@@ -249,6 +256,7 @@ function Sales({ user }: SalesProps) {
           onChangePage={page =>
             setVariables({ ...variables, currentPage: page })
           }
+          isLoading={loading}
           itemsPerPage={variables?.rows}
           currentPage={variables?.currentPage}
           totalPages={variables?.totalPages}
@@ -283,7 +291,7 @@ function Sales({ user }: SalesProps) {
                   {sale.products.map((product, idx) => (
                     <p
                       key={idx}
-                      className="m-auto w-fit mt-1 rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                      className="m-auto mt-1 w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
                     >
                       {product.product?.name}
                     </p>
