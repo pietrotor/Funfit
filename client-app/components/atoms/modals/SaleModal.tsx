@@ -1,5 +1,7 @@
+/* eslint-disable multiline-ternary */
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import Decimal from 'decimal.js'
 import { MyModal } from './MyModal'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
 import SalePaymentMethod from '@/components/molecules/SalePaymentMethod'
@@ -31,10 +33,11 @@ function SaleModal({
   setSelectedProducts
 }: SaleModalProps) {
   const { handleSubmit, control, watch, reset, setValue } = useForm()
+  console.log(watch())
   const branchIdSelected = useAppSelector(
     state => state.branchReducer.currentBranch.id
   )
-  const { handleCreateSale } = useCreateSaleQuery()
+  const { handleCreateSale, loading } = useCreateSaleQuery()
   const [payment, setPayment] = useState<TSalePaymentMethodData>({
     paymentMethod: 'options',
     cash: 0,
@@ -42,30 +45,54 @@ function SaleModal({
   })
 
   const onSubmit = () => {
-    handleCreateSale({
-      amountRecibed: payment.paymentMethod === 'card' ? parseFloat(watch('cardAmountRecibed')) : payment.cash || parseFloat(watch('amountRecibed')),
-      branchId: branchIdSelected,
-      change: payment.change,
-      client: watch('client'),
-      date: new Date().toISOString(),
-      discount: payment.paymentMethod === 'card' ? selectedProducts.total * 0.02 + selectedProducts.discount : selectedProducts.discount,
-      observations: watch('observations') || '',
-      products: selectedProducts.products.map(item => ({
-        branchProductId: item.id || '',
-        productId: item?.productId || '',
-        qty: item?.quantity || 0,
-        price: item?.price || 0,
-        total: item.total || 0
-      })),
-      paymentMethod:
-        payment.paymentMethod === 'cash' ? PaymentMethodEnum.CASH : payment.paymentMethod === 'card' ? PaymentMethodEnum.CARD : PaymentMethodEnum.QR_TRANSFER,
-      total: payment.paymentMethod === 'card' ? selectedProducts.total - selectedProducts.total * 0.02 : selectedProducts.total,
-      subTotal: selectedProducts.subTotal
-    })
-    reset()
-    onClose()
-    setSelectedProducts({ products: [], subTotal: 0, total: 0, discount: 0 })
-    setPayment({ paymentMethod: 'options', cash: 0, change: 0 })
+    handleCreateSale(
+      {
+        amountRecibed:
+          payment.paymentMethod === 'card'
+            ? parseFloat(watch('cardAmountRecibed'))
+            : payment.cash || parseFloat(watch('amountRecibed')),
+        branchId: branchIdSelected,
+        change: payment.change,
+        client: watch('client'),
+        date: new Date().toISOString(),
+        discount:
+          payment.paymentMethod === 'card'
+            ? new Decimal(selectedProducts.total).mul(0.02).toNumber() +
+              selectedProducts.discount
+            : selectedProducts.discount,
+        observations: watch('observations') || '',
+        products: selectedProducts.products.map(item => ({
+          branchProductId: item.id || '',
+          productId: item?.productId || '',
+          qty: item?.quantity || 0,
+          price: item?.price || 0,
+          total: item.total || 0
+        })),
+        paymentMethod:
+          payment.paymentMethod === 'cash'
+            ? PaymentMethodEnum.CASH
+            : payment.paymentMethod === 'card'
+              ? PaymentMethodEnum.CARD
+              : PaymentMethodEnum.QR_TRANSFER,
+        total:
+          payment.paymentMethod === 'card'
+            ? selectedProducts.total -
+              new Decimal(selectedProducts.total).mul(0.02).toNumber()
+            : selectedProducts.total,
+        subTotal: selectedProducts.subTotal
+      },
+      () => {
+        reset()
+        onClose()
+        setSelectedProducts({
+          products: [],
+          subTotal: 0,
+          total: 0,
+          discount: 0
+        })
+        setPayment({ paymentMethod: 'options', cash: 0, change: 0 })
+      }
+    )
   }
 
   const handleCancel = () => {
@@ -95,46 +122,54 @@ function SaleModal({
       hideCloseButton={false}
       size="3xl"
       isForm
-      title='Recibo de venta'
-      message='Ingrese los datos de la venta'
+      title="Recibo de venta"
+      message="Ingrese los datos de la venta"
       onSubmit={onSubmit}
       control={control}
       handleCancel={handleCancel}
       handleSubmit={handleSubmit}
       reset={reset}
-      color='secondary'
-      textBackButton='Atrás'
-      textCancelButton='Cancelar'
-      textSuccessButton='Generar recibo'
+      loading={loading}
+      color="secondary"
+      textBackButton="Atrás"
+      textCancelButton="Cancelar"
+      textSuccessButton="Generar recibo"
       handleBack={handleBack}
       backButtonDisabled={payment.paymentMethod === 'options'}
       successButtonDisabled={payment.paymentMethod === 'options'}
     >
-      <div
-        className="flex h-[30rem] flex-col"
-      >
+      <div className="flex h-[30rem] flex-col">
         {/* <div className="border-b-gray min-h-[1/7] w-full border-b-1">
           <h1 className="p-4 text-xl text-gray-500">Recibo de venta</h1>
         </div> */}
 
         <div
           className={`flex-grow ${
-            payment.paymentMethod === 'combined' ? 'overflow-y-scroll' : 'overflow-hidden'
+            payment.paymentMethod === 'combined'
+              ? 'overflow-y-scroll'
+              : 'overflow-hidden'
           }`}
         >
           <div className="flex h-1/6 items-center justify-around space-x-3 py-3">
-            <div className='flex space-x-3 items-center'>
-            <h2 className="text-xl text-gray-500">Total:</h2>
-            <h3 className="text-2xl font-thin text-gray-500">
-              Bs. {selectedProducts.total}
-            </h3>
+            <div className="flex items-center space-x-3">
+              <h2 className="text-xl text-gray-500">Total:</h2>
+              <h3 className="text-2xl font-thin text-gray-500">
+                Bs. {selectedProducts.total}
+              </h3>
             </div>
-            {payment.paymentMethod === 'card' && <div className='flex space-x-3 items-center' >
-            <h2 className="text-xl text-gray-500">Total con descuento:</h2>
-            <h3 className="text-2xl font-thin text-gray-500">
-              Bs. {selectedProducts.total - selectedProducts.total * 0.02}
-            </h3>
-            </div>}
+            {payment.paymentMethod === 'card' && (
+              <div className="flex items-center space-x-3">
+                <h2 className="text-xl text-gray-500">Total con descuento:</h2>
+                <h3 className="text-2xl font-thin text-gray-500">
+                  Bs.{' '}
+                  {new Decimal(selectedProducts.total)
+                    .minus(
+                      new Decimal(selectedProducts.total).mul(0.02).toNumber()
+                    )
+                    .toNumber()}
+                </h3>
+              </div>
+            )}
           </div>
           <div className="h-5/6">
             {payment.paymentMethod === 'options' ? (

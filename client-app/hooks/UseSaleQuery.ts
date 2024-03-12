@@ -1,15 +1,18 @@
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import {
   CreateSaleInput,
+  CreateSaleMutation,
   StatusEnum,
   useCreateSaleMutation
 } from '@/graphql/graphql-types'
-import { on } from 'events'
 
 export const useCreateSaleQuery = () => {
-  const [createSale] = useCreateSaleMutation()
+  const [createSale, { loading }] = useCreateSaleMutation()
 
-  const handleCreateSale = (data: CreateSaleInput) => {
+  const handleCreateSale = (
+    data: CreateSaleInput,
+    callback?: (result: CreateSaleMutation) => void
+  ) => {
     createSale({
       variables: {
         createSaleInput: {
@@ -25,11 +28,11 @@ export const useCreateSaleQuery = () => {
         }
         if (result.createSale?.status === StatusEnum.OK) {
           showSuccessToast('Venta registrada correctamente', 'success')
+          callback?.(result)
         }
       }
-    }
-    )
+    })
   }
 
-  return { handleCreateSale }
+  return { handleCreateSale, loading }
 }

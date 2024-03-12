@@ -4,6 +4,7 @@ import {
   UseFormReset,
   UseFormWatch
 } from 'react-hook-form'
+import Decimal from 'decimal.js'
 import { TSalePaymentMethodData } from '@/components/atoms/modals/SaleModal'
 import InputComponent from '@/components/atoms/Input'
 import ClientObservationPayment from '@/components/atoms/ClientObservationsPayment'
@@ -46,12 +47,15 @@ function CardPaymentMethod({
                 message: 'Este campo es obligatorio'
               }
             }}
-            defaultValue={(total - total * 0.02).toString()}
+            defaultValue={new Decimal(total)
+              .minus(new Decimal(total).mul(0.02).toNumber())
+              .toNumber()
+              .toString()}
             isDisabled
           />
         </div>
         <div className="w-1/2 px-2">
-          <ClientObservationPayment control={control}/>
+          <ClientObservationPayment control={control} />
         </div>
       </div>
     </section>

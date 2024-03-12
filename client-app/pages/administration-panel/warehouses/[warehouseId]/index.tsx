@@ -30,7 +30,7 @@ function Warehouse({ user }: WarehouseProps) {
   const [filter, setFilter] = useState<string>('')
   const [stock, setStock] = useState<TStockData>()
   const handleMoveStockModal = useDisclosure()
-  const filtroDebounced = UseDebouncedValue(filter, 2000)
+  const filtroDebounced = UseDebouncedValue(filter, 500)
   const router = useRouter()
   const { warehouseId } = router.query
   const { data, loading, refetch } = useGetWarehouseStockQuery({
@@ -42,7 +42,6 @@ function Warehouse({ user }: WarehouseProps) {
         warehouses: [warehouseId as string]
       }
     },
-    fetchPolicy: 'network-only',
     onCompleted: data => {
       setVariables({
         totalPages: data.getWarehouseStock?.totalPages || 1,
