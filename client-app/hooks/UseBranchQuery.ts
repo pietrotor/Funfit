@@ -26,9 +26,12 @@ export type BranchProductData = {
 export const useCreateBranchProductQuery = () => {
   const [variables, setVariables] = useState<PaginationInterfaceState>()
 
-  const [createBranchProduct] = useCreateBranchProductMutation()
+  const [createBranchProduct, { loading }] = useCreateBranchProductMutation()
 
-  const handleCreateBranchProduct = (data: CreateBranchProductInput) => {
+  const handleCreateBranchProduct = (
+    data: CreateBranchProductInput,
+    onSucces?: () => void
+  ) => {
     createBranchProduct({
       variables: {
         createBranchProductInput: {
@@ -48,6 +51,7 @@ export const useCreateBranchProductQuery = () => {
         }
         if (result.createBranchProduct?.status === StatusEnum.OK) {
           showSuccessToast('Producto creado correctamente', 'success')
+          onSucces?.()
         }
       }
     })
@@ -55,6 +59,7 @@ export const useCreateBranchProductQuery = () => {
 
   return {
     handleCreateBranchProduct,
+    loading,
     variables,
     setVariables
   }

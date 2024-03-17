@@ -277,7 +277,7 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
                   </ButtonComponent>
                   <ButtonComponent
                     showTooltip
-                    tooltipText="eliminar insumo"
+                    tooltipText="Eliminar Producto"
                     type="delete"
                     className="text-red-500"
                     onClick={() =>

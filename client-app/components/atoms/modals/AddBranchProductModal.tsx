@@ -24,14 +24,15 @@ export const AddBranchProductModal = ({
   onClose,
   onAdd
 }: AddBranchProductModalProps) => {
-  const { handleCreateBranchProduct } = useCreateBranchProductQuery()
+  const { handleCreateBranchProduct, loading: loadingCreateBranchProduct } =
+    useCreateBranchProductQuery()
   const { handleSubmit, control, watch, reset } = useForm()
   const [productsData, setProductsData] = useState<TValueProductData>()
   const [isVisibleMenu, setIsVisibleMenu] = useState<boolean>(true)
   const [isVisibleWeb, setIsVisibleWeb] = useState<boolean>(true)
   const router = useRouter()
   const { branchId } = router.query
-  const [getProducts, { data, loading }] = useGetProductsLazyQuery({
+  const [getProducts, { data }] = useGetProductsLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
       paginationInput: {
@@ -51,16 +52,20 @@ export const AddBranchProductModal = ({
     })
 
   const onSubmit = () => {
-    handleCreateBranchProduct({
-      branchId: branchId as string,
-      productId: productsData?.id,
-      price: parseFloat(watch('price')),
-      isVisibleOnMenu: isVisibleMenu,
-      isVisibleOnWeb: isVisibleWeb
-    })
-    reset()
-    onClose()
-    onAdd()
+    handleCreateBranchProduct(
+      {
+        branchId: branchId as string,
+        productId: productsData?.id,
+        price: parseFloat(watch('price')),
+        isVisibleOnMenu: isVisibleMenu,
+        isVisibleOnWeb: isVisibleWeb
+      },
+      () => {
+        reset()
+        onClose()
+        onAdd()
+      }
+    )
   }
 
   const handleCancel = () => {
@@ -87,7 +92,7 @@ export const AddBranchProductModal = ({
       title="Agregar Producto a la sucursal"
       message="Agrega un nuevo producto a la sucursal"
       color="success"
-      loading={loading}
+      loading={loadingCreateBranchProduct}
       handleCancel={handleCancel}
       control={control}
       reset={reset}
