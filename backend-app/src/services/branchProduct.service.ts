@@ -133,11 +133,6 @@ export class BranchProductService extends BranchProductRepository<objectId> {
     const { branchId, type, stockId, branchProductId } =
       createBranchProductStockMovementInput
 
-    if (stockId && type !== StockMovementTypeEnum.INWARD) {
-      throw new BadRequestError(
-        'Stock innecesario en un tipo de movimiento de salida'
-      )
-    }
     if (!stockId && type === StockMovementTypeEnum.INWARD) {
       throw new BadRequestError(
         'Es necesario el stock para un movimiento de ingreso'

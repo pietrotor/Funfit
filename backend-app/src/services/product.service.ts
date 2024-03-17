@@ -9,6 +9,9 @@ import { getInstancesPagination } from './generic.service'
 import { BadRequestError } from '@/lib/graphqlerrors'
 import { updateGenericInstance } from '@/lib/updateInstance'
 import { internalCodeGenerator } from '@/lib/codeGenerator'
+import Stock from '@/models/stock.model'
+import { Branch, BranchProduct } from '../models'
+import Warehouse from '@/models/warehouse.model'
 
 export class ProductService extends ProductRepository<objectId> {
   async getProductsPaginated(paginationInput: PaginationInput) {
@@ -47,6 +50,12 @@ export class ProductService extends ProductRepository<objectId> {
     return await Product.findOne({
       _id: id,
       deleted: false
+    })
+  }
+
+  async getProductByIdSaleItemFieldResolver(id: objectId) {
+    return await Product.findOne({
+      _id: id
     })
   }
 
@@ -152,7 +161,63 @@ export class ProductService extends ProductRepository<objectId> {
     })
     if (!productInstance) throw new BadRequestError('El producto no existe')
     productInstance.deleted = true
+    productInstance.deletedAt = new Date()
     productInstance.deletedBy = deletedBy || undefined
+    const stocksInstance = await Stock.find({
+      deleted: false,
+      productId: id
+    })
+    await Promise.all(
+      stocksInstance.map(async stock => {
+        stock.deleted = true
+        stock.deletedAt = new Date()
+        stock.deletedBy = deletedBy || undefined
+        await stock.save()
+      })
+    )
+    // ------ Branch Products
+    const branchProdutsInstances = await BranchProduct.find({
+      deleted: false,
+      productId: id
+    })
+    await Promise.all(
+      branchProdutsInstances.map(async branchProduct => {
+        branchProduct.deleted = true
+        branchProduct.deletedAt = new Date()
+        branchProduct.deletedBy = deletedBy || undefined
+        await branchProduct.save()
+      })
+    )
+    // ------ Warehouses
+    const warehousesInstances = await Warehouse.find({
+      deleted: false,
+      productsIds: {
+        $in: [id]
+      }
+    })
+    await Promise.all(
+      warehousesInstances.map(async warehouse => {
+        warehouse.productsIds = warehouse.productsIds.filter(
+          productId => productId.toString() !== id.toString()
+        )
+        await warehouse.save()
+      })
+    )
+    // ------ Branch
+    const branchesInstances = await Branch.find({
+      deleted: false,
+      productsIds: {
+        $in: [id]
+      }
+    })
+    await Promise.all(
+      branchesInstances.map(async branch => {
+        branch.productsIds = branch.productsIds.filter(
+          productId => productId.toString() !== id.toString()
+        )
+        await branch.save()
+      })
+    )
     return await productInstance.save()
   }
 }

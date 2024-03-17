@@ -60,8 +60,28 @@ function DailySale({ user }: DailySaleProps) {
     )
   }
 
+  const getSalePaymentMethod = (paymentMethod: PaymentMethodEnum) => {
+    switch (paymentMethod) {
+      case PaymentMethodEnum.CARD:
+        return {
+          icon: <IconSelector name="CreditCard" />,
+          text: 'Tarjeta'
+        }
+      case PaymentMethodEnum.QR_TRANSFER:
+        return {
+          icon: <IconSelector name="QrCode" />,
+          text: 'QR'
+        }
+      case PaymentMethodEnum.CASH:
+        return {
+          icon: <IconSelector name="Cash" />,
+          text: 'Efectivo'
+        }
+    }
+  }
+
   return (
-    <AdministrationLayout user= {user}>
+    <AdministrationLayout user={user}>
       <div className="m-auto mt-7 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
           Ventas del día
@@ -184,6 +204,13 @@ function DailySale({ user }: DailySaleProps) {
                 <div className="text-sm">
                   {sale.discount ? sale.discount + 'Bs' : '-'}
                 </div>
+              </div>,
+              <div
+                key={idx}
+                className=" flex items-center justify-center gap-1 rounded-sm border border-primary p-1 text-primary"
+              >
+                {getSalePaymentMethod(sale.paymentMethod).icon}
+                <p>{getSalePaymentMethod(sale.paymentMethod).text}</p>
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm">

@@ -75,6 +75,26 @@ function Sales({ user }: SalesProps) {
     )
   }
 
+  const getSalePaymentMethod = (paymentMethod: PaymentMethodEnum) => {
+    switch (paymentMethod) {
+      case PaymentMethodEnum.CARD:
+        return {
+          icon: <IconSelector name="CreditCard" />,
+          text: 'Tarjeta'
+        }
+      case PaymentMethodEnum.QR_TRANSFER:
+        return {
+          icon: <IconSelector name="QrCode" />,
+          text: 'QR'
+        }
+      case PaymentMethodEnum.CASH:
+        return {
+          icon: <IconSelector name="Cash" />,
+          text: 'Efectivo'
+        }
+    }
+  }
+
   return (
     <AdministrationLayout user={user}>
       <div className="m-auto mt-7 w-5/6 ">
@@ -217,7 +237,7 @@ function Sales({ user }: SalesProps) {
                 <div className="text-center">
                   {getTotalByPaymentMethod(PaymentMethodEnum.QR_TRANSFER)
                     ?.total || 0}{' '}
-                  Bs Bs
+                  Bs
                 </div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
@@ -236,7 +256,7 @@ function Sales({ user }: SalesProps) {
                 <div className="text-xl">Ventas por tarjeta</div>
                 <div className="text-center">
                   {getTotalByPaymentMethod(PaymentMethodEnum.CARD)?.total || 0}{' '}
-                  Bs Bs
+                  Bs
                 </div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
@@ -267,6 +287,7 @@ function Sales({ user }: SalesProps) {
             { name: 'Fecha de venta' },
             { name: 'Monto total' },
             { name: 'Descuento' },
+            { name: 'Método de pago' },
             { name: 'Productos' },
             { name: 'Vendedor' },
             { name: 'Acciones' }
@@ -286,6 +307,13 @@ function Sales({ user }: SalesProps) {
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm">{sale.discount || 'S/D'}</div>
               </div>,
+              <div
+                key={idx}
+                className=" flex items-center justify-center gap-1 rounded-sm border border-primary p-1 text-primary"
+              >
+                {getSalePaymentMethod(sale.paymentMethod).icon}
+                <p>{getSalePaymentMethod(sale.paymentMethod).text}</p>
+              </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm ">
                   {sale.products.map((product, idx) => (
@@ -293,7 +321,7 @@ function Sales({ user }: SalesProps) {
                       key={idx}
                       className="m-auto mt-1 w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
                     >
-                      {product.product?.name}
+                      {product.qty} - {product.product?.name}
                     </p>
                   ))}
                 </div>

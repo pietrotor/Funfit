@@ -40,12 +40,10 @@ const getSalesSummary = async (
 ): Promise<SalesSummaryResponse> => {
   try {
     const { salesSummaryInput } = args
-    console.log('🚀 ~ salesSummaryInput:', salesSummaryInput)
     const [paymentMethods, total] = await Promise.all([
       saleCore.getSummaryByPaymentMethod(salesSummaryInput),
       saleCore.getTotalSales(salesSummaryInput)
     ])
-    console.log('🚀 ~ total:', total)
     return {
       status: StatusEnum.OK,
       message: 'Resumen de ventas generado',
@@ -65,7 +63,10 @@ const getSalesPaginated = async (
 ): Promise<SalesResponse> => {
   try {
     const { salesPaginationInput } = args
-    return await saleCore.getSalesPaginated(salesPaginationInput)
+    console.time('salesPagination')
+    const resopnse = await saleCore.getSalesPaginated(salesPaginationInput)
+    console.timeEnd('salesPagination')
+    return resopnse
   } catch (error) {
     console.log(error)
     return errorHandler(error)
@@ -123,7 +124,7 @@ export const saleType = {
   SaleItem: {
     async product(parent: SaleItem, _: any, __: any): Promise<Product | null> {
       if (parent.productId) {
-        const product = await productCore.getProductByIdInstance(
+        const product = await productCore.getProductByIdSaleItemFieldResolver(
           parent.productId
         )
         return product

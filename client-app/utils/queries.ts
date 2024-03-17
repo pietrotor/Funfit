@@ -630,6 +630,7 @@ export const GET_BRANCH_PRODUCTS = gql`
         productId
         price
         stock
+        lastStockEntry
         isVisibleOnWeb
         isVisibleOnMenu
         product {

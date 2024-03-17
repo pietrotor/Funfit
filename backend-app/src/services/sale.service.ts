@@ -17,6 +17,7 @@ import {
 import { TurnMovementTypeEnum } from '../models'
 import Sale, { IModelSale, ISale } from '@/models/sales.model'
 import { getInstancesPagination } from './generic.service'
+import { addDays } from 'helpers'
 
 export class SalesService extends SalesRepository<objectId> {
   async getSaleById(id: objectId) {
@@ -80,17 +81,19 @@ export class SalesService extends SalesRepository<objectId> {
     if (branchIds && branchIds.length > 0) {
       filtrosConsulta.branchId = { $in: branchIds }
     }
-    if (endDate && initialDate) {
-      filtrosConsulta.createdAt =
-        initialDate.toDateString() === endDate.toDateString()
-          ? {
-              $gte: new Date(initialDate),
-              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+    const initialDateQuery = initialDate ? new Date(initialDate) : null
+    if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
+    const dateFilter =
+      initialDateQuery && endDate
+        ? {
+            createdAt: {
+              $gte: initialDateQuery,
+              $lt: addDays(new Date(endDate), 1)
             }
-          : {
-              $gte: new Date(initialDate),
-              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
-            }
+          }
+        : {}
+    if (endDate && initialDateQuery) {
+      filtrosConsulta.createdAt = dateFilter
     }
     if (saleBy) {
       filtrosConsulta.createdBy = saleBy
@@ -126,21 +129,17 @@ export class SalesService extends SalesRepository<objectId> {
       saleBy,
       ...paginationInput
     } = salesPaginationInput
+    const initialDateQuery = initialDate ? new Date(initialDate) : null
+    console.time('sales')
+    if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
     const dateFilter =
-      initialDate && endDate
-        ? initialDate.toDateString() === endDate.toDateString()
-          ? {
-              createdAt: {
-                $gte: new Date(initialDate),
-                $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
-              }
+      initialDateQuery && endDate
+        ? {
+            createdAt: {
+              $gte: initialDateQuery,
+              $lt: addDays(new Date(endDate), 1)
             }
-          : {
-              createdAt: {
-                $gte: new Date(initialDate),
-                $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
-              }
-            }
+          }
         : {}
     const branchesFilter =
       branchIds.length > 0

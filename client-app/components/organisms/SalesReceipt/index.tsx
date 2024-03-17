@@ -12,11 +12,13 @@ import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 type SalesReceiptProps = {
   selectedProducts: TPointOfSaleData
   setSelectedProducts: React.Dispatch<SetStateAction<TPointOfSaleData>>
+  refetch?: () => void
 }
 
 function SalesReceipt({
   selectedProducts,
-  setSelectedProducts
+  setSelectedProducts,
+  refetch
 }: SalesReceiptProps) {
   const handleSaleModal = useDisclosure()
 
@@ -44,7 +46,7 @@ function SalesReceipt({
   }
 
   return (
-    <div className="h-full">
+    <div className="top-0 h-full md:sticky md:max-h-screen">
       <div className="flex h-full w-full flex-col justify-between">
         <h3 className=" ms-6 p-4 text-left text-2xl font-bold text-gray-500">
           Recibo de venta
@@ -122,6 +124,7 @@ function SalesReceipt({
         onClose={handleSaleModal.onClose}
         selectedProducts={selectedProducts}
         setSelectedProducts={setSelectedProducts}
+        refetch={refetch}
       />
     </div>
   )

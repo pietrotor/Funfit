@@ -18,6 +18,7 @@ interface SaleModalProps {
   onClose: () => void
   selectedProducts: TPointOfSaleData
   setSelectedProducts: (products: TPointOfSaleData) => void
+  refetch?: () => void
 }
 
 export type TSalePaymentMethodData = {
@@ -30,10 +31,10 @@ function SaleModal({
   isOpen,
   onClose,
   selectedProducts,
-  setSelectedProducts
+  setSelectedProducts,
+  refetch
 }: SaleModalProps) {
   const { handleSubmit, control, watch, reset, setValue } = useForm()
-  console.log(watch())
   const branchIdSelected = useAppSelector(
     state => state.branchReducer.currentBranch.id
   )
@@ -91,6 +92,7 @@ function SaleModal({
           discount: 0
         })
         setPayment({ paymentMethod: 'options', cash: 0, change: 0 })
+        refetch?.()
       }
     )
   }

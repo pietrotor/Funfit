@@ -26,7 +26,8 @@ function PointOfSale({ user }: PointOfSaleProps) {
   const { data: dataPassed } = router.query
   const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
   const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
-  const { loading, data, setFilter } = useGetBranchProductPOSQuery(branchId)
+  const { loading, data, setFilter, refetch } =
+    useGetBranchProductPOSQuery(branchId)
   const [selectedProducts, setSelectedProducts] = useState<TPointOfSaleData>(
     parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
   )
@@ -127,6 +128,7 @@ function PointOfSale({ user }: PointOfSaleProps) {
           <SalesReceipt
             selectedProducts={selectedProducts}
             setSelectedProducts={setSelectedProducts}
+            refetch={refetch}
           />
         </div>
       </section>

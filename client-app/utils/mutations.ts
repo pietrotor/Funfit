@@ -214,89 +214,89 @@ export const CREATE_BRANCH = gql`
 
 export const UPDATE_BRANCH = gql`
   mutation UpdateBranch($updateBranchInput: UpdateBranchInput!) {
-  updateBranch(updateBranchInput: $updateBranchInput) {
-    errorInput {
+    updateBranch(updateBranchInput: $updateBranchInput) {
+      errorInput {
+        message
+        field
+      }
+      status
       message
-      field
-    }
-    status
-    message
-    data {
-      id
-      name
-      code
-      city
-      direction
-      phone
-      nit
-      cashId
-      cash {
+      data {
         id
-        branchId
-        amount
-        currentTurnId
-        isOpen
-        currentTurn {
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cashId
+        cash {
           id
-          cashId
+          branchId
+          amount
+          currentTurnId
           isOpen
-          amountOfMovents
-          openInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            openBy
-            openByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
+          currentTurn {
+            id
+            cashId
+            isOpen
+            amountOfMovents
+            openInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              openBy
+              openByInfo {
                 id
                 name
-                code
+                lastName
+                email
+                phone
+                lastLogin
                 status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
               }
             }
-          }
-          closeInfo {
-            amount
-            physicialAmount
-            difference
-            date
-            observation
-            closeBy
-            closeByInfo {
-              id
-              name
-              lastName
-              email
-              phone
-              lastLogin
-              status
-              createdBy
-              roleId
-              roleInfo {
+            closeInfo {
+              amount
+              physicialAmount
+              difference
+              date
+              observation
+              closeBy
+              closeByInfo {
                 id
                 name
-                code
+                lastName
+                email
+                phone
+                lastLogin
                 status
+                createdBy
+                roleId
+                roleInfo {
+                  id
+                  name
+                  code
+                  status
+                }
               }
             }
           }
         }
+        visibleOnWeb
       }
-      visibleOnWeb
     }
   }
-}
 `
 export const DELETE_BRANCH = gql`
   mutation DeleteBranch($deleteBranchId: ObjectId!) {
@@ -412,6 +412,18 @@ export const UPDATE_BRANCH_PRODUCT = gql`
           }
         }
       }
+    }
+  }
+`
+export const DELETE_BRANCH_PRODUCT = gql`
+  mutation DeleteBranchProduct($id: ObjectId!) {
+    deleteBranchProduct(id: $id) {
+      errorInput {
+        message
+        field
+      }
+      message
+      status
     }
   }
 `

@@ -11,6 +11,7 @@ type ModalProps = {
   title?: string
   onClose: () => void
   onConfirm: () => void
+  loading?: boolean
 }
 
 export const ConfirmModal = ({
@@ -22,7 +23,8 @@ export const ConfirmModal = ({
   onClose,
   confirmText,
   message,
-  onConfirm
+  onConfirm,
+  loading
 }: ModalProps) => {
   const handleConrfirm = () => {
     onClose()
@@ -85,6 +87,7 @@ export const ConfirmModal = ({
           <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
             <ButtonComponent
               showTooltip={false}
+              isLoading={loading}
               onClick={() => handleConrfirm()}
               className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
                 color === 'success' ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500' : color === 'warning' ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500' : color === 'error' ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500' : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
@@ -95,6 +98,7 @@ export const ConfirmModal = ({
             <ButtonComponent
               showTooltip={false}
               onClick={onClose}
+              disabled={loading}
               className={`mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base font-medium text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:mt-0 sm:w-auto sm:text-sm ${
                 color === 'success' ? 'hover:bg-green-100 focus:ring-green-500' : color === 'warning' ? 'hover:bg-yellow-100 focus:ring-yellow-500' : color === 'error' ? 'hover:bg-red-100 focus:ring-red-500' : 'hover:bg-blue-100 focus:ring-blue-500'
               }`}

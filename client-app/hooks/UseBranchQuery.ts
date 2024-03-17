@@ -109,7 +109,7 @@ export const useGetBranchProductQuery = (branchId: string) => {
 export const useGetBranchProductPOSQuery = (branchId: string) => {
   const [filter, setFilter] = useState<string>()
   const filterDebounced = UseDebouncedValue(filter, 800)
-  const { data, loading } = useGetBranchProductsPaginatedQuery({
+  const { data, loading, refetch } = useGetBranchProductsPaginatedQuery({
     fetchPolicy: 'network-only',
     variables: {
       paginationInput: {
@@ -131,7 +131,8 @@ export const useGetBranchProductPOSQuery = (branchId: string) => {
   return {
     data,
     loading,
-    setFilter
+    setFilter,
+    refetch
   }
 }
 
