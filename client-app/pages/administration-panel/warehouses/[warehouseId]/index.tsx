@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { CircularProgressbar } from 'react-circular-progressbar'
 import 'react-circular-progressbar/dist/styles.css'
-import { useDisclosure } from '@nextui-org/react'
+import { useDisclosure } from '@nextui-org/use-disclosure'
 
 import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
@@ -30,7 +30,7 @@ function Warehouse({ user }: WarehouseProps) {
   const [filter, setFilter] = useState<string>('')
   const [stock, setStock] = useState<TStockData>()
   const handleMoveStockModal = useDisclosure()
-  const filtroDebounced = UseDebouncedValue(filter, 2000)
+  const filtroDebounced = UseDebouncedValue(filter, 500)
   const router = useRouter()
   const { warehouseId } = router.query
   const { data, loading, refetch } = useGetWarehouseStockQuery({
@@ -42,7 +42,6 @@ function Warehouse({ user }: WarehouseProps) {
         warehouses: [warehouseId as string]
       }
     },
-    fetchPolicy: 'network-only',
     onCompleted: data => {
       setVariables({
         totalPages: data.getWarehouseStock?.totalPages || 1,

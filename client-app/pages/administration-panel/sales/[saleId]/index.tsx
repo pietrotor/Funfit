@@ -1,3 +1,4 @@
+/* eslint-disable multiline-ternary */
 import { useRouter } from 'next/router'
 import 'react-circular-progressbar/dist/styles.css'
 
@@ -10,6 +11,7 @@ import Images from '@/components/atoms/Image/Image'
 import useCustomGetSaleById from '@/services/UseGetCustomSaleById'
 import { useAppSelector } from '@/store/index'
 import { authUserHeader } from '@/utils/verificationUser'
+import { PaymentMethodEnum } from '@/graphql/graphql-types'
 
 interface SaleDetailProps {
   user: any
@@ -19,6 +21,34 @@ function SaleDetail({ user }: SaleDetailProps) {
   const router = useRouter()
   const { data } = useCustomGetSaleById(router.query.saleId as string)
   const { currentBranch } = useAppSelector(state => state.branchReducer)
+
+  const getSalePaymentMethod = (paymentMethod: PaymentMethodEnum) => {
+    switch (paymentMethod) {
+      case PaymentMethodEnum.CARD:
+        return {
+          icon: (
+            <IconSelector
+              className=" rounded-md text-white"
+              name="CreditCard"
+            />
+          ),
+          text: 'Tarjeta'
+        }
+      case PaymentMethodEnum.QR_TRANSFER:
+        return {
+          icon: (
+            <IconSelector className=" rounded-md text-white" name="QrCode" />
+          ),
+          text: 'QR'
+        }
+      case PaymentMethodEnum.CASH:
+        return {
+          icon: <IconSelector className=" rounded-md text-white" name="Cash" />,
+          text: 'Efectivo'
+        }
+    }
+  }
+
   return (
     <AdministrationLayout user={user} showBackButton={true}>
       <div className="m-auto mt-8 w-5/6 ">
@@ -30,7 +60,9 @@ function SaleDetail({ user }: SaleDetailProps) {
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
                 <div className="text-xl">Total:</div>
-                <div className="text-center">{data?.getSaleById?.data?.total} Bs</div>
+                <div className="text-center">
+                  {data?.getSaleById?.data?.total} Bs
+                </div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
                 <IconSelector
@@ -46,7 +78,9 @@ function SaleDetail({ user }: SaleDetailProps) {
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
                 <div className="text-xl">Codigo de venta:</div>
-                <div className="text-center">{data?.getSaleById?.data?.code}</div>
+                <div className="text-center">
+                  {data?.getSaleById?.data?.code}
+                </div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
                 <IconSelector
@@ -74,6 +108,47 @@ function SaleDetail({ user }: SaleDetailProps) {
               </span>
             </div>
           </InformationCard>
+          <InformationCard className="h-full bg-slate-200 px-3 py-6">
+            <div className="flex items-center justify-between">
+              <div className="text-lg font-bold">
+                <div className="text-xl">Método de pago:</div>
+                <div className="text-center">
+                  {data?.getSaleById?.data?.paymentMethod
+                    ? getSalePaymentMethod(
+                        data?.getSaleById?.data?.paymentMethod!
+                    ).text
+                    : ''}
+                </div>
+              </div>
+              <span className="rounded-full bg-secondary p-3 ">
+                {data?.getSaleById?.data?.paymentMethod ? (
+                  getSalePaymentMethod(data?.getSaleById?.data?.paymentMethod!)
+                    .icon
+                ) : (
+                  <></>
+                )}
+              </span>
+            </div>
+          </InformationCard>
+          <InformationCard className="h-full bg-slate-200 px-3 py-6">
+            <div className="flex items-center justify-between">
+              <div className="text-lg font-bold">
+                <div className="text-xl">Vendedor:</div>
+                <div className="text-center">
+                  {data?.getSaleById?.data?.createdByInfo?.name}{' '}
+                  {data?.getSaleById?.data?.createdByInfo?.lastName}
+                </div>
+              </div>
+              <span className="rounded-full bg-secondary p-3 ">
+                <IconSelector
+                  name="user"
+                  className=" rounded-md text-white"
+                  height="h-6"
+                  width="w-6"
+                />
+              </span>
+            </div>
+          </InformationCard>
         </section>
         <Table
           titles={[
@@ -92,20 +167,23 @@ function SaleDetail({ user }: SaleDetailProps) {
               <div key={idx} className=" flex justify-center ">
                 <Images
                   alt="imagen"
-                  src={sale.product?.image || 'https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg'}
-                  className="md:h-28  md:w-28 w-16 h-14 rounded-md"
+                  src={
+                    sale.product?.image ||
+                    'https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg'
+                  }
+                  className="h-14  w-16 rounded-md md:h-28 md:w-28"
                 />
               </div>,
               <div key={idx} className=" text-sm">
                 {sale.product?.name}
               </div>,
-              <div key={idx} className="flex text-sm justify-center space-x-3">
+              <div key={idx} className="flex justify-center space-x-3 text-sm">
                 {sale.product?.code}
               </div>,
-              <div key={idx} className="flex text-sm justify-center space-x-3">
+              <div key={idx} className="flex justify-center space-x-3 text-sm">
                 {sale.qty}
               </div>,
-              <div key={idx} className="flex text-sm justify-center space-x-3">
+              <div key={idx} className="flex justify-center space-x-3 text-sm">
                 {sale.total}
               </div>
             ]

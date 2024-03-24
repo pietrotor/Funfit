@@ -4,6 +4,7 @@ import {
   UseFormReset,
   UseFormWatch
 } from 'react-hook-form'
+import Decimal from 'decimal.js'
 import { TSalePaymentMethodData } from '@/components/atoms/modals/SaleModal'
 import InputComponent from '@/components/atoms/Input'
 import ClientObservationPayment from '@/components/atoms/ClientObservationsPayment'
@@ -32,8 +33,8 @@ function CardPaymentMethod({
         <hr className="mx-4  flex-grow border-1 border-gray-200" />
         <p className="text-lg text-primary">Bs. 0</p>
       </div>
-      <div className="flex h-full w-full pt-2 md:flex-row flex-col">
-        <div className="border-r-gray flex md:w-1/2 flex-col md:border-r-1 px-2">
+      <div className="flex h-full w-full flex-col pt-2 md:flex-row">
+        <div className="border-r-gray flex flex-col px-2 md:w-1/2 md:border-r-1">
           <p className="font-thin text-gray-500">Monto</p>
           <InputComponent
             control={control}
@@ -46,12 +47,15 @@ function CardPaymentMethod({
                 message: 'Este campo es obligatorio'
               }
             }}
-            defaultValue={(total - total * 0.02).toString()}
+            defaultValue={new Decimal(total)
+              .minus(new Decimal(total).mul(0.02).toNumber())
+              .toNumber()
+              .toString()}
             isDisabled
           />
         </div>
-        <div className="md:w-1/2 px-2 md:border-0 border-t-2 md:m-0 mt-4 pt-2 md:pt-0">
-          <ClientObservationPayment control={control}/>
+        <div className="w-1/2 px-2">
+          <ClientObservationPayment control={control} />
         </div>
       </div>
     </section>

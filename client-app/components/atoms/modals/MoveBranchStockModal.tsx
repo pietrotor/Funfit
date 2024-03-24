@@ -163,41 +163,8 @@ export const MoveBranchStockModal = ({
       reset={reset}
     >
       <div className="space-y-3 px-8">
-        <div className="grid grid-cols-2 gap-2">
-          <div className="space-y-3">
-            <ComboInput
-              onChange={value => {
-                setFilterWarehouse(value)
-              }}
-              control={control}
-              options={
-                data?.getWarehousesOfProduct?.data?.map(warehouse => ({
-                  label: warehouse.name,
-                  value: warehouse.id
-                })) || [{ label: 'Cargando..', value: 'Cargando..' }]
-              }
-              name="warehouseId"
-              onClick={() => {
-                handleGetWarehouses()
-              }}
-              onSelectionChange={value => {
-                setWarehouseData(value)
-                getProductStock({
-                  variables: {
-                    paginationInput: {},
-                    productId: productBranch.productId,
-                    warehouseId: value
-                  }
-                })
-              }}
-              label="Seleccione el almacén"
-              rules={{
-                required: {
-                  value: true,
-                  message: 'Este campo es requerido'
-                }
-              }}
-            />
+        <div className="grid w-full grid-cols-2 place-items-center gap-2">
+          <div className="w-full space-y-3">
             <Selector
               name="movementType"
               label="Tipo de movimiento"
@@ -226,6 +193,41 @@ export const MoveBranchStockModal = ({
                 }
               }}
             />
+            {watch('movementType') === StockMovementTypeEnum.INWARD && (
+              <ComboInput
+                onChange={value => {
+                  setFilterWarehouse(value)
+                }}
+                control={control}
+                options={
+                  data?.getWarehousesOfProduct?.data?.map(warehouse => ({
+                    label: warehouse.name,
+                    value: warehouse.id
+                  })) || [{ label: 'Cargando..', value: 'Cargando..' }]
+                }
+                name="warehouseId"
+                onClick={() => {
+                  handleGetWarehouses()
+                }}
+                onSelectionChange={value => {
+                  setWarehouseData(value)
+                  getProductStock({
+                    variables: {
+                      paginationInput: {},
+                      productId: productBranch.productId,
+                      warehouseId: value
+                    }
+                  })
+                }}
+                label="Seleccione el almacén"
+                rules={{
+                  required: {
+                    value: true,
+                    message: 'Este campo es requerido'
+                  }
+                }}
+              />
+            )}
             <InputComponent
               type="date"
               name="date"

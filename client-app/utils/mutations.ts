@@ -156,6 +156,18 @@ export const UPDATE_BRANCH_PRODUCT = gql`
     }
   }
 `
+export const DELETE_BRANCH_PRODUCT = gql`
+  mutation DeleteBranchProduct($id: ObjectId!) {
+    deleteBranchProduct(id: $id) {
+      errorInput {
+        message
+        field
+      }
+      message
+      status
+    }
+  }
+`
 export const OPEN_CASH = gql`
   mutation OpenCash($createTurnInput: CreateTurnInput!) {
     openCash(createTurnInput: $createTurnInput) {

@@ -524,6 +524,7 @@ export const GET_BRANCH_PRODUCTS = gql`
         productId
         price
         stock
+        lastStockEntry
         isVisibleOnWeb
         isVisibleOnMenu
         product {
@@ -721,6 +722,7 @@ export const GET_SALES_PAGINATED = gql`
       data {
         id
         branchId
+        paymentMethod
         products {
           productId
           product {

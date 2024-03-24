@@ -15,7 +15,7 @@ const UseGetCustomSalesPaginated = (branchId: string) => {
       salesPaginationInput: {
         filter: filtroDebounced,
         page: variables?.currentPage,
-        rows: variables?.rows || 5,
+        rows: variables?.rows || 30,
         branchIds: [branchId],
         endDate: variables?.endDate || new Date().toISOString().split('T')[0],
         initialDate:

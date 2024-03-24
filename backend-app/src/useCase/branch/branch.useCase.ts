@@ -26,6 +26,7 @@ export class BranchUseCase {
         'La cantidad que desea agregar es menor a la existe en almacenes'
       )
     branchProductInstance.stock += qty
+    branchProductInstance.lastStockEntry = branchProductInstance.stock
     await Promise.all([
       stockCore.createStockMovement(
         {

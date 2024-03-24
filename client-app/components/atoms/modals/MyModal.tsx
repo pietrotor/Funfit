@@ -1,3 +1,4 @@
+/* eslint-disable multiline-ternary */
 import { Modal, ModalContent } from '@nextui-org/react'
 import React from 'react'
 import IconSelector, { TSvgNames } from '../IconSelector'
@@ -117,7 +118,7 @@ export const MyModal = ({
                               ? 'bg-green-100'
                               : color === 'secondary'
                                 ? 'bg-secondary'
-                                : `bg-${bgIconColor}`
+                                : 'bg-blue-100'
                     } sm:mx-0 sm:h-10 sm:w-10`}
                   >
                     <IconSelector
@@ -132,7 +133,7 @@ export const MyModal = ({
                                 ? 'eye'
                                 : color === 'secondary'
                                   ? 'Cash'
-                                  : `${icon}`
+                                  : 'Admin'
                       }
                       width="w-6"
                       height="h-6"
@@ -164,7 +165,7 @@ export const MyModal = ({
                                 ? 'text-green-600'
                                 : color === 'secondary'
                                   ? 'text-lg text-gray-500'
-                                  : `text-${textColor}`
+                                  : 'text-blue-600'
                       }`}
                       id="modal-headline"
                     >
@@ -196,7 +197,7 @@ export const MyModal = ({
                                 ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
                                 : color === 'secondary'
                                   ? 'bg-secondary/100 hover:bg-secondary focus:ring-secondary'
-                                  : `bg-${colorButon} hover:bg-${hoverButon} focus:ring-${focusButon}`
+                                  : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
                         }`}
                       >
                         {textSuccessButton}
@@ -204,6 +205,7 @@ export const MyModal = ({
                       <ButtonComponent
                         showTooltip={false}
                         onClick={handleCancel}
+                        disabled={loading}
                         className={`mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base font-medium text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:mt-0 sm:w-auto sm:text-sm ${
                           color === 'success'
                             ? 'hover:bg-green-100 focus:ring-green-500'
@@ -221,8 +223,7 @@ export const MyModal = ({
                       <ButtonComponent
                         typeOf="submit"
                         onClick={handleBack}
-                        isLoading={loading}
-                        disabled={backButtonDisabled}
+                        disabled={backButtonDisabled || loading}
                         showTooltip={false}
                         className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
                           color === 'success'
@@ -244,7 +245,7 @@ export const MyModal = ({
                 <div>
                   {children}
                   <div
-                    className={`mt-4 bg-gray-50 px-8 py-3 sm:flex ${
+                    className={`bg-gray-50 px-8 py-3 sm:flex ${
                       !errorMessage
                         ? 'sm:flex-row-reverse'
                         : 'items-center justify-between'
@@ -255,7 +256,7 @@ export const MyModal = ({
                         typeOf="submit"
                         onClick={handleBack}
                         isLoading={loading}
-                        disabled={backButtonDisabled}
+                        disabled={backButtonDisabled || loading}
                         showTooltip={false}
                         className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
                           color === 'success'
@@ -264,7 +265,7 @@ export const MyModal = ({
                               ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500'
                               : color === 'error'
                                 ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
-                                : 'border-2 border-gray-300 text-lg text-gray-500 hover:border-secondary focus:ring-blue-500'
+                                : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
                         }`}
                       >
                         <IconSelector name="arrow-left" />
@@ -277,40 +278,37 @@ export const MyModal = ({
                       </p>
                     )}
 
-                    <div className="space-x-3">
-                      {!hideSuccessButton && (
-                        <ButtonComponent
-                          typeOf="submit"
-                          onClick={handleSubmit}
-                          isLoading={loading}
-                          showTooltip={false}
-                          className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
-                            color === 'success'
-                              ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
-                              : color === 'warning'
-                                ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500'
-                                : color === 'error'
-                                  ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
-                                  : color === 'secondary'
-                                    ? 'bg-secondary/100 hover:bg-secondary focus:ring-secondary'
-                                    : `bg-${colorButon} hover:bg-${hoverButon} focus:ring-${focusButon}`
-                          }`}
-                        >
-                          {textSuccessButton}
-                        </ButtonComponent>
-                      )}
-                      {!hideCancelButton && (
+                    <div className="space-x-0 md:space-x-3">
+                      <ButtonComponent
+                        typeOf="submit"
+                        onClick={handleSubmit}
+                        isLoading={loading}
+                        showTooltip={false}
+                        className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
+                          color === 'success'
+                            ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
+                            : color === 'warning'
+                              ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500'
+                              : color === 'error'
+                                ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
+                                : 'bg-blue-600 hover:bg-blue-700 focus:ring-blue-500'
+                        }`}
+                      >
+                        {textSuccessButton}
+                      </ButtonComponent>
+                      {hideCancelButton && (
                         <ButtonComponent
                           showTooltip={false}
                           onClick={handleCancel}
-                          className={`inline-flex w-full justify-center rounded-md border border-transparent px-4 py-2 text-base font-medium text-white shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:w-auto sm:text-sm ${
+                          disabled={loading}
+                          className={`mt-3 inline-flex w-full justify-center rounded-md border border-gray-300 px-4 py-2 text-base font-medium text-gray-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-offset-2 sm:ml-3 sm:mt-0 sm:w-auto sm:text-sm ${
                             color === 'success'
-                              ? 'bg-green-600 hover:bg-green-700 focus:ring-green-500'
+                              ? 'hover:bg-green-100 focus:ring-green-500'
                               : color === 'warning'
-                                ? 'bg-yellow-600 hover:bg-yellow-700 focus:ring-yellow-500'
+                                ? 'hover:bg-yellow-100 focus:ring-yellow-500'
                                 : color === 'error'
-                                  ? 'bg-red-600 hover:bg-red-700 focus:ring-red-500'
-                                  : 'border-2 border-gray-300 text-lg text-gray-500 hover:border-secondary focus:ring-blue-500'
+                                  ? 'hover:bg-red-100 focus:ring-red-500'
+                                  : 'hover:bg-blue-100 focus:ring-blue-500'
                           }`}
                         >
                           {textCancelButton}

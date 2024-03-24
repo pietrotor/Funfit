@@ -20,7 +20,9 @@ function useGetSalesSummary() {
     })
 
   useEffect(() => {
-    if (!variables?.branchIds) return
+    if ((variables?.branchIds?.length || 0) === 0 || !variables?.branchIds) {
+      return
+    }
     getSummary({
       variables: {
         salesSummaryInput: variables

@@ -13,6 +13,7 @@ export default abstract class ProductRepository<T> {
   ): Promise<IPaginatedResponse<IProduct[]> | OutErrorResponse>
   abstract getProductById(id: T): Promise<IProduct | OutErrorResponse>
   abstract getProductByIdInstance(id: T): Promise<IProduct | null>
+  abstract getProductByIdSaleItemFieldResolver(id: T): Promise<IProduct | null>
   abstract getProductsOutWarehouse(
     paginationInput: PaginationInput,
     warehouseId: T

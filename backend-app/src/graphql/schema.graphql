@@ -312,6 +312,7 @@ type BranchProduct {
   productId: ObjectId!
   price: Float!
   stock: Float!
+  lastStockEntry: Float
   isVisibleOnWeb: Boolean!
   isVisibleOnMenu: Boolean!
   # Fields Resolvers

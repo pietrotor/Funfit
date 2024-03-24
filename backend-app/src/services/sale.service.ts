@@ -19,6 +19,7 @@ import {
 import { TurnMovementTypeEnum } from '../models'
 import Sale, { IModelSale, ISale } from '@/models/sales.model'
 import { getInstancesPagination } from './generic.service'
+import { addDays } from 'helpers'
 
 export class SalesService extends SalesRepository<objectId> {
   async getSaleById(id: objectId) {
@@ -39,28 +40,35 @@ export class SalesService extends SalesRepository<objectId> {
 
   async getTotalSales(salesSummaryInput: SalesSummaryInput) {
     const { branchIds, endDate, initialDate, saleBy } = salesSummaryInput
-    const filterQuery: any = {}
-    if (branchIds && branchIds.length > 0) {
-      filterQuery.branchId = { $in: branchIds }
-    }
-    if (endDate && initialDate) {
-      filterQuery.createdAt =
-        initialDate.toDateString() === endDate.toDateString()
-          ? {
-            $gte: new Date(initialDate),
-            $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+    const initialDateQuery = initialDate ? new Date(initialDate) : null
+    if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
+    const dateFilter =
+      initialDateQuery && endDate
+        ? {
+            createdAt: {
+              $gte: initialDateQuery,
+              $lt: addDays(new Date(endDate), 1)
+            }
           }
-          : {
-            $gte: new Date(initialDate),
-            $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+        : {}
+    const branchesFilter =
+      branchIds.length > 0
+        ? {
+            branchId: {
+              $in: branchIds
+            }
           }
-    }
-    if (saleBy) {
-      filterQuery.createdBy = saleBy
-    }
+        : {}
+    const salesByFilter = saleBy ? { createdBy: saleBy } : {}
 
     const result = await Sale.aggregate([
-      { $match: filterQuery },
+      {
+        $match: {
+          ...dateFilter,
+          ...branchesFilter,
+          ...salesByFilter
+        } // Aplica los a la consulta
+      },
       {
         $group: {
           _id: null,
@@ -78,29 +86,34 @@ export class SalesService extends SalesRepository<objectId> {
 
   async getSummaryByPaymentMethod(salesSummaryInput: SalesSummaryInput) {
     const { branchIds, endDate, initialDate, saleBy } = salesSummaryInput
-    const filtrosConsulta: any = {}
-    if (branchIds && branchIds.length > 0) {
-      filtrosConsulta.branchId = { $in: branchIds }
-    }
-    if (endDate && initialDate) {
-      filtrosConsulta.createdAt =
-        initialDate.toDateString() === endDate.toDateString()
-          ? {
-            $gte: new Date(initialDate),
-            $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+    const initialDateQuery = initialDate ? new Date(initialDate) : null
+    if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
+    const dateFilter =
+      initialDateQuery && endDate
+        ? {
+            createdAt: {
+              $gte: initialDateQuery,
+              $lt: addDays(new Date(endDate), 1)
+            }
           }
-          : {
-            $gte: new Date(initialDate),
-            $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+        : {}
+    const branchesFilter =
+      branchIds.length > 0
+        ? {
+            branchId: {
+              $in: branchIds
+            }
           }
-    }
-    if (saleBy) {
-      filtrosConsulta.createdBy = saleBy
-    }
+        : {}
+    const salesByFilter = saleBy ? { createdBy: saleBy } : {}
 
     const result = await Sale.aggregate([
       {
-        $match: filtrosConsulta // Aplica los a la consulta
+        $match: {
+          ...dateFilter,
+          ...branchesFilter,
+          ...salesByFilter
+        } // Aplica los a la consulta
       },
       {
         $group: {
@@ -128,29 +141,24 @@ export class SalesService extends SalesRepository<objectId> {
       saleBy,
       ...paginationInput
     } = salesPaginationInput
+    const initialDateQuery = initialDate ? new Date(initialDate) : null
+    if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
     const dateFilter =
-      initialDate && endDate
-        ? initialDate.toDateString() === endDate.toDateString()
-          ? {
+      initialDateQuery && endDate
+        ? {
             createdAt: {
-              $gte: new Date(initialDate),
-              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
-            }
-          }
-          : {
-            createdAt: {
-              $gte: new Date(initialDate),
-              $lt: new Date(endDate.getTime() + 24 * 60 * 60 * 1000)
+              $gte: initialDateQuery,
+              $lt: addDays(new Date(endDate), 1)
             }
           }
         : {}
     const branchesFilter =
       branchIds.length > 0
         ? {
-          branchId: {
-            $in: branchIds
+            branchId: {
+              $in: branchIds
+            }
           }
-        }
         : {}
     const salesByFilter = saleBy ? { createdBy: saleBy } : {}
     if (filter) {

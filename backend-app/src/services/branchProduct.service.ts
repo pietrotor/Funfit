@@ -120,10 +120,27 @@ export class BranchProductService extends BranchProductRepository<objectId> {
 
   async deleteBranchProdcut(id: objectId, deletedBy?: objectId) {
     const branchProduct = await this.getBranchProductById(id)
+    const branchInstance = await branchCore.getBranchById(
+      branchProduct.branchId
+    )
+    const productInstance = await productCore.getProductById(
+      branchProduct.productId
+    )
+    branchInstance.productsIds = branchInstance.productsIds.filter(
+      productId => productId.toString() !== branchProduct.productId.toString()
+    )
+    productInstance.branchesIds = productInstance.branchesIds.filter(
+      branchId => branchId.toString() !== branchProduct.branchId.toString()
+    )
     branchProduct.deleted = true
     branchProduct.deletedAt = new Date()
     branchProduct.deletedBy = deletedBy
-    return await branchProduct.save()
+    const [branchProductResponse] = await Promise.all([
+      branchProduct.save(),
+      branchInstance.save(),
+      productInstance.save()
+    ])
+    return branchProductResponse
   }
 
   async createBranchProductStockMovement(
@@ -133,11 +150,6 @@ export class BranchProductService extends BranchProductRepository<objectId> {
     const { branchId, type, stockId, branchProductId } =
       createBranchProductStockMovementInput
 
-    if (stockId && type !== StockMovementTypeEnum.INWARD) {
-      throw new BadRequestError(
-        'Stock innecesario en un tipo de movimiento de salida'
-      )
-    }
     if (!stockId && type === StockMovementTypeEnum.INWARD) {
       throw new BadRequestError(
         'Es necesario el stock para un movimiento de ingreso'

@@ -29,7 +29,7 @@ function PointOfSale({ user }: PointOfSaleProps) {
   const { data: dataPassed } = router.query
   const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
   const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
-  const { loading, data, setFilter, setVariables, variables } =
+  const { loading, data, setFilter, setVariables, variables, refetch } =
     useGetBranchProductPOSQuery(branchId)
   const [selectedProducts, setSelectedProducts] = useState<TPointOfSaleData>(
     parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
@@ -107,8 +107,8 @@ function PointOfSale({ user }: PointOfSaleProps) {
 
   return (
     <AdministrationLayout user={user} profileButton={false}>
-      <section className="flex h-full w-full ">
-        <div className="flex w-2/3 flex-col  items-center border-1 border-secondary/30 bg-secondary/10 p-4">
+      <section className="flex h-full w-full flex-col-reverse md:flex-row ">
+        <div className="w-full border-1 border-secondary/30 bg-secondary/10  p-4 md:w-2/3">
           <div className="flex w-full">
             <Search setFilter={setFilter} />
           </div>
@@ -135,7 +135,7 @@ function PointOfSale({ user }: PointOfSaleProps) {
           </div>
           <Pagination
             color="secondary"
-            size='lg'
+            size="lg"
             isCompact
             showControls
             total={variables?.totalPages || 1}
@@ -151,10 +151,11 @@ function PointOfSale({ user }: PointOfSaleProps) {
             Finalizar venta
           </ButtonComponent>
         </div>
-        <div className="hidden h-full md:block md:w-1/3">
+        <div className="h-full w-full md:w-1/3">
           <SalesReceipt
             selectedProducts={selectedProducts}
             setSelectedProducts={setSelectedProducts}
+            refetch={refetch}
           />
         </div>
       </section>

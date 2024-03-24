@@ -12,6 +12,7 @@ import { IModelStock, IStock } from '../models'
 import Stock from '@/models/stock.model'
 import { stockHistoryUseCase, stockUseCase } from 'useCase'
 import { productCore, warehouseCore } from '.'
+import Product from '@/models/product.model'
 
 export class StocksService extends StockRepository<objectId> {
   async getStocksPaginated(paginationInput: PaginationInput) {
@@ -47,13 +48,30 @@ export class StocksService extends StockRepository<objectId> {
   async getStocksByWarehouseId(
     warehouseStockPaginationInput: WarehouseStockPaginationInput
   ) {
-    const { warehouses, ...paginationInput } = warehouseStockPaginationInput
+    const { warehouses, filter, ...paginationInput } =
+      warehouseStockPaginationInput
+    if (filter) {
+      const products = await Product.find({
+        deleted: false,
+        $or: [
+          { name: { $regex: filter, $options: 'i' } },
+          { code: { $regex: filter, $options: 'i' } }
+        ],
+        warehouses: {
+          $in: [...warehouses]
+        }
+      })
+      const productsIds = products.map(product => product._id)
+      const warehousesFilter =
+        warehouses.length > 0 ? { warehouseId: { $in: warehouses } } : {}
+      return await getInstancesPagination<IStock, IModelStock>(
+        Stock,
+        paginationInput,
+        { ...warehousesFilter, productId: productsIds, deleted: false }
+      )
+    }
     const warehousesFilter =
       warehouses.length > 0 ? { warehouseId: { $in: warehouses } } : {}
-    console.log(
-      '🚀 ~ file: stock.service.ts:56 ~ StocksService ~ paginationInput:',
-      warehousesFilter
-    )
     return await getInstancesPagination<IStock, IModelStock>(
       Stock,
       paginationInput,

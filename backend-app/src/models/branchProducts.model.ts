@@ -6,6 +6,7 @@ export interface IBranchProduct extends Document, IGeneric {
   branchId: objectId
   productId: objectId
   stock: number
+  lastStockEntry: number
   price: number
   isVisibleOnWeb: boolean
   isVisibleOnMenu: boolean
@@ -25,6 +26,10 @@ const branchProductSchema = new Schema<IBranchProduct>(
     stock: {
       type: Number,
       required: true,
+      default: 0
+    },
+    lastStockEntry: {
+      type: Number,
       default: 0
     },
     price: {

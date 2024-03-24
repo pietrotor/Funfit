@@ -383,7 +383,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   return (
     <>
       <Head>
-        <title>FunFit</title>
+        <title>FunFit | Punto de Venta</title>
       </Head>
       {business && branches.length !== 0 && currentBranch.id !== '' ? (
         <main
@@ -463,8 +463,16 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           </div>
         </main>
       ) : (
-        <div className="flex h-screen w-full items-center justify-center bg-neutral-300">
-          <p>Loading...</p>
+        <div className="relative flex h-screen w-full flex-col items-center justify-center bg-secondary/20">
+          <img src="/common/logo.png" className="md:w-48" />
+          <div
+            className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+            role="status"
+          >
+            <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
+              Loading...
+            </span>
+          </div>
         </div>
       )}
     </>

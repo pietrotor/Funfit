@@ -63,14 +63,13 @@ function Sales({ user }: SalesProps) {
   }, [currentBranch])
 
   const [getUsers, { data: users }] = useGetUsersLazyQuery({
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-first',
     variables: {
       paginationInput: {}
     }
   })
-  const { data, setVariables, variables, refetch } = UseGetCustomSalesPaginated(
-    branchSelected.id
-  )
+  const { data, setVariables, variables, loading, refetch } =
+    UseGetCustomSalesPaginated(branchSelected.id)
 
   const handleChangeRow = (row: number) => {
     setVariables({ ...variables, rows: row, currentPage: 1 })
@@ -89,6 +88,26 @@ function Sales({ user }: SalesProps) {
   const handleProducts = (products: TSaleProduct[]) => {
     setProducts(products)
     handleProductsListModal.onOpen()
+  }
+
+  const getSalePaymentMethod = (paymentMethod: PaymentMethodEnum) => {
+    switch (paymentMethod) {
+      case PaymentMethodEnum.CARD:
+        return {
+          icon: <IconSelector name="CreditCard" />,
+          text: 'Tarjeta'
+        }
+      case PaymentMethodEnum.QR_TRANSFER:
+        return {
+          icon: <IconSelector name="QrCode" />,
+          text: 'QR'
+        }
+      case PaymentMethodEnum.CASH:
+        return {
+          icon: <IconSelector name="Cash" />,
+          text: 'Efectivo'
+        }
+    }
   }
 
   return (
@@ -166,7 +185,14 @@ function Sales({ user }: SalesProps) {
               label="Vendedor"
               name="seller"
               control={control}
-              onSelectionChange={e => setVariables({ ...variables, saleBy: e })}
+              onSelectionChange={e => {
+                setVariables({ ...variables, saleBy: e })
+                setSummaryVariables(prevVariables => ({
+                  ...prevVariables,
+                  branchIds: [currentBranch.id],
+                  saleBy: e
+                }))
+              }}
               onClick={() => getUsers()}
               options={
                 users?.getUsers?.data?.map(user => ({
@@ -265,6 +291,7 @@ function Sales({ user }: SalesProps) {
           onChangePage={page =>
             setVariables({ ...variables, currentPage: page })
           }
+          isLoading={loading}
           itemsPerPage={variables?.rows}
           currentPage={variables?.currentPage}
           totalPages={variables?.totalPages}
@@ -276,6 +303,7 @@ function Sales({ user }: SalesProps) {
             { name: 'Estado' },
             { name: 'Monto total' },
             { name: 'Descuento' },
+            { name: 'Método de pago' },
             { name: 'Productos' },
             { name: 'Vendedor' },
             { name: 'Acciones' }
@@ -289,7 +317,14 @@ function Sales({ user }: SalesProps) {
               <div key={idx} className="w-[10rem] text-sm md:w-full">
                 <DateConverter dateString={sale.date} showTime />
               </div>,
-              <div key={idx} className={`m-auto mt-1 w-fit rounded-full  px-2 py-1 font-semibold ${sale.canceled ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+              <div
+                key={idx}
+                className={`m-auto mt-1 w-fit rounded-full  px-2 py-1 font-semibold ${
+                  sale.canceled
+                    ? 'bg-red-100 text-red-600'
+                    : 'bg-green-100 text-green-600'
+                }`}
+              >
                 {sale.canceled ? 'Cancelada' : 'Activa'}
               </div>,
               <div key={idx} className=" flex justify-center  ">
@@ -297,6 +332,13 @@ function Sales({ user }: SalesProps) {
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm">{sale.discount || 'S/D'}</div>
+              </div>,
+              <div
+                key={idx}
+                className=" flex items-center justify-center gap-1 rounded-sm border border-primary p-1 text-primary"
+              >
+                {getSalePaymentMethod(sale.paymentMethod).icon}
+                <p>{getSalePaymentMethod(sale.paymentMethod).text}</p>
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm ">
@@ -311,7 +353,9 @@ function Sales({ user }: SalesProps) {
                     ))
                   ) : (
                     <ButtonComponent
-                      onClick={() => handleProducts(sale.products as TSaleProduct[])}
+                      onClick={() =>
+                        handleProducts(sale.products as TSaleProduct[])
+                      }
                       showTooltip
                       tooltipText="Ver lista de productos"
                       type="history"
@@ -347,9 +391,7 @@ function Sales({ user }: SalesProps) {
                     />
                   </ButtonComponent>
                   <ButtonComponent
-                    onClick={() =>
-                      handleCancelSale(sale.id)
-                    }
+                    onClick={() => handleCancelSale(sale.id)}
                     type="delete"
                     showTooltip
                     tooltipText="Cancelar venta"
@@ -369,11 +411,11 @@ function Sales({ user }: SalesProps) {
         />
       </div>
       <CandelSaleModal
-      isOpen={handleCancelModal.isOpen}
-      onClose={handleCancelModal.onClose}
-      onConfirm={refetch}
-      saleId={edit}
-    />
+        isOpen={handleCancelModal.isOpen}
+        onClose={handleCancelModal.onClose}
+        onConfirm={refetch}
+        saleId={edit}
+      />
       <ProductListModal
         isOpen={handleProductsListModal.isOpen}
         onClose={handleProductsListModal.onClose}

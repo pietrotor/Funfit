@@ -1,8 +1,9 @@
+/* eslint-disable multiline-ternary */
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import Decimal from 'decimal.js'
 import { MyModal } from './MyModal'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
-import { showSuccessToast } from '../Toast/toasts'
 import SalePaymentMethod from '@/components/molecules/SalePaymentMethod'
 import CashPaymentMethod from '@/components/molecules/CashPaymentMethod'
 import CardPaymentMethod from '@/components/molecules/CardPaymentMethod'
@@ -17,6 +18,7 @@ interface SaleModalProps {
   onClose: () => void
   selectedProducts: TPointOfSaleData
   setSelectedProducts: (products: TPointOfSaleData) => void
+  refetch?: () => void
 }
 
 export type TSalePaymentMethodData = {
@@ -29,14 +31,15 @@ function SaleModal({
   isOpen,
   onClose,
   selectedProducts,
-  setSelectedProducts
+  setSelectedProducts,
+  refetch
 }: SaleModalProps) {
   const { handleSubmit, control, watch, reset, setValue } = useForm()
   const branchIdSelected = useAppSelector(
     state => state.branchReducer.currentBranch.id
   )
-  const { handleCreateSale } = useCreateSaleQuery()
   const [qrPayment, setQrPayment] = useState<boolean>(false)
+  const { handleCreateSale, loading } = useCreateSaleQuery()
   const [payment, setPayment] = useState<TSalePaymentMethodData>({
     paymentMethod: 'options',
     cash: 0,
@@ -44,18 +47,21 @@ function SaleModal({
   })
 
   const onSubmit = () => {
-    if (payment.paymentMethod === 'qr' && !qrPayment) {
-      showSuccessToast('Confirmar el pago por QR', 'error')
-    } else {
-      handleCreateSale({
+    handleCreateSale(
+      {
         amountRecibed:
-          payment.paymentMethod === 'card' ? parseFloat(watch('cardAmountRecibed')) : payment.cash || parseFloat(watch('amountRecibed')),
+          payment.paymentMethod === 'card'
+            ? parseFloat(watch('cardAmountRecibed'))
+            : payment.cash || parseFloat(watch('amountRecibed')),
         branchId: branchIdSelected,
         change: payment.change,
         client: watch('client'),
         date: new Date().toISOString(),
         discount:
-          payment.paymentMethod === 'card' ? selectedProducts.total * 0.02 + selectedProducts.discount : selectedProducts.discount,
+          payment.paymentMethod === 'card'
+            ? new Decimal(selectedProducts.total).mul(0.02).toNumber() +
+              selectedProducts.discount
+            : selectedProducts.discount,
         observations: watch('observations') || '',
         products: selectedProducts.products.map(item => ({
           branchProductId: item.id || '',
@@ -65,16 +71,31 @@ function SaleModal({
           total: item.total || 0
         })),
         paymentMethod:
-          payment.paymentMethod === 'cash' ? PaymentMethodEnum.CASH : payment.paymentMethod === 'card' ? PaymentMethodEnum.CARD : PaymentMethodEnum.QR_TRANSFER,
+          payment.paymentMethod === 'cash'
+            ? PaymentMethodEnum.CASH
+            : payment.paymentMethod === 'card'
+              ? PaymentMethodEnum.CARD
+              : PaymentMethodEnum.QR_TRANSFER,
         total:
-          payment.paymentMethod === 'card' ? selectedProducts.total - selectedProducts.total * 0.02 : selectedProducts.total,
+          payment.paymentMethod === 'card'
+            ? selectedProducts.total -
+              new Decimal(selectedProducts.total).mul(0.02).toNumber()
+            : selectedProducts.total,
         subTotal: selectedProducts.subTotal
-      })
-      reset()
-      onClose()
-      setSelectedProducts({ products: [], subTotal: 0, total: 0, discount: 0 })
-      setPayment({ paymentMethod: 'options', cash: 0, change: 0 })
-    }
+      },
+      () => {
+        reset()
+        onClose()
+        setSelectedProducts({
+          products: [],
+          subTotal: 0,
+          total: 0,
+          discount: 0
+        })
+        setPayment({ paymentMethod: 'options', cash: 0, change: 0 })
+        refetch?.()
+      }
+    )
   }
 
   const handleCancel = () => {
@@ -113,6 +134,7 @@ function SaleModal({
       handleCancel={handleCancel}
       handleSubmit={handleSubmit}
       reset={reset}
+      loading={loading}
       color="secondary"
       textBackButton="Atrás"
       textCancelButton="Cancelar"
@@ -128,23 +150,28 @@ function SaleModal({
 
         <div
           className={`flex-grow ${
-            payment.paymentMethod === 'combined' ? 'overflow-y-scroll' : 'overflow-hidden'
+            payment.paymentMethod === 'combined'
+              ? 'overflow-y-scroll'
+              : 'overflow-hidden'
           }`}
         >
-          <div className="flex h-1/6 items-center justify-around py-3 md:space-x-3">
+          <div className="flex h-1/6 items-center justify-around space-x-3 py-3">
             <div className="flex items-center space-x-3">
-              <h2 className="text-sm text-gray-500 md:text-xl">Total:</h2>
-              <h3 className="text-md font-thin text-gray-500 md:text-2xl">
+              <h2 className="text-xl text-gray-500">Total:</h2>
+              <h3 className="text-2xl font-thin text-gray-500">
                 Bs. {selectedProducts.total}
               </h3>
             </div>
             {payment.paymentMethod === 'card' && (
               <div className="flex items-center space-x-3">
-                <h2 className="text-sm text-gray-500 md:text-xl">
-                  Total con descuento:
-                </h2>
-                <h3 className="text-md font-thin text-gray-500 md:text-2xl">
-                  Bs. {selectedProducts.total - selectedProducts.total * 0.02}
+                <h2 className="text-xl text-gray-500">Total con descuento:</h2>
+                <h3 className="text-2xl font-thin text-gray-500">
+                  Bs.{' '}
+                  {new Decimal(selectedProducts.total)
+                    .minus(
+                      new Decimal(selectedProducts.total).mul(0.02).toNumber()
+                    )
+                    .toNumber()}
                 </h3>
               </div>
             )}

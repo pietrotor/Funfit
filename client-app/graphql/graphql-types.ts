@@ -57,6 +57,7 @@ export type BranchProduct = {
   id: Scalars['ObjectId'];
   isVisibleOnMenu: Scalars['Boolean'];
   isVisibleOnWeb: Scalars['Boolean'];
+  lastStockEntry?: Maybe<Scalars['Float']>;
   price: Scalars['Float'];
   product?: Maybe<Product>;
   productId: Scalars['ObjectId'];
@@ -1630,6 +1631,13 @@ export type UpdateBranchProductMutationVariables = Exact<{
 
 export type UpdateBranchProductMutation = { __typename?: 'Mutation', updateBranchProduct?: { __typename?: 'BranchProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
+export type DeleteBranchProductMutationVariables = Exact<{
+  id: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteBranchProductMutation = { __typename?: 'Mutation', deleteBranchProduct?: { __typename?: 'BranchProductResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
 export type OpenCashMutationVariables = Exact<{
   createTurnInput: CreateTurnInput;
 }>;
@@ -1763,6 +1771,27 @@ export type DeletePriceListMutationVariables = Exact<{
 
 export type DeletePriceListMutation = { __typename?: 'Mutation', deletePriceList?: { __typename?: 'PriceListResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
+export type CreatePriceMutationVariables = Exact<{
+  createPriceInput: CreatePriceInput;
+}>;
+
+
+export type CreatePriceMutation = { __typename?: 'Mutation', createPrice?: { __typename?: 'PriceResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
+export type UpdatePriceMutationVariables = Exact<{
+  updatePriceInput: UpdatePriceInput;
+}>;
+
+
+export type UpdatePriceMutation = { __typename?: 'Mutation', updatePrice?: { __typename?: 'PriceResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
+export type DeletePriceMutationVariables = Exact<{
+  id: Scalars['ObjectId'];
+}>;
+
+
+export type DeletePriceMutation = { __typename?: 'Mutation', deletePrice?: { __typename?: 'PriceResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1894,7 +1923,7 @@ export type GetBranchProductsPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetBranchProductsPaginatedQuery = { __typename?: 'Query', getBranchProductsPaginated?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string } | null }> | null } | null };
+export type GetBranchProductsPaginatedQuery = { __typename?: 'Query', getBranchProductsPaginated?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, lastStockEntry?: number | null, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string } | null }> | null } | null };
 
 export type GetBranchesPaginatedQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -1930,7 +1959,7 @@ export type GetSalesPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, total: number, discount: number, date: any, code: string, canceled?: boolean | null, products: Array<{ __typename?: 'SaleItem', productId: any, product?: { __typename?: 'Product', id: any, name: string } | null }>, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string } | null }> | null } | null };
+export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, total: number, discount: number, date: any, code: string, canceled?: boolean | null, products: Array<{ __typename?: 'SaleItem', productId: any, product?: { __typename?: 'Product', id: any, name: string } | null }>, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string } | null }> | null } | null };
 
 export type GetSalesSummaryQueryVariables = Exact<{
   salesSummaryInput: SalesSummaryInput;
@@ -2019,27 +2048,6 @@ export type GetPriceListsPaginatedQueryVariables = Exact<{
 
 
 export type GetPriceListsPaginatedQuery = { __typename?: 'Query', getPriceListsPaginated?: { __typename?: 'PriceListsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'PriceList', id: any, name: string, description?: string | null, productsIds: Array<any> }> | null } | null };
-
-export type CreatePriceMutationVariables = Exact<{
-  createPriceInput: CreatePriceInput;
-}>;
-
-
-export type CreatePriceMutation = { __typename?: 'Mutation', createPrice?: { __typename?: 'PriceResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
-
-export type UpdatePriceMutationVariables = Exact<{
-  updatePriceInput: UpdatePriceInput;
-}>;
-
-
-export type UpdatePriceMutation = { __typename?: 'Mutation', updatePrice?: { __typename?: 'PriceResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
-
-export type DeletePriceMutationVariables = Exact<{
-  id: Scalars['ObjectId'];
-}>;
-
-
-export type DeletePriceMutation = { __typename?: 'Mutation', deletePrice?: { __typename?: 'PriceResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
 export type GetPricesPaginatedQueryVariables = Exact<{
   pricePaginationInput: PricePaginationInput;
@@ -2513,6 +2521,44 @@ export function useUpdateBranchProductMutation(baseOptions?: Apollo.MutationHook
 export type UpdateBranchProductMutationHookResult = ReturnType<typeof useUpdateBranchProductMutation>;
 export type UpdateBranchProductMutationResult = Apollo.MutationResult<UpdateBranchProductMutation>;
 export type UpdateBranchProductMutationOptions = Apollo.BaseMutationOptions<UpdateBranchProductMutation, UpdateBranchProductMutationVariables>;
+export const DeleteBranchProductDocument = gql`
+    mutation DeleteBranchProduct($id: ObjectId!) {
+  deleteBranchProduct(id: $id) {
+    errorInput {
+      message
+      field
+    }
+    message
+    status
+  }
+}
+    `;
+export type DeleteBranchProductMutationFn = Apollo.MutationFunction<DeleteBranchProductMutation, DeleteBranchProductMutationVariables>;
+
+/**
+ * __useDeleteBranchProductMutation__
+ *
+ * To run a mutation, you first call `useDeleteBranchProductMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteBranchProductMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteBranchProductMutation, { data, loading, error }] = useDeleteBranchProductMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteBranchProductMutation(baseOptions?: Apollo.MutationHookOptions<DeleteBranchProductMutation, DeleteBranchProductMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteBranchProductMutation, DeleteBranchProductMutationVariables>(DeleteBranchProductDocument, options);
+      }
+export type DeleteBranchProductMutationHookResult = ReturnType<typeof useDeleteBranchProductMutation>;
+export type DeleteBranchProductMutationResult = Apollo.MutationResult<DeleteBranchProductMutation>;
+export type DeleteBranchProductMutationOptions = Apollo.BaseMutationOptions<DeleteBranchProductMutation, DeleteBranchProductMutationVariables>;
 export const OpenCashDocument = gql`
     mutation OpenCash($createTurnInput: CreateTurnInput!) {
   openCash(createTurnInput: $createTurnInput) {
@@ -3248,6 +3294,120 @@ export function useDeletePriceListMutation(baseOptions?: Apollo.MutationHookOpti
 export type DeletePriceListMutationHookResult = ReturnType<typeof useDeletePriceListMutation>;
 export type DeletePriceListMutationResult = Apollo.MutationResult<DeletePriceListMutation>;
 export type DeletePriceListMutationOptions = Apollo.BaseMutationOptions<DeletePriceListMutation, DeletePriceListMutationVariables>;
+export const CreatePriceDocument = gql`
+    mutation CreatePrice($createPriceInput: CreatePriceInput!) {
+  createPrice(createPriceInput: $createPriceInput) {
+    errorInput {
+      message
+      field
+    }
+    message
+    status
+  }
+}
+    `;
+export type CreatePriceMutationFn = Apollo.MutationFunction<CreatePriceMutation, CreatePriceMutationVariables>;
+
+/**
+ * __useCreatePriceMutation__
+ *
+ * To run a mutation, you first call `useCreatePriceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePriceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPriceMutation, { data, loading, error }] = useCreatePriceMutation({
+ *   variables: {
+ *      createPriceInput: // value for 'createPriceInput'
+ *   },
+ * });
+ */
+export function useCreatePriceMutation(baseOptions?: Apollo.MutationHookOptions<CreatePriceMutation, CreatePriceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePriceMutation, CreatePriceMutationVariables>(CreatePriceDocument, options);
+      }
+export type CreatePriceMutationHookResult = ReturnType<typeof useCreatePriceMutation>;
+export type CreatePriceMutationResult = Apollo.MutationResult<CreatePriceMutation>;
+export type CreatePriceMutationOptions = Apollo.BaseMutationOptions<CreatePriceMutation, CreatePriceMutationVariables>;
+export const UpdatePriceDocument = gql`
+    mutation UpdatePrice($updatePriceInput: UpdatePriceInput!) {
+  updatePrice(updatePriceInput: $updatePriceInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type UpdatePriceMutationFn = Apollo.MutationFunction<UpdatePriceMutation, UpdatePriceMutationVariables>;
+
+/**
+ * __useUpdatePriceMutation__
+ *
+ * To run a mutation, you first call `useUpdatePriceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdatePriceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updatePriceMutation, { data, loading, error }] = useUpdatePriceMutation({
+ *   variables: {
+ *      updatePriceInput: // value for 'updatePriceInput'
+ *   },
+ * });
+ */
+export function useUpdatePriceMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePriceMutation, UpdatePriceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdatePriceMutation, UpdatePriceMutationVariables>(UpdatePriceDocument, options);
+      }
+export type UpdatePriceMutationHookResult = ReturnType<typeof useUpdatePriceMutation>;
+export type UpdatePriceMutationResult = Apollo.MutationResult<UpdatePriceMutation>;
+export type UpdatePriceMutationOptions = Apollo.BaseMutationOptions<UpdatePriceMutation, UpdatePriceMutationVariables>;
+export const DeletePriceDocument = gql`
+    mutation DeletePrice($id: ObjectId!) {
+  deletePrice(id: $id) {
+    errorInput {
+      message
+      field
+    }
+    message
+    status
+  }
+}
+    `;
+export type DeletePriceMutationFn = Apollo.MutationFunction<DeletePriceMutation, DeletePriceMutationVariables>;
+
+/**
+ * __useDeletePriceMutation__
+ *
+ * To run a mutation, you first call `useDeletePriceMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeletePriceMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deletePriceMutation, { data, loading, error }] = useDeletePriceMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeletePriceMutation(baseOptions?: Apollo.MutationHookOptions<DeletePriceMutation, DeletePriceMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeletePriceMutation, DeletePriceMutationVariables>(DeletePriceDocument, options);
+      }
+export type DeletePriceMutationHookResult = ReturnType<typeof useDeletePriceMutation>;
+export type DeletePriceMutationResult = Apollo.MutationResult<DeletePriceMutation>;
+export type DeletePriceMutationOptions = Apollo.BaseMutationOptions<DeletePriceMutation, DeletePriceMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {
@@ -4250,6 +4410,7 @@ export const GetBranchProductsPaginatedDocument = gql`
       productId
       price
       stock
+      lastStockEntry
       isVisibleOnWeb
       isVisibleOnMenu
       product {
@@ -4585,6 +4746,7 @@ export const GetSalesPaginatedDocument = gql`
     data {
       id
       branchId
+      paymentMethod
       products {
         productId
         product {
@@ -5326,120 +5488,6 @@ export function useGetPriceListsPaginatedLazyQuery(baseOptions?: Apollo.LazyQuer
 export type GetPriceListsPaginatedQueryHookResult = ReturnType<typeof useGetPriceListsPaginatedQuery>;
 export type GetPriceListsPaginatedLazyQueryHookResult = ReturnType<typeof useGetPriceListsPaginatedLazyQuery>;
 export type GetPriceListsPaginatedQueryResult = Apollo.QueryResult<GetPriceListsPaginatedQuery, GetPriceListsPaginatedQueryVariables>;
-export const CreatePriceDocument = gql`
-    mutation CreatePrice($createPriceInput: CreatePriceInput!) {
-  createPrice(createPriceInput: $createPriceInput) {
-    errorInput {
-      message
-      field
-    }
-    message
-    status
-  }
-}
-    `;
-export type CreatePriceMutationFn = Apollo.MutationFunction<CreatePriceMutation, CreatePriceMutationVariables>;
-
-/**
- * __useCreatePriceMutation__
- *
- * To run a mutation, you first call `useCreatePriceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreatePriceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [createPriceMutation, { data, loading, error }] = useCreatePriceMutation({
- *   variables: {
- *      createPriceInput: // value for 'createPriceInput'
- *   },
- * });
- */
-export function useCreatePriceMutation(baseOptions?: Apollo.MutationHookOptions<CreatePriceMutation, CreatePriceMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreatePriceMutation, CreatePriceMutationVariables>(CreatePriceDocument, options);
-      }
-export type CreatePriceMutationHookResult = ReturnType<typeof useCreatePriceMutation>;
-export type CreatePriceMutationResult = Apollo.MutationResult<CreatePriceMutation>;
-export type CreatePriceMutationOptions = Apollo.BaseMutationOptions<CreatePriceMutation, CreatePriceMutationVariables>;
-export const UpdatePriceDocument = gql`
-    mutation UpdatePrice($updatePriceInput: UpdatePriceInput!) {
-  updatePrice(updatePriceInput: $updatePriceInput) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-  }
-}
-    `;
-export type UpdatePriceMutationFn = Apollo.MutationFunction<UpdatePriceMutation, UpdatePriceMutationVariables>;
-
-/**
- * __useUpdatePriceMutation__
- *
- * To run a mutation, you first call `useUpdatePriceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdatePriceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updatePriceMutation, { data, loading, error }] = useUpdatePriceMutation({
- *   variables: {
- *      updatePriceInput: // value for 'updatePriceInput'
- *   },
- * });
- */
-export function useUpdatePriceMutation(baseOptions?: Apollo.MutationHookOptions<UpdatePriceMutation, UpdatePriceMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdatePriceMutation, UpdatePriceMutationVariables>(UpdatePriceDocument, options);
-      }
-export type UpdatePriceMutationHookResult = ReturnType<typeof useUpdatePriceMutation>;
-export type UpdatePriceMutationResult = Apollo.MutationResult<UpdatePriceMutation>;
-export type UpdatePriceMutationOptions = Apollo.BaseMutationOptions<UpdatePriceMutation, UpdatePriceMutationVariables>;
-export const DeletePriceDocument = gql`
-    mutation DeletePrice($id: ObjectId!) {
-  deletePrice(id: $id) {
-    errorInput {
-      message
-      field
-    }
-    message
-    status
-  }
-}
-    `;
-export type DeletePriceMutationFn = Apollo.MutationFunction<DeletePriceMutation, DeletePriceMutationVariables>;
-
-/**
- * __useDeletePriceMutation__
- *
- * To run a mutation, you first call `useDeletePriceMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeletePriceMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deletePriceMutation, { data, loading, error }] = useDeletePriceMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeletePriceMutation(baseOptions?: Apollo.MutationHookOptions<DeletePriceMutation, DeletePriceMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeletePriceMutation, DeletePriceMutationVariables>(DeletePriceDocument, options);
-      }
-export type DeletePriceMutationHookResult = ReturnType<typeof useDeletePriceMutation>;
-export type DeletePriceMutationResult = Apollo.MutationResult<DeletePriceMutation>;
-export type DeletePriceMutationOptions = Apollo.BaseMutationOptions<DeletePriceMutation, DeletePriceMutationVariables>;
 export const GetPricesPaginatedDocument = gql`
     query GetPricesPaginated($pricePaginationInput: PricePaginationInput!) {
   getPricesPaginated(pricePaginationInput: $pricePaginationInput) {

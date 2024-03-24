@@ -26,9 +26,12 @@ export type BranchProductData = {
 export const useCreateBranchProductQuery = () => {
   const [variables, setVariables] = useState<PaginationInterfaceState>()
 
-  const [createBranchProduct] = useCreateBranchProductMutation()
+  const [createBranchProduct, { loading }] = useCreateBranchProductMutation()
 
-  const handleCreateBranchProduct = (data: CreateBranchProductInput) => {
+  const handleCreateBranchProduct = (
+    data: CreateBranchProductInput,
+    onSucces?: () => void
+  ) => {
     createBranchProduct({
       variables: {
         createBranchProductInput: {
@@ -48,6 +51,7 @@ export const useCreateBranchProductQuery = () => {
         }
         if (result.createBranchProduct?.status === StatusEnum.OK) {
           showSuccessToast('Producto creado correctamente', 'success')
+          onSucces?.()
         }
       }
     })
@@ -55,6 +59,7 @@ export const useCreateBranchProductQuery = () => {
 
   return {
     handleCreateBranchProduct,
+    loading,
     variables,
     setVariables
   }
@@ -110,7 +115,7 @@ export const useGetBranchProductPOSQuery = (branchId: string) => {
   const [filter, setFilter] = useState<string>()
   const [variables, setVariables] = useState<PaginationInterfaceState>()
   const filterDebounced = UseDebouncedValue(filter, 800)
-  const { data, loading } = useGetBranchProductsPaginatedQuery({
+  const { data, loading, refetch } = useGetBranchProductsPaginatedQuery({
     fetchPolicy: 'network-only',
     variables: {
       paginationInput: {
@@ -143,7 +148,8 @@ export const useGetBranchProductPOSQuery = (branchId: string) => {
     loading,
     setFilter,
     setVariables,
-    variables
+    variables,
+    refetch
   }
 }
 

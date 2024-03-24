@@ -25,7 +25,6 @@ interface CashProps {
 }
 
 function Cash({ user }: CashProps) {
-  console.log(user)
   const handleMovementModal = useDisclosure()
   const handleCloseCashModal = useDisclosure()
   const handleOpenCashModal = useDisclosure()

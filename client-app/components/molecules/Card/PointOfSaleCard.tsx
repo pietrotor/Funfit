@@ -31,7 +31,7 @@ function PointOfSaleCard({
               key={product.id}
               shadow="sm"
               isPressable
-              className="relative md:h-80 h-60 w-full transition-all duration-300 ease-in-out hover:border-1 hover:border-secondary hover:shadow-lg"
+              className="relative h-80 w-full border-1 border-transparent transition-all duration-700 ease-in-out hover:border-secondary hover:shadow-lg "
               onPress={() => {
                 product?.stock &&
                   quantity < product?.stock &&
@@ -51,20 +51,22 @@ function PointOfSaleCard({
                 />
               </CardBody>
               <Chip
-                className="absolute left-1/2 md:top-52 top-36 z-10 -translate-x-1/2 -translate-y-1/4 transform bg-primary/90 text-white"
+                className={`absolute left-1/2 top-52 z-10 -translate-x-1/2 -translate-y-1/4 transform  ${
+                  product.stock === 0 ? 'bg-gray-300' : 'bg-primary/90'
+                } text-white`}
                 variant="solid"
-                size='sm'
+                size="sm"
               >
-                Inv. {product.stock}
+                {product.stock === 0 ? 'Sin Stock' : `Inv. ${product.stock}`}
               </Chip>
               <CardFooter className="flex h-32 flex-col justify-around rounded-large">
-                <p className="w-full text-left md:text-xl text-sm font-bold text-secondary">
+                <p className="w-full text-left text-sm font-bold text-secondary md:text-xl">
                   {product.product?.name}
                 </p>
-                <p className="w-full overflow-hidden text-left md:text-xs text-[8px] text-gray-500">
+                <p className="w-full overflow-hidden text-left text-[8px] text-gray-500 md:text-xs">
                   {product.product?.description}
                 </p>
-                <p className="w-full text-right md:text-xl text-sm font-bold text-secondary">
+                <p className="w-full text-right text-sm font-bold text-secondary md:text-xl">
                   Bs. {product.price}
                 </p>
               </CardFooter>

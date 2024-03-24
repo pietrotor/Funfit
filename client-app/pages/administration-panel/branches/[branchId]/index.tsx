@@ -3,6 +3,7 @@ import { useRouter } from 'next/router'
 import { useState } from 'react'
 
 import { GetServerSideProps } from 'next'
+import { CircularProgressbar } from 'react-circular-progressbar'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { AddBranchProductModal } from '@/components/atoms/modals/AddBranchProductModal'
@@ -17,10 +18,15 @@ import ButtonComponent from '@/components/atoms/Button'
 import { MoveBranchStockModal } from '@/components/atoms/modals/MoveBranchStockModal'
 import { TProductBranchData } from '@/interfaces/TData'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
-import { StatusEnum, useUpdateBranchMutation } from '@/graphql/graphql-types'
+import {
+  StatusEnum,
+  useDeleteBranchProductMutation,
+  useUpdateBranchMutation
+} from '@/graphql/graphql-types'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import { authUserHeader } from '@/utils/verificationUser'
 import { UpdateBranchProductModal } from '@/components/atoms/modals/UpdateBranchProductModal'
+import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 interface ProductOnBranchProps {
   user: any
@@ -33,11 +39,43 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
   const handleAddBranchProduct = useDisclosure()
   const handleMoveStock = useDisclosure()
   const handleUpdatePrice = useDisclosure()
+  const handleDeleteProduct = useDisclosure()
   const { loading, data, refetch, variables, setVariables, setFilter } =
     useGetBranchProductQuery(branchId as string)
   const { handleUpdateBranchProduct } = useUpdateBranchProductQuery()
   const { data: branchData } = UseGetBranchByIdQuery(branchId as string)
+  const [deleteProductMutation, { loading: loadingDelete }] =
+    useDeleteBranchProductMutation({
+      onCompleted(data) {
+        if (data.deleteBranchProduct?.status !== StatusEnum.OK) {
+          showSuccessToast(
+            data.deleteBranchProduct?.message || 'No se pudo borra el producto',
+            'error'
+          )
+          return
+        }
+        showSuccessToast(
+          data.deleteBranchProduct?.message ||
+            'Se elimino el producto correctamente',
+          'success'
+        )
+        handleDeleteProduct.onClose()
+        refetch()
+      },
+      onError(error) {
+        console.log('🚀 ~ onError ~ error:', error)
+        showSuccessToast('No se pudo eliminar el producto', 'error')
+      }
+    })
   const branchInfo = branchData?.getBranchById?.data
+
+  const handleDelete = () => {
+    deleteProductMutation({
+      variables: {
+        id: editProduct?.id
+      }
+    })
+  }
 
   const handleChangeRow = (row: number) => {
     setVariables({ ...variables, rows: row, currentPage: 1 })
@@ -75,12 +113,16 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
     console.log(productBranch, field)
     handleUpdateBranchProduct(productBranch, field)
   }
-  const handleEdit = (productBranch: TProductBranchData) => () => {
+  const handleEdit = (
+    productBranch: TProductBranchData,
+    isDeliting?: boolean
+  ) => {
     setEditProduct(productBranch)
-    handleMoveStock.onOpen()
+    if (!isDeliting) handleMoveStock.onOpen()
+    else handleDeleteProduct.onOpen()
   }
 
-  const handleEditPrice = (productBranch: TProductBranchData) => () => {
+  const handleEditPrice = (productBranch: TProductBranchData) => {
     setEditProduct(productBranch)
     handleUpdatePrice.onOpen()
   }
@@ -168,7 +210,13 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
                 </h3>,
                 <p key={idx}>{productBranch.product?.name}</p>,
                 <p key={idx}>{productBranch.price} Bs</p>,
-                <p key={idx}>{productBranch.stock}</p>,
+                <div key={idx} className="mx-auto w-16 text-sm">
+                  <CircularProgressbar
+                    value={productBranch.stock}
+                    maxValue={productBranch.lastStockEntry as number}
+                    text={`${productBranch.stock}`}
+                  />
+                </div>,
                 <Switch
                   key={idx}
                   size="sm"
@@ -199,7 +247,9 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
                 </Switch>,
                 <div key={idx} className="flex gap-2">
                   <ButtonComponent
-                    onClick={handleEdit(productBranch as TProductBranchData)}
+                    onClick={() =>
+                      handleEdit(productBranch as TProductBranchData)
+                    }
                     type="eye"
                     showTooltip
                     tooltipText="Mover Stock"
@@ -212,9 +262,9 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
                     />
                   </ButtonComponent>
                   <ButtonComponent
-                    onClick={handleEditPrice(
-                      productBranch as TProductBranchData
-                    )}
+                    onClick={() =>
+                      handleEditPrice(productBranch as TProductBranchData)
+                    }
                     type="edit"
                     showTooltip
                     tooltipText="Editar Precio"
@@ -223,6 +273,22 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
                       name="edit"
                       color="text-primary"
                       width="w-8"
+                    />
+                  </ButtonComponent>
+                  <ButtonComponent
+                    showTooltip
+                    tooltipText="Eliminar Producto"
+                    type="delete"
+                    className="text-red-500"
+                    onClick={() =>
+                      handleEdit(productBranch as TProductBranchData, true)
+                    }
+                  >
+                    <IconSelector
+                      name="trash"
+                      className="text-red-500"
+                      width="w-5"
+                      height="h-5"
                     />
                   </ButtonComponent>
                 </div>
@@ -266,6 +332,18 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
         isOpen={handleUpdatePrice.isOpen}
         onClose={handleUpdatePrice.onClose}
         onSuccess={() => refetch()}
+      />
+      <ConfirmModal
+        cancelText="Cancelar"
+        color="error"
+        confirmText="Eliminar"
+        name="trash"
+        title="Eliminar producto"
+        onConfirm={handleDelete}
+        loading={loadingDelete}
+        message={`¿Esta seguro de eliminar a ${editProduct?.product?.name} ?`}
+        isOpen={handleDeleteProduct.isOpen}
+        onClose={handleDeleteProduct.onClose}
       />
     </AdministrationLayout>
   )
