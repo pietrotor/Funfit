@@ -51,7 +51,7 @@ function SalesReceipt({
         <h3 className=" ms-6 p-4 text-left text-2xl font-bold text-gray-500">
           Recibo de venta
         </h3>
-        <div className="flex h-4/5 w-full flex-col border-y-1 border-y-secondary/30 ">
+        <div className="flex h-4/5 w-full flex-col border-y-1 border-y-secondary/30 max-h-4/5 overflow-y-auto">
           {selectedProducts.products.length === 0 ? (
             <EmptySale />
           ) : (
