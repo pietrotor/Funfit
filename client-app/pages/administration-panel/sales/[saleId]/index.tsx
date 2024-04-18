@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /* eslint-disable multiline-ternary */
 import { useRouter } from 'next/router'
 import 'react-circular-progressbar/dist/styles.css'
