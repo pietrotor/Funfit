@@ -41,6 +41,7 @@ export type BranchProduct = {
   id: Scalars['ObjectId']['output'];
   isVisibleOnMenu: Scalars['Boolean']['output'];
   isVisibleOnWeb: Scalars['Boolean']['output'];
+  lastStockEntry?: Maybe<Scalars['Float']['output']>;
   price: Scalars['Float']['output'];
   product?: Maybe<Product>;
   productId: Scalars['ObjectId']['output'];
@@ -85,6 +86,13 @@ export type BranchsResponse = ResponseBase & {
   status: StatusEnum;
   totalPages?: Maybe<Scalars['Int']['output']>;
   totalRecords?: Maybe<Scalars['Int']['output']>;
+};
+
+export type CancelSaleInput = {
+  cashBack: Scalars['Boolean']['input'];
+  id: Scalars['ObjectId']['input'];
+  reason: Scalars['String']['input'];
+  stockReturn: Scalars['Boolean']['input'];
 };
 
 export type Cash = {
@@ -317,6 +325,7 @@ export type MeasurementUnits = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  cancelSale?: Maybe<SaleResponse>;
   closeCash?: Maybe<CashResponse>;
   creatStockMovement?: Maybe<StockResponse>;
   createBranch?: Maybe<BranchResponse>;
@@ -342,6 +351,11 @@ export type Mutation = {
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
+};
+
+
+export type MutationCancelSaleArgs = {
+  cancelSaleInput: CancelSaleInput;
 };
 
 
@@ -753,6 +767,8 @@ export type Sale = {
   branchId: Scalars['ObjectId']['output'];
   canceled?: Maybe<Scalars['Boolean']['output']>;
   canceledAt?: Maybe<Scalars['Date']['output']>;
+  canceledBy?: Maybe<Scalars['ObjectId']['output']>;
+  canceledByInfo?: Maybe<User>;
   change: Scalars['Float']['output'];
   client?: Maybe<Scalars['String']['output']>;
   code: Scalars['String']['output'];
@@ -1175,6 +1191,7 @@ export type ResolversTypes = {
   BranchProductsResponse: ResolverTypeWrapper<BranchProductsResponse>;
   BranchResponse: ResolverTypeWrapper<BranchResponse>;
   BranchsResponse: ResolverTypeWrapper<BranchsResponse>;
+  CancelSaleInput: CancelSaleInput;
   Cash: ResolverTypeWrapper<Cash>;
   CashResponse: ResolverTypeWrapper<CashResponse>;
   CashTurnMovementResponse: ResolverTypeWrapper<CashTurnMovementResponse>;
@@ -1267,6 +1284,7 @@ export type ResolversParentTypes = {
   BranchProductsResponse: BranchProductsResponse;
   BranchResponse: BranchResponse;
   BranchsResponse: BranchsResponse;
+  CancelSaleInput: CancelSaleInput;
   Cash: Cash;
   CashResponse: CashResponse;
   CashTurnMovementResponse: CashTurnMovementResponse;
@@ -1365,6 +1383,7 @@ export type BranchProductResolvers<ContextType = any, ParentType extends Resolve
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   isVisibleOnMenu?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   isVisibleOnWeb?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  lastStockEntry?: Resolver<Maybe<ResolversTypes['Float']>, ParentType, ContextType>;
   price?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
   productId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
@@ -1534,6 +1553,7 @@ export type MeasurementUnitsResolvers<ContextType = any, ParentType extends Reso
 };
 
 export type MutationResolvers<ContextType = any, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = {
+  cancelSale?: Resolver<Maybe<ResolversTypes['SaleResponse']>, ParentType, ContextType, RequireFields<MutationCancelSaleArgs, 'cancelSaleInput'>>;
   closeCash?: Resolver<Maybe<ResolversTypes['CashResponse']>, ParentType, ContextType, RequireFields<MutationCloseCashArgs, 'closeTurnInput'>>;
   creatStockMovement?: Resolver<Maybe<ResolversTypes['StockResponse']>, ParentType, ContextType, RequireFields<MutationCreatStockMovementArgs, 'createStockMovementInput'>>;
   createBranch?: Resolver<Maybe<ResolversTypes['BranchResponse']>, ParentType, ContextType, RequireFields<MutationCreateBranchArgs, 'createBranchInput'>>;
@@ -1681,6 +1701,8 @@ export type SaleResolvers<ContextType = any, ParentType extends ResolversParentT
   branchId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   canceled?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   canceledAt?: Resolver<Maybe<ResolversTypes['Date']>, ParentType, ContextType>;
+  canceledBy?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
+  canceledByInfo?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   change?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   client?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   code?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

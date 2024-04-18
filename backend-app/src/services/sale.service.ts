@@ -1,4 +1,5 @@
 import {
+  CancelSaleInput,
   CreateSaleInput,
   PaymentMethodEnum,
   SalesPaginationInput,
@@ -62,6 +63,7 @@ export class SalesService extends SalesRepository<objectId> {
     const result = await Sale.aggregate([
       {
         $match: {
+          canceled: false,
           ...dateFilter,
           ...branchesFilter,
           ...salesByFilter
@@ -108,6 +110,7 @@ export class SalesService extends SalesRepository<objectId> {
     const result = await Sale.aggregate([
       {
         $match: {
+          canceled: false,
           ...dateFilter,
           ...branchesFilter,
           ...salesByFilter
@@ -295,5 +298,53 @@ export class SalesService extends SalesRepository<objectId> {
     })
 
     return await saleInstance.save()
+  }
+
+  async cancelSale(cancelSaleInput: CancelSaleInput, cancelBy?: objectId) {
+    const { id, reason, cashBack, stockReturn } = cancelSaleInput
+    const saleInstance = await this.getSaleById(id)
+    const branchInstance = await branchCore.getBranchById(saleInstance.branchId)
+    const cashInstance = await cashCore.getCashById(branchInstance.cashId)
+    if (!cashInstance.currentTurnId || !cashInstance.isOpen) {
+      throw new BadRequestError(
+        'La caja no se encuentra abierta para poder cancelar una venta'
+      )
+    }
+    saleInstance.reason = reason
+    saleInstance.canceled = true
+    saleInstance.canceledAt = new Date()
+    saleInstance.canceledBy = cancelBy
+    if (cashBack) {
+      await turnMovementCore.createMovement(
+        {
+          amount: saleInstance.total,
+          cashId: branchInstance.cashId,
+          date: new Date(),
+          turnId: cashInstance.currentTurnId,
+          concept: reason,
+          type: TurnMovementTypeEnum.ADD
+        },
+        cancelBy
+      )
+    }
+    if (stockReturn) {
+      await Promise.all(
+        saleInstance.products.map(async ({ branchProductId, qty }) => {
+          try {
+            const branchProductInstance =
+              await branchProductCore.getBranchProductById(branchProductId)
+            branchProductInstance.stock += qty
+            await branchProductInstance.save()
+          } catch (error) {
+            console.log('🚀 ~ SalesService ~ awaitPromise.all ~ error:', error)
+          }
+        })
+      )
+    }
+    const [saleUpdated] = await Promise.all([
+      saleInstance.save(),
+      branchInstance.save()
+    ])
+    return saleUpdated
   }
 }
