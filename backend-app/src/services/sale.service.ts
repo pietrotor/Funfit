@@ -322,7 +322,7 @@ export class SalesService extends SalesRepository<objectId> {
           date: new Date(),
           turnId: cashInstance.currentTurnId,
           concept: reason,
-          type: TurnMovementTypeEnum.ADD
+          type: TurnMovementTypeEnum.WITHDRAW
         },
         cancelBy
       )
