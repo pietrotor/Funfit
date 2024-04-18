@@ -833,3 +833,15 @@ export const DELETE_CATEGORY = gql`
     }
   }
 `
+export const CANCEL_SALE = gql`
+  mutation CancelSale($cancelSaleInput: CancelSaleInput!) {
+    cancelSale(cancelSaleInput: $cancelSaleInput) {
+      errorInput {
+        message
+        field
+      }
+      message
+      status
+    }
+  }
+`

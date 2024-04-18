@@ -1,4 +1,4 @@
-import { Radio, RadioGroup } from '@nextui-org/react'
+import { Radio, RadioGroup, useDisclosure } from '@nextui-org/react'
 import { useEffect, useState } from 'react'
 import { GetServerSideProps } from 'next'
 
@@ -19,9 +19,11 @@ import ComboInput from '@/components/atoms/ComboInput'
 import DateConverter from '@/components/atoms/DateConverter'
 import {
   PaymentMethodEnum,
+  Sale,
   useGetUsersLazyQuery
 } from '@/graphql/graphql-types'
 import { useGetSalesSummary } from '@/services/useGetSalesSummary'
+import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
 
 interface SalesProps {
   user: any
@@ -45,6 +47,12 @@ function Sales({ user }: SalesProps) {
   const { data: summaryData, setVariables: setSummaryVariables } =
     useGetSalesSummary()
 
+  const { data, setVariables, variables, loading, refetch } =
+    UseGetCustomSalesPaginated(branchSelected.id)
+
+  const handleDeleteModal = useDisclosure()
+  const [selectedItem, setSelectedItem] = useState<Sale | null>(null)
+
   useEffect(() => {
     setSelected(currentBranch)
     setSummaryVariables(prevVariables => ({
@@ -61,9 +69,6 @@ function Sales({ user }: SalesProps) {
       paginationInput: {}
     }
   })
-  const { data, setVariables, variables, loading } = UseGetCustomSalesPaginated(
-    branchSelected.id
-  )
 
   const handleChangeRow = (row: number) => {
     setVariables({ ...variables, rows: row, currentPage: 1 })
@@ -290,6 +295,7 @@ function Sales({ user }: SalesProps) {
             { name: 'Método de pago' },
             { name: 'Productos' },
             { name: 'Vendedor' },
+            { name: 'Observaciones' },
             { name: 'Acciones' }
           ]}
           items={(data?.getSalesPaginated?.data || []).map((sale, idx) => ({
@@ -332,6 +338,18 @@ function Sales({ user }: SalesProps) {
                 </div>
               </div>,
               <div key={idx}>
+                {sale.canceled && (
+                  <div className="flex h-full flex-col items-center justify-center gap-3">
+                    <p className="m-auto w-fit bg-red-600 px-4 py-1 font-bold text-white">
+                      Venta Anulada
+                    </p>
+                    <div>
+                      <DateConverter dateString={sale.canceledAt} showTime />
+                    </div>
+                  </div>
+                )}
+              </div>,
+              <div key={idx}>
                 <div className="space-x-1">
                   <ButtonComponent
                     onClick={() =>
@@ -348,12 +366,34 @@ function Sales({ user }: SalesProps) {
                       width="w-8"
                     />
                   </ButtonComponent>
+                  {!sale.canceled && (
+                    <ButtonComponent
+                      onClick={() => {
+                        setSelectedItem(sale as any)
+                        handleDeleteModal.onOpen()
+                      }}
+                      type="delete"
+                      showTooltip
+                      tooltipText="Eliminar"
+                    >
+                      <IconSelector
+                        name="trash"
+                        color="text-danger"
+                        width="w-8"
+                      />
+                    </ButtonComponent>
+                  )}
                 </div>
               </div>
             ]
           }))}
         />
       </div>
+      <SaleCancelModal
+        sale={selectedItem}
+        modalDisclosure={handleDeleteModal}
+        refetch={refetch}
+      />
     </AdministrationLayout>
   )
 }

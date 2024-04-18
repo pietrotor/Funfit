@@ -1255,6 +1255,17 @@ export const GET_SALES_BY_ID = gql`
             status
           }
         }
+        canceledByInfo {
+          id
+          name
+          lastName
+          email
+          phone
+          lastLogin
+          status
+          createdBy
+          roleId
+        }
       }
     }
   }

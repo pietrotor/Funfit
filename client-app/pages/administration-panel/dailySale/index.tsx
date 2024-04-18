@@ -1,7 +1,7 @@
 import { GetServerSideProps } from 'next'
 
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -12,7 +12,9 @@ import { useAppSelector } from '@/store/index'
 import InformationCard from '@/components/molecules/Card/InformationCard'
 import DateConverter from '@/components/atoms/DateConverter'
 import { useGetSalesSummary } from '@/services/index'
-import { PaymentMethodEnum } from '@/graphql/graphql-types'
+import { PaymentMethodEnum, Sale } from '@/graphql/graphql-types'
+import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
+import { useDisclosure } from '@nextui-org/react'
 
 interface DailySaleProps {
   user: any
@@ -28,8 +30,12 @@ function DailySale({ user }: DailySaleProps) {
   const {
     data: summary,
     setVariables: setSummaryVariables,
-    variables: summaryVariables
+    variables: summaryVariables,
+    refetch
   } = useGetSalesSummary()
+
+  const handleDeleteModal = useDisclosure()
+  const [selectedItem, setSelectedItem] = useState<Sale | null>(null)
 
   const handleChangeRow = (row: number) => {
     setVariables({ ...variables, rows: row, currentPage: 1 })
@@ -183,6 +189,7 @@ function DailySale({ user }: DailySaleProps) {
             { name: 'Descuento' },
             { name: 'Productos' },
             { name: 'Vendedor' },
+            { name: 'Observaciones' },
             { name: 'Acciones' }
           ]}
           items={(data?.getSalesPaginated?.data || []).map((sale, idx) => ({
@@ -230,6 +237,18 @@ function DailySale({ user }: DailySaleProps) {
                 </div>
               </div>,
               <div key={idx}>
+                {sale.canceled && (
+                  <div className="flex h-full flex-col items-center justify-center gap-3">
+                    <p className="m-auto w-fit bg-red-600 px-4 py-1 font-bold text-white">
+                      Venta Anulada
+                    </p>
+                    <div>
+                      <DateConverter dateString={sale.canceledAt} showTime />
+                    </div>
+                  </div>
+                )}
+              </div>,
+              <div key={idx}>
                 <div className="space-x-1">
                   <ButtonComponent
                     onClick={() =>
@@ -246,12 +265,34 @@ function DailySale({ user }: DailySaleProps) {
                       width="w-8"
                     />
                   </ButtonComponent>
+                  {!sale.canceled && (
+                    <ButtonComponent
+                      onClick={() => {
+                        setSelectedItem(sale as any)
+                        handleDeleteModal.onOpen()
+                      }}
+                      type="delete"
+                      showTooltip
+                      tooltipText="Eliminar"
+                    >
+                      <IconSelector
+                        name="trash"
+                        color="text-danger"
+                        width="w-8"
+                      />
+                    </ButtonComponent>
+                  )}
                 </div>
               </div>
             ]
           }))}
         />
       </div>
+      <SaleCancelModal
+        sale={selectedItem}
+        modalDisclosure={handleDeleteModal}
+        refetch={refetch}
+      />
     </AdministrationLayout>
   )
 }
