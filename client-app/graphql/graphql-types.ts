@@ -1429,7 +1429,7 @@ export type GetSalesPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any, cash?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, openBy?: any | null, openByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }, closeInfo?: { __typename?: 'CloseTurnInfo', amount: number, physicialAmount: number, difference: number, date: any, observation?: string | null, closeBy?: any | null, closeByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null } | null } | null } | null } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any, roleInfo?: { __typename?: 'Role', id: any, name: string, code: string, status: boolean } | null } | null }> | null } | null };
+export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, client?: string | null, amountRecibed: number, change: number, observations?: string | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string, email: string, phone: string, lastLogin?: any | null, status: boolean, createdBy?: any | null, roleId: any } | null }> | null } | null };
 
 export type GetSalesSummaryQueryVariables = Exact<{
   salesSummaryInput: SalesSummaryInput;
@@ -4487,69 +4487,6 @@ export const GetSalesPaginatedDocument = gql`
         phone
         nit
         cashId
-        cash {
-          id
-          branchId
-          amount
-          currentTurnId
-          isOpen
-          currentTurn {
-            id
-            cashId
-            isOpen
-            amountOfMovents
-            openInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              openBy
-              openByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-            closeInfo {
-              amount
-              physicialAmount
-              difference
-              date
-              observation
-              closeBy
-              closeByInfo {
-                id
-                name
-                lastName
-                email
-                phone
-                lastLogin
-                status
-                createdBy
-                roleId
-                roleInfo {
-                  id
-                  name
-                  code
-                  status
-                }
-              }
-            }
-          }
-        }
       }
       createdByInfo {
         id
@@ -4561,12 +4498,6 @@ export const GetSalesPaginatedDocument = gql`
         status
         createdBy
         roleId
-        roleInfo {
-          id
-          name
-          code
-          status
-        }
       }
     }
     totalRecords

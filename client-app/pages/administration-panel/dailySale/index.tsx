@@ -15,6 +15,7 @@ import { useGetSalesSummary } from '@/services/index'
 import { PaymentMethodEnum, Sale } from '@/graphql/graphql-types'
 import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
 import { useDisclosure } from '@nextui-org/react'
+import { getCurrentDate } from '@/helpers/date.helper'
 
 interface DailySaleProps {
   user: any
@@ -46,8 +47,8 @@ function DailySale({ user }: DailySaleProps) {
     setSummaryVariables({
       ...summaryVariables,
       branchIds: [currentBranch.id],
-      initialDate: new Date().toISOString().split('T')[0],
-      endDate: new Date().toISOString().split('T')[0]
+      initialDate: getCurrentDate(),
+      endDate: getCurrentDate()
     })
   }, [currentBranch.id])
 
@@ -55,8 +56,8 @@ function DailySale({ user }: DailySaleProps) {
     setVariables({
       ...variables,
       branchIds: [currentBranch.id],
-      initialDate: new Date().toISOString().split('T')[0],
-      endDate: new Date().toISOString().split('T')[0]
+      initialDate: getCurrentDate(),
+      endDate: getCurrentDate()
     })
   }, [currentBranch.id])
 

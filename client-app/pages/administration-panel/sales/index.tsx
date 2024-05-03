@@ -166,7 +166,7 @@ function Sales({ user }: SalesProps) {
               setSummaryVariables(prevVariables => ({
                 ...prevVariables,
                 branchIds: [currentBranch.id],
-                initialDate: e
+                endDate: e
               }))
             }}
           />

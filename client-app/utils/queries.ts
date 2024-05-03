@@ -1014,69 +1014,6 @@ export const GET_SALES_PAGINATED = gql`
           phone
           nit
           cashId
-          cash {
-            id
-            branchId
-            amount
-            currentTurnId
-            isOpen
-            currentTurn {
-              id
-              cashId
-              isOpen
-              amountOfMovents
-              openInfo {
-                amount
-                physicialAmount
-                difference
-                date
-                observation
-                openBy
-                openByInfo {
-                  id
-                  name
-                  lastName
-                  email
-                  phone
-                  lastLogin
-                  status
-                  createdBy
-                  roleId
-                  roleInfo {
-                    id
-                    name
-                    code
-                    status
-                  }
-                }
-              }
-              closeInfo {
-                amount
-                physicialAmount
-                difference
-                date
-                observation
-                closeBy
-                closeByInfo {
-                  id
-                  name
-                  lastName
-                  email
-                  phone
-                  lastLogin
-                  status
-                  createdBy
-                  roleId
-                  roleInfo {
-                    id
-                    name
-                    code
-                    status
-                  }
-                }
-              }
-            }
-          }
         }
         createdByInfo {
           id
@@ -1088,12 +1025,6 @@ export const GET_SALES_PAGINATED = gql`
           status
           createdBy
           roleId
-          roleInfo {
-            id
-            name
-            code
-            status
-          }
         }
       }
       totalRecords
