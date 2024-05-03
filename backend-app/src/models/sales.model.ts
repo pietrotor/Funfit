@@ -137,4 +137,6 @@ const saleSchema = new Schema<ISale>(
 
 const Sale = model<ISale, IModelSale>('Sale', saleSchema, 'sale')
 
+saleSchema.index({ createdAt: 1 })
+
 export default Sale

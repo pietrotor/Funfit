@@ -88,15 +88,6 @@ export class SalesService extends SalesRepository<objectId> {
     const { branchIds, endDate, initialDate, saleBy } = salesSummaryInput
     const initialDateQuery = initialDate ? new Date(initialDate) : null
     if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
-    const dateFilter =
-      initialDateQuery && endDate
-        ? {
-            createdAt: {
-              $gte: initialDateQuery,
-              $lt: addDays(new Date(endDate), 1)
-            }
-          }
-        : {}
     const branchesFilter =
       branchIds.length > 0
         ? {
@@ -109,9 +100,36 @@ export class SalesService extends SalesRepository<objectId> {
 
     const result = await Sale.aggregate([
       {
+        $addFields: {
+          dateOnTz: {
+            date: {
+              $dayOfMonth: { date: '$createdAt', timezone: 'America/La_Paz' }
+            },
+            month: {
+              $month: { date: '$createdAt', timezone: 'America/La_Paz' }
+            },
+            year: { $year: { date: '$createdAt', timezone: 'America/La_Paz' } }
+          }
+        }
+      },
+      {
+        $addFields: {
+          soldAtTz: {
+            $dateFromParts: {
+              year: '$dateOnTz.year',
+              month: '$dateOnTz.month',
+              day: '$dateOnTz.date'
+            }
+          }
+        }
+      },
+      {
         $match: {
           canceled: false,
-          ...dateFilter,
+          soldAtTz: {
+            $gte: new Date(initialDate),
+            $lte: new Date(endDate)
+          },
           ...branchesFilter,
           ...salesByFilter
         } // Aplica los a la consulta
@@ -172,11 +190,17 @@ export class SalesService extends SalesRepository<objectId> {
         { ...branchesFilter, ...filterArgs, ...salesByFilter, ...dateFilter }
       )
     }
-    return await getInstancesPagination<ISale, IModelSale>(
+    console.time('start')
+    const test = await getInstancesPagination<ISale, IModelSale>(
       Sale,
       paginationInput,
       { ...branchesFilter, ...salesByFilter, ...dateFilter }
     )
+    console.log(
+      ' ========================================== TIME ============================ '
+    )
+    console.timeEnd('start')
+    return test
   }
 
   async createSale(createSaleInput: CreateSaleInput, createdBy?: objectId) {

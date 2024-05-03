@@ -73,9 +73,7 @@ const updateBranch = async (
 ): Promise<BranchResponse> => {
   try {
     const { updateBranchInput } = args
-    const branchInstance = await branchCore.updateBranch(
-      updateBranchInput
-    )
+    const branchInstance = await branchCore.updateBranch(updateBranchInput)
     return {
       status: StatusEnum.OK,
       message: 'Sucursal actualizada correactamente',
