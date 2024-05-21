@@ -171,6 +171,32 @@ function Cash({ user }: CashProps) {
                   </span>
                 </div>
               </InformationCard>
+              <InformationCard className="h-full bg-slate-200 px-3 py-6">
+                <div className="flex items-center justify-between">
+                  <div className="text-lg font-bold">
+                    <div className="text-xl">Aperturado por:</div>
+                    <div className="text-center">
+                      {
+                        cash.data?.getCashById?.data?.currentTurn?.openInfo
+                          ?.openByInfo?.name
+                      }{' '}
+                      {
+                        cash.data?.getCashById?.data?.currentTurn?.openInfo
+                          ?.openByInfo?.lastName
+                      }
+                      Bs
+                    </div>
+                  </div>
+                  <span className="rounded-full bg-secondary p-3 ">
+                    <IconSelector
+                      name="user"
+                      className=" rounded-md text-white"
+                      height="h-8"
+                      width="w-8"
+                    />
+                  </span>
+                </div>
+              </InformationCard>
             </>
           )}
         </section>
