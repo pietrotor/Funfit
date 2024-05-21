@@ -184,7 +184,6 @@ function Cash({ user }: CashProps) {
                         cash.data?.getCashById?.data?.currentTurn?.openInfo
                           ?.openByInfo?.lastName
                       }
-                      Bs
                     </div>
                   </div>
                   <span className="rounded-full bg-secondary p-3 ">
