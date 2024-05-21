@@ -6,7 +6,7 @@ import {
   Textarea,
   useDisclosure
 } from '@nextui-org/react'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, get, useForm } from 'react-hook-form'
 import {
   CancelSaleInput,
   PaymentMethodEnum,
@@ -51,7 +51,11 @@ const SaleCancelModal = ({
         console.log(error)
       }
     })
-  const { control, handleSubmit } = useForm<CancelSaleInput>({
+  const {
+    control,
+    handleSubmit,
+    formState: { errors }
+  } = useForm<CancelSaleInput>({
     defaultValues: {
       id: sale?.id,
       stockReturn: true,
@@ -67,6 +71,8 @@ const SaleCancelModal = ({
     })
   })
 
+  const error = get(errors, 'reason')
+
   return (
     <Modal isOpen={modalDisclosure.isOpen} size="lg">
       <ModalContent>
@@ -75,14 +81,20 @@ const SaleCancelModal = ({
           <Controller
             control={control}
             name="reason"
+            rules={{
+              required: 'Debe agregar la razón de la devolución'
+            }}
             render={({ field: { value, onChange, name } }) => (
-              <Textarea
-                value={value}
-                onChange={onChange}
-                name={name}
-                placeholder="Ingrese la razón de la anulación"
-                variant="bordered"
-              />
+              <div>
+                <Textarea
+                  value={value}
+                  onChange={onChange}
+                  name={name}
+                  errorMessage={error?.message}
+                  placeholder="Ingrese la razón de la anulación"
+                  variant="bordered"
+                />
+              </div>
             )}
           />
           <div className="flex flex-col gap-2">
@@ -95,7 +107,7 @@ const SaleCancelModal = ({
                   onValueChange={onChange}
                   name={name}
                 >
-                  Retornar dinero a caja
+                  Devolver dinero sacando de caja
                 </Checkbox>
               )}
             />

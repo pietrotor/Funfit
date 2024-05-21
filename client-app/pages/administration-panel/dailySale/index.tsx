@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next'
 
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
+import { useDisclosure } from '@nextui-org/react'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -14,7 +15,6 @@ import DateConverter from '@/components/atoms/DateConverter'
 import { useGetSalesSummary } from '@/services/index'
 import { PaymentMethodEnum, Sale } from '@/graphql/graphql-types'
 import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
-import { useDisclosure } from '@nextui-org/react'
 import { getCurrentDate } from '@/helpers/date.helper'
 
 interface DailySaleProps {
@@ -25,7 +25,7 @@ function DailySale({ user }: DailySaleProps) {
   const router = useRouter()
   const { currentBranch } = useAppSelector(state => state.branchReducer)
 
-  const { data, setVariables, variables, setFilter, loading } =
+  const { data, setVariables, variables, setFilter, loading, refetch: refetchSales } =
     UseGetCustomSalesPaginated(currentBranch.id)
 
   const {
@@ -292,7 +292,7 @@ function DailySale({ user }: DailySaleProps) {
       <SaleCancelModal
         sale={selectedItem}
         modalDisclosure={handleDeleteModal}
-        refetch={refetch}
+        refetch={() => { refetch(); refetchSales() }}
       />
     </AdministrationLayout>
   )

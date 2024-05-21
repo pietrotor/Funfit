@@ -15,6 +15,7 @@ import { CloseCashRegister } from '@/components/atoms/modals/CloseCashRegisterMo
 import { OpenCashRegister } from '@/components/atoms/modals/OpenCashRegisterModal'
 import useCustomGetCashTurnMovementQuery from '@/services/UseGetTurnMovementById'
 import {
+  TurnMovementTypeEnum,
   useGetBranchByIdLazyQuery,
   useGetCashByIdLazyQuery
 } from '@/graphql/graphql-types'
@@ -223,9 +224,21 @@ function Cash({ user }: CashProps) {
                     <DateConverter showTime dateString={movement.date} />
                   </div>,
                   <div key={idx} className="text-center text-sm font-bold">
-                    <Chip color="success" variant="flat">
-                      Activo
-                    </Chip>
+                    {movement.type === TurnMovementTypeEnum.ADD && (
+                      <Chip color="success" variant="flat">
+                        Ingreso
+                      </Chip>
+                    )}
+                    {movement.type === TurnMovementTypeEnum.ADJUST && (
+                      <Chip color="warning" variant="flat">
+                        Ajuste
+                      </Chip>
+                    )}
+                    {movement.type === TurnMovementTypeEnum.WITHDRAW && (
+                      <Chip color="danger" variant="flat">
+                        Salida
+                      </Chip>
+                    )}
                   </div>,
                   <p key={idx}>
                     {movement.createdByInfo?.name}{' '}
