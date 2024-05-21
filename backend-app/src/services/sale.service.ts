@@ -278,7 +278,7 @@ export class SalesService extends SalesRepository<objectId> {
     const code = generateCode()
 
     if (paymentMethod === PaymentMethodEnum.CASH) {
-      turnMovementCore.createMovement(
+      await turnMovementCore.createMovement(
         {
           amount: total,
           cashId: cashInstance._id,

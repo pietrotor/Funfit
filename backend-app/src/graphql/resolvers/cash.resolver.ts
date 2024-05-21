@@ -10,11 +10,17 @@ import {
   TurnMovements,
   User,
   CreateTurnMovementInput,
-  CashTurnMovementResponse
+  CashTurnMovementResponse,
+  OpenTurnInfo
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
-import { cashCore, turnCore, turnMovementCore, userCore } from '@/services/index'
+import {
+  cashCore,
+  turnCore,
+  turnMovementCore,
+  userCore
+} from '@/services/index'
 
 // ========================================== Queries ====================================================
 const getCashById = async (
@@ -36,11 +42,14 @@ const getCashById = async (
 }
 const getCashTurnMovements = async (
   _: any,
-  args: { paginationInput: PaginationInput, turnId: objectId }
+  args: { paginationInput: PaginationInput; turnId: objectId }
 ): Promise<CashTurnMovementsResponse> => {
   try {
     const { paginationInput, turnId } = args
-    return await turnMovementCore.getTurnMovementsPaginated(paginationInput, turnId)
+    return await turnMovementCore.getTurnMovementsPaginated(
+      paginationInput,
+      turnId
+    )
   } catch (error) {
     console.log(error)
     return errorHandler(error)
@@ -131,9 +140,26 @@ export const cashType = {
     }
   },
   TurnMovements: {
-    async createdByInfo(parent: TurnMovements, _: any, __: any): Promise<User | null> {
+    async createdByInfo(
+      parent: TurnMovements,
+      _: any,
+      __: any
+    ): Promise<User | null> {
       if (parent.createdBy) {
         const user = await userCore.getUserByIdInstance(parent.createdBy)
+        return user
+      }
+      return null
+    }
+  },
+  OpenTurnInfo: {
+    async openByInfo(
+      parent: OpenTurnInfo,
+      _: any,
+      __: any
+    ): Promise<User | null> {
+      if (parent.openBy) {
+        const user = await userCore.getUserByIdInstance(parent.openBy)
         return user
       }
       return null
