@@ -156,10 +156,9 @@ function Cash({ user }: CashProps) {
                   <div className="text-lg font-bold">
                     <div className="text-xl">Caja abrio con:</div>
                     <div className="text-center">
-                      {
-                        cash.data?.getCashById?.data?.currentTurn?.openInfo
-                          ?.amount
-                      }
+                      {cash.data?.getCashById?.data?.currentTurn?.openInfo
+                        ?.amount || 0}{' '}
+                      Bs
                     </div>
                   </div>
                   <span className="rounded-full bg-secondary p-3 ">
