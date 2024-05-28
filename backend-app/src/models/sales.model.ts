@@ -32,9 +32,9 @@ export interface ISale extends Document, IGeneric {
   canceled: boolean
   reason: string | null
   canceledAt: Date | null
-  canceledBy: objectId | null
+  canceledBy?: objectId | null
 }
-export interface IModelSale extends Model<ISale> { }
+export interface IModelSale extends Model<ISale> {}
 const saleSchema = new Schema<ISale>(
   {
     branchId: {
@@ -142,5 +142,7 @@ const saleSchema = new Schema<ISale>(
 )
 
 const Sale = model<ISale, IModelSale>('Sale', saleSchema, 'sale')
+
+saleSchema.index({ createdAt: 1 })
 
 export default Sale

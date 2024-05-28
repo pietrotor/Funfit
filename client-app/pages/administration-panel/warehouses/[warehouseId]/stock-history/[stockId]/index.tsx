@@ -50,7 +50,9 @@ function StockHistory({ user }: StockHistoryProps) {
   }
 
   const product =
-    data?.getStockHistory?.data && data.getStockHistory.data.length > 0 ? data.getStockHistory.data[0] : null
+    data?.getStockHistory?.data && data.getStockHistory.data.length > 0
+      ? data.getStockHistory.data[0]
+      : null
 
   return (
     <AdministrationLayout user={user} showBackButton={true}>
@@ -61,7 +63,7 @@ function StockHistory({ user }: StockHistoryProps) {
         <div className="flex w-full">
           <div className="h-36 w-1/5">
             <Image
-              className="rounded-lg object-cover w-full h-full"
+              className="h-full w-full rounded-lg object-cover"
               src={
                 product?.stock?.product?.image ||
                 'https://phantom-marca.unidadeditorial.es/813d16708dc72860fd3cf319c9a245b5/resize/828/f/jpg/assets/multimedia/imagenes/2023/08/04/16911461030527.jpg'
@@ -101,7 +103,7 @@ function StockHistory({ user }: StockHistoryProps) {
           </div>
         </div>
         <Table
-          tableName="STOCK"
+          tableName="Movimientos de stock"
           isLoading={loading}
           currentPage={variables.currentPage}
           totalItems={variables.totalRecords}
@@ -118,15 +120,17 @@ function StockHistory({ user }: StockHistoryProps) {
             { name: 'Tipo de movimiento' },
             { name: 'Stock de seguridad' },
             { name: 'Stock anterior' },
-            { name: 'Stock posterior' }
+            { name: 'Nuevo stock' },
+            { name: 'Realizado por' }
           ]}
           items={(data?.getStockHistory?.data || []).map((history, idx) => ({
             content: [
               <h3 key={idx} className="text-sm">
                 {((variables?.currentPage || 0) - 1) * (variables?.rows || 0) +
-                  idx + 1}
+                  idx +
+                  1}
               </h3>,
-              <DateConverter key={idx} dateString={history.date} />,
+              <DateConverter key={idx} dateString={history.date} showTime />,
               history.type === StockMovementTypeEnum.INWARD ? (
                 <Chip color="success" variant="flat">
                   Entrada
@@ -142,7 +146,12 @@ function StockHistory({ user }: StockHistoryProps) {
               ),
               history.stock?.securityStock,
               history.stockBefore,
-              history.stockLater
+              <p key={idx} className="font-bold">
+                {history.stockLater}
+              </p>,
+              <p key={idx} className="font-bold">
+                {history.createdByInfo?.name} {history.createdByInfo?.lastName}
+              </p>
             ]
           }))}
         />

@@ -735,6 +735,19 @@ export const GET_SALES_PAGINATED = gql`
         date
         code
         canceled
+        reason
+        canceledAt
+        createdBy
+        branch {
+          id
+          name
+          code
+          city
+          direction
+          phone
+          nit
+          cashId
+        }
         createdByInfo {
           id
           name

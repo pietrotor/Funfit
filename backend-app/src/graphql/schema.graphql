@@ -977,10 +977,10 @@ input SalesSummaryInput {
   saleBy: ObjectId
 }
 input CancelSaleInput {
-  saleId: ObjectId!
+  id: ObjectId!
   reason: String!
-  returnStock: Boolean!
-  returnCash: Boolean
+  cashBack: Boolean!
+  stockReturn: Boolean!
 }
 input OrderPaginationInput {
   rows: Int

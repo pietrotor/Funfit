@@ -108,7 +108,7 @@ const cancelSale = async (
     )
     return {
       status: StatusEnum.OK,
-      message: 'Venta cancelada correactamente',
+      message: 'Venta anulada',
       data: saleInstance
     }
   } catch (error) {
