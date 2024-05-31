@@ -28,6 +28,11 @@ enum DeliveryMethodEnum {
   DELIVERY
   PICKUP
 }
+enum DistributorSalePaymentMethod {
+  CREDIT
+  MIXED
+  CASH
+}
 type Query {
   # CONFIGURATION ====================================
   getConfiguration: ConfigurationResponse
@@ -492,6 +497,38 @@ type PriceList {
   name: String!
   description: String
   productsIds: [ObjectId!]!
+}
+type DistributorSaleItem {
+  productId: ObjectId!
+  price: Float!
+  qty: Int!
+  total: Float!
+}
+type DistributorSale {
+  id: ObjectId!
+  products: [DistributorSaleItem!]!
+  priceListId: ObjectId!
+  warehouseId: ObjectId!
+  paymentMethod: DistributorSalePaymentMethod!
+  subTotal: Float!
+  total: Float!
+  discount: Float!
+  balance: Float!
+  totalPaid: Float!
+  date: Date!
+  code: String!
+  customerId: ObjectId!
+  observations: String
+  createdBy: ObjectId
+  canceled: Boolean
+  reason: String
+  canceledAt: Date
+  canceledBy: ObjectId
+  # Field resolvers
+  warehouseInfo: Warehouse
+  priceListInfo: PriceList
+  createdByInfo: User
+  canceledByInfo: User
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -1072,4 +1109,36 @@ input UpdatePriceListInput {
   id: ObjectId!
   name: String
   description: String
+}
+type DistributorSaleItemInput {
+  productId: ObjectId!
+  stockId: ObjectId!
+  price: Float!
+  qty: Int!
+  total: Float!
+}
+type CreateDistributorSaleInput {
+  products: [DistributorSaleItemInput!]!
+  priceListId: ObjectId!
+  warehouseId: ObjectId!
+  paymentMethod: DistributorSalePaymentMethod!
+  subTotal: Float!
+  total: Float!
+  discount: Float!
+  balance: Float!
+  totalPaid: Float!
+  date: Date!
+  code: String!
+  customerId: ObjectId!
+  observations: String
+}
+input DistributorSalePaginationInput {
+  rows: Int
+  page: Int
+  # Filter by sale code
+  filter: String
+  initialDate: Date
+  endDate: Date
+  saleBy: ObjectId
+  customerIds: [ObjectId!]
 }

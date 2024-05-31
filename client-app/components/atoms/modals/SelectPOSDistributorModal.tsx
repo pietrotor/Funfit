@@ -3,6 +3,7 @@ import { MyModal } from './MyModal'
 import { SelectWarehouses } from '@/components/molecules/SelectWarehouses'
 import { SelectDistributor } from '@/components/molecules/SelectDistributor'
 import { TpointOfSaleDistributor } from '@/interfaces/TData'
+import { SelectPriceLists } from '@/components/molecules/SelectPriceList'
 type SelectWareHouseModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -22,17 +23,30 @@ export const SelectPOSDistributorModal = ({
   const [errorMessage, setErrorMessage] = useState('')
 
   const onSubmit = () => {
-    if (selectedDistributor.distributor && selectedDistributor.warehouse) {
-      if (step === 'warehouses') {
+    if (step === 'warehouses') {
+      if (selectedDistributor.warehouse) {
         setStep('ditributors')
         setErrorMessage('')
       } else {
+        setErrorMessage('Selecciona un almacén')
+      }
+    }
+    if (step === 'ditributors') {
+      if (selectedDistributor.distributor) {
+        setStep('priceLists')
+        setErrorMessage('')
+      } else {
+        setErrorMessage('Selecciona un distribuidor')
+      }
+    }
+    if (step === 'priceLists') {
+      if (selectedDistributor.priceListId) {
         onClose()
         getProduct()
         setErrorMessage('')
+      } else {
+        setErrorMessage('Selecciona una lista de precios')
       }
-    } else {
-      setErrorMessage('Selecciona un almacén o distribuidor')
     }
   }
 
@@ -43,6 +57,9 @@ export const SelectPOSDistributorModal = ({
   const handleBack = () => {
     if (step === 'ditributors') {
       setStep('warehouses')
+    }
+    if (step === 'priceLists') {
+      setStep('ditributors')
     }
   }
 
@@ -59,14 +76,14 @@ export const SelectPOSDistributorModal = ({
           ? 'Seleccionar almacén'
           : step === 'ditributors'
             ? 'Seleccionar distribuidor'
-            : ''
+            : 'Seleccionar lista de precios'
       }
       message={
         step === 'warehouses'
           ? 'Selecciona el almacén para obtener los productos'
           : step === 'ditributors'
             ? 'Selecciona el distribuidor para obtener los productos'
-            : ''
+            : 'Selecciona la lista de precios'
       }
       handleCancel={handleCancel}
       handleSubmit={onSubmit}
@@ -87,9 +104,14 @@ export const SelectPOSDistributorModal = ({
           selectedDistributor={selectedDistributor}
           setSelectDistributor={setSelectDistributor}
         />
+      ) : step === 'priceLists' ? (
+        <SelectPriceLists
+          selectedDistributor={selectedDistributor}
+          setSelectDistributor={setSelectDistributor}
+        />
       ) : null}
       {errorMessage && (
-        <div className="text-sm text-center text-red-500">{errorMessage}</div>
+        <div className="text-center text-sm text-red-500">{errorMessage}</div>
       )}
     </MyModal>
   )

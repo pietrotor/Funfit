@@ -334,50 +334,6 @@ export class SalesService extends SalesRepository<objectId> {
     return await saleInstance.save()
   }
 
-  async cancelSale(cancelSaleInput: CancelSaleInput, canceledBy?: objectId) {
-    const { saleId, reason, returnStock, returnCash } = cancelSaleInput
-    const saleInstance = await this.getSaleById(saleId)
-    if (
-      typeof returnCash !== 'boolean' &&
-      saleInstance.paymentMethod === PaymentMethodEnum.CASH
-    ) {
-      throw new BadRequestError(
-        'Es necesario envíar si el dinero se retornará a caja'
-      )
-    }
-    if (saleInstance.paymentMethod === PaymentMethodEnum.CASH && returnCash) {
-      const branchInstance = await branchCore.getBranchById(
-        saleInstance.branchId
-      )
-      const cashInstance = await cashCore.getCashById(branchInstance.cashId)
-      if (!cashInstance.isOpen) {
-        throw new BadRequestError(
-          'La caja se encuentra cerrada, debe abrir caja para retornar el dinero'
-        )
-      }
-      cashInstance.amount += saleInstance.total
-      await cashInstance.save()
-    }
-    if (returnStock) {
-      await Promise.all(
-        saleInstance.products.map(async product => {
-          const branchProductInstance =
-            await branchProductCore.getBranchProductByIdInstance(
-              product.branchProductId
-            )
-          if (!branchProductInstance) return
-          branchProductInstance.stock += product.qty
-          await branchProductInstance.save()
-        })
-      )
-    }
-    saleInstance.canceled = true
-    saleInstance.canceledAt = new Date()
-    saleInstance.canceledBy = canceledBy || null
-    saleInstance.reason = reason
-    return await saleInstance.save()
-  }
-
   async cancelSale(cancelSaleInput: CancelSaleInput, cancelBy?: objectId) {
     const { id, reason, cashBack, stockReturn } = cancelSaleInput
     const saleInstance = await this.getSaleById(id)
