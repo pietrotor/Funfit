@@ -463,3 +463,19 @@ export const DELETE_PRICE = gql`
     }
   }
 `
+export const CREATE_DISTRIBUTOR_SALE = gql`
+  mutation CreateDistributorSale(
+    $createDistributorSaleInput: CreateDistributorSaleInput!
+  ) {
+    createDistributorSale(
+      createDistributorSaleInput: $createDistributorSaleInput
+    ) {
+      errorInput {
+        message
+        field
+      }
+      message
+      status
+    }
+  }
+`

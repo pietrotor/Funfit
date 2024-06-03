@@ -23,11 +23,9 @@ interface DailySaleProps {
 }
 
 function DailySale({ user }: DailySaleProps) {
-  const [edit, setEdit] = useState<string>('')
-  const handleCancelModal = useDisclosure()
   const router = useRouter()
   const { currentBranch } = useAppSelector(state => state.branchReducer)
-  const [products, setProducts] = useState<TSaleProduct[]>([])
+  const [, setProducts] = useState<TSaleProduct[]>([])
   const handleProductsListModal = useDisclosure()
 
   const {
@@ -76,10 +74,6 @@ function DailySale({ user }: DailySaleProps) {
     return summary?.paymentMethods.find(
       paymentMethod => paymentMethod.method === method
     )
-  }
-  const handleCancelSale = (saleId: string) => {
-    setEdit(saleId)
-    handleCancelModal.onOpen()
   }
 
   const handleProducts = (products: TSaleProduct[]) => {

@@ -12,12 +12,15 @@ export interface IDistributorSale extends Document, IGeneric {
   id: objectId
   products: {
     productId: objectId
+    priceId: objectId
+    stockId: objectId
     price: number
     qty: number
     total: number
   }[]
   priceListId: objectId
   warehouseId: objectId
+  distributorId: objectId
   paymentMethod: DistributorSalePaymentMethod
   subTotal: number
   total: number
@@ -26,8 +29,8 @@ export interface IDistributorSale extends Document, IGeneric {
   totalPaid: number
   date: Date
   code: string
-  customerId: objectId
   observations: string | null
+  paid: boolean
   canceled: boolean
   reason: string | null
   canceledAt: Date | null
@@ -39,9 +42,13 @@ const distributorSaleSchema = new Schema<IDistributorSale>(
     products: [
       {
         _id: false,
-        branchProductId: {
+        priceId: {
           type: Schema.Types.ObjectId,
-          ref: 'BranchProduct'
+          ref: 'Price'
+        },
+        stockId: {
+          type: Schema.Types.ObjectId,
+          ref: 'Stock'
         },
         productId: {
           type: Schema.Types.ObjectId,
@@ -101,12 +108,16 @@ const distributorSaleSchema = new Schema<IDistributorSale>(
       type: String,
       default: ''
     },
-    customerId: {
+    distributorId: {
       type: Schema.Types.ObjectId,
-      ref: 'Customer'
+      ref: 'Distributor'
     },
     observations: {
       type: String
+    },
+    paid: {
+      type: Boolean,
+      required: true
     },
     canceled: {
       type: Boolean,

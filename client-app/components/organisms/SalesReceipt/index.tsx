@@ -8,18 +8,25 @@ import EmptySale from '@/components/atoms/EmptySale'
 // import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import SaleModal from '@/components/atoms/modals/SaleModal'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
+import SaleDistributorModal from '@/components/atoms/modals/SaleDistributorModal'
+import { TpointOfSaleDistributor } from '@/interfaces/TData'
 type SalesReceiptProps = {
   selectedProducts: TPointOfSaleData
   setSelectedProducts: React.Dispatch<SetStateAction<TPointOfSaleData>>
   refetch?: () => void
+  isDistributorSale?: boolean
+  selectedDistributors?: TpointOfSaleDistributor
 }
 
 function SalesReceipt({
   selectedProducts,
   setSelectedProducts,
-  refetch
+  refetch,
+  isDistributorSale,
+  selectedDistributors
 }: SalesReceiptProps) {
   const handleSaleModal = useDisclosure()
+  const handleDistrbutorSaleModal = useDisclosure()
 
   const handleCancel = () => {
     setSelectedProducts({ products: [], subTotal: 0, total: 0, discount: 0 })
@@ -40,7 +47,9 @@ function SalesReceipt({
     if (selectedProducts.products.length === 0) {
       showSuccessToast('No hay productos seleccionados', 'error')
     } else {
-      handleSaleModal.onOpen()
+      if (isDistributorSale) {
+        handleDistrbutorSaleModal.onOpen()
+      } else handleSaleModal.onOpen()
     }
   }
 
@@ -105,14 +114,6 @@ function SalesReceipt({
                 Bs. {selectedProducts.total}
               </span>
             </Button>
-            <Button
-              onClick={() => {
-                console.log('1')
-              }}
-              className="md:text-md border-1 border-secondary bg-gray-200 text-sm"
-            >
-              Generar venta
-            </Button>
           </div>
           <div className="flex justify-between">
             <p className="md:text-md text-sm text-gray-500">
@@ -128,6 +129,14 @@ function SalesReceipt({
         </div>
       </div>
 
+      <SaleDistributorModal
+        isOpen={handleDistrbutorSaleModal.isOpen}
+        onClose={handleDistrbutorSaleModal.onClose}
+        selectedProducts={selectedProducts as any}
+        setSelectedProducts={setSelectedProducts as any}
+        selectedDistributors={selectedDistributors}
+        refetch={refetch}
+      />
       <SaleModal
         isOpen={handleSaleModal.isOpen}
         onClose={handleSaleModal.onClose}

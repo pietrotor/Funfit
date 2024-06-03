@@ -1,34 +1,76 @@
 import {
-  CancelSaleInput,
   CreateDistributorSaleInput,
   DistributorSalePaginationInput,
+  DistributorSaleProduct,
   StockMovementTypeEnum
 } from '@/graphql/graphql_types'
 import { DistributorSaleRepository } from '../repositories'
 import { BadRequestError } from '@/lib/graphqlerrors'
 import { distributorSaleUseCase } from 'useCase'
 import {
-  branchCore,
-  branchProductCore,
-  cashCore,
   customerCore,
+  distributorCore,
+  paymentCore,
+  priceCore,
   priceListCore,
   productCore,
   stockCore,
-  turnMovementCore,
   warehouseCore
 } from '.'
 import {
   DistributorSale,
   IDistributorSale,
   IModelDistributorSale,
-  TurnMovementTypeEnum
+  Price
 } from '../models'
 import { getInstancesPagination } from './generic.service'
 import { addDays } from 'helpers'
 import Decimal from 'decimal.js'
+import { AddDistributorSalePayment } from 'dtos'
+import Stock from '@/models/stock.model'
+import { OutErrorResponse } from '@/lib/graphqlerrors/custom.error'
 
-export class SalesService extends DistributorSaleRepository<objectId> {
+export class DistributorSaleService extends DistributorSaleRepository<objectId> {
+  async getDistributorSalesProducts(
+    warehouseId: objectId,
+    priceListId: objectId
+  ) {
+    await Promise.all([
+      warehouseCore.getWarehouseById(warehouseId),
+      priceListCore.getPriceListById(priceListId)
+    ])
+
+    const [productsOnStock, priceProducts] = await Promise.all([
+      Stock.find({
+        deleted: false,
+        warehouseId
+      }),
+      Price.find({
+        deleted: false,
+        priceListId
+      })
+    ])
+    const products: DistributorSaleProduct[] = []
+    productsOnStock.forEach(({ productId, warehouseId, _id, quantity }) => {
+      const existsProduct = priceProducts.find(
+        priceProduct =>
+          priceProduct.productId.toString() === productId.toString()
+      )
+      if (existsProduct) {
+        products.push({
+          warehouseId,
+          stockId: _id,
+          productId,
+          priceListId: existsProduct.priceListId,
+          priceId: existsProduct._id,
+          price: existsProduct.price,
+          stock: quantity
+        })
+      }
+    })
+    return products
+  }
+
   async getDistributorSaleById(id: objectId) {
     const distributorSaleInstance = await DistributorSale.findOne({
       _id: id,
@@ -47,7 +89,7 @@ export class SalesService extends DistributorSaleRepository<objectId> {
     })
   }
 
-  async getSalesPaginated(
+  async getDistributorSalesPaginated(
     distributorSalePaginationInput: DistributorSalePaginationInput
   ) {
     const {
@@ -55,9 +97,13 @@ export class SalesService extends DistributorSaleRepository<objectId> {
       endDate,
       initialDate,
       saleBy,
-      customerIds,
+      distributorsIds,
       ...paginationInput
     } = distributorSalePaginationInput
+    console.log(
+      '--- respuest --- ',
+      await this.getTotalSaled(distributorSalePaginationInput)
+    )
     const initialDateQuery = initialDate ? new Date(initialDate) : null
     if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
     const dateFilter =
@@ -70,10 +116,10 @@ export class SalesService extends DistributorSaleRepository<objectId> {
           }
         : {}
     const customerFilter =
-      (customerIds || [])?.length > 0
+      (distributorsIds || [])?.length > 0
         ? {
-            customerId: {
-              $in: customerIds
+            distributorId: {
+              $in: distributorsIds
             }
           }
         : {}
@@ -102,7 +148,7 @@ export class SalesService extends DistributorSaleRepository<objectId> {
     })
   }
 
-  async createSale(
+  async createDistributorSale(
     createSaleInput: CreateDistributorSaleInput,
     createdBy?: objectId
   ) {
@@ -114,7 +160,7 @@ export class SalesService extends DistributorSaleRepository<objectId> {
       total,
       subTotal,
       observations,
-      customerId,
+      distributorId,
       balance,
       priceListId,
       warehouseId,
@@ -152,8 +198,10 @@ export class SalesService extends DistributorSaleRepository<objectId> {
       throw new BadRequestError('El sub total no es correcto')
     }
 
-    const [customerInstance] = await Promise.all([
-      customerCore.getCustomerById(customerId),
+    const isPaid = balance === 0
+
+    const [distributorInstance] = await Promise.all([
+      distributorCore.getDistributorById(distributorId),
       priceListCore.getPriceListById(priceListId),
       warehouseCore.getWarehouseById(warehouseId)
     ])
@@ -200,8 +248,8 @@ export class SalesService extends DistributorSaleRepository<objectId> {
               date: new Date(),
               quantity: product.qty,
               stockId: product.stockId,
-              type: StockMovementTypeEnum.INWARD,
-              detail: `Venta a empresa: ${customerInstance.name}, con código de venta: ${code}`
+              type: StockMovementTypeEnum.OUTWARD,
+              detail: `Venta a empresa: ${distributorInstance.name}, con código de venta: ${code}`
             },
             createdBy
           )
@@ -209,8 +257,7 @@ export class SalesService extends DistributorSaleRepository<objectId> {
       })
     )
 
-    const saleInstance = new DistributorSale({
-      branchId,
+    const saleDistributorInstance = new DistributorSale({
       products,
       paymentMethod,
       total,
@@ -218,66 +265,130 @@ export class SalesService extends DistributorSaleRepository<objectId> {
       date,
       subTotal,
       code,
-      client,
-      amountRecibed,
-      change,
       observations,
       canceled: false,
-      createdBy
+      createdBy,
+      distributorId,
+      warehouseId,
+      balance,
+      totalPaid,
+      priceListId,
+      paid: isPaid
     })
-    if (orderInstance) {
-      orderInstance.isSold = true
-      orderInstance.saleId = saleInstance._id
-      await saleInstance.save()
-    }
-    return await saleInstance.save()
+    await paymentCore.createPayment(
+      {
+        amount: totalPaid,
+        distributorId,
+        date,
+        distributorSaleId: saleDistributorInstance._id,
+        observation: `pago por venta con código: ${code}.`
+      },
+      false,
+      createdBy
+    )
+    return await saleDistributorInstance.save()
   }
 
-  async cancelSale(cancelSaleInput: CancelSaleInput, cancelBy?: objectId) {
-    const { id, reason, cashBack, stockReturn } = cancelSaleInput
-    const saleInstance = await this.getSaleById(id)
-    const branchInstance = await branchCore.getBranchById(saleInstance.branchId)
-    const cashInstance = await cashCore.getCashById(branchInstance.cashId)
-    if (!cashInstance.currentTurnId || !cashInstance.isOpen) {
-      throw new BadRequestError(
-        'La caja no se encuentra abierta para poder cancelar una venta'
-      )
-    }
-    saleInstance.reason = reason
-    saleInstance.canceled = true
-    saleInstance.canceledAt = new Date()
-    saleInstance.canceledBy = cancelBy
-    if (cashBack) {
-      await turnMovementCore.createMovement(
-        {
-          amount: saleInstance.total,
-          cashId: branchInstance.cashId,
-          date: new Date(),
-          turnId: cashInstance.currentTurnId,
-          concept: reason,
-          type: TurnMovementTypeEnum.WITHDRAW
-        },
-        cancelBy
-      )
-    }
-    if (stockReturn) {
-      await Promise.all(
-        saleInstance.products.map(async ({ branchProductId, qty }) => {
-          try {
-            const branchProductInstance =
-              await branchProductCore.getBranchProductById(branchProductId)
-            branchProductInstance.stock += qty
-            await branchProductInstance.save()
-          } catch (error) {
-            console.log('🚀 ~ SalesService ~ awaitPromise.all ~ error:', error)
+  async addDistributorSalePayment(
+    addDistributorSalePayment: AddDistributorSalePayment
+  ) {
+    const { amount, id } = addDistributorSalePayment
+    const distributorSaleInstance = await this.getDistributorSaleById(id)
+    const { balance, totalPaid } = distributorSaleInstance
+    if (amount <= 0) throw new BadRequestError('El pago debe ser mayor a 0 Bs')
+    if (amount > balance)
+      throw new BadRequestError('El pago no puede ser mayor al saldo pendiente')
+
+    const newBalance = new Decimal(balance).minus(amount).toNumber()
+    const newTotalPaid = new Decimal(totalPaid).add(amount).toNumber()
+
+    distributorSaleInstance.balance = newBalance
+    distributorSaleInstance.totalPaid = newTotalPaid
+    if (newBalance === 0) distributorSaleInstance.paid = true
+
+    return await distributorSaleInstance.save()
+  }
+
+  async getTotalSaled(
+    distributorSalePaginationInput: DistributorSalePaginationInput
+  ) {
+    const { endDate, initialDate, saleBy, distributorsIds } =
+      distributorSalePaginationInput
+    const initialDateQuery = initialDate ? new Date(initialDate) : null
+    if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
+    const dateFilter =
+      initialDateQuery && endDate
+        ? {
+            createdAt: {
+              $gte: initialDateQuery,
+              $lt: addDays(new Date(endDate), 1)
+            }
           }
-        })
-      )
-    }
-    const [saleUpdated] = await Promise.all([
-      saleInstance.save(),
-      branchInstance.save()
+        : {}
+    const distributorFilter =
+      (distributorsIds || [])?.length > 0
+        ? {
+            distributorId: {
+              $in: distributorsIds
+            }
+          }
+        : {}
+    const salesByFilter = saleBy ? { createdBy: saleBy } : {}
+    const [total, totalPaid, balance] = await Promise.all([
+      DistributorSale.aggregate([
+        {
+          $match: {
+            canceled: false,
+            ...dateFilter,
+            ...distributorFilter,
+            ...salesByFilter
+          } // Aplica los a la consulta
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$total' }
+          }
+        }
+      ]),
+      DistributorSale.aggregate([
+        {
+          $match: {
+            canceled: false,
+            ...dateFilter,
+            ...distributorFilter,
+            ...salesByFilter
+          } // Aplica los a la consulta
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$totalPaid' }
+          }
+        }
+      ]),
+      DistributorSale.aggregate([
+        {
+          $match: {
+            canceled: false,
+            ...dateFilter,
+            ...distributorFilter,
+            ...salesByFilter
+          } // Aplica los a la consulta
+        },
+        {
+          $group: {
+            _id: null,
+            total: { $sum: '$balance' }
+          }
+        }
+      ])
     ])
-    return saleUpdated
+
+    return {
+      total: total[0]?.total || 0,
+      totalPaid: totalPaid[0]?.total || 0,
+      balance: balance[0]?.total || 0
+    }
   }
 }

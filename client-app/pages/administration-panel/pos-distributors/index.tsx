@@ -2,35 +2,42 @@ import { GetServerSideProps } from 'next'
 import { useEffect, useState } from 'react'
 import { Spinner, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
-import { TPointOfSaleData } from '../point-of-sale'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 import AdministrationLayout from '@/components/templates/layouts'
 import Search from '@/components/molecules/Search'
-import { TpointOfSaleDistributor, TProductBranchData } from '@/interfaces/TData'
-import { useAppSelector } from '@/store/index'
-import PointOfSaleCard from '@/components/molecules/Card/PointOfSaleCard'
+import { TpointOfSaleDistributor } from '@/interfaces/TData'
+import DistributorSaleProductCard from '@/components/molecules/Card/DistributorSaleProductCard'
 import SalesReceipt from '@/components/organisms/SalesReceipt'
-import ResponsiveSaleModal from '@/components/atoms/modals/ResponsiveSaleModal'
 import { SelectPOSDistributorModal } from '@/components/atoms/modals/SelectPOSDistributorModal'
-import { useGetBranchProductsPaginatedLazyQuery } from '@/graphql/graphql-types'
+import {
+  DistributorSaleProduct,
+  useGetDistributorSaleProductsLazyQuery
+} from '@/graphql/graphql-types'
 
 interface PointOfSaleProps {
   user: any
+}
+
+type TDistributorProductSaleProduct = DistributorSaleProduct & {
+  quantity?: number
+  total?: number
+}
+
+export type TPointOfSaleData = {
+  products: TDistributorProductSaleProduct[]
+  subTotal: number
+  total: number
+  discount: number
 }
 
 function PointOfSaleDistributors({ user }: PointOfSaleProps) {
   const router = useRouter()
   const { data: dataPassed } = router.query
   const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
-  const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
-  const [getProducts, { loading, data }] =
-    useGetBranchProductsPaginatedLazyQuery({
-      fetchPolicy: 'network-only',
-      variables: {
-        branchId,
-        paginationInput: {}
-      }
+  const [getProducts, { loading, data, refetch }] =
+    useGetDistributorSaleProductsLazyQuery({
+      fetchPolicy: 'network-only'
     })
   const [selectedProducts, setSelectedProducts] = useState<TPointOfSaleData>(
     parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
@@ -66,7 +73,7 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
         }
       })
     } else {
-      const newProduct = data?.getBranchProductsPaginated?.data?.find(
+      const newProduct = data?.getDistributorSaleProducts?.data?.find(
         item => item.productId === id
       )
 
@@ -76,7 +83,7 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
             products: [
               ...(prevProducts?.products ?? []),
               {
-                ...(newProduct as TProductBranchData),
+                ...(newProduct as DistributorSaleProduct),
                 quantity: 1,
                 total: newProduct.price
               }
@@ -101,22 +108,22 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
     )
   }, [router.query])
 
-  useEffect(() => {
-    if (selectedProducts && selectedProducts.products.length > 0) {
-      selectedProducts.products.forEach(product => {
-        product.stock = data?.getBranchProductsPaginated?.data?.find(
-          item => item.productId === product.productId
-        )?.stock
-      })
-    }
-  }, [selectedProducts])
+  // useEffect(() => {
+  //   if (selectedProducts && selectedProducts.products.length > 0) {
+  //     selectedProducts.products.forEach(product => {
+  //       product.stock = data?.getDistributorSaleProducts?.data?.find(
+  //         item => item.productId === product.productId
+  //       )?.stock
+  //     })
+  //   }
+  // }, [selectedProducts])
 
   return (
     <AdministrationLayout user={user} profileButton={false}>
       <section className="flex h-full w-full ">
         <div className="w-2/3 border-1 border-secondary/30  bg-secondary/10 p-4">
           <div className="flex w-full">
-            <Search setFilter={() => {}}/>
+            <Search setFilter={() => {}} />
           </div>
           {loading && (
             <div className="flex h-[90vh] items-center justify-center overflow-y-auto scrollbar-hide ">
@@ -125,10 +132,10 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
           )}
           <div className="grid max-h-[90vh] grid-cols-2 gap-3 overflow-y-auto scrollbar-hide md:grid-cols-3 md:gap-4 md:p-4 ">
             {!loading &&
-              data?.getBranchProductsPaginated?.data?.map(item => (
-                <PointOfSaleCard
-                  key={item.id}
-                  product={item as TProductBranchData}
+              data?.getDistributorSaleProducts?.data?.map(item => (
+                <DistributorSaleProductCard
+                  key={item.productId}
+                  product={item as TDistributorProductSaleProduct}
                   quantity={
                     selectedProducts?.products?.find(
                       product => product.productId === item.productId
@@ -148,23 +155,33 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
         </div>
         <div className="hidden h-full md:block md:w-1/3">
           <SalesReceipt
-            selectedProducts={selectedProducts}
-            setSelectedProducts={setSelectedProducts}
+            selectedProducts={selectedProducts as any}
+            setSelectedProducts={setSelectedProducts as any}
+            selectedDistributors={selectedDistributors}
+            isDistributorSale
+            refetch={refetch}
           />
         </div>
       </section>
-      <ResponsiveSaleModal
+      {/* <ResponsiveSaleModal
         isOpen={handleResponsiveSaleModal.isOpen}
         onClose={handleResponsiveSaleModal.onClose}
         selectedProducts={selectedProducts}
         setSelectedProducts={setSelectedProducts}
-      />
+      /> */}
       <SelectPOSDistributorModal
         isOpen={handleSelectWarehouseModal.isOpen}
         onClose={handleSelectWarehouseModal.onClose}
         selectedDistributor={selectedDistributors}
         setSelectDistributor={setSelectedDistributors}
-        getProduct={getProducts}
+        getProduct={() =>
+          getProducts({
+            variables: {
+              priceListId: selectedDistributors.priceListId!,
+              warehouseId: selectedDistributors.warehouse!
+            }
+          })
+        }
       />
     </AdministrationLayout>
   )

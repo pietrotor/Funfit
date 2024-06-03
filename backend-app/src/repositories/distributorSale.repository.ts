@@ -1,12 +1,13 @@
 import {
-  CancelSaleInput,
   CreateDistributorSaleInput,
   DistributorSalePaginationInput,
-  Sale
+  DistributorSaleProduct,
+  DistributorsSalesSummary
 } from '@/graphql/graphql_types'
 import { OutErrorResponse } from '@/lib/graphqlerrors/custom.error'
 import { IDistributorSale } from '../models'
 import { IPaginatedResponse } from '@/interfaces/generic.interface'
+import { AddDistributorSalePayment } from 'dtos'
 
 export abstract class DistributorSaleRepository<T> {
   abstract getDistributorSaleById(
@@ -23,9 +24,18 @@ export abstract class DistributorSaleRepository<T> {
 
   abstract createDistributorSale(
     createSaleInput: CreateDistributorSaleInput
-  ): Promise<Sale | OutErrorResponse>
+  ): Promise<IDistributorSale | OutErrorResponse>
 
-  abstract cancelDistributorSale(
-    cancelSaleInput: CancelSaleInput
-  ): Promise<Sale | OutErrorResponse>
+  abstract addDistributorSalePayment(
+    addDistributorSalePayment: AddDistributorSalePayment
+  ): Promise<IDistributorSale | OutErrorResponse>
+
+  abstract getDistributorSalesProducts(
+    warehouseId: objectId,
+    priceListId: objectId
+  ): Promise<DistributorSaleProduct[] | OutErrorResponse>
+
+  abstract getTotalSaled(
+    distributorSalePaginationInput: DistributorSalePaginationInput
+  ): Promise<DistributorsSalesSummary | OutErrorResponse>
 }

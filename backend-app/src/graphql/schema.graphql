@@ -118,6 +118,18 @@ type Query {
   getPricesPaginated(
     pricePaginationInput: PricePaginationInput!
   ): PricesResponse
+  # DISTRIBUTOR SALES ==========================
+  getDistributorSaleProducts(
+    warehouseId: ObjectId!
+    priceListId: ObjectId!
+  ): DistributorSaleProductsResponse
+  getDistributorSalesPaginated(
+    distributorSalePaginationInput: DistributorSalePaginationInput!
+  ): DistributorSalesResponse
+  getDistributorSale(id: ObjectId!): DistributorSaleResponse
+  getDistributorsSalesSummary(
+    distributorSalePaginationInput: DistributorSalePaginationInput!
+  ): DistributorsSalesSummaryResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(
     paginationInput: PaginationInput!
@@ -202,6 +214,10 @@ type Mutation {
   createPrice(createPriceInput: CreatePriceInput!): PriceResponse
   updatePrice(updatePriceInput: UpdatePriceInput!): PriceResponse
   deletePrice(id: ObjectId!): PriceResponse
+  # DISTRIBUTOR SALES ==========================
+  createDistributorSale(
+    createDistributorSaleInput: CreateDistributorSaleInput!
+  ): DistributorSaleResponse
   # ========================= ECOMMERCE ROUTES ============================
   publicCreateCustomer(
     createCustomerInput: CreateCustomerInput!
@@ -503,6 +519,8 @@ type DistributorSaleItem {
   price: Float!
   qty: Int!
   total: Float!
+  # Field resolvers
+  product: Product
 }
 type DistributorSale {
   id: ObjectId!
@@ -517,7 +535,7 @@ type DistributorSale {
   totalPaid: Float!
   date: Date!
   code: String!
-  customerId: ObjectId!
+  distributorId: ObjectId!
   observations: String
   createdBy: ObjectId
   canceled: Boolean
@@ -525,10 +543,40 @@ type DistributorSale {
   canceledAt: Date
   canceledBy: ObjectId
   # Field resolvers
-  warehouseInfo: Warehouse
-  priceListInfo: PriceList
+  warehouse: Warehouse
+  priceList: PriceList
+  distributor: Distributor
   createdByInfo: User
   canceledByInfo: User
+}
+type DistributorSaleProduct {
+  warehouseId: ObjectId!
+  stockId: ObjectId!
+  productId: ObjectId!
+  priceListId: ObjectId!
+  priceId: ObjectId!
+  price: Float!
+  stock: Float!
+  # Field resolvers
+  product: Product
+}
+type Payment {
+  id: ObjectId!
+  amount: Float!
+  date: Date!
+  observation: String
+  customerId: ObjectId!
+  distributorSaleId: ObjectId!
+  createdyBy: ObjectId!
+  # Fields Resolvers
+  createdyByInfo: User
+  customer: Customer
+  distributorSale: DistributorSale
+}
+type DistributorsSalesSummary {
+  total: Float!
+  totalPaid: Float!
+  balance: Float!
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -804,6 +852,34 @@ type PriceResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: Price
+}
+type DistributorSalesResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [DistributorSale!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type DistributorSaleResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: DistributorSale
+}
+type DistributorSaleProductsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [DistributorSaleProduct!]
+}
+type DistributorsSalesSummaryResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: DistributorsSalesSummary
 }
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
@@ -1110,14 +1186,14 @@ input UpdatePriceListInput {
   name: String
   description: String
 }
-type DistributorSaleItemInput {
+input DistributorSaleItemInput {
   productId: ObjectId!
   stockId: ObjectId!
   price: Float!
   qty: Int!
   total: Float!
 }
-type CreateDistributorSaleInput {
+input CreateDistributorSaleInput {
   products: [DistributorSaleItemInput!]!
   priceListId: ObjectId!
   warehouseId: ObjectId!
@@ -1128,8 +1204,7 @@ type CreateDistributorSaleInput {
   balance: Float!
   totalPaid: Float!
   date: Date!
-  code: String!
-  customerId: ObjectId!
+  distributorId: ObjectId!
   observations: String
 }
 input DistributorSalePaginationInput {
@@ -1140,5 +1215,21 @@ input DistributorSalePaginationInput {
   initialDate: Date
   endDate: Date
   saleBy: ObjectId
-  customerIds: [ObjectId!]
+  distributorsIds: [ObjectId!]
+}
+input CreatePaymentInput {
+  amount: Float!
+  date: Date!
+  observation: String
+  distributorId: ObjectId!
+  distributorSaleId: ObjectId!
+}
+input PaymentPaginationInput {
+  rows: Int
+  page: Int
+  filter: String
+  distributorsIds: [ObjectId!]
+  initialDate: Date
+  endDate: Date
+  saleBy: ObjectId
 }

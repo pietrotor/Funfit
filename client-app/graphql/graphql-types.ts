@@ -282,6 +282,21 @@ export type CreateDistributorInput = {
   socialReason?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateDistributorSaleInput = {
+  balance: Scalars['Float'];
+  date: Scalars['Date'];
+  discount: Scalars['Float'];
+  distributorId: Scalars['ObjectId'];
+  observations?: InputMaybe<Scalars['String']>;
+  paymentMethod: DistributorSalePaymentMethod;
+  priceListId: Scalars['ObjectId'];
+  products: Array<DistributorSaleItemInput>;
+  subTotal: Scalars['Float'];
+  total: Scalars['Float'];
+  totalPaid: Scalars['Float'];
+  warehouseId: Scalars['ObjectId'];
+};
+
 export type CreateOrderInput = {
   addressId?: InputMaybe<Scalars['ObjectId']>;
   branchId: Scalars['ObjectId'];
@@ -294,6 +309,14 @@ export type CreateOrderInput = {
   products: Array<SaleItemInput>;
   subTotal: Scalars['Float'];
   total: Scalars['Float'];
+};
+
+export type CreatePaymentInput = {
+  amount: Scalars['Float'];
+  date: Scalars['Date'];
+  distributorId: Scalars['ObjectId'];
+  distributorSaleId: Scalars['ObjectId'];
+  observation?: InputMaybe<Scalars['String']>;
 };
 
 export type CreatePriceInput = {
@@ -427,6 +450,107 @@ export type DistributorResponse = ResponseBase & {
   status: StatusEnum;
 };
 
+export type DistributorSale = {
+  __typename?: 'DistributorSale';
+  balance: Scalars['Float'];
+  canceled?: Maybe<Scalars['Boolean']>;
+  canceledAt?: Maybe<Scalars['Date']>;
+  canceledBy?: Maybe<Scalars['ObjectId']>;
+  canceledByInfo?: Maybe<User>;
+  code: Scalars['String'];
+  createdBy?: Maybe<Scalars['ObjectId']>;
+  createdByInfo?: Maybe<User>;
+  date: Scalars['Date'];
+  discount: Scalars['Float'];
+  distributor?: Maybe<Distributor>;
+  distributorId: Scalars['ObjectId'];
+  id: Scalars['ObjectId'];
+  observations?: Maybe<Scalars['String']>;
+  paymentMethod: DistributorSalePaymentMethod;
+  priceList?: Maybe<PriceList>;
+  priceListId: Scalars['ObjectId'];
+  products: Array<DistributorSaleItem>;
+  reason?: Maybe<Scalars['String']>;
+  subTotal: Scalars['Float'];
+  total: Scalars['Float'];
+  totalPaid: Scalars['Float'];
+  warehouse?: Maybe<Warehouse>;
+  warehouseId: Scalars['ObjectId'];
+};
+
+export type DistributorSaleItem = {
+  __typename?: 'DistributorSaleItem';
+  price: Scalars['Float'];
+  product?: Maybe<Product>;
+  productId: Scalars['ObjectId'];
+  qty: Scalars['Int'];
+  total: Scalars['Float'];
+};
+
+export type DistributorSaleItemInput = {
+  price: Scalars['Float'];
+  productId: Scalars['ObjectId'];
+  qty: Scalars['Int'];
+  stockId: Scalars['ObjectId'];
+  total: Scalars['Float'];
+};
+
+export type DistributorSalePaginationInput = {
+  distributorsIds?: InputMaybe<Array<Scalars['ObjectId']>>;
+  endDate?: InputMaybe<Scalars['Date']>;
+  filter?: InputMaybe<Scalars['String']>;
+  initialDate?: InputMaybe<Scalars['Date']>;
+  page?: InputMaybe<Scalars['Int']>;
+  rows?: InputMaybe<Scalars['Int']>;
+  saleBy?: InputMaybe<Scalars['ObjectId']>;
+};
+
+export enum DistributorSalePaymentMethod {
+  CASH = 'CASH',
+  CREDIT = 'CREDIT',
+  MIXED = 'MIXED'
+}
+
+export type DistributorSaleProduct = {
+  __typename?: 'DistributorSaleProduct';
+  price: Scalars['Float'];
+  priceId: Scalars['ObjectId'];
+  priceListId: Scalars['ObjectId'];
+  product?: Maybe<Product>;
+  productId: Scalars['ObjectId'];
+  stock: Scalars['Float'];
+  stockId: Scalars['ObjectId'];
+  warehouseId: Scalars['ObjectId'];
+};
+
+export type DistributorSaleProductsResponse = ResponseBase & {
+  __typename?: 'DistributorSaleProductsResponse';
+  data?: Maybe<Array<DistributorSaleProduct>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type DistributorSaleResponse = ResponseBase & {
+  __typename?: 'DistributorSaleResponse';
+  data?: Maybe<DistributorSale>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type DistributorSalesResponse = ResponseBase & {
+  __typename?: 'DistributorSalesResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<DistributorSale>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
+};
+
 export type DistributorsResponse = ResponseBase & {
   __typename?: 'DistributorsResponse';
   currentPage?: Maybe<Scalars['Int']>;
@@ -437,6 +561,21 @@ export type DistributorsResponse = ResponseBase & {
   status: StatusEnum;
   totalPages?: Maybe<Scalars['Int']>;
   totalRecords?: Maybe<Scalars['Int']>;
+};
+
+export type DistributorsSalesSummary = {
+  __typename?: 'DistributorsSalesSummary';
+  balance: Scalars['Float'];
+  total: Scalars['Float'];
+  totalPaid: Scalars['Float'];
+};
+
+export type DistributorsSalesSummaryResponse = ResponseBase & {
+  __typename?: 'DistributorsSalesSummaryResponse';
+  data?: Maybe<DistributorsSalesSummary>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
 };
 
 export type ErrorInput = {
@@ -476,6 +615,7 @@ export type Mutation = {
   createCashMovement?: Maybe<CashTurnMovementResponse>;
   createCategory?: Maybe<CategoryResponse>;
   createDistributor?: Maybe<DistributorResponse>;
+  createDistributorSale?: Maybe<DistributorSaleResponse>;
   createPrice?: Maybe<PriceResponse>;
   createPriceList?: Maybe<PriceListResponse>;
   createProduct?: Maybe<ProductResponse>;
@@ -555,6 +695,11 @@ export type MutationCreateCategoryArgs = {
 
 export type MutationCreateDistributorArgs = {
   createDistributorInput: CreateDistributorInput;
+};
+
+
+export type MutationCreateDistributorSaleArgs = {
+  createDistributorSaleInput: CreateDistributorSaleInput;
 };
 
 
@@ -779,11 +924,35 @@ export type PaginationInput = {
   rows?: InputMaybe<Scalars['Int']>;
 };
 
+export type Payment = {
+  __typename?: 'Payment';
+  amount: Scalars['Float'];
+  createdyBy: Scalars['ObjectId'];
+  createdyByInfo?: Maybe<User>;
+  customer?: Maybe<Customer>;
+  customerId: Scalars['ObjectId'];
+  date: Scalars['Date'];
+  distributorSale?: Maybe<DistributorSale>;
+  distributorSaleId: Scalars['ObjectId'];
+  id: Scalars['ObjectId'];
+  observation?: Maybe<Scalars['String']>;
+};
+
 export enum PaymentMethodEnum {
   CARD = 'CARD',
   CASH = 'CASH',
   QR_TRANSFER = 'QR_TRANSFER'
 }
+
+export type PaymentPaginationInput = {
+  distributorsIds?: InputMaybe<Array<Scalars['ObjectId']>>;
+  endDate?: InputMaybe<Scalars['Date']>;
+  filter?: InputMaybe<Scalars['String']>;
+  initialDate?: InputMaybe<Scalars['Date']>;
+  page?: InputMaybe<Scalars['Int']>;
+  rows?: InputMaybe<Scalars['Int']>;
+  saleBy?: InputMaybe<Scalars['ObjectId']>;
+};
 
 export type Price = {
   __typename?: 'Price';
@@ -898,7 +1067,11 @@ export type Query = {
   getCategoryById?: Maybe<CategoryResponse>;
   getConfiguration?: Maybe<ConfigurationResponse>;
   getDistributorById?: Maybe<DistributorResponse>;
+  getDistributorSale?: Maybe<DistributorSaleResponse>;
+  getDistributorSaleProducts?: Maybe<DistributorSaleProductsResponse>;
+  getDistributorSalesPaginated?: Maybe<DistributorSalesResponse>;
   getDistributorsPaginated?: Maybe<DistributorsResponse>;
+  getDistributorsSalesSummary?: Maybe<DistributorsSalesSummaryResponse>;
   getOrderById?: Maybe<OrderResponse>;
   getOrdersPaginated?: Maybe<OrdersResponse>;
   getPriceById?: Maybe<PriceResponse>;
@@ -977,8 +1150,29 @@ export type QueryGetDistributorByIdArgs = {
 };
 
 
+export type QueryGetDistributorSaleArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetDistributorSaleProductsArgs = {
+  priceListId: Scalars['ObjectId'];
+  warehouseId: Scalars['ObjectId'];
+};
+
+
+export type QueryGetDistributorSalesPaginatedArgs = {
+  distributorSalePaginationInput: DistributorSalePaginationInput;
+};
+
+
 export type QueryGetDistributorsPaginatedArgs = {
   paginationInput: PaginationInput;
+};
+
+
+export type QueryGetDistributorsSalesSummaryArgs = {
+  distributorSalePaginationInput: DistributorSalePaginationInput;
 };
 
 
@@ -1792,6 +1986,13 @@ export type DeletePriceMutationVariables = Exact<{
 
 export type DeletePriceMutation = { __typename?: 'Mutation', deletePrice?: { __typename?: 'PriceResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
+export type CreateDistributorSaleMutationVariables = Exact<{
+  createDistributorSaleInput: CreateDistributorSaleInput;
+}>;
+
+
+export type CreateDistributorSaleMutation = { __typename?: 'Mutation', createDistributorSale?: { __typename?: 'DistributorSaleResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2062,6 +2263,35 @@ export type GetPriceByIdQueryVariables = Exact<{
 
 
 export type GetPriceByIdQuery = { __typename?: 'Query', getPriceById?: { __typename?: 'PriceResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'Price', id: any, productId: any, priceListId: any, price: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null } | null } | null };
+
+export type GetDistributorSaleProductsQueryVariables = Exact<{
+  warehouseId: Scalars['ObjectId'];
+  priceListId: Scalars['ObjectId'];
+}>;
+
+
+export type GetDistributorSaleProductsQuery = { __typename?: 'Query', getDistributorSaleProducts?: { __typename?: 'DistributorSaleProductsResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'DistributorSaleProduct', warehouseId: any, stockId: any, productId: any, priceListId: any, priceId: any, price: number, stock: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }> | null } | null };
+
+export type GetDistributorSalesPaginatedQueryVariables = Exact<{
+  distributorSalePaginationInput: DistributorSalePaginationInput;
+}>;
+
+
+export type GetDistributorSalesPaginatedQuery = { __typename?: 'Query', getDistributorSalesPaginated?: { __typename?: 'DistributorSalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'DistributorSale', id: any, priceListId: any, warehouseId: any, paymentMethod: DistributorSalePaymentMethod, subTotal: number, total: number, discount: number, balance: number, totalPaid: number, date: any, code: string, distributorId: any, observations?: string | null, createdBy?: any | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, canceledBy?: any | null, products: Array<{ __typename?: 'DistributorSaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', name: string } | null }>, warehouse?: { __typename?: 'Warehouse', name: string } | null, priceList?: { __typename?: 'PriceList', name: string } | null, distributor?: { __typename?: 'Distributor', name: string, code: string } | null, createdByInfo?: { __typename?: 'User', name: string, lastName: string } | null, canceledByInfo?: { __typename?: 'User', name: string, lastName: string } | null }> | null } | null };
+
+export type GetDistributorSaleQueryVariables = Exact<{
+  getDistributorSaleId: Scalars['ObjectId'];
+}>;
+
+
+export type GetDistributorSaleQuery = { __typename?: 'Query', getDistributorSale?: { __typename?: 'DistributorSaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'DistributorSale', id: any, priceListId: any, warehouseId: any, paymentMethod: DistributorSalePaymentMethod, subTotal: number, total: number, discount: number, balance: number, totalPaid: number, date: any, code: string, distributorId: any, observations?: string | null, createdBy?: any | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, canceledBy?: any | null, products: Array<{ __typename?: 'DistributorSaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', name: string, image?: string | null, code: string } | null }>, warehouse?: { __typename?: 'Warehouse', name: string } | null, priceList?: { __typename?: 'PriceList', name: string } | null, distributor?: { __typename?: 'Distributor', name: string, code: string } | null, createdByInfo?: { __typename?: 'User', name: string, lastName: string } | null, canceledByInfo?: { __typename?: 'User', name: string, lastName: string } | null } | null } | null };
+
+export type GetDistributorsSalesSummaryQueryVariables = Exact<{
+  distributorSalePaginationInput: DistributorSalePaginationInput;
+}>;
+
+
+export type GetDistributorsSalesSummaryQuery = { __typename?: 'Query', getDistributorsSalesSummary?: { __typename?: 'DistributorsSalesSummaryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'DistributorsSalesSummary', total: number, totalPaid: number, balance: number } | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -3408,6 +3638,44 @@ export function useDeletePriceMutation(baseOptions?: Apollo.MutationHookOptions<
 export type DeletePriceMutationHookResult = ReturnType<typeof useDeletePriceMutation>;
 export type DeletePriceMutationResult = Apollo.MutationResult<DeletePriceMutation>;
 export type DeletePriceMutationOptions = Apollo.BaseMutationOptions<DeletePriceMutation, DeletePriceMutationVariables>;
+export const CreateDistributorSaleDocument = gql`
+    mutation CreateDistributorSale($createDistributorSaleInput: CreateDistributorSaleInput!) {
+  createDistributorSale(createDistributorSaleInput: $createDistributorSaleInput) {
+    errorInput {
+      message
+      field
+    }
+    message
+    status
+  }
+}
+    `;
+export type CreateDistributorSaleMutationFn = Apollo.MutationFunction<CreateDistributorSaleMutation, CreateDistributorSaleMutationVariables>;
+
+/**
+ * __useCreateDistributorSaleMutation__
+ *
+ * To run a mutation, you first call `useCreateDistributorSaleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDistributorSaleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDistributorSaleMutation, { data, loading, error }] = useCreateDistributorSaleMutation({
+ *   variables: {
+ *      createDistributorSaleInput: // value for 'createDistributorSaleInput'
+ *   },
+ * });
+ */
+export function useCreateDistributorSaleMutation(baseOptions?: Apollo.MutationHookOptions<CreateDistributorSaleMutation, CreateDistributorSaleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateDistributorSaleMutation, CreateDistributorSaleMutationVariables>(CreateDistributorSaleDocument, options);
+      }
+export type CreateDistributorSaleMutationHookResult = ReturnType<typeof useCreateDistributorSaleMutation>;
+export type CreateDistributorSaleMutationResult = Apollo.MutationResult<CreateDistributorSaleMutation>;
+export type CreateDistributorSaleMutationOptions = Apollo.BaseMutationOptions<CreateDistributorSaleMutation, CreateDistributorSaleMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {
@@ -5621,3 +5889,294 @@ export function useGetPriceByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetPriceByIdQueryHookResult = ReturnType<typeof useGetPriceByIdQuery>;
 export type GetPriceByIdLazyQueryHookResult = ReturnType<typeof useGetPriceByIdLazyQuery>;
 export type GetPriceByIdQueryResult = Apollo.QueryResult<GetPriceByIdQuery, GetPriceByIdQueryVariables>;
+export const GetDistributorSaleProductsDocument = gql`
+    query GetDistributorSaleProducts($warehouseId: ObjectId!, $priceListId: ObjectId!) {
+  getDistributorSaleProducts(warehouseId: $warehouseId, priceListId: $priceListId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      warehouseId
+      stockId
+      productId
+      priceListId
+      priceId
+      price
+      stock
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        internalCode
+        description
+        categoryId
+        cost
+        image
+        warehouses
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDistributorSaleProductsQuery__
+ *
+ * To run a query within a React component, call `useGetDistributorSaleProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDistributorSaleProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDistributorSaleProductsQuery({
+ *   variables: {
+ *      warehouseId: // value for 'warehouseId'
+ *      priceListId: // value for 'priceListId'
+ *   },
+ * });
+ */
+export function useGetDistributorSaleProductsQuery(baseOptions: Apollo.QueryHookOptions<GetDistributorSaleProductsQuery, GetDistributorSaleProductsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDistributorSaleProductsQuery, GetDistributorSaleProductsQueryVariables>(GetDistributorSaleProductsDocument, options);
+      }
+export function useGetDistributorSaleProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDistributorSaleProductsQuery, GetDistributorSaleProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDistributorSaleProductsQuery, GetDistributorSaleProductsQueryVariables>(GetDistributorSaleProductsDocument, options);
+        }
+export type GetDistributorSaleProductsQueryHookResult = ReturnType<typeof useGetDistributorSaleProductsQuery>;
+export type GetDistributorSaleProductsLazyQueryHookResult = ReturnType<typeof useGetDistributorSaleProductsLazyQuery>;
+export type GetDistributorSaleProductsQueryResult = Apollo.QueryResult<GetDistributorSaleProductsQuery, GetDistributorSaleProductsQueryVariables>;
+export const GetDistributorSalesPaginatedDocument = gql`
+    query GetDistributorSalesPaginated($distributorSalePaginationInput: DistributorSalePaginationInput!) {
+  getDistributorSalesPaginated(
+    distributorSalePaginationInput: $distributorSalePaginationInput
+  ) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      products {
+        productId
+        price
+        qty
+        total
+        product {
+          name
+        }
+      }
+      priceListId
+      warehouseId
+      paymentMethod
+      subTotal
+      total
+      discount
+      balance
+      totalPaid
+      date
+      code
+      distributorId
+      observations
+      createdBy
+      canceled
+      reason
+      canceledAt
+      canceledBy
+      warehouse {
+        name
+      }
+      priceList {
+        name
+      }
+      distributor {
+        name
+        code
+      }
+      createdByInfo {
+        name
+        lastName
+      }
+      canceledByInfo {
+        name
+        lastName
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetDistributorSalesPaginatedQuery__
+ *
+ * To run a query within a React component, call `useGetDistributorSalesPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDistributorSalesPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDistributorSalesPaginatedQuery({
+ *   variables: {
+ *      distributorSalePaginationInput: // value for 'distributorSalePaginationInput'
+ *   },
+ * });
+ */
+export function useGetDistributorSalesPaginatedQuery(baseOptions: Apollo.QueryHookOptions<GetDistributorSalesPaginatedQuery, GetDistributorSalesPaginatedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDistributorSalesPaginatedQuery, GetDistributorSalesPaginatedQueryVariables>(GetDistributorSalesPaginatedDocument, options);
+      }
+export function useGetDistributorSalesPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDistributorSalesPaginatedQuery, GetDistributorSalesPaginatedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDistributorSalesPaginatedQuery, GetDistributorSalesPaginatedQueryVariables>(GetDistributorSalesPaginatedDocument, options);
+        }
+export type GetDistributorSalesPaginatedQueryHookResult = ReturnType<typeof useGetDistributorSalesPaginatedQuery>;
+export type GetDistributorSalesPaginatedLazyQueryHookResult = ReturnType<typeof useGetDistributorSalesPaginatedLazyQuery>;
+export type GetDistributorSalesPaginatedQueryResult = Apollo.QueryResult<GetDistributorSalesPaginatedQuery, GetDistributorSalesPaginatedQueryVariables>;
+export const GetDistributorSaleDocument = gql`
+    query GetDistributorSale($getDistributorSaleId: ObjectId!) {
+  getDistributorSale(id: $getDistributorSaleId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      products {
+        productId
+        price
+        qty
+        total
+        product {
+          name
+          image
+          code
+        }
+      }
+      priceListId
+      warehouseId
+      paymentMethod
+      subTotal
+      total
+      discount
+      balance
+      totalPaid
+      date
+      code
+      distributorId
+      observations
+      createdBy
+      canceled
+      reason
+      canceledAt
+      canceledBy
+      warehouse {
+        name
+      }
+      priceList {
+        name
+      }
+      distributor {
+        name
+        code
+      }
+      createdByInfo {
+        name
+        lastName
+      }
+      canceledByInfo {
+        name
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDistributorSaleQuery__
+ *
+ * To run a query within a React component, call `useGetDistributorSaleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDistributorSaleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDistributorSaleQuery({
+ *   variables: {
+ *      getDistributorSaleId: // value for 'getDistributorSaleId'
+ *   },
+ * });
+ */
+export function useGetDistributorSaleQuery(baseOptions: Apollo.QueryHookOptions<GetDistributorSaleQuery, GetDistributorSaleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDistributorSaleQuery, GetDistributorSaleQueryVariables>(GetDistributorSaleDocument, options);
+      }
+export function useGetDistributorSaleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDistributorSaleQuery, GetDistributorSaleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDistributorSaleQuery, GetDistributorSaleQueryVariables>(GetDistributorSaleDocument, options);
+        }
+export type GetDistributorSaleQueryHookResult = ReturnType<typeof useGetDistributorSaleQuery>;
+export type GetDistributorSaleLazyQueryHookResult = ReturnType<typeof useGetDistributorSaleLazyQuery>;
+export type GetDistributorSaleQueryResult = Apollo.QueryResult<GetDistributorSaleQuery, GetDistributorSaleQueryVariables>;
+export const GetDistributorsSalesSummaryDocument = gql`
+    query GetDistributorsSalesSummary($distributorSalePaginationInput: DistributorSalePaginationInput!) {
+  getDistributorsSalesSummary(
+    distributorSalePaginationInput: $distributorSalePaginationInput
+  ) {
+    errorInput {
+      field
+      message
+    }
+    status
+    message
+    data {
+      total
+      totalPaid
+      balance
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDistributorsSalesSummaryQuery__
+ *
+ * To run a query within a React component, call `useGetDistributorsSalesSummaryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDistributorsSalesSummaryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDistributorsSalesSummaryQuery({
+ *   variables: {
+ *      distributorSalePaginationInput: // value for 'distributorSalePaginationInput'
+ *   },
+ * });
+ */
+export function useGetDistributorsSalesSummaryQuery(baseOptions: Apollo.QueryHookOptions<GetDistributorsSalesSummaryQuery, GetDistributorsSalesSummaryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDistributorsSalesSummaryQuery, GetDistributorsSalesSummaryQueryVariables>(GetDistributorsSalesSummaryDocument, options);
+      }
+export function useGetDistributorsSalesSummaryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDistributorsSalesSummaryQuery, GetDistributorsSalesSummaryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDistributorsSalesSummaryQuery, GetDistributorsSalesSummaryQueryVariables>(GetDistributorsSalesSummaryDocument, options);
+        }
+export type GetDistributorsSalesSummaryQueryHookResult = ReturnType<typeof useGetDistributorsSalesSummaryQuery>;
+export type GetDistributorsSalesSummaryLazyQueryHookResult = ReturnType<typeof useGetDistributorsSalesSummaryLazyQuery>;
+export type GetDistributorsSalesSummaryQueryResult = Apollo.QueryResult<GetDistributorsSalesSummaryQuery, GetDistributorsSalesSummaryQueryVariables>;

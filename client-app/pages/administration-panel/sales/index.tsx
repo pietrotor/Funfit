@@ -30,13 +30,11 @@ interface SalesProps {
 }
 
 function Sales({ user }: SalesProps) {
-  const [edit, setEdit] = useState<string>('')
   const router = useRouter()
   const { branches, currentBranch } = useAppSelector(
     state => state.branchReducer
   )
 
-  const handleCancelModal = useDisclosure()
   const { control, watch } = useForm({
     defaultValues: {
       initialDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
@@ -46,7 +44,7 @@ function Sales({ user }: SalesProps) {
     }
   })
   const [branchSelected, setSelected] = useState<TDataBranch>(currentBranch)
-  const [products, setProducts] = useState<TSaleProduct[]>()
+  const [, setProducts] = useState<TSaleProduct[]>()
   const handleProductsListModal = useDisclosure()
 
   const { data: summaryData, setVariables: setSummaryVariables } =
@@ -84,11 +82,6 @@ function Sales({ user }: SalesProps) {
       paymentMethod => paymentMethod.method === method
     )
   }
-  const handleCancelSale = (saleId: string) => {
-    setEdit(saleId)
-    handleCancelModal.onOpen()
-  }
-
   const handleProducts = (products: TSaleProduct[]) => {
     setProducts(products)
     handleProductsListModal.onOpen()

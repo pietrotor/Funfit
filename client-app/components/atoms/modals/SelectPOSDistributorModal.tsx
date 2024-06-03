@@ -89,7 +89,11 @@ export const SelectPOSDistributorModal = ({
       handleSubmit={onSubmit}
       color="secondary"
       textBackButton="Atrás"
-      textSuccessButton={step === 'warehouses' ? 'Siguiente' : 'Finalizar'}
+      textSuccessButton={
+        step === 'warehouses' || step === 'ditributors'
+          ? 'Siguiente'
+          : 'Finalizar'
+      }
       handleBack={handleBack}
       successButtonDisabled={step === 'warehouses'}
       backButtonDisabled={step === 'warehouses'}

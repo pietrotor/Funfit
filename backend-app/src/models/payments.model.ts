@@ -1,17 +1,17 @@
 import IGeneric from '@/interfaces/generic.interface'
 import { Document, Model, Schema, model } from 'mongoose'
 
-export interface IPayments extends Document, IGeneric {
+export interface IPayment extends Document, IGeneric {
   id: objectId
   amount: number
   date: Date
   observation: string | null
-  customerId: objectId
-  saleDistributorId: objectId
+  distributorId: objectId
+  distributorSaleId: objectId
 }
-export interface IModelPayments extends Model<IPayments> {}
+export interface IModelPayment extends Model<IPayment> {}
 
-const paymentsSchema = new Schema<IPayments>(
+const paymentsSchema = new Schema<IPayment>(
   {
     amount: {
       type: Number,
@@ -22,16 +22,16 @@ const paymentsSchema = new Schema<IPayments>(
       required: true
     },
     observation: {
-      type: Number,
+      type: String,
       default: null
     },
-    customerId: {
+    distributorId: {
       type: Schema.Types.ObjectId,
-      ref: 'Customer'
+      ref: 'Distributor'
     },
-    saleDistributorId: {
+    distributorSaleId: {
       type: Schema.Types.ObjectId,
-      ref: 'SaleDistributor'
+      ref: 'DistributorSale'
     },
     // Generic Types
     status: { type: Boolean, default: true },
@@ -49,8 +49,8 @@ const paymentsSchema = new Schema<IPayments>(
   { timestamps: true }
 )
 
-export const Payments = model<IPayments, IModelPayments>(
-  'Payments',
+export const Payment = model<IPayment, IModelPayment>(
+  'Payment',
   paymentsSchema,
-  'payments'
+  'payment'
 )

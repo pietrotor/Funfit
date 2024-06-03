@@ -52,6 +52,11 @@ import {
   priceListType
 } from './priceList.resolver'
 import { priceMutation, priceQuery, priceType } from './price.resolver'
+import {
+  distributorSaleMutation,
+  distributorSaleQuery,
+  distributorSaleType
+} from './distributorSale.resolver'
 
 const resolvers: Resolvers<ContextGraphQl> = {
   Date: dateTimeScalar,
@@ -73,6 +78,7 @@ const resolvers: Resolvers<ContextGraphQl> = {
   ...distributorType,
   ...priceListType,
   ...priceType,
+  ...distributorSaleType,
   Query: {
     ...userQuery,
     ...roleQuery,
@@ -90,7 +96,8 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...orderQuery,
     ...distributorQuery,
     ...priceListQuery,
-    ...priceQuery
+    ...priceQuery,
+    ...distributorSaleQuery
   },
   Mutation: {
     ...userMutation,
@@ -108,7 +115,8 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...orderMutation,
     ...distributorMutation,
     ...priceListMutation,
-    ...priceMutation
+    ...priceMutation,
+    ...distributorSaleMutation
   }
 }
 

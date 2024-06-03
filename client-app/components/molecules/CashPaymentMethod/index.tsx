@@ -63,8 +63,8 @@ function CashPaymentMethod({
           Bs. {payment.cash > 0 ? payment.change : total - payment.cash}
         </p>
       </div>
-      <div className="flex md:flex-row flex-col h-full w-full pt-2">
-        <div className="md:border-r-gray flex md:w-1/2 flex-col md:border-r-1 px-2">
+      <div className="flex h-full w-full flex-col pt-2 md:flex-row">
+        <div className="md:border-r-gray flex flex-col px-2 md:w-1/2 md:border-r-1">
           <div className="flex flex-col">
             <p className="font-thin text-gray-500">Efectivo</p>
             <InputComponent
@@ -123,7 +123,7 @@ function CashPaymentMethod({
             </div>
           </div>
         </div>
-        <div className="md:w-1/2 px-2 md:border-t-0 border-t-2 md:mt-0 mt-4">
+        <div className="mt-4 border-t-2 px-2 md:mt-0 md:w-1/2 md:border-t-0">
           <ClientObservationPayment control={control} />
         </div>
       </div>

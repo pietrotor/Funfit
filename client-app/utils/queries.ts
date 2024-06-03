@@ -1192,3 +1192,191 @@ export const GET_PRICE_BY_ID = gql`
     }
   }
 `
+export const GET_DISTRIBUTOR_SALE_PRODUCTS = gql`
+  query GetDistributorSaleProducts(
+    $warehouseId: ObjectId!
+    $priceListId: ObjectId!
+  ) {
+    getDistributorSaleProducts(
+      warehouseId: $warehouseId
+      priceListId: $priceListId
+    ) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        warehouseId
+        stockId
+        productId
+        priceListId
+        priceId
+        price
+        stock
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          internalCode
+          description
+          categoryId
+          cost
+          image
+          warehouses
+        }
+      }
+    }
+  }
+`
+export const GET_DISTRIBUTORS_SALES_PAGINATED = gql`
+  query GetDistributorSalesPaginated(
+    $distributorSalePaginationInput: DistributorSalePaginationInput!
+  ) {
+    getDistributorSalesPaginated(
+      distributorSalePaginationInput: $distributorSalePaginationInput
+    ) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        products {
+          productId
+          price
+          qty
+          total
+          product {
+            name
+          }
+        }
+        priceListId
+        warehouseId
+        paymentMethod
+        subTotal
+        total
+        discount
+        balance
+        totalPaid
+        date
+        code
+        distributorId
+        observations
+        createdBy
+        canceled
+        reason
+        canceledAt
+        canceledBy
+        warehouse {
+          name
+        }
+        priceList {
+          name
+        }
+        distributor {
+          name
+          code
+        }
+        createdByInfo {
+          name
+          lastName
+        }
+        canceledByInfo {
+          name
+          lastName
+        }
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+export const GET_DISTRIBUTOR_SALE_BY_ID = gql`
+  query GetDistributorSale($getDistributorSaleId: ObjectId!) {
+    getDistributorSale(id: $getDistributorSaleId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        products {
+          productId
+          price
+          qty
+          total
+          product {
+            name
+            image
+            code
+          }
+        }
+        priceListId
+        warehouseId
+        paymentMethod
+        subTotal
+        total
+        discount
+        balance
+        totalPaid
+        date
+        code
+        distributorId
+        observations
+        createdBy
+        canceled
+        reason
+        canceledAt
+        canceledBy
+        warehouse {
+          name
+        }
+        priceList {
+          name
+        }
+        distributor {
+          name
+          code
+        }
+        createdByInfo {
+          name
+          lastName
+        }
+        canceledByInfo {
+          name
+          lastName
+        }
+      }
+    }
+  }
+`
+export const GET_DISTRIBUTORS_SALES_SUMMARY = gql`
+  query GetDistributorsSalesSummary(
+    $distributorSalePaginationInput: DistributorSalePaginationInput!
+  ) {
+    getDistributorsSalesSummary(
+      distributorSalePaginationInput: $distributorSalePaginationInput
+    ) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data {
+        total
+        totalPaid
+        balance
+      }
+    }
+  }
+`
