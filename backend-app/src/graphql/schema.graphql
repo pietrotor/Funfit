@@ -130,6 +130,10 @@ type Query {
   getDistributorsSalesSummary(
     distributorSalePaginationInput: DistributorSalePaginationInput!
   ): DistributorsSalesSummaryResponse
+  # PAYMENTS ===================================
+  getDistributorSalePayments(
+    distibutorSaleId: ObjectId!
+  ): DistributorSalePaymentsResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(
     paginationInput: PaginationInput!
@@ -218,6 +222,8 @@ type Mutation {
   createDistributorSale(
     createDistributorSaleInput: CreateDistributorSaleInput!
   ): DistributorSaleResponse
+  # PAYMENTS ===================================
+  createPayment(createPaymentInput: CreatePaymentInput!): PaymentResponse
   # ========================= ECOMMERCE ROUTES ============================
   publicCreateCustomer(
     createCustomerInput: CreateCustomerInput!
@@ -565,12 +571,12 @@ type Payment {
   amount: Float!
   date: Date!
   observation: String
-  customerId: ObjectId!
+  distributorId: ObjectId!
   distributorSaleId: ObjectId!
-  createdyBy: ObjectId!
+  createdBy: ObjectId
   # Fields Resolvers
-  createdyByInfo: User
-  customer: Customer
+  createdByInfo: User
+  distributor: Distributor
   distributorSale: DistributorSale
 }
 type DistributorsSalesSummary {
@@ -880,6 +886,18 @@ type DistributorsSalesSummaryResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: DistributorsSalesSummary
+}
+type PaymentResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Payment
+}
+type DistributorSalePaymentsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Payment!]
 }
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {

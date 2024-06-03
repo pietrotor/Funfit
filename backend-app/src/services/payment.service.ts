@@ -6,17 +6,12 @@ import { getInstancesPagination } from './generic.service'
 import { BadRequestError } from '@/lib/graphqlerrors'
 import { IModelPayment, IPayment, Payment } from '../models'
 import { PaymentRepository } from '../repositories'
-import { customerCore, distributorCore, distributorSaleCore } from '.'
+import { distributorCore, distributorSaleCore } from '.'
 
 export class PaymentService extends PaymentRepository<objectId> {
   async getPaymentsPaginated(paymentPaginationInput: PaymentPaginationInput) {
-    const {
-      filter,
-      distributorsIds = [],
-      endDate,
-      initialDate,
-      ...paginationInput
-    } = paymentPaginationInput
+    const { filter, endDate, initialDate, ...paginationInput } =
+      paymentPaginationInput
     if (filter) {
       const filterArgs = {
         $or: [{ name: { $regex: filter, $options: 'i' } }]
@@ -47,6 +42,13 @@ export class PaymentService extends PaymentRepository<objectId> {
   async getgetPaymentByIdInstance(id: objectId) {
     return await Payment.findOne({
       _id: id,
+      deleted: false
+    })
+  }
+
+  async getSalePayments(distributorSaleId: objectId) {
+    return await Payment.find({
+      distributorSaleId,
       deleted: false
     })
   }

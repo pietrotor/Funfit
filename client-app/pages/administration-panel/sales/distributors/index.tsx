@@ -175,7 +175,7 @@ function DistributorsSalesPage({ user }: SalesProps) {
               </span>
             </div>
           </InformationCard>
-          <InformationCard className="h-full bg-blue-500 px-3 py-6 text-white">
+          <InformationCard className="h-full !bg-blue-500 px-3 py-6 text-white">
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
                 <div className="text-xl">Al Contado</div>
@@ -194,7 +194,7 @@ function DistributorsSalesPage({ user }: SalesProps) {
               </span>
             </div>
           </InformationCard>
-          <InformationCard className="h-full bg-red-500 px-3 py-6 text-white">
+          <InformationCard className="h-full !bg-red-500 px-3 py-6 text-white">
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
                 <div className="text-xl">Créditos Pendientes</div>
@@ -230,7 +230,6 @@ function DistributorsSalesPage({ user }: SalesProps) {
             { name: 'Proveedor' },
             { name: 'Fecha de venta' },
             { name: 'Monto total' },
-            { name: 'Descuento' },
             { name: 'Método de pago' },
             { name: 'Vendedor' },
             { name: 'Observaciones' },
@@ -257,7 +256,7 @@ function DistributorsSalesPage({ user }: SalesProps) {
                   <p className="text-sm font-bold">
                     Total: <span>{sale.total} Bs</span>
                   </p>
-                  <p className="text-xs font-semibold">
+                  <p className="text-xs font-semibold text-blue-500">
                     Total pagado: <span>{sale.totalPaid} Bs</span>
                   </p>
                   <p className="text-xs font-semibold text-red-500">

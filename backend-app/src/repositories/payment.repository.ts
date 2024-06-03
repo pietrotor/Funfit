@@ -14,6 +14,10 @@ export abstract class PaymentRepository<T> {
   abstract getPaymentById(id: T): Promise<IPayment | OutErrorResponse>
   abstract getgetPaymentByIdInstance(id: T): Promise<IPayment | null>
 
+  abstract getSalePayments(
+    distributorSaleId: T
+  ): Promise<IPayment[] | OutErrorResponse>
+
   abstract createPayment(
     createPriceInput: CreatePaymentInput,
     modifySale: boolean,

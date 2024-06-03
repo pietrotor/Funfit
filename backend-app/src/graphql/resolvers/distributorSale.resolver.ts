@@ -1,10 +1,5 @@
 import {
   StatusEnum,
-  PaginationInput,
-  DistributorResponse,
-  DistributorsResponse,
-  CreateDistributorInput,
-  UpdateDistributorInput,
   DistributorSaleProductsResponse,
   DistributorSaleResponse,
   DistributorSalePaginationInput,

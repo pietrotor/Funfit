@@ -297,6 +297,12 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           text: 'Ventas diarias',
           link: '/administration-panel/dailySale',
           permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
+        },
+        {
+          icon: 'Truck',
+          text: 'Ventas a distribuidores',
+          link: '/administration-panel/sales/distributors',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
         }
       ]
     },

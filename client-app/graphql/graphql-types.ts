@@ -511,6 +511,14 @@ export enum DistributorSalePaymentMethod {
   MIXED = 'MIXED'
 }
 
+export type DistributorSalePaymentsResponse = ResponseBase & {
+  __typename?: 'DistributorSalePaymentsResponse';
+  data?: Maybe<Array<Payment>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
 export type DistributorSaleProduct = {
   __typename?: 'DistributorSaleProduct';
   price: Scalars['Float'];
@@ -616,6 +624,7 @@ export type Mutation = {
   createCategory?: Maybe<CategoryResponse>;
   createDistributor?: Maybe<DistributorResponse>;
   createDistributorSale?: Maybe<DistributorSaleResponse>;
+  createPayment?: Maybe<PaymentResponse>;
   createPrice?: Maybe<PriceResponse>;
   createPriceList?: Maybe<PriceListResponse>;
   createProduct?: Maybe<ProductResponse>;
@@ -700,6 +709,11 @@ export type MutationCreateDistributorArgs = {
 
 export type MutationCreateDistributorSaleArgs = {
   createDistributorSaleInput: CreateDistributorSaleInput;
+};
+
+
+export type MutationCreatePaymentArgs = {
+  createPaymentInput: CreatePaymentInput;
 };
 
 
@@ -927,11 +941,11 @@ export type PaginationInput = {
 export type Payment = {
   __typename?: 'Payment';
   amount: Scalars['Float'];
-  createdyBy: Scalars['ObjectId'];
-  createdyByInfo?: Maybe<User>;
-  customer?: Maybe<Customer>;
-  customerId: Scalars['ObjectId'];
+  createdBy?: Maybe<Scalars['ObjectId']>;
+  createdByInfo?: Maybe<User>;
   date: Scalars['Date'];
+  distributor?: Maybe<Distributor>;
+  distributorId: Scalars['ObjectId'];
   distributorSale?: Maybe<DistributorSale>;
   distributorSaleId: Scalars['ObjectId'];
   id: Scalars['ObjectId'];
@@ -952,6 +966,14 @@ export type PaymentPaginationInput = {
   page?: InputMaybe<Scalars['Int']>;
   rows?: InputMaybe<Scalars['Int']>;
   saleBy?: InputMaybe<Scalars['ObjectId']>;
+};
+
+export type PaymentResponse = ResponseBase & {
+  __typename?: 'PaymentResponse';
+  data?: Maybe<Payment>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
 };
 
 export type Price = {
@@ -1068,6 +1090,7 @@ export type Query = {
   getConfiguration?: Maybe<ConfigurationResponse>;
   getDistributorById?: Maybe<DistributorResponse>;
   getDistributorSale?: Maybe<DistributorSaleResponse>;
+  getDistributorSalePayments?: Maybe<DistributorSalePaymentsResponse>;
   getDistributorSaleProducts?: Maybe<DistributorSaleProductsResponse>;
   getDistributorSalesPaginated?: Maybe<DistributorSalesResponse>;
   getDistributorsPaginated?: Maybe<DistributorsResponse>;
@@ -1152,6 +1175,11 @@ export type QueryGetDistributorByIdArgs = {
 
 export type QueryGetDistributorSaleArgs = {
   id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetDistributorSalePaymentsArgs = {
+  distibutorSaleId: Scalars['ObjectId'];
 };
 
 

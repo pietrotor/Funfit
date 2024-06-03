@@ -34,7 +34,8 @@ const Table = ({
   onChangeRow = () => {},
   onChangePage = () => {},
   enablePagination = true,
-  onSearch
+  onSearch,
+  totalItems
 }: TableProps) => {
   const color = 'light'
 
@@ -49,14 +50,19 @@ const Table = ({
         {tableName && (
           <div className="mb-0 rounded-t border-0 px-4 py-3">
             <div className="flex max-w-full flex-1 flex-grow flex-wrap items-center justify-between px-4">
-              <h3
-                className={
-                  'text-lg font-bold ' +
-                  (color === 'light' ? 'text-primary-light' : 'text-white')
-                }
-              >
-                {tableName}
-              </h3>
+              <div className="flex items-center gap-2">
+                <h3
+                  className={
+                    'text-lg font-bold ' +
+                    (color === 'light' ? 'text-primary-light' : 'text-white')
+                  }
+                >
+                  {tableName}
+                </h3>
+                <p className="rounded-full bg-primary bg-opacity-40 px-4 py-1 text-xs font-semibold text-primary">
+                  {totalItems || items.length} Registros
+                </p>
+              </div>
               {onSearch && (
                 <div className="flex w-full items-end gap-2 rounded-xl border-2 bg-gray-100 p-2 px-4 text-sm transition-all duration-300 md:max-w-[250px] xl:max-w-[300px]">
                   <input

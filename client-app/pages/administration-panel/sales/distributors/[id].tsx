@@ -77,7 +77,7 @@ function SaleDistributorDetail({ user }: SaleDetailProps) {
           {data?.getDistributorSale?.data?.paymentMethod !==
             DistributorSalePaymentMethod.CASH && (
             <>
-              <InformationCard className="h-full bg-blue-400 px-3 py-6 text-white">
+              <InformationCard className="h-full !bg-blue-500 px-3 py-6 text-white">
                 <div className="flex items-center justify-between">
                   <div className="text-lg font-bold">
                     <div className="text-xl">Total pagado:</div>
@@ -95,7 +95,7 @@ function SaleDistributorDetail({ user }: SaleDetailProps) {
                   </span>
                 </div>
               </InformationCard>
-              <InformationCard className="h-full bg-red-400 px-3 py-6 text-white">
+              <InformationCard className="h-full !bg-red-500 px-3 py-6 text-white">
                 <div className="flex items-center justify-between">
                   <div className="text-lg font-bold">
                     <div className="text-xl">Saldo pendiente:</div>
@@ -212,6 +212,7 @@ function SaleDistributorDetail({ user }: SaleDetailProps) {
             <p className="text-base font-semibold">Ver Pagos</p>
           </Button>
         </div>
+        <h2 className="mb-4">Productos</h2>
         <Table
           titles={[
             { name: '#' },
@@ -258,7 +259,57 @@ function SaleDistributorDetail({ user }: SaleDetailProps) {
               ]
             })
           )}
-          tableName="VENTA"
+          tableName="Productos vendidos"
+          enablePagination={false}
+        />
+        <h2 className="mb-4 mt-8">Pagos</h2>
+        <Table
+          titles={[
+            { name: '#' },
+            { name: 'Imagen' },
+            { name: 'Nombre del producto' },
+            { name: 'Código' },
+            { name: 'Unidades' },
+            { name: 'Total' }
+          ]}
+          items={(data?.getDistributorSale?.data?.products || []).map(
+            (sale, idx) => ({
+              content: [
+                <h3 key={idx} className="text-sm">
+                  {idx + 1}
+                </h3>,
+                <div key={idx} className=" flex justify-center ">
+                  <Images
+                    alt="imagen"
+                    src={sale.product?.image || 'asdf'}
+                    className="h-14  w-16 rounded-md object-cover md:h-20 md:w-20"
+                  />
+                </div>,
+                <div key={idx} className=" text-sm">
+                  {sale.product?.name}
+                </div>,
+                <div
+                  key={idx}
+                  className="flex justify-center space-x-3 text-sm"
+                >
+                  {sale.product?.code}
+                </div>,
+                <div
+                  key={idx}
+                  className="flex justify-center space-x-3 text-sm"
+                >
+                  {sale.qty}
+                </div>,
+                <div
+                  key={idx}
+                  className="flex justify-center space-x-3 text-sm"
+                >
+                  {sale.total} Bs
+                </div>
+              ]
+            })
+          )}
+          tableName="Productos vendidos"
           enablePagination={false}
         />
       </div>
