@@ -7,6 +7,7 @@ import { BadRequestError } from '@/lib/graphqlerrors'
 import { IModelPayment, IPayment, Payment } from '../models'
 import { PaymentRepository } from '../repositories'
 import { distributorCore, distributorSaleCore } from '.'
+import Decimal from 'decimal.js'
 
 export class PaymentService extends PaymentRepository<objectId> {
   async getPaymentsPaginated(paymentPaginationInput: PaymentPaginationInput) {
@@ -50,7 +51,7 @@ export class PaymentService extends PaymentRepository<objectId> {
     return await Payment.find({
       distributorSaleId,
       deleted: false
-    })
+    }).sort({ _id: -1 })
   }
 
   async createPayment(
@@ -59,6 +60,9 @@ export class PaymentService extends PaymentRepository<objectId> {
     createdBy?: objectId | null
   ) {
     const { distributorId, amount, distributorSaleId } = createPaymentInput
+
+    if (amount <= 0)
+      throw new BadRequestError('El monto no puede ser menor a 0')
 
     await distributorCore.getDistributorById(distributorId)
 

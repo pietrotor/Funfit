@@ -134,6 +134,11 @@ type Query {
   getDistributorSalePayments(
     distibutorSaleId: ObjectId!
   ): DistributorSalePaymentsResponse
+  # BUSINESS BALANCE ===================================
+  getBusinessBalance(
+    endDate: Date!
+    initialDate: Date!
+  ): BusinessBalanceResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(
     paginationInput: PaginationInput!
@@ -569,6 +574,8 @@ type DistributorSaleProduct {
 type Payment {
   id: ObjectId!
   amount: Float!
+  balance: Float!
+  totalPaid: Float!
   date: Date!
   observation: String
   distributorId: ObjectId!
@@ -583,6 +590,19 @@ type DistributorsSalesSummary {
   total: Float!
   totalPaid: Float!
   balance: Float!
+}
+type BranchSales {
+  id: ObjectId!
+  name: String!
+  total: Float!
+}
+type BusinessBalance {
+  salesByBranch: [BranchSales!]!
+  totalPaid: Float!
+  balance: Float!
+  result: Float!
+  totalEarnings: Float!
+  totalExpenses: Float!
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -898,6 +918,12 @@ type DistributorSalePaymentsResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: [Payment!]
+}
+type BusinessBalanceResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: BusinessBalance
 }
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
@@ -1241,6 +1267,8 @@ input CreatePaymentInput {
   observation: String
   distributorId: ObjectId!
   distributorSaleId: ObjectId!
+  balance: Float!
+  totalPaid: Float!
 }
 input PaymentPaginationInput {
   rows: Int

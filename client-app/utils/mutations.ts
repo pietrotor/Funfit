@@ -479,3 +479,15 @@ export const CREATE_DISTRIBUTOR_SALE = gql`
     }
   }
 `
+export const CREATE_PAYMENT = gql`
+  mutation CreatePayment($createPaymentInput: CreatePaymentInput!) {
+    createPayment(createPaymentInput: $createPaymentInput) {
+      message
+      status
+      errorInput {
+        message
+        field
+      }
+    }
+  }
+`

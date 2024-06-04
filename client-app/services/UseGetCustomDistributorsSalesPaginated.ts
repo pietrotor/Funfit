@@ -24,7 +24,7 @@ const UseGetCustomDistributorsSalesPaginated = () => {
           filter: filtroDebounced,
           page: variables?.currentPage,
           rows: variables?.rows || 30,
-          distributorsIds: [],
+          distributorsIds: variables?.distributorsIds || [],
           endDate: variables?.endDate || new Date().toISOString().split('T')[0],
           initialDate:
             variables?.initialDate ||
@@ -56,7 +56,7 @@ const UseGetCustomDistributorsSalesPaginated = () => {
           filter: variables?.filter,
           page: variables?.currentPage,
           rows: variables?.rows,
-          distributorsIds: [],
+          distributorsIds: variables?.distributorsIds || [],
           initialDate: variables?.initialDate,
           endDate: variables?.endDate,
           saleBy: variables?.saleBy

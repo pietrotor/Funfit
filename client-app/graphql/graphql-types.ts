@@ -92,6 +92,13 @@ export type BranchResponse = ResponseBase & {
   status: StatusEnum;
 };
 
+export type BranchSales = {
+  __typename?: 'BranchSales';
+  id: Scalars['ObjectId'];
+  name: Scalars['String'];
+  total: Scalars['Float'];
+};
+
 export type BranchsResponse = ResponseBase & {
   __typename?: 'BranchsResponse';
   currentPage?: Maybe<Scalars['Int']>;
@@ -102,6 +109,24 @@ export type BranchsResponse = ResponseBase & {
   status: StatusEnum;
   totalPages?: Maybe<Scalars['Int']>;
   totalRecords?: Maybe<Scalars['Int']>;
+};
+
+export type BusinessBalance = {
+  __typename?: 'BusinessBalance';
+  balance: Scalars['Float'];
+  result: Scalars['Float'];
+  salesByBranch: Array<BranchSales>;
+  totalEarnings: Scalars['Float'];
+  totalExpenses: Scalars['Float'];
+  totalPaid: Scalars['Float'];
+};
+
+export type BusinessBalanceResponse = ResponseBase & {
+  __typename?: 'BusinessBalanceResponse';
+  data?: Maybe<BusinessBalance>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
 };
 
 export type CancelSaleInput = {
@@ -313,10 +338,12 @@ export type CreateOrderInput = {
 
 export type CreatePaymentInput = {
   amount: Scalars['Float'];
+  balance: Scalars['Float'];
   date: Scalars['Date'];
   distributorId: Scalars['ObjectId'];
   distributorSaleId: Scalars['ObjectId'];
   observation?: InputMaybe<Scalars['String']>;
+  totalPaid: Scalars['Float'];
 };
 
 export type CreatePriceInput = {
@@ -941,6 +968,7 @@ export type PaginationInput = {
 export type Payment = {
   __typename?: 'Payment';
   amount: Scalars['Float'];
+  balance: Scalars['Float'];
   createdBy?: Maybe<Scalars['ObjectId']>;
   createdByInfo?: Maybe<User>;
   date: Scalars['Date'];
@@ -950,6 +978,7 @@ export type Payment = {
   distributorSaleId: Scalars['ObjectId'];
   id: Scalars['ObjectId'];
   observation?: Maybe<Scalars['String']>;
+  totalPaid: Scalars['Float'];
 };
 
 export enum PaymentMethodEnum {
@@ -1083,6 +1112,7 @@ export type Query = {
   getBranchProductById?: Maybe<BranchProductResponse>;
   getBranchProductsPaginated?: Maybe<BranchProductsResponse>;
   getBranchesPaginated?: Maybe<BranchsResponse>;
+  getBusinessBalance?: Maybe<BusinessBalanceResponse>;
   getCashById?: Maybe<CashResponse>;
   getCashTurnMovements?: Maybe<CashTurnMovementsResponse>;
   getCategories?: Maybe<CategoriesResponse>;
@@ -1144,6 +1174,12 @@ export type QueryGetBranchProductsPaginatedArgs = {
 
 export type QueryGetBranchesPaginatedArgs = {
   paginationInput: PaginationInput;
+};
+
+
+export type QueryGetBusinessBalanceArgs = {
+  endDate: Scalars['Date'];
+  initialDate: Scalars['Date'];
 };
 
 
@@ -2021,6 +2057,13 @@ export type CreateDistributorSaleMutationVariables = Exact<{
 
 export type CreateDistributorSaleMutation = { __typename?: 'Mutation', createDistributorSale?: { __typename?: 'DistributorSaleResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
+export type CreatePaymentMutationVariables = Exact<{
+  createPaymentInput: CreatePaymentInput;
+}>;
+
+
+export type CreatePaymentMutation = { __typename?: 'Mutation', createPayment?: { __typename?: 'PaymentResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2320,6 +2363,21 @@ export type GetDistributorsSalesSummaryQueryVariables = Exact<{
 
 
 export type GetDistributorsSalesSummaryQuery = { __typename?: 'Query', getDistributorsSalesSummary?: { __typename?: 'DistributorsSalesSummaryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'DistributorsSalesSummary', total: number, totalPaid: number, balance: number } | null } | null };
+
+export type GetDistributorSalePaymentsQueryVariables = Exact<{
+  distibutorSaleId: Scalars['ObjectId'];
+}>;
+
+
+export type GetDistributorSalePaymentsQuery = { __typename?: 'Query', getDistributorSalePayments?: { __typename?: 'DistributorSalePaymentsResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Payment', id: any, amount: number, balance: number, totalPaid: number, date: any, observation?: string | null, distributorId: any, distributorSaleId: any, createdBy?: any | null, createdByInfo?: { __typename?: 'User', name: string, lastName: string } | null }> | null } | null };
+
+export type GetBusinessBalanceQueryVariables = Exact<{
+  endDate: Scalars['Date'];
+  initialDate: Scalars['Date'];
+}>;
+
+
+export type GetBusinessBalanceQuery = { __typename?: 'Query', getBusinessBalance?: { __typename?: 'BusinessBalanceResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'BusinessBalance', totalPaid: number, balance: number, result: number, totalExpenses: number, totalEarnings: number, salesByBranch: Array<{ __typename?: 'BranchSales', id: any, name: string, total: number }> } | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -3704,6 +3762,44 @@ export function useCreateDistributorSaleMutation(baseOptions?: Apollo.MutationHo
 export type CreateDistributorSaleMutationHookResult = ReturnType<typeof useCreateDistributorSaleMutation>;
 export type CreateDistributorSaleMutationResult = Apollo.MutationResult<CreateDistributorSaleMutation>;
 export type CreateDistributorSaleMutationOptions = Apollo.BaseMutationOptions<CreateDistributorSaleMutation, CreateDistributorSaleMutationVariables>;
+export const CreatePaymentDocument = gql`
+    mutation CreatePayment($createPaymentInput: CreatePaymentInput!) {
+  createPayment(createPaymentInput: $createPaymentInput) {
+    message
+    status
+    errorInput {
+      message
+      field
+    }
+  }
+}
+    `;
+export type CreatePaymentMutationFn = Apollo.MutationFunction<CreatePaymentMutation, CreatePaymentMutationVariables>;
+
+/**
+ * __useCreatePaymentMutation__
+ *
+ * To run a mutation, you first call `useCreatePaymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePaymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPaymentMutation, { data, loading, error }] = useCreatePaymentMutation({
+ *   variables: {
+ *      createPaymentInput: // value for 'createPaymentInput'
+ *   },
+ * });
+ */
+export function useCreatePaymentMutation(baseOptions?: Apollo.MutationHookOptions<CreatePaymentMutation, CreatePaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePaymentMutation, CreatePaymentMutationVariables>(CreatePaymentDocument, options);
+      }
+export type CreatePaymentMutationHookResult = ReturnType<typeof useCreatePaymentMutation>;
+export type CreatePaymentMutationResult = Apollo.MutationResult<CreatePaymentMutation>;
+export type CreatePaymentMutationOptions = Apollo.BaseMutationOptions<CreatePaymentMutation, CreatePaymentMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {
@@ -6208,3 +6304,111 @@ export function useGetDistributorsSalesSummaryLazyQuery(baseOptions?: Apollo.Laz
 export type GetDistributorsSalesSummaryQueryHookResult = ReturnType<typeof useGetDistributorsSalesSummaryQuery>;
 export type GetDistributorsSalesSummaryLazyQueryHookResult = ReturnType<typeof useGetDistributorsSalesSummaryLazyQuery>;
 export type GetDistributorsSalesSummaryQueryResult = Apollo.QueryResult<GetDistributorsSalesSummaryQuery, GetDistributorsSalesSummaryQueryVariables>;
+export const GetDistributorSalePaymentsDocument = gql`
+    query GetDistributorSalePayments($distibutorSaleId: ObjectId!) {
+  getDistributorSalePayments(distibutorSaleId: $distibutorSaleId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      amount
+      balance
+      totalPaid
+      date
+      observation
+      distributorId
+      distributorSaleId
+      createdBy
+      createdByInfo {
+        name
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDistributorSalePaymentsQuery__
+ *
+ * To run a query within a React component, call `useGetDistributorSalePaymentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDistributorSalePaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDistributorSalePaymentsQuery({
+ *   variables: {
+ *      distibutorSaleId: // value for 'distibutorSaleId'
+ *   },
+ * });
+ */
+export function useGetDistributorSalePaymentsQuery(baseOptions: Apollo.QueryHookOptions<GetDistributorSalePaymentsQuery, GetDistributorSalePaymentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDistributorSalePaymentsQuery, GetDistributorSalePaymentsQueryVariables>(GetDistributorSalePaymentsDocument, options);
+      }
+export function useGetDistributorSalePaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDistributorSalePaymentsQuery, GetDistributorSalePaymentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDistributorSalePaymentsQuery, GetDistributorSalePaymentsQueryVariables>(GetDistributorSalePaymentsDocument, options);
+        }
+export type GetDistributorSalePaymentsQueryHookResult = ReturnType<typeof useGetDistributorSalePaymentsQuery>;
+export type GetDistributorSalePaymentsLazyQueryHookResult = ReturnType<typeof useGetDistributorSalePaymentsLazyQuery>;
+export type GetDistributorSalePaymentsQueryResult = Apollo.QueryResult<GetDistributorSalePaymentsQuery, GetDistributorSalePaymentsQueryVariables>;
+export const GetBusinessBalanceDocument = gql`
+    query GetBusinessBalance($endDate: Date!, $initialDate: Date!) {
+  getBusinessBalance(endDate: $endDate, initialDate: $initialDate) {
+    errorInput {
+      field
+      message
+    }
+    status
+    message
+    data {
+      salesByBranch {
+        id
+        name
+        total
+      }
+      totalPaid
+      balance
+      result
+      totalExpenses
+      totalEarnings
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetBusinessBalanceQuery__
+ *
+ * To run a query within a React component, call `useGetBusinessBalanceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBusinessBalanceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBusinessBalanceQuery({
+ *   variables: {
+ *      endDate: // value for 'endDate'
+ *      initialDate: // value for 'initialDate'
+ *   },
+ * });
+ */
+export function useGetBusinessBalanceQuery(baseOptions: Apollo.QueryHookOptions<GetBusinessBalanceQuery, GetBusinessBalanceQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBusinessBalanceQuery, GetBusinessBalanceQueryVariables>(GetBusinessBalanceDocument, options);
+      }
+export function useGetBusinessBalanceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBusinessBalanceQuery, GetBusinessBalanceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBusinessBalanceQuery, GetBusinessBalanceQueryVariables>(GetBusinessBalanceDocument, options);
+        }
+export type GetBusinessBalanceQueryHookResult = ReturnType<typeof useGetBusinessBalanceQuery>;
+export type GetBusinessBalanceLazyQueryHookResult = ReturnType<typeof useGetBusinessBalanceLazyQuery>;
+export type GetBusinessBalanceQueryResult = Apollo.QueryResult<GetBusinessBalanceQuery, GetBusinessBalanceQueryVariables>;

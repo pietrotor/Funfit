@@ -1,33 +1,30 @@
-import { useDisclosure } from '@nextui-org/react'
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { GetServerSideProps } from 'next'
 
 import { useRouter } from 'next/router'
 import { useForm } from 'react-hook-form'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
+
 import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
-import InputComponent from '@/components/atoms/Input'
-import ComboInput from '@/components/atoms/ComboInput'
-// import { useGetUsersLazyQuery } from '@/graphql/graphql-types'
-import DateConverter from '@/components/atoms/DateConverter'
-import {
-  DistributorSalePaymentMethod,
-  Sale,
-  useGetUsersLazyQuery
-} from '@/graphql/graphql-types'
-import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
+import { useCustomGetDistributorById } from '@/hooks/UseDistributorsQuery'
 import { UseGetCustomDistributorsSalesPaginated } from '@/services/UseGetCustomDistributorsSalesPaginated'
 import { useGetDistributorsSalesSummary } from '@/services/useGetDistributorsSalesSummary'
+import DateConverter from '@/components/atoms/DateConverter'
 import InformationCard from '@/components/molecules/Card/InformationCard'
-
-interface SalesProps {
+import ComboInput from '@/components/atoms/ComboInput'
+import InputComponent from '@/components/atoms/Input'
+import {
+  DistributorSalePaymentMethod,
+  useGetUsersLazyQuery
+} from '@/graphql/graphql-types'
+interface BranchesProps {
   user: any
 }
 
-function DistributorsSalesPage({ user }: SalesProps) {
+function DealersDetailPage({ user }: BranchesProps) {
   const router = useRouter()
   const { control, watch } = useForm({
     defaultValues: {
@@ -38,11 +35,45 @@ function DistributorsSalesPage({ user }: SalesProps) {
     }
   })
 
+  const { data } = useCustomGetDistributorById(router.query.dealerId as string)
+
+  const {
+    data: purchases,
+    setVariables,
+    variables,
+    loading: loadingPurchases
+  } = UseGetCustomDistributorsSalesPaginated()
+
   const { data: summaryData, setVariables: setSummaryVariables } =
     useGetDistributorsSalesSummary()
 
-  const { data, setVariables, variables, loading, refetch } =
-    UseGetCustomDistributorsSalesPaginated()
+  useEffect(() => {
+    setSummaryVariables(prevVariables => ({
+      ...prevVariables,
+      initialDate: watch('initialDate'),
+      endDate: watch('endDate'),
+      distributorsIds: [router.query.dealerId as string]
+    }))
+    setVariables(prevVariables => ({
+      ...prevVariables,
+      initialDate: watch('initialDate'),
+      endDate: watch('endDate'),
+      distributorsIds: [router.query.dealerId as string]
+    }))
+  }, [router.query.dealerId])
+
+  const handleChangeRow = (row: number) => {
+    setVariables({ ...variables, rows: row, currentPage: 1 })
+  }
+
+  const [getUsers, { data: users }] = useGetUsersLazyQuery({
+    fetchPolicy: 'cache-first',
+    variables: {
+      paginationInput: {
+        rows: 100
+      }
+    }
+  })
 
   const getSalePaymentMethod = (
     paymentMethod: DistributorSalePaymentMethod
@@ -66,40 +97,14 @@ function DistributorsSalesPage({ user }: SalesProps) {
     }
   }
 
-  useEffect(() => {
-    setSummaryVariables(prevVariables => ({
-      ...prevVariables,
-      initialDate: watch('initialDate'),
-      endDate: watch('endDate')
-    }))
-    setVariables(prevVariables => ({
-      ...prevVariables,
-      initialDate: watch('initialDate'),
-      endDate: watch('endDate')
-    }))
-  }, [])
-
-  const handleDeleteModal = useDisclosure()
-  const [selectedItem] = useState<Sale | null>(null)
-
-  const [getUsers, { data: users }] = useGetUsersLazyQuery({
-    fetchPolicy: 'cache-first',
-    variables: {
-      paginationInput: {
-        rows: 100
-      }
-    }
-  })
-
-  const handleChangeRow = (row: number) => {
-    setVariables({ ...variables, rows: row, currentPage: 1 })
-  }
-
   return (
-    <AdministrationLayout user={user}>
+    <AdministrationLayout user={user} showBackButton>
       <div className="m-auto mt-7 w-5/6 ">
         <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Reporte de ventas a distribuidores
+          Compras del distribuidor:{' '}
+          <span className="text-primary">
+            {data?.getDistributorById?.data?.name}
+          </span>
         </h3>
 
         <div className="mb-5 mt-10 grid grid-cols-2 gap-2 md:grid-cols-5 md:gap-4 md:space-y-0">
@@ -219,7 +224,7 @@ function DistributorsSalesPage({ user }: SalesProps) {
           onChangePage={page =>
             setVariables({ ...variables, currentPage: page })
           }
-          isLoading={loading}
+          isLoading={loadingPurchases}
           itemsPerPage={variables?.rows}
           currentPage={variables?.currentPage}
           totalPages={variables?.totalPages}
@@ -227,7 +232,8 @@ function DistributorsSalesPage({ user }: SalesProps) {
           totalItems={variables?.totalRecords}
           titles={[
             { name: '#' },
-            { name: 'Proveedor' },
+            { name: 'Almacen' },
+            { name: 'Lista de precios' },
             { name: 'Fecha de venta' },
             { name: 'Monto total' },
             { name: 'Método de pago' },
@@ -235,7 +241,7 @@ function DistributorsSalesPage({ user }: SalesProps) {
             { name: 'Observaciones' },
             { name: 'Acciones' }
           ]}
-          items={(data?.getDistributorSalesPaginated?.data || []).map(
+          items={(purchases?.getDistributorSalesPaginated?.data || []).map(
             (sale, idx) => ({
               content: [
                 <h3 key={idx} className="text-sm">
@@ -243,8 +249,10 @@ function DistributorsSalesPage({ user }: SalesProps) {
                   {idx + 1}
                 </h3>,
                 <div key={idx} className="text-left">
-                  <h3 className="text-sm">{sale.distributor?.name}</h3>
-                  <p>{sale.distributor?.code}</p>
+                  <h3 className="text-sm">{sale.warehouse?.name}</h3>
+                </div>,
+                <div key={idx} className="text-left">
+                  <h3 className="text-sm">{sale.priceList?.name}</h3>
                 </div>,
                 <div key={idx} className="w-[10rem] text-sm md:w-full">
                   <DateConverter dateString={sale.date} showTime />
@@ -329,15 +337,10 @@ function DistributorsSalesPage({ user }: SalesProps) {
           )}
         />
       </div>
-      <SaleCancelModal
-        sale={selectedItem}
-        modalDisclosure={handleDeleteModal}
-        refetch={refetch}
-      />
     </AdministrationLayout>
   )
 }
-export default DistributorsSalesPage
+export default DealersDetailPage
 
 export const getServerSideProps: GetServerSideProps = async ctx =>
   await authUserHeader(ctx)

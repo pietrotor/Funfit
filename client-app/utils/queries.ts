@@ -1380,3 +1380,54 @@ export const GET_DISTRIBUTORS_SALES_SUMMARY = gql`
     }
   }
 `
+export const GET_DISTRIBUTOR_SALE_PAYMENTS = gql`
+  query GetDistributorSalePayments($distibutorSaleId: ObjectId!) {
+    getDistributorSalePayments(distibutorSaleId: $distibutorSaleId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        amount
+        balance
+        totalPaid
+        date
+        observation
+        distributorId
+        distributorSaleId
+        createdBy
+        createdByInfo {
+          name
+          lastName
+        }
+      }
+    }
+  }
+`
+export const GET_BUSINESS_BALANCE = gql`
+  query GetBusinessBalance($endDate: Date!, $initialDate: Date!) {
+    getBusinessBalance(endDate: $endDate, initialDate: $initialDate) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data {
+        salesByBranch {
+          id
+          name
+          total
+        }
+        totalPaid
+        balance
+        result
+        totalExpenses
+        totalEarnings
+      }
+    }
+  }
+`

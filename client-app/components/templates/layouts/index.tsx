@@ -336,6 +336,12 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       text: 'Punto de venta a distribuidores',
       link: '/administration-panel/pos-distributors',
       permissions: [RoleTypeEnum.ADMINISTRATOR]
+    },
+    {
+      icon: 'Balance',
+      text: 'Balance',
+      link: '/administration-panel/balance',
+      permissions: [RoleTypeEnum.ADMINISTRATOR]
     }
   ]
 

@@ -4,6 +4,8 @@ import { Document, Model, Schema, model } from 'mongoose'
 export interface IPayment extends Document, IGeneric {
   id: objectId
   amount: number
+  balance: number
+  totalPaid: number
   date: Date
   observation: string | null
   distributorId: objectId
@@ -32,6 +34,12 @@ const paymentsSchema = new Schema<IPayment>(
     distributorSaleId: {
       type: Schema.Types.ObjectId,
       ref: 'DistributorSale'
+    },
+    balance: {
+      type: Number
+    },
+    totalPaid: {
+      type: Number
     },
     // Generic Types
     status: { type: Boolean, default: true },

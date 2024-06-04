@@ -281,7 +281,9 @@ export class DistributorSaleService extends DistributorSaleRepository<objectId> 
         distributorId,
         date,
         distributorSaleId: saleDistributorInstance._id,
-        observation: `pago por venta con código: ${code}.`
+        observation: `pago por venta con código: ${code}.`,
+        balance: balance,
+        totalPaid
       },
       false,
       createdBy
