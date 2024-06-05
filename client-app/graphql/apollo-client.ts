@@ -1,15 +1,9 @@
-import {
-  ApolloClient,
-  ApolloLink,
-  concat,
-  HttpLink,
-  InMemoryCache
-} from '@apollo/client'
+import { ApolloClient, ApolloLink, concat, InMemoryCache } from '@apollo/client'
+import createUploadLink from 'apollo-upload-client/createUploadLink.mjs'
 // import { USER_TOKEN_COOKIE } from '@/utils/storage'
 import Cookies from 'universal-cookie'
 
 const cookies = new Cookies()
-const httpLink = new HttpLink({ uri: process.env.NEXT_PUBLIC_BACKENDURL })
 const authMiddleware = new ApolloLink((operation, forward) => {
   // add the authorization to the headers
   operation.setContext(({ headers = {} }) => ({
@@ -20,10 +14,12 @@ const authMiddleware = new ApolloLink((operation, forward) => {
   }))
   return forward(operation)
 })
+
+const uploadLink = createUploadLink({ uri: process.env.NEXT_PUBLIC_BACKENDURL })
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   credentials: 'include',
-  link: concat(authMiddleware, httpLink)
+  link: concat(uploadLink, authMiddleware)
 })
 
 export default client

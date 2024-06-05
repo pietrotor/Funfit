@@ -7,11 +7,14 @@ import {
   UpdateProductInput,
   Product,
   Category,
-  BranchProductsResponse
+  BranchProductsResponse,
+  FileInput,
+  ProductImageResponse
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
 import { branchProductCore, categoryCore, productCore } from '@/services/index'
+import { uploadFileToS3Bucket } from 'helpers/upload-files'
 
 // ========================================== Mutations ====================================================
 const getPublicProducts = async (
@@ -148,6 +151,44 @@ const deleteProduct = async (
     return errorHandler(error)
   }
 }
+const uploadFile = async (
+  _: any,
+  args: { fileInput: FileInput; productId: objectId },
+  context: ContextGraphQl
+): Promise<ProductImageResponse> => {
+  try {
+    const {
+      fileInput: { file, productId }
+    } = args
+
+    const { createReadStream, mimetype } = await file
+
+    const extension = mimetype.split('/')?.[1]
+
+    const stream = createReadStream()
+
+    const url = await uploadFileToS3Bucket({
+      file: stream,
+      folder: 'products/',
+      contenType: mimetype,
+      extension
+    })
+
+    await productCore.updateProduct({
+      id: productId,
+      image: url
+    })
+
+    return {
+      status: StatusEnum.OK,
+      message: 'Imagen de producto actualizada',
+      data: url
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
 
 export const productQuery = {
   getProducts,
@@ -159,7 +200,8 @@ export const productQuery = {
 export const productMutation = {
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  uploadFile
 }
 
 export const productType = {

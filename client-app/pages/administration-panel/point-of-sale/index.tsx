@@ -35,6 +35,8 @@ function PointOfSale({ user }: PointOfSaleProps) {
     parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
   )
 
+  console.log('-- product -- ', selectedProducts)
+
   const handleResponsiveSaleModal = useDisclosure()
 
   const handleSelected = (id: string) => {
@@ -89,6 +91,7 @@ function PointOfSale({ user }: PointOfSaleProps) {
   useEffect(() => {
     const { data: dataPassed } = router.query
     const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
+    console.log('--- PARSE -- ', parsedData)
     setSelectedProducts(
       parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
     )

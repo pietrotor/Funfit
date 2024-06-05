@@ -491,3 +491,15 @@ export const CREATE_PAYMENT = gql`
     }
   }
 `
+export const UPLOAD_PRODUCT_IMAGE = gql`
+  mutation UploadFile($fileInput: FileInput!) {
+    uploadFile(fileInput: $fileInput) {
+      message
+      status
+      errorInput {
+        field
+        message
+      }
+    }
+  }
+`

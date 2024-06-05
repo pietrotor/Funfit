@@ -18,6 +18,7 @@ export type Scalars = {
   Date: { input: any; output: any; }
   ObjectId: { input: ObjectId; output: ObjectId; }
   Time: { input: any; output: any; }
+  Upload: { input: any; output: any; }
 };
 
 export type Address = {
@@ -621,6 +622,11 @@ export type ErrorInput = {
   message: Scalars['String']['output'];
 };
 
+export type FileInput = {
+  file: Scalars['Upload']['input'];
+  productId: Scalars['ObjectId']['input'];
+};
+
 export type LoginInput = {
   email: Scalars['String']['input'];
   password: Scalars['String']['input'];
@@ -683,6 +689,7 @@ export type Mutation = {
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
+  uploadFile?: Maybe<ProductImageResponse>;
 };
 
 
@@ -891,6 +898,11 @@ export type MutationUpdateWarehouseArgs = {
   updateWarehouseInput: UpdateWarehouseInput;
 };
 
+
+export type MutationUploadFileArgs = {
+  fileInput: FileInput;
+};
+
 export type OpenTurnInfo = {
   __typename?: 'OpenTurnInfo';
   amount: Scalars['Float']['output'];
@@ -1085,6 +1097,14 @@ export type Product = {
   name: Scalars['String']['output'];
   suggetedPrice: Scalars['Float']['output'];
   warehouses: Array<Scalars['ObjectId']['output']>;
+};
+
+export type ProductImageResponse = ResponseBase & {
+  __typename?: 'ProductImageResponse';
+  data?: Maybe<Scalars['String']['output']>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']['output']>;
+  status: StatusEnum;
 };
 
 export type ProductResponse = ResponseBase & {
@@ -1876,7 +1896,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  ResponseBase: ( AddressResponse ) | ( BranchProductResponse ) | ( BranchProductsResponse ) | ( BranchResponse ) | ( BranchsResponse ) | ( BusinessBalanceResponse ) | ( CashResponse ) | ( CashTurnMovementResponse ) | ( CashTurnMovementsResponse ) | ( CategoriesResponse ) | ( CategoryResponse ) | ( ConfigurationResponse ) | ( CustomerResponse ) | ( DistributorResponse ) | ( DistributorSalePaymentsResponse ) | ( DistributorSaleProductsResponse ) | ( DistributorSaleResponse ) | ( DistributorSalesResponse ) | ( DistributorsResponse ) | ( DistributorsSalesSummaryResponse ) | ( LoginResponse ) | ( OrderResponse ) | ( OrdersResponse ) | ( PaymentResponse ) | ( PriceListResponse ) | ( PriceListsResponse ) | ( PriceResponse ) | ( PricesResponse ) | ( ProductResponse ) | ( ProductsResponse ) | ( Response ) | ( RolesResponse ) | ( SaleResponse ) | ( SalesResponse ) | ( SalesSummaryResponse ) | ( StockResponse ) | ( StocksHistoryResponse ) | ( StocksResponse ) | ( UserResponse ) | ( UsersResponse ) | ( WarehouseResponse ) | ( WarehousesResponse );
+  ResponseBase: ( AddressResponse ) | ( BranchProductResponse ) | ( BranchProductsResponse ) | ( BranchResponse ) | ( BranchsResponse ) | ( BusinessBalanceResponse ) | ( CashResponse ) | ( CashTurnMovementResponse ) | ( CashTurnMovementsResponse ) | ( CategoriesResponse ) | ( CategoryResponse ) | ( ConfigurationResponse ) | ( CustomerResponse ) | ( DistributorResponse ) | ( DistributorSalePaymentsResponse ) | ( DistributorSaleProductsResponse ) | ( DistributorSaleResponse ) | ( DistributorSalesResponse ) | ( DistributorsResponse ) | ( DistributorsSalesSummaryResponse ) | ( LoginResponse ) | ( OrderResponse ) | ( OrdersResponse ) | ( PaymentResponse ) | ( PriceListResponse ) | ( PriceListsResponse ) | ( PriceResponse ) | ( PricesResponse ) | ( ProductImageResponse ) | ( ProductResponse ) | ( ProductsResponse ) | ( Response ) | ( RolesResponse ) | ( SaleResponse ) | ( SalesResponse ) | ( SalesSummaryResponse ) | ( StockResponse ) | ( StocksHistoryResponse ) | ( StocksResponse ) | ( UserResponse ) | ( UsersResponse ) | ( WarehouseResponse ) | ( WarehousesResponse );
 };
 
 /** Mapping between all available schema types and the resolvers types */
@@ -1946,6 +1966,7 @@ export type ResolversTypes = {
   DistributorsSalesSummary: ResolverTypeWrapper<DistributorsSalesSummary>;
   DistributorsSalesSummaryResponse: ResolverTypeWrapper<DistributorsSalesSummaryResponse>;
   ErrorInput: ResolverTypeWrapper<ErrorInput>;
+  FileInput: FileInput;
   Float: ResolverTypeWrapper<Scalars['Float']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   LoginInput: LoginInput;
@@ -1971,6 +1992,7 @@ export type ResolversTypes = {
   PriceResponse: ResolverTypeWrapper<PriceResponse>;
   PricesResponse: ResolverTypeWrapper<PricesResponse>;
   Product: ResolverTypeWrapper<Product>;
+  ProductImageResponse: ResolverTypeWrapper<ProductImageResponse>;
   ProductResponse: ResolverTypeWrapper<ProductResponse>;
   ProductsResponse: ResolverTypeWrapper<ProductsResponse>;
   Query: ResolverTypeWrapper<{}>;
@@ -2013,6 +2035,7 @@ export type ResolversTypes = {
   UpdateProductInput: UpdateProductInput;
   UpdateUserInput: UpdateUserInput;
   UpdateWarehouseInput: UpdateWarehouseInput;
+  Upload: ResolverTypeWrapper<Scalars['Upload']['output']>;
   User: ResolverTypeWrapper<User>;
   UserInput: UserInput;
   UserResponse: ResolverTypeWrapper<UserResponse>;
@@ -2088,6 +2111,7 @@ export type ResolversParentTypes = {
   DistributorsSalesSummary: DistributorsSalesSummary;
   DistributorsSalesSummaryResponse: DistributorsSalesSummaryResponse;
   ErrorInput: ErrorInput;
+  FileInput: FileInput;
   Float: Scalars['Float']['output'];
   Int: Scalars['Int']['output'];
   LoginInput: LoginInput;
@@ -2112,6 +2136,7 @@ export type ResolversParentTypes = {
   PriceResponse: PriceResponse;
   PricesResponse: PricesResponse;
   Product: Product;
+  ProductImageResponse: ProductImageResponse;
   ProductResponse: ProductResponse;
   ProductsResponse: ProductsResponse;
   Query: {};
@@ -2150,6 +2175,7 @@ export type ResolversParentTypes = {
   UpdateProductInput: UpdateProductInput;
   UpdateUserInput: UpdateUserInput;
   UpdateWarehouseInput: UpdateWarehouseInput;
+  Upload: Scalars['Upload']['output'];
   User: User;
   UserInput: UserInput;
   UserResponse: UserResponse;
@@ -2596,6 +2622,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateProduct?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationUpdateProductArgs, 'updateProductInput'>>;
   updateUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType, RequireFields<MutationUpdateUserArgs, 'deleteInput' | 'updateUserInput'>>;
   updateWarehouse?: Resolver<Maybe<ResolversTypes['WarehouseResponse']>, ParentType, ContextType, RequireFields<MutationUpdateWarehouseArgs, 'updateWarehouseInput'>>;
+  uploadFile?: Resolver<Maybe<ResolversTypes['ProductImageResponse']>, ParentType, ContextType, RequireFields<MutationUploadFileArgs, 'fileInput'>>;
 };
 
 export interface ObjectIdScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['ObjectId'], any> {
@@ -2761,6 +2788,14 @@ export type ProductResolvers<ContextType = any, ParentType extends ResolversPare
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type ProductImageResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProductImageResponse'] = ResolversParentTypes['ProductImageResponse']> = {
+  data?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export type ProductResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ProductResponse'] = ResolversParentTypes['ProductResponse']> = {
   data?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
   errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
@@ -2838,7 +2873,7 @@ export type ResponseResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type ResponseBaseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResponseBase'] = ResolversParentTypes['ResponseBase']> = {
-  __resolveType: TypeResolveFn<'AddressResponse' | 'BranchProductResponse' | 'BranchProductsResponse' | 'BranchResponse' | 'BranchsResponse' | 'BusinessBalanceResponse' | 'CashResponse' | 'CashTurnMovementResponse' | 'CashTurnMovementsResponse' | 'CategoriesResponse' | 'CategoryResponse' | 'ConfigurationResponse' | 'CustomerResponse' | 'DistributorResponse' | 'DistributorSalePaymentsResponse' | 'DistributorSaleProductsResponse' | 'DistributorSaleResponse' | 'DistributorSalesResponse' | 'DistributorsResponse' | 'DistributorsSalesSummaryResponse' | 'LoginResponse' | 'OrderResponse' | 'OrdersResponse' | 'PaymentResponse' | 'PriceListResponse' | 'PriceListsResponse' | 'PriceResponse' | 'PricesResponse' | 'ProductResponse' | 'ProductsResponse' | 'Response' | 'RolesResponse' | 'SaleResponse' | 'SalesResponse' | 'SalesSummaryResponse' | 'StockResponse' | 'StocksHistoryResponse' | 'StocksResponse' | 'UserResponse' | 'UsersResponse' | 'WarehouseResponse' | 'WarehousesResponse', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'AddressResponse' | 'BranchProductResponse' | 'BranchProductsResponse' | 'BranchResponse' | 'BranchsResponse' | 'BusinessBalanceResponse' | 'CashResponse' | 'CashTurnMovementResponse' | 'CashTurnMovementsResponse' | 'CategoriesResponse' | 'CategoryResponse' | 'ConfigurationResponse' | 'CustomerResponse' | 'DistributorResponse' | 'DistributorSalePaymentsResponse' | 'DistributorSaleProductsResponse' | 'DistributorSaleResponse' | 'DistributorSalesResponse' | 'DistributorsResponse' | 'DistributorsSalesSummaryResponse' | 'LoginResponse' | 'OrderResponse' | 'OrdersResponse' | 'PaymentResponse' | 'PriceListResponse' | 'PriceListsResponse' | 'PriceResponse' | 'PricesResponse' | 'ProductImageResponse' | 'ProductResponse' | 'ProductsResponse' | 'Response' | 'RolesResponse' | 'SaleResponse' | 'SalesResponse' | 'SalesSummaryResponse' | 'StockResponse' | 'StocksHistoryResponse' | 'StocksResponse' | 'UserResponse' | 'UsersResponse' | 'WarehouseResponse' | 'WarehousesResponse', ParentType, ContextType>;
   errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
@@ -3025,6 +3060,10 @@ export type TurnMovementsResolvers<ContextType = any, ParentType extends Resolve
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Upload'], any> {
+  name: 'Upload';
+}
+
 export type UserResolvers<ContextType = any, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = {
   createdBy?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -3143,6 +3182,7 @@ export type Resolvers<ContextType = any> = {
   PriceResponse?: PriceResponseResolvers<ContextType>;
   PricesResponse?: PricesResponseResolvers<ContextType>;
   Product?: ProductResolvers<ContextType>;
+  ProductImageResponse?: ProductImageResponseResolvers<ContextType>;
   ProductResponse?: ProductResponseResolvers<ContextType>;
   ProductsResponse?: ProductsResponseResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
@@ -3165,6 +3205,7 @@ export type Resolvers<ContextType = any> = {
   Time?: GraphQLScalarType;
   Turn?: TurnResolvers<ContextType>;
   TurnMovements?: TurnMovementsResolvers<ContextType>;
+  Upload?: GraphQLScalarType;
   User?: UserResolvers<ContextType>;
   UserResponse?: UserResponseResolvers<ContextType>;
   UsersResponse?: UsersResponseResolvers<ContextType>;

@@ -1,6 +1,7 @@
 import { GetServerSideProps } from 'next'
 
 import { useForm } from 'react-hook-form'
+import { useMemo } from 'react'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
@@ -26,8 +27,22 @@ function BalancePage({ user }: SalesProps) {
     variables: {
       endDate: watch('endDate'),
       initialDate: watch('initialDate')
-    }
+    },
+    fetchPolicy: 'network-only'
   })
+
+  const isSuperavit = useMemo(() => {
+    if (
+      (data?.getBusinessBalance?.data?.totalExpenses || 0) <=
+      (data?.getBusinessBalance?.data?.totalEarnings || 0)
+    ) {
+      return true
+    }
+    return false
+  }, [
+    data?.getBusinessBalance?.data?.totalExpenses,
+    data?.getBusinessBalance?.data?.totalEarnings
+  ])
 
   return (
     <AdministrationLayout user={user}>
@@ -124,7 +139,7 @@ function BalancePage({ user }: SalesProps) {
           </InformationCard>
         </section>
 
-        <section className="flex w-full justify-center">
+        <section className="flex w-full justify-center pb-10">
           <div className="w-full max-w-3xl rounded-md border bg-white p-4 shadow-2xl">
             <h2 className="text-center">Balance del periodo</h2>
             <p className="text-center text-sm font-semibold text-gray-400">
@@ -132,26 +147,98 @@ function BalancePage({ user }: SalesProps) {
               {new Date(watch('endDate')).toDateString()}
             </p>
             <div className="mt-4">
-              <h4 className="uppercase">Ingresos</h4>
-              <div className="h-[1px] w-full bg-black"></div>
+              <h4 className="text-lg uppercase">Ingresos</h4>
+              <div className="h-[1px] w-full bg-gray-300"></div>
             </div>
-            <div className="space-y-1">
-              <p>Sucursales</p>
+            <div className="mt-3 space-y-1">
+              <div className="flex w-full justify-between">
+                <div className="flex w-fit items-center gap-1">
+                  <IconSelector name="Branch" width="w-5" height="h-5" />
+                  <p className="text-base font-bold">Puntos de venta</p>
+                </div>
+                <p className="rounded-md bg-green-100 px-1 text-base font-semibold text-green-500">
+                  {data?.getBusinessBalance?.data?.salesByBranch.reduce(
+                    (prevValue, branch) => prevValue + branch.total,
+                    0
+                  ) || 0}{' '}
+                  Bs
+                </p>
+              </div>
               {(data?.getBusinessBalance?.data?.salesByBranch || []).map(
                 branchSale => (
                   <div className="grid w-full grid-cols-2" key={branchSale.id}>
-                    <p className="ml-6 text-base font-semibold">
+                    <p className="ml-6 flex items-center gap-2 text-sm font-semibold">
+                      <span className="h-1 w-1 rounded-full bg-black"></span>
                       {branchSale.name}
                     </p>
                     <div className="grid w-full grid-cols-2">
                       <p></p>
-                      <p className="mr-6 text-right text-base font-semibold">
+                      <p className="mr-6 text-right text-sm font-semibold text-gray-400">
                         {branchSale.total} Bs
                       </p>
                     </div>
                   </div>
                 )
               )}
+              <div className="flex w-full justify-between">
+                <div className="flex w-fit items-center gap-1">
+                  <IconSelector name="Truck" width="w-5" height="h-5" />
+                  <p className="text-base font-bold">Distribuidores</p>
+                </div>
+                <p className="rounded-md bg-green-100 px-1 text-base font-semibold text-green-500">
+                  {(data?.getBusinessBalance?.data?.totalPaid || 0) +
+                    (data?.getBusinessBalance?.data?.balance || 0)}{' '}
+                  Bs
+                </p>
+              </div>
+            </div>
+            <div className="mt-4">
+              <h4 className="text-lg uppercase">Egresos</h4>
+              <div className="h-[0.5px] w-full bg-gray-300"></div>
+              <div className="mt-3 space-y-1">
+                <div className="grid w-full grid-cols-4">
+                  <div className="col-span-2 flex w-full items-center gap-1">
+                    <IconSelector name="Debts" width="w-5" height="h-5" />
+                    <p className="text-base font-bold">Cuentas por cobrar</p>
+                  </div>
+                  <p className="ml-auto mr-0 w-fit justify-end self-end rounded-md bg-red-100 px-1 text-right text-base font-semibold text-red-500">
+                    {data?.getBusinessBalance?.data?.balance || 0} Bs
+                  </p>
+                  <p className="text-base font-bold"></p>
+                </div>
+              </div>
+            </div>
+            <div className="mt-5">
+              <div className="mb-1 h-[1px] w-full bg-gray-300"></div>
+              <div className="grid w-full grid-cols-4">
+                <h4 className="col-span-2 uppercase">Sub Total</h4>
+                <p className="ml-auto mr-0 w-fit justify-end self-end rounded-md bg-red-100 px-1 text-right text-lg font-bold text-red-500">
+                  {data?.getBusinessBalance?.data?.totalExpenses || 0} Bs
+                </p>
+                <p className="ml-auto mr-0 w-fit justify-end self-end rounded-md bg-green-100 px-1 text-right text-lg font-bold text-green-500">
+                  {data?.getBusinessBalance?.data?.totalEarnings || 0} Bs
+                </p>
+              </div>
+            </div>
+            <div className="mt-2">
+              <div className="mb-1 h-[1px] w-full bg-gray-300"></div>
+              <div className="grid w-full grid-cols-4">
+                <h2 className="col-span-2 uppercase">Total</h2>
+                {!isSuperavit ? (
+                  <p className="ml-auto mr-0 w-fit justify-end self-end rounded-md bg-red-100 px-1 text-right text-2xl font-bold text-red-600">
+                    {data?.getBusinessBalance?.data?.result || 0} Bs
+                  </p>
+                ) : (
+                  <p></p>
+                )}
+                {isSuperavit ? (
+                  <p className="ml-auto mr-0 w-fit justify-end self-end rounded-md bg-green-100 px-1 text-right text-2xl font-bold text-green-600">
+                    {data?.getBusinessBalance?.data?.result || 0} Bs
+                  </p>
+                ) : (
+                  <p></p>
+                )}
+              </div>
             </div>
           </div>
         </section>

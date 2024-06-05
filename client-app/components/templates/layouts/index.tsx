@@ -247,13 +247,13 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           icon: 'Branch',
           text: 'Sucursales',
           link: '/administration-panel/branches',
-          permissions: [RoleTypeEnum.ADMINISTRATOR]
+          permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
         },
         {
           icon: 'Bussines',
           text: 'Almacenes',
           link: '/administration-panel/warehouses',
-          permissions: [RoleTypeEnum.ADMINISTRATOR]
+          permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
         },
         {
           icon: 'Cash',
@@ -323,13 +323,13 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       icon: 'PointOfSale',
       text: 'Punto de venta',
       link: '/administration-panel/point-of-sale',
-      permissions: [RoleTypeEnum.ADMINISTRATOR]
+      permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
     },
     {
       icon: 'Basket-shopping',
       text: 'Pedidos',
       link: '/administration-panel/order',
-      permissions: [RoleTypeEnum.ADMINISTRATOR]
+      permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
     },
     {
       icon: 'Dealer',

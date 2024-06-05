@@ -47,6 +47,7 @@ function SaleModal({
   })
 
   const onSubmit = () => {
+    console.log('--- SELECTE PRODUCTS -- ', selectedProducts)
     handleCreateSale(
       {
         amountRecibed:

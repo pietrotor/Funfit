@@ -16,6 +16,7 @@ export type Scalars = {
   Date: any;
   ObjectId: any;
   Time: any;
+  Upload: any;
 };
 
 export type Address = {
@@ -619,6 +620,11 @@ export type ErrorInput = {
   message: Scalars['String'];
 };
 
+export type FileInput = {
+  file: Scalars['Upload'];
+  productId: Scalars['ObjectId'];
+};
+
 export type LoginInput = {
   email: Scalars['String'];
   password: Scalars['String'];
@@ -681,6 +687,7 @@ export type Mutation = {
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
+  uploadFile?: Maybe<ProductImageResponse>;
 };
 
 
@@ -889,6 +896,11 @@ export type MutationUpdateWarehouseArgs = {
   updateWarehouseInput: UpdateWarehouseInput;
 };
 
+
+export type MutationUploadFileArgs = {
+  fileInput: FileInput;
+};
+
 export type OpenTurnInfo = {
   __typename?: 'OpenTurnInfo';
   amount: Scalars['Float'];
@@ -1083,6 +1095,14 @@ export type Product = {
   name: Scalars['String'];
   suggetedPrice: Scalars['Float'];
   warehouses: Array<Scalars['ObjectId']>;
+};
+
+export type ProductImageResponse = ResponseBase & {
+  __typename?: 'ProductImageResponse';
+  data?: Maybe<Scalars['String']>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
 };
 
 export type ProductResponse = ResponseBase & {
@@ -2063,6 +2083,13 @@ export type CreatePaymentMutationVariables = Exact<{
 
 
 export type CreatePaymentMutation = { __typename?: 'Mutation', createPayment?: { __typename?: 'PaymentResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
+export type UploadFileMutationVariables = Exact<{
+  fileInput: FileInput;
+}>;
+
+
+export type UploadFileMutation = { __typename?: 'Mutation', uploadFile?: { __typename?: 'ProductImageResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null } | null };
 
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -3800,6 +3827,44 @@ export function useCreatePaymentMutation(baseOptions?: Apollo.MutationHookOption
 export type CreatePaymentMutationHookResult = ReturnType<typeof useCreatePaymentMutation>;
 export type CreatePaymentMutationResult = Apollo.MutationResult<CreatePaymentMutation>;
 export type CreatePaymentMutationOptions = Apollo.BaseMutationOptions<CreatePaymentMutation, CreatePaymentMutationVariables>;
+export const UploadFileDocument = gql`
+    mutation UploadFile($fileInput: FileInput!) {
+  uploadFile(fileInput: $fileInput) {
+    message
+    status
+    errorInput {
+      field
+      message
+    }
+  }
+}
+    `;
+export type UploadFileMutationFn = Apollo.MutationFunction<UploadFileMutation, UploadFileMutationVariables>;
+
+/**
+ * __useUploadFileMutation__
+ *
+ * To run a mutation, you first call `useUploadFileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadFileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadFileMutation, { data, loading, error }] = useUploadFileMutation({
+ *   variables: {
+ *      fileInput: // value for 'fileInput'
+ *   },
+ * });
+ */
+export function useUploadFileMutation(baseOptions?: Apollo.MutationHookOptions<UploadFileMutation, UploadFileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UploadFileMutation, UploadFileMutationVariables>(UploadFileDocument, options);
+      }
+export type UploadFileMutationHookResult = ReturnType<typeof useUploadFileMutation>;
+export type UploadFileMutationResult = Apollo.MutationResult<UploadFileMutation>;
+export type UploadFileMutationOptions = Apollo.BaseMutationOptions<UploadFileMutation, UploadFileMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {

@@ -1,6 +1,8 @@
 scalar Date
 scalar Time
 scalar ObjectId
+scalar Upload
+
 enum StatusEnum {
   OK
   ERROR
@@ -235,6 +237,7 @@ type Mutation {
   ): CustomerResponse
   publicCreateAddress(createAddressInput: CreateAddressInput!): AddressResponse
   publicCreateOrder(createOrderInput: CreateOrderInput!): OrderResponse
+  uploadFile(fileInput: FileInput!): ProductImageResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type MeasurementUnits {
@@ -925,6 +928,12 @@ type BusinessBalanceResponse implements ResponseBase {
   message: String
   data: BusinessBalance
 }
+type ProductImageResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: String
+}
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
   name: String!
@@ -1278,4 +1287,8 @@ input PaymentPaginationInput {
   initialDate: Date
   endDate: Date
   saleBy: ObjectId
+}
+input FileInput {
+  file: Upload!
+  productId: ObjectId!
 }

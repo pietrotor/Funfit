@@ -84,7 +84,6 @@ const updateDistributor = async (
     return errorHandler(error)
   }
 }
-
 export const distributorQuery = {
   getDistributorById,
   getDistributorsPaginated

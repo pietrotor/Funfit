@@ -111,7 +111,7 @@ function SendOrder({
                   }
                 }}
               >
-                {customer.addressInfo.map((address, index) => (
+                {customer?.addressInfo?.map((address, index) => (
                   <Radio key={index} value={address.id}>
                     {address.detail}
                   </Radio>

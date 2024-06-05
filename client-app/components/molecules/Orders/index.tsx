@@ -13,6 +13,7 @@ import ProductListModal from '@/components/atoms/modals/ProductListModal'
 import { TSaleProduct } from '@/interfaces/TData'
 import OrderDetailsModal from '@/components/atoms/modals/OrderDetails'
 import CancelOrderModal from '@/components/atoms/modals/CancelOrderModal'
+import { useRouter } from 'next/router'
 
 interface OrdersProps {
   ordersAcepted: boolean | undefined
@@ -41,6 +42,8 @@ const Orders = ({ ordersAcepted }: OrdersProps) => {
   const [orderDetails, setOrderDetails] = useState<TOrderDetails>()
   const [orderSelected, setOrderSelected] = useState<TOrderSelected>()
 
+  const router = useRouter()
+
   const currentBranch = useAppSelector(
     state => state.branchReducer.currentBranch
   )
@@ -60,16 +63,17 @@ const Orders = ({ ordersAcepted }: OrdersProps) => {
       const dataToSend = {
         products: orderData.products.map(product => ({
           id: product.product?.id,
-          branchId: product.branchProductId,
+          branchId: orderData.branchId,
           productId: product.productId,
           price: product.price,
           isVisibleOnWeb: true,
           isVisibleOnMenu: true,
           quantity: product.qty,
           product: {
-            id: product.product?.id || '',
+            id: product.branchProductId || '',
             name: product.product?.name || '',
-            description: product.product?.description || ''
+            description: product.product?.description || '',
+            branchProductId: product.branchProductId
           },
           stock: product.qty,
           total: product.total
@@ -79,6 +83,41 @@ const Orders = ({ ordersAcepted }: OrdersProps) => {
         discount: orderData.discount
       }
       handleAcceptOrder(id, dataToSend)
+    }
+  }
+
+  const handleReorder = (id: string) => {
+    const orderData = data?.getOrdersPaginated?.data?.find(
+      order => order.id === id
+    )
+    if (orderData) {
+      const dataToSend = {
+        products: orderData.products.map(product => ({
+          id: product.branchProductId,
+          branchId: orderData.branchId,
+          productId: product.productId,
+          price: product.price,
+          isVisibleOnWeb: true,
+          isVisibleOnMenu: true,
+          quantity: product.qty,
+          product: {
+            id: product.branchProductId || '',
+            name: product.product?.name || '',
+            description: product.product?.description || '',
+            branchProductId: product.branchProductId
+          },
+          stock: product.qty,
+          total: product.total
+        })),
+        subTotal: orderData.subTotal,
+        total: orderData.total,
+        discount: orderData.discount
+      }
+      console.log('--- PRDOUCT AL MOMENTO DE ENVIAR ---- ', dataToSend)
+      router.push({
+        pathname: '/administration-panel/point-of-sale',
+        query: { data: JSON.stringify(dataToSend) }
+      })
     }
   }
 
@@ -139,10 +178,18 @@ const Orders = ({ ordersAcepted }: OrdersProps) => {
               variant="flat"
               className="text-center text-sm"
               color={
-                orders.rejected ? 'danger' : orders.orderAcepted ? 'secondary' : 'warning'
+                orders.rejected
+                  ? 'danger'
+                  : orders.orderAcepted
+                    ? 'secondary'
+                    : 'warning'
               }
             >
-              {orders.rejected ? 'Rechazado' : orders.orderAcepted ? 'Aceptado' : 'Pendiente'}
+              {orders.rejected
+                ? 'Rechazado'
+                : orders.orderAcepted
+                  ? 'Aceptado'
+                  : 'Pendiente'}
             </Chip>,
             <div key={idx} className="w-[6rem] text-xs md:w-full">
               <DateConverter showTime dateString={orders.date} />
@@ -201,20 +248,32 @@ const Orders = ({ ordersAcepted }: OrdersProps) => {
                 </ButtonComponent>
               </div>
             ) : (
-              <Button
-                key={idx}
-                color="danger"
-                variant="flat"
-                onClick={() => {
-                  setOrderSelected({
-                    type: 'cancel',
-                    id: orders.id
-                  })
-                  handleCancelOrderModal.onOpen()
-                }}
-              >
-                Cancelar
-              </Button>
+              <div className="space-x-2">
+                <Button
+                  key={idx}
+                  color="success"
+                  variant="flat"
+                  onClick={() => {
+                    handleReorder(orders.id)
+                  }}
+                >
+                  Generar venta
+                </Button>
+                <Button
+                  key={idx}
+                  color="danger"
+                  variant="flat"
+                  onClick={() => {
+                    setOrderSelected({
+                      type: 'cancel',
+                      id: orders.id
+                    })
+                    handleCancelOrderModal.onOpen()
+                  }}
+                >
+                  Cancelar
+                </Button>
+              </div>
             )
           ]
         }))}
