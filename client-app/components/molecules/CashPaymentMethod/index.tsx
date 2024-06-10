@@ -31,7 +31,6 @@ function CashPaymentMethod({
   setValue
 }: CashPaymentMethodProps) {
   const handleCash = (cash: string) => {
-    console.log('CALLED')
     if (parseFloat(cash)) {
       setPayment({
         paymentMethod: 'cash',

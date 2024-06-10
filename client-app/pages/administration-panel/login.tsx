@@ -16,15 +16,13 @@ type TLoginInput = {
 }
 
 const LoginPage: NextPage = () => {
-  const [loginQuery, { data, loading }] = useLoginLazyQuery({
+  const [loginQuery, { loading }] = useLoginLazyQuery({
     fetchPolicy: 'network-only'
   })
   const [error, setError] = useState('')
   const router = useRouter()
   const { control, handleSubmit } = useForm<TLoginInput>()
   const onHandleLogin = (form: TLoginInput) => {
-    console.log(form)
-    console.log(data)
     loginQuery({
       variables: {
         loginInput: { email: form.email, password: form.password }

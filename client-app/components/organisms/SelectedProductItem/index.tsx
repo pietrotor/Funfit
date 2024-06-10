@@ -15,7 +15,6 @@ function SelectedProductItem({
   setSelectedProducts
 }: SelectedProductItemProps) {
   const increment = (id: string) => {
-    console.log(id)
     setSelectedProducts(prevValue => ({
       ...prevValue,
       products: selectedProducts.products.map(item => {

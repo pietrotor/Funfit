@@ -64,6 +64,12 @@ function Sales({ user }: SalesProps) {
       initialDate: watch('initialDate'),
       endDate: watch('endDate')
     }))
+    setVariables(prevVariables => ({
+      ...prevVariables,
+      branchIds: [currentBranch.id],
+      initialDate: watch('initialDate'),
+      endDate: watch('endDate')
+    }))
   }, [currentBranch])
 
   const [getUsers, { data: users }] = useGetUsersLazyQuery({
@@ -293,11 +299,10 @@ function Sales({ user }: SalesProps) {
           currentPage={variables?.currentPage}
           totalPages={variables?.totalPages}
           enablePagination={true}
-          totalItems={variables?.totalRecords}
+          totalItems={data?.getSalesPaginated?.totalRecords || 0}
           titles={[
             { name: '#' },
             { name: 'Fecha de venta' },
-            { name: 'Estado' },
             { name: 'Monto total' },
             { name: 'Descuento' },
             { name: 'Método de pago' },
@@ -314,16 +319,6 @@ function Sales({ user }: SalesProps) {
               </h3>,
               <div key={idx} className="w-[10rem] text-sm md:w-full">
                 <DateConverter dateString={sale.date} showTime />
-              </div>,
-              <div
-                key={idx}
-                className={`m-auto mt-1 w-fit rounded-full  px-2 py-1 font-semibold ${
-                  sale.canceled
-                    ? 'bg-red-100 text-red-600'
-                    : 'bg-green-100 text-green-600'
-                }`}
-              >
-                {sale.canceled ? 'Cancelada' : 'Activa'}
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm font-bold">{sale.total} Bs</div>

@@ -22,7 +22,6 @@ export const ecommerceInformationSlice = createSlice({
   reducers: {
     setBranchInformation(state, action) {
       const item = action.payload
-      console.log(item)
       state.id = item?.id
       state.name = item?.name
       state.city = item?.city
