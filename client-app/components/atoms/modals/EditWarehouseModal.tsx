@@ -35,8 +35,6 @@ export const EditWarehouseModal = ({
   }
   const handleCancel = () => {
     reset()
-    console.log(watch('name'))
-    console.log(values.name)
 
     onClose()
   }

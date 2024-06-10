@@ -63,7 +63,6 @@ const Productos = ({ user }: IProduct) => {
       })
     }
   })
-  console.log(data?.getProducts?.data)
 
   const handleUpdateProduct = (productId: number) => {
     const product = data?.getProducts?.data?.find(

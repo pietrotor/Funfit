@@ -44,7 +44,6 @@ const UseGetCustomSalesPaginated = (branchId: string) => {
 
   // Use useEffect to handle changes in variables
   useEffect(() => {
-    console.log('VARIABLES ', variables)
     if (!variables?.branchIds || !variables?.branchIds?.[0]) return
     getSales({
       variables: {
