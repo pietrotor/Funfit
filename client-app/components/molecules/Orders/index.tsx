@@ -1,5 +1,8 @@
-import { Button, Chip, useDisclosure } from '@nextui-org/react'
+import { Button, useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
+import { useRouter } from 'next/router'
+import Link from 'next/link'
+import OrderStatus from '../OrderStatus'
 import ButtonComponent from '@/components/atoms/Button'
 import DateConverter from '@/components/atoms/DateConverter'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -13,16 +16,26 @@ import ProductListModal from '@/components/atoms/modals/ProductListModal'
 import { TSaleProduct } from '@/interfaces/TData'
 import OrderDetailsModal from '@/components/atoms/modals/OrderDetails'
 import CancelOrderModal from '@/components/atoms/modals/CancelOrderModal'
+import {
+  DeliveryMethodEnum,
+  OrderStatusEnum,
+  StatusEnum,
+  useDeliverOrderMutation
+} from '@/graphql/graphql-types'
+import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 
 interface OrdersProps {
-  ordersAcepted: boolean | undefined
-  ordersRejected?: boolean
+  orderStatus: OrderStatusEnum | undefined
 }
 export type TOrderDetails = {
   client: string
   paymentMethod: string
   deliveryMethod: string
   details: string
+  address?: {
+    mapUrl: string
+    detail: string
+  }
 }
 
 export type TOrderSelected = {
@@ -30,7 +43,7 @@ export type TOrderSelected = {
   id: string
 }
 
-const Orders = ({ ordersAcepted }: OrdersProps) => {
+const Orders = ({ orderStatus }: OrdersProps) => {
   const { handleAcceptOrder } = useCustomAcceptOrder()
 
   const handleProductsListModal = useDisclosure()
@@ -41,15 +54,46 @@ const Orders = ({ ordersAcepted }: OrdersProps) => {
   const [orderDetails, setOrderDetails] = useState<TOrderDetails>()
   const [orderSelected, setOrderSelected] = useState<TOrderSelected>()
 
+  const router = useRouter()
+
   const currentBranch = useAppSelector(
     state => state.branchReducer.currentBranch
   )
   const { data, loading, setFilter, setVariables, variables, refetch } =
-    useCustomGetOrdersPaginated(currentBranch.id, ordersAcepted)
+    useCustomGetOrdersPaginated(currentBranch.id, orderStatus)
+
+  const [deliverOrderMutation] = useDeliverOrderMutation({
+    onError(error) {
+      console.log('🚀 ~ onError ~ error:', error)
+      showSuccessToast(
+        'No se pudo mover el estado del pedido a entregado',
+        'error'
+      )
+    }
+  })
 
   const handleChangeRow = (row: number) => {
     console.log(row)
     setVariables({ ...variables, rows: row, currentPage: 1 })
+  }
+
+  const handleDeliverOrder = (orderId: string) => {
+    deliverOrderMutation({
+      variables: {
+        orderId
+      },
+      onCompleted({ deliverOrder }) {
+        if (deliverOrder?.status !== StatusEnum.OK) {
+          return showSuccessToast(
+            deliverOrder?.message ||
+              'No se pudo mover el estado del pedido a entregado',
+            'error'
+          )
+        }
+        showSuccessToast(deliverOrder?.message || 'Orden entregada', 'success')
+        refetch()
+      }
+    })
   }
 
   const handleOrder = (id: string) => {
@@ -59,36 +103,83 @@ const Orders = ({ ordersAcepted }: OrdersProps) => {
     if (orderData) {
       const dataToSend = {
         products: orderData.products.map(product => ({
-          id: product.product?.id,
-          branchId: product.branchProductId,
+          id: product.branchProductId,
+          branchId: orderData.branchId,
           productId: product.productId,
           price: product.price,
           isVisibleOnWeb: true,
           isVisibleOnMenu: true,
           quantity: product.qty,
           product: {
-            id: product.product?.id || '',
+            id: product.branchProductId || '',
             name: product.product?.name || '',
-            description: product.product?.description || ''
+            description: product.product?.description || '',
+            branchProductId: product.branchProductId
           },
           stock: product.qty,
           total: product.total
         })),
         subTotal: orderData.subTotal,
         total: orderData.total,
-        discount: orderData.discount
+        discount: orderData.discount,
+        orderId: id
       }
       handleAcceptOrder(id, dataToSend)
     }
   }
 
+  const handleReorder = (id: string) => {
+    const orderData = data?.getOrdersPaginated?.data?.find(
+      order => order.id === id
+    )
+    if (orderData) {
+      const dataToSend = {
+        products: orderData.products.map(product => ({
+          id: product.branchProductId,
+          branchId: orderData.branchId,
+          productId: product.productId,
+          price: product.price,
+          isVisibleOnWeb: true,
+          isVisibleOnMenu: true,
+          quantity: product.qty,
+          product: {
+            id: product.branchProductId || '',
+            name: product.product?.name || '',
+            description: product.product?.description || '',
+            branchProductId: product.branchProductId
+          },
+          stock: product.qty,
+          total: product.total
+        })),
+        subTotal: orderData.subTotal,
+        total: orderData.total,
+        discount: orderData.discount,
+        orderId: id
+      }
+      router.push({
+        pathname: '/administration-panel/point-of-sale',
+        query: { data: JSON.stringify(dataToSend) }
+      })
+    }
+  }
+
   return (
     <>
+      <div className="flex w-full justify-end">
+        <Button
+          color="primary"
+          onClick={() => refetch()}
+          className="w-fit !px-2"
+          size="sm"
+        >
+          <IconSelector name="Refresh" />
+        </Button>
+      </div>
       <Table
         tableName="PEDIDOS"
         isLoading={loading}
         currentPage={variables?.currentPage}
-        totalItems={variables?.totalRecords}
+        totalItems={data?.getOrdersPaginated?.totalRecords || 0}
         totalPages={variables?.totalPages}
         itemsPerPage={variables?.rows}
         enablePagination={true}
@@ -100,12 +191,12 @@ const Orders = ({ ordersAcepted }: OrdersProps) => {
         onChangePage={page => setVariables({ ...variables, currentPage: page })}
         titles={[
           { name: '#' },
+          { name: 'Código' },
           { name: 'Productos' },
           { name: 'Estado del pedido' },
           { name: 'Fecha de orden' },
-          { name: 'Detalles' },
-          { name: 'Subtotal' },
           { name: 'Total' },
+          { name: 'Detalle' },
           { name: 'Acciones' }
         ]}
         items={(data?.getOrdersPaginated?.data || []).map((orders, idx) => ({
@@ -115,6 +206,17 @@ const Orders = ({ ordersAcepted }: OrdersProps) => {
                 idx +
                 1}
             </h3>,
+            <div key={idx} className="text-left">
+              <p className="font-bold">{orders.code}</p>
+              {orders.saleId && (
+                <Link
+                  className="text-xs text-blue-500 hover:underline"
+                  href={`/administration-panel/sales/${orders.saleId}`}
+                >
+                  Ver venta
+                </Link>
+              )}
+            </div>,
             <div key={idx} className=" flex flex-col justify-center">
               {orders.products.length > 2 ? (
                 <span
@@ -134,18 +236,12 @@ const Orders = ({ ordersAcepted }: OrdersProps) => {
                 ))
               )}
             </div>,
-            <Chip
-              key={idx}
-              variant="flat"
-              className="text-center text-sm"
-              color={
-                orders.rejected ? 'danger' : orders.orderAcepted ? 'secondary' : 'warning'
-              }
-            >
-              {orders.rejected ? 'Rechazado' : orders.orderAcepted ? 'Aceptado' : 'Pendiente'}
-            </Chip>,
+            <OrderStatus key={idx} status={orders.orderStatus} />,
             <div key={idx} className="w-[6rem] text-xs md:w-full">
               <DateConverter showTime dateString={orders.date} />
+            </div>,
+            <div key={idx} className="text-center text-sm">
+              Bs. {orders.total}
             </div>,
             <ButtonComponent
               key={idx}
@@ -158,23 +254,23 @@ const Orders = ({ ordersAcepted }: OrdersProps) => {
                   client: orders.customerInfo?.name || '',
                   paymentMethod: orders.paymentMethod || '',
                   deliveryMethod: orders.deliveryMethod || '',
-                  details: orders.orderDetails || ''
+                  details: orders.orderDetails || '',
+                  address:
+                    // eslint-disable-next-line multiline-ternary
+                    orders.deliveryMethod === DeliveryMethodEnum.DELIVERY
+                      ? {
+                          mapUrl: `https://maps.google.com/?q=${orders.addressInfo?.latitude},${orders.addressInfo?.longitude}`,
+                          detail: orders.addressInfo?.detail || ''
+                        }
+                      : undefined
                 })
                 handleOrderDetailsModal.onOpen()
               }}
             >
               <IconSelector name="eye" color="text-secondary" />
             </ButtonComponent>,
-            <div key={idx} className="text-center text-sm">
-              Bs. {orders.subTotal}
-            </div>,
-            <div key={idx} className="text-center text-sm">
-              Bs. {orders.total}
-            </div>,
-            orders.rejected ? (
-              <></>
-            ) : !orders.orderAcepted ? (
-              <div key={idx} className="space-x-2">
+            <div className="flex justify-center gap-1" key={idx}>
+              {orders.orderStatus === OrderStatusEnum.PENDING && (
                 <ButtonComponent
                   showTooltip
                   tooltipText="Aceptar pedido"
@@ -182,8 +278,33 @@ const Orders = ({ ordersAcepted }: OrdersProps) => {
                   isIconOnly
                   onClick={() => handleOrder(orders.id)}
                 >
-                  <IconSelector name="checked" color="text-secondary" />
+                  <IconSelector name="check" color="text-secondary" />
                 </ButtonComponent>
+              )}
+              {orders.orderStatus === OrderStatusEnum.ACEPTED && (
+                <ButtonComponent
+                  showTooltip
+                  tooltipText="Vender Pedido"
+                  type="edit"
+                  isIconOnly
+                  onClick={() => handleReorder(orders.id)}
+                >
+                  <IconSelector name="cart" color="text-primary" />
+                </ButtonComponent>
+              )}
+              {orders.orderStatus === OrderStatusEnum.SOLD && (
+                <ButtonComponent
+                  showTooltip
+                  tooltipText="Entregar Pedido"
+                  type="eye"
+                  isIconOnly
+                  onClick={() => handleDeliverOrder(orders.id)}
+                >
+                  <IconSelector name="Truck" color="text-secondary" />
+                </ButtonComponent>
+              )}
+              {(orders.orderStatus === OrderStatusEnum.PENDING ||
+                orders.orderStatus === OrderStatusEnum.ACEPTED) && (
                 <ButtonComponent
                   showTooltip
                   tooltipText="Rechazar pedido"
@@ -197,25 +318,10 @@ const Orders = ({ ordersAcepted }: OrdersProps) => {
                   }}
                   isIconOnly
                 >
-                  <IconSelector name="close" color="text-danger" />
+                  <IconSelector name="trash" color="text-danger" />
                 </ButtonComponent>
-              </div>
-            ) : (
-              <Button
-                key={idx}
-                color="danger"
-                variant="flat"
-                onClick={() => {
-                  setOrderSelected({
-                    type: 'cancel',
-                    id: orders.id
-                  })
-                  handleCancelOrderModal.onOpen()
-                }}
-              >
-                Cancelar
-              </Button>
-            )
+              )}
+            </div>
           ]
         }))}
       />

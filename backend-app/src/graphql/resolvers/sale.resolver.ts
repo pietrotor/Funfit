@@ -11,11 +11,18 @@ import {
   User,
   SalesSummaryResponse,
   SalesSummaryInput,
-  CancelSaleInput
+  CancelSaleInput,
+  BusinessBalanceResponse
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
-import { branchCore, productCore, saleCore, userCore } from '@/services/index'
+import {
+  branchCore,
+  configurationCore,
+  productCore,
+  saleCore,
+  userCore
+} from '@/services/index'
 
 // ========================================== Queries ====================================================
 const getSaleById = async (
@@ -73,6 +80,26 @@ const getSalesPaginated = async (
     return errorHandler(error)
   }
 }
+const getBusinessBalance = async (
+  _: any,
+  args: { endDate: Date; initialDate: Date }
+): Promise<BusinessBalanceResponse> => {
+  try {
+    const { endDate, initialDate } = args
+    const resopnse = await configurationCore.businessBalance({
+      endDate,
+      initialDate
+    })
+    return {
+      status: StatusEnum.OK,
+      message: 'Balance encontrado',
+      data: resopnse
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
 // ========================================== Mutations ====================================================
 const createSale = async (
   _: any,
@@ -108,7 +135,7 @@ const cancelSale = async (
     )
     return {
       status: StatusEnum.OK,
-      message: 'Venta cancelada correactamente',
+      message: 'Venta anulada',
       data: saleInstance
     }
   } catch (error) {
@@ -120,7 +147,8 @@ const cancelSale = async (
 export const saleQuery = {
   getSaleById,
   getSalesSummary,
-  getSalesPaginated
+  getSalesPaginated,
+  getBusinessBalance
 }
 export const saleMutation = {
   createSale,

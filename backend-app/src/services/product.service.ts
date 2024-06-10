@@ -180,7 +180,8 @@ export class ProductService extends ProductRepository<objectId> {
         `El producto "${duplicatedProductCode.name}" ya esta registrado con este código`
       )
     }
-    updateGenericInstance(productInstance, product)
+    updateGenericInstance(productInstance, product, ['image'])
+    productInstance.image = product.image || undefined
     return await productInstance.save()
   }
 

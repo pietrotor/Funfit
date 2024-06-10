@@ -1,6 +1,7 @@
 import dateTimeScalar from '../scalars/date.scalar'
 import ObjectIdScalar from '../scalars/objectid.scalar'
 import { GraphQLTime } from 'graphql-scalars'
+import { GraphQLUpload } from 'graphql-upload-ts'
 import { Resolvers } from '../graphql_types'
 import { ContextGraphQl } from '../../interfaces/context.interface'
 import { userMutation, userQuery, userType } from './user.resolver'
@@ -52,11 +53,22 @@ import {
   priceListType
 } from './priceList.resolver'
 import { priceMutation, priceQuery, priceType } from './price.resolver'
+import {
+  distributorSaleMutation,
+  distributorSaleQuery,
+  distributorSaleType
+} from './distributorSale.resolver'
+import {
+  paymentType,
+  paymentsMutation,
+  paymentsQuery
+} from './payment.resolver'
 
 const resolvers: Resolvers<ContextGraphQl> = {
   Date: dateTimeScalar,
   Time: GraphQLTime,
   ObjectId: ObjectIdScalar,
+  Upload: GraphQLUpload,
   ...userType,
   ...productType,
   ...warehouseType,
@@ -73,6 +85,8 @@ const resolvers: Resolvers<ContextGraphQl> = {
   ...distributorType,
   ...priceListType,
   ...priceType,
+  ...distributorSaleType,
+  ...paymentType,
   Query: {
     ...userQuery,
     ...roleQuery,
@@ -90,7 +104,9 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...orderQuery,
     ...distributorQuery,
     ...priceListQuery,
-    ...priceQuery
+    ...priceQuery,
+    ...distributorSaleQuery,
+    ...paymentsQuery
   },
   Mutation: {
     ...userMutation,
@@ -108,7 +124,9 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...orderMutation,
     ...distributorMutation,
     ...priceListMutation,
-    ...priceMutation
+    ...priceMutation,
+    ...distributorSaleMutation,
+    ...paymentsMutation
   }
 }
 

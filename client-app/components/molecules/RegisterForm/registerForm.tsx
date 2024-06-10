@@ -8,7 +8,7 @@ type Props = {
 
 function RegisterForm({ control }: Props) {
   return (
-    <div className="flex h-full w-full flex-col space-y-5 p-5 text-center">
+    <div className="flex h-full w-full flex-col justify-center space-y-5 p-5 text-center">
       <h2 className="text-gray-500">Datos de contacto</h2>
       <div className="flex flex-col items-center justify-around md:flex-row">
         <div className="w-full md:w-1/2 md:space-y-8 md:px-6 ">

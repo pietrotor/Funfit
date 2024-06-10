@@ -8,6 +8,14 @@ enum DeliveryMethodEnum {
   PICKUP = 'PICKUP'
 }
 
+enum OrderStatusEnum {
+  PENDING = 'PENDING',
+  ACEPTED = 'ACEPTED',
+  SOLD = 'SOLD',
+  DELIVERED = 'DELIVERED',
+  REJECTED = 'REJECTED'
+}
+
 interface IOrder extends Document, IGeneric {
   id: objectId
   branchId: objectId
@@ -27,6 +35,7 @@ interface IOrder extends Document, IGeneric {
   code: string
   customerId: objectId
   addressId?: objectId | null
+  orderStatus: OrderStatusEnum
   pickUpInformation?: string | null
   orderDetails: string | null
   orderAcepted: boolean
@@ -102,9 +111,17 @@ const orderSchema = new Schema<IOrder>(
       type: String,
       default: ''
     },
+    orderStatus: {
+      type: String,
+      enum: OrderStatusEnum
+    },
     customerId: {
       type: Schema.Types.ObjectId,
       ref: 'Customer'
+    },
+    addressId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Address'
     },
     orderDetails: {
       type: String

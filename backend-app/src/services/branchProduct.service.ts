@@ -1,4 +1,5 @@
 import {
+  BranchProductCategorized,
   CreateBranchProductInput,
   CreateBranchProductStockMovementInput,
   PaginationInput,
@@ -46,6 +47,84 @@ export class BranchProductService extends BranchProductRepository<objectId> {
       paginationInput,
       extraArgs
     )
+  }
+
+  async getBranchProductsByCategory(branchId: objectId) {
+    const results: BranchProductCategorized[] = await BranchProduct.aggregate([
+      {
+        $match: {
+          deleted: false,
+          branchId
+        }
+      },
+      {
+        $lookup: {
+          from: 'product',
+          localField: 'productId',
+          foreignField: '_id',
+          as: 'product'
+        }
+      },
+      {
+        $unwind: '$product'
+      },
+      {
+        $lookup: {
+          from: 'category', // Nombre de la colección Category en la base de datos
+          localField: 'product.categoryId',
+          foreignField: '_id',
+          as: 'category'
+        }
+      },
+      {
+        $unwind: '$category'
+      },
+      {
+        $project: {
+          branchId: 1,
+          productId: 1,
+          stock: 1,
+          lastStockEntry: 1,
+          price: 1,
+          isVisibleOnWeb: 1,
+          isVisibleOnMenu: 1,
+          status: 1,
+          createdBy: 1,
+          deleted: 1,
+          deletedAt: 1,
+          deletedBy: 1,
+          product: 1,
+          category: {
+            _id: '$category._id',
+            id: '$category._id',
+            name: '$category.name',
+            code: '$category.code'
+          } // Incluye el ID, nombre y código de la categoría
+        }
+      },
+      {
+        $group: {
+          _id: '$category._id',
+          id: { $first: '$category.id' },
+          name: { $first: '$category.name' },
+          code: { $first: '$category.code' },
+          products: { $push: '$$ROOT' } // Agrupa los documentos por categoría y almacena los documentos completos en el array 'products'
+        }
+      }
+    ])
+    const items = results.map(category => ({
+      ...category,
+      products: (category.products || [])?.map((branchProductProduct: any) => ({
+        ...branchProductProduct,
+        id: branchProductProduct._id,
+        product: {
+          ...branchProductProduct.product,
+          id: branchProductProduct.product._id
+        }
+      }))
+    }))
+    console.log('-items - ', JSON.stringify(items))
+    return items
   }
 
   async getBranchProductById(id: objectId) {

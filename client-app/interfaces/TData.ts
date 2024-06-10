@@ -97,22 +97,22 @@ export type TOrder = {
 }
 
 export type TaddressInfo = {
-    id: string
-    latitude: number
-    longitude: number
-    detail: string
-  }
+  id: string
+  latitude: number
+  longitude: number
+  detail: string
+}
 
 export type TCustomer = {
-    id: string
-    name: string
-    lastName: string
-    email?: string
-    phone: string
-    lastOrderDate: string
-    ordersIds: string[]
-    addressInfo: TaddressInfo[]
-    addressesIds: string[]
+  id: string
+  name: string
+  lastName: string
+  email?: string
+  phone: string
+  lastOrderDate: string
+  ordersIds: string[]
+  addressInfo: TaddressInfo[]
+  addressesIds: string[]
 }
 
 export type TDistributor = {
@@ -133,7 +133,8 @@ export type TDistributor = {
 }
 
 export type TpointOfSaleDistributor = {
-  distributor: string
+  distributor?: string
+  priceListId?: string
   warehouse: string
 }
 

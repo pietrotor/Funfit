@@ -2,6 +2,7 @@ import { useDisclosure } from '@nextui-org/react'
 import { useState } from 'react'
 import { GetServerSideProps } from 'next'
 
+import { useRouter } from 'next/router'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 
@@ -21,6 +22,8 @@ function Dealers({ user }: BranchesProps) {
   const [edit, setEdit] = useState<TDistributor>({} as TDistributor)
   const handleEditModal = useDisclosure()
   const handleAddDistributor = useDisclosure()
+
+  const router = useRouter()
 
   const { loading, data, refetch, variables, setVariables, setFilter } =
     useCustomGetDistributorsPaginated()
@@ -88,7 +91,7 @@ function Dealers({ user }: BranchesProps) {
                 <div key={idx} className="text-center text-sm">
                   {distributor.name}
                 </div>,
-                <div key={idx} className="text-center text-sm w-[7vw]">
+                <div key={idx} className="w-[7vw] text-center text-sm">
                   {distributor.address}
                 </div>,
                 <div key={idx} className="text-center text-sm">
@@ -103,7 +106,10 @@ function Dealers({ user }: BranchesProps) {
                 <div key={idx} className="text-center text-sm">
                   {distributor.socialReason}
                 </div>,
-                <div key={idx} className="flex flex-col text-center text-sm w-[7vw]">
+                <div
+                  key={idx}
+                  className="flex w-[7vw] flex-col text-center text-sm"
+                >
                   <p>
                     {distributor.ownerInformation.name}{' '}
                     {distributor.ownerInformation.lastName}
@@ -111,7 +117,7 @@ function Dealers({ user }: BranchesProps) {
                   <p> {distributor.ownerInformation.phone}</p>
                   <p>{distributor.ownerInformation.address}</p>
                 </div>,
-                <div key={idx} className="flex justify-center space-x-1">
+                <div key={idx} className="flex justify-center gap-x-1">
                   <ButtonComponent
                     onClick={() => handleUpdateBranch(distributor.id)}
                     type="edit"
@@ -121,6 +127,18 @@ function Dealers({ user }: BranchesProps) {
                     <IconSelector
                       name="edit"
                       color="text-primary"
+                      width="w-8"
+                    />
+                  </ButtonComponent>
+                  <ButtonComponent
+                    onClick={() => router.push(`dealers/${distributor.id}`)}
+                    type="history"
+                    showTooltip
+                    tooltipText="Ver compras"
+                  >
+                    <IconSelector
+                      name="eye"
+                      color="text-blue-600"
                       width="w-8"
                     />
                   </ButtonComponent>

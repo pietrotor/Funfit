@@ -375,6 +375,10 @@ export const GET_STOCK_HISTORY = gql`
             image
           }
         }
+        createdByInfo {
+          name
+          lastName
+        }
       }
       totalRecords
       totalPages
@@ -495,6 +499,7 @@ export const GET_PRODUCT_BY_ID = gql`
       data {
         id
         name
+        code
         suggetedPrice
         image
         description
@@ -673,6 +678,18 @@ export const GET_CASH_BY_ID = gql`
           cashId
           isOpen
           amountOfMovents
+          openInfo {
+            amount
+            date
+            difference
+            observation
+            openByInfo {
+              name
+              lastName
+            }
+            openBy
+            physicialAmount
+          }
         }
       }
     }
@@ -697,6 +714,7 @@ export const GET_CASH_TURN_MOVEMENTS = gql`
         amount
         date
         concept
+        type
         createdByInfo {
           id
           name
@@ -735,6 +753,19 @@ export const GET_SALES_PAGINATED = gql`
         date
         code
         canceled
+        reason
+        canceledAt
+        createdBy
+        branch {
+          id
+          name
+          code
+          city
+          direction
+          phone
+          nit
+          cashId
+        }
         createdByInfo {
           id
           name
@@ -779,6 +810,7 @@ export const GET_SALES_BY_ID = gql`
       data {
         id
         branchId
+        paymentMethod
         products {
           productId
           qty
@@ -789,6 +821,16 @@ export const GET_SALES_BY_ID = gql`
             code
             image
           }
+        }
+        createdByInfo {
+          name
+          lastName
+        }
+        canceled
+        canceledAt
+        canceledByInfo {
+          name
+          lastName
         }
         code
         total
@@ -894,42 +936,41 @@ export const GET_PRODUCT_STOCK = gql`
 `
 
 export const GET_PUBLIC_BRANCH_PRODUCTS = gql`
-  query GetPublicProducts(
-    $paginationInput: PaginationInput!
-    $branchId: ObjectId!
-  ) {
-    getPublicProducts(paginationInput: $paginationInput, branchId: $branchId) {
+  query GetPublicProducts($branchId: ObjectId!) {
+    getPublicProducts(branchId: $branchId) {
       errorInput {
-        message
         field
+        message
       }
       status
       message
       data {
         id
-        branchId
-        productId
-        price
-        stock
-        isVisibleOnWeb
-        isVisibleOnMenu
-        product {
+        name
+        code
+        products {
           id
-          name
-          suggetedPrice
-          code
-          internalCode
-          description
-          categoryId
-          cost
-          image
-          warehouses
+          branchId
+          productId
+          price
+          stock
+          lastStockEntry
+          isVisibleOnWeb
+          isVisibleOnMenu
+          product {
+            id
+            name
+            suggetedPrice
+            code
+            internalCode
+            description
+            categoryId
+            cost
+            image
+            warehouses
+          }
         }
       }
-      totalRecords
-      totalPages
-      rows
-      currentPage
     }
   }
 `
@@ -1002,6 +1043,7 @@ export const GET_ORDER_PAGINATED = gql`
         customerId
         addressId
         pickUpInformation
+        orderStatus
         orderDetails
         orderAcepted
         orderAceptedAt
@@ -1021,6 +1063,11 @@ export const GET_ORDER_PAGINATED = gql`
           lastOrderDate
           addressesIds
           ordersIds
+        }
+        addressInfo {
+          latitude
+          longitude
+          detail
         }
       }
       totalRecords
@@ -1175,6 +1222,245 @@ export const GET_PRICE_BY_ID = gql`
           image
           warehouses
         }
+      }
+    }
+  }
+`
+export const GET_DISTRIBUTOR_SALE_PRODUCTS = gql`
+  query GetDistributorSaleProducts(
+    $warehouseId: ObjectId!
+    $priceListId: ObjectId!
+  ) {
+    getDistributorSaleProducts(
+      warehouseId: $warehouseId
+      priceListId: $priceListId
+    ) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        warehouseId
+        stockId
+        productId
+        priceListId
+        priceId
+        price
+        stock
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          internalCode
+          description
+          categoryId
+          cost
+          image
+          warehouses
+        }
+      }
+    }
+  }
+`
+export const GET_DISTRIBUTORS_SALES_PAGINATED = gql`
+  query GetDistributorSalesPaginated(
+    $distributorSalePaginationInput: DistributorSalePaginationInput!
+  ) {
+    getDistributorSalesPaginated(
+      distributorSalePaginationInput: $distributorSalePaginationInput
+    ) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        products {
+          productId
+          price
+          qty
+          total
+          product {
+            name
+          }
+        }
+        priceListId
+        warehouseId
+        paymentMethod
+        subTotal
+        total
+        discount
+        balance
+        totalPaid
+        date
+        code
+        distributorId
+        observations
+        createdBy
+        canceled
+        reason
+        canceledAt
+        canceledBy
+        warehouse {
+          name
+        }
+        priceList {
+          name
+        }
+        distributor {
+          name
+          code
+        }
+        createdByInfo {
+          name
+          lastName
+        }
+        canceledByInfo {
+          name
+          lastName
+        }
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+export const GET_DISTRIBUTOR_SALE_BY_ID = gql`
+  query GetDistributorSale($getDistributorSaleId: ObjectId!) {
+    getDistributorSale(id: $getDistributorSaleId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        products {
+          productId
+          price
+          qty
+          total
+          product {
+            name
+            image
+            code
+          }
+        }
+        priceListId
+        warehouseId
+        paymentMethod
+        subTotal
+        total
+        discount
+        balance
+        totalPaid
+        date
+        code
+        distributorId
+        observations
+        createdBy
+        canceled
+        reason
+        canceledAt
+        canceledBy
+        warehouse {
+          name
+        }
+        priceList {
+          name
+        }
+        distributor {
+          name
+          code
+        }
+        createdByInfo {
+          name
+          lastName
+        }
+        canceledByInfo {
+          name
+          lastName
+        }
+      }
+    }
+  }
+`
+export const GET_DISTRIBUTORS_SALES_SUMMARY = gql`
+  query GetDistributorsSalesSummary(
+    $distributorSalePaginationInput: DistributorSalePaginationInput!
+  ) {
+    getDistributorsSalesSummary(
+      distributorSalePaginationInput: $distributorSalePaginationInput
+    ) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data {
+        total
+        totalPaid
+        balance
+      }
+    }
+  }
+`
+export const GET_DISTRIBUTOR_SALE_PAYMENTS = gql`
+  query GetDistributorSalePayments($distibutorSaleId: ObjectId!) {
+    getDistributorSalePayments(distibutorSaleId: $distibutorSaleId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        amount
+        balance
+        totalPaid
+        date
+        observation
+        distributorId
+        distributorSaleId
+        createdBy
+        createdByInfo {
+          name
+          lastName
+        }
+      }
+    }
+  }
+`
+export const GET_BUSINESS_BALANCE = gql`
+  query GetBusinessBalance($endDate: Date!, $initialDate: Date!) {
+    getBusinessBalance(endDate: $endDate, initialDate: $initialDate) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data {
+        salesByBranch {
+          id
+          name
+          total
+        }
+        totalPaid
+        balance
+        result
+        totalExpenses
+        totalEarnings
       }
     }
   }

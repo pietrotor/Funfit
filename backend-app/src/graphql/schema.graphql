@@ -1,6 +1,8 @@
 scalar Date
 scalar Time
 scalar ObjectId
+scalar Upload
+
 enum StatusEnum {
   OK
   ERROR
@@ -27,6 +29,18 @@ enum PaymentMethodEnum {
 enum DeliveryMethodEnum {
   DELIVERY
   PICKUP
+}
+enum DistributorSalePaymentMethod {
+  CREDIT
+  MIXED
+  CASH
+}
+enum OrderStatusEnum {
+  PENDING
+  ACEPTED
+  SOLD
+  DELIVERED
+  REJECTED
 }
 type Query {
   # CONFIGURATION ====================================
@@ -113,13 +127,32 @@ type Query {
   getPricesPaginated(
     pricePaginationInput: PricePaginationInput!
   ): PricesResponse
+  # DISTRIBUTOR SALES ==========================
+  getDistributorSaleProducts(
+    warehouseId: ObjectId!
+    priceListId: ObjectId!
+  ): DistributorSaleProductsResponse
+  getDistributorSalesPaginated(
+    distributorSalePaginationInput: DistributorSalePaginationInput!
+  ): DistributorSalesResponse
+  getDistributorSale(id: ObjectId!): DistributorSaleResponse
+  getDistributorsSalesSummary(
+    distributorSalePaginationInput: DistributorSalePaginationInput!
+  ): DistributorsSalesSummaryResponse
+  # PAYMENTS ===================================
+  getDistributorSalePayments(
+    distibutorSaleId: ObjectId!
+  ): DistributorSalePaymentsResponse
+  # BUSINESS BALANCE ===================================
+  getBusinessBalance(
+    endDate: Date!
+    initialDate: Date!
+  ): BusinessBalanceResponse
   # ============================ ECOMMERCE ROUTES ================================
-  getPublicProducts(
-    paginationInput: PaginationInput!
-    branchId: ObjectId!
-  ): BranchProductsResponse
+  getPublicProducts(branchId: ObjectId!): BranchProductsCategorizedResponse
   getPublicCustomerById(id: ObjectId!): CustomerResponse
 }
+# **************************************************** MUTATIONS *******************************************************
 type Mutation {
   # CONFIGURATION ====================================
   updateConfiguration(
@@ -177,6 +210,7 @@ type Mutation {
   cancelSale(cancelSaleInput: CancelSaleInput!): SaleResponse
   # ORDERS =================================
   acceptOrder(orderId: ObjectId!): OrderResponse
+  deliverOrder(orderId: ObjectId!): OrderResponse
   rejectOrder(orderId: ObjectId!): OrderResponse
   # DISTRIBUTOR =================================
   createDistributor(
@@ -197,12 +231,19 @@ type Mutation {
   createPrice(createPriceInput: CreatePriceInput!): PriceResponse
   updatePrice(updatePriceInput: UpdatePriceInput!): PriceResponse
   deletePrice(id: ObjectId!): PriceResponse
+  # DISTRIBUTOR SALES ==========================
+  createDistributorSale(
+    createDistributorSaleInput: CreateDistributorSaleInput!
+  ): DistributorSaleResponse
+  # PAYMENTS ===================================
+  createPayment(createPaymentInput: CreatePaymentInput!): PaymentResponse
   # ========================= ECOMMERCE ROUTES ============================
   publicCreateCustomer(
     createCustomerInput: CreateCustomerInput!
   ): CustomerResponse
   publicCreateAddress(createAddressInput: CreateAddressInput!): AddressResponse
   publicCreateOrder(createOrderInput: CreateOrderInput!): OrderResponse
+  uploadFile(fileInput: FileInput!): ProductImageResponse
 }
 # TYPE ENTITIES ------------------------------------------------------------------------------------------------------------------------------------
 type MeasurementUnits {
@@ -425,6 +466,7 @@ type Order {
   addressId: ObjectId
   pickUpInformation: String
   orderDetails: String
+  orderStatus: OrderStatusEnum!
   orderAcepted: Boolean
   orderAceptedAt: Date
   orderAceptedBy: ObjectId
@@ -492,6 +534,91 @@ type PriceList {
   name: String!
   description: String
   productsIds: [ObjectId!]!
+}
+type DistributorSaleItem {
+  productId: ObjectId!
+  price: Float!
+  qty: Int!
+  total: Float!
+  # Field resolvers
+  product: Product
+}
+type DistributorSale {
+  id: ObjectId!
+  products: [DistributorSaleItem!]!
+  priceListId: ObjectId!
+  warehouseId: ObjectId!
+  paymentMethod: DistributorSalePaymentMethod!
+  subTotal: Float!
+  total: Float!
+  discount: Float!
+  balance: Float!
+  totalPaid: Float!
+  date: Date!
+  code: String!
+  distributorId: ObjectId!
+  observations: String
+  createdBy: ObjectId
+  canceled: Boolean
+  reason: String
+  canceledAt: Date
+  canceledBy: ObjectId
+  # Field resolvers
+  warehouse: Warehouse
+  priceList: PriceList
+  distributor: Distributor
+  createdByInfo: User
+  canceledByInfo: User
+}
+type DistributorSaleProduct {
+  warehouseId: ObjectId!
+  stockId: ObjectId!
+  productId: ObjectId!
+  priceListId: ObjectId!
+  priceId: ObjectId!
+  price: Float!
+  stock: Float!
+  # Field resolvers
+  product: Product
+}
+type Payment {
+  id: ObjectId!
+  amount: Float!
+  balance: Float!
+  totalPaid: Float!
+  date: Date!
+  observation: String
+  distributorId: ObjectId!
+  distributorSaleId: ObjectId!
+  createdBy: ObjectId
+  # Fields Resolvers
+  createdByInfo: User
+  distributor: Distributor
+  distributorSale: DistributorSale
+}
+type DistributorsSalesSummary {
+  total: Float!
+  totalPaid: Float!
+  balance: Float!
+}
+type BranchSales {
+  id: ObjectId!
+  name: String!
+  total: Float!
+}
+type BusinessBalance {
+  salesByBranch: [BranchSales!]!
+  totalPaid: Float!
+  balance: Float!
+  result: Float!
+  totalEarnings: Float!
+  totalExpenses: Float!
+}
+type BranchProductCategorized {
+  id: ObjectId!
+  name: String!
+  code: String!
+  products: [BranchProduct!]
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -642,6 +769,12 @@ type BranchProductsResponse implements ResponseBase {
   rows: Int
   currentPage: Int
 }
+type BranchProductsCategorizedResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [BranchProductCategorized!]
+}
 type BranchProductResponse implements ResponseBase {
   errorInput: [ErrorInput!]
   status: StatusEnum!
@@ -767,6 +900,58 @@ type PriceResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: Price
+}
+type DistributorSalesResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [DistributorSale!]
+  totalRecords: Int
+  totalPages: Int
+  rows: Int
+  currentPage: Int
+}
+type DistributorSaleResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: DistributorSale
+}
+type DistributorSaleProductsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [DistributorSaleProduct!]
+}
+type DistributorsSalesSummaryResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: DistributorsSalesSummary
+}
+type PaymentResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Payment
+}
+type DistributorSalePaymentsResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Payment!]
+}
+type BusinessBalanceResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: BusinessBalance
+}
+type ProductImageResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: String
 }
 # INPUTS -----------------------------------------------------------------------------------------------------------------------------------------
 input UpdateMeasurementUnitsInput {
@@ -977,10 +1162,10 @@ input SalesSummaryInput {
   saleBy: ObjectId
 }
 input CancelSaleInput {
-  saleId: ObjectId!
+  id: ObjectId!
   reason: String!
-  returnStock: Boolean!
-  returnCash: Boolean
+  cashBack: Boolean!
+  stockReturn: Boolean!
 }
 input OrderPaginationInput {
   rows: Int
@@ -988,6 +1173,7 @@ input OrderPaginationInput {
   filter: String
   orderesAcepted: Boolean
   branchId: ObjectId
+  status: OrderStatusEnum
 }
 input CreateCustomerInput {
   name: String!
@@ -1072,4 +1258,57 @@ input UpdatePriceListInput {
   id: ObjectId!
   name: String
   description: String
+}
+input DistributorSaleItemInput {
+  productId: ObjectId!
+  stockId: ObjectId!
+  price: Float!
+  qty: Int!
+  total: Float!
+}
+input CreateDistributorSaleInput {
+  products: [DistributorSaleItemInput!]!
+  priceListId: ObjectId!
+  warehouseId: ObjectId!
+  paymentMethod: DistributorSalePaymentMethod!
+  subTotal: Float!
+  total: Float!
+  discount: Float!
+  balance: Float!
+  totalPaid: Float!
+  date: Date!
+  distributorId: ObjectId!
+  observations: String
+}
+input DistributorSalePaginationInput {
+  rows: Int
+  page: Int
+  # Filter by sale code
+  filter: String
+  initialDate: Date
+  endDate: Date
+  saleBy: ObjectId
+  distributorsIds: [ObjectId!]
+}
+input CreatePaymentInput {
+  amount: Float!
+  date: Date!
+  observation: String
+  distributorId: ObjectId!
+  distributorSaleId: ObjectId!
+  balance: Float!
+  totalPaid: Float!
+}
+input PaymentPaginationInput {
+  rows: Int
+  page: Int
+  filter: String
+  distributorsIds: [ObjectId!]
+  initialDate: Date
+  endDate: Date
+  saleBy: ObjectId
+}
+input FileInput {
+  file: Upload!
+  productId: ObjectId!
 }

@@ -13,31 +13,39 @@ import { useAppSelector } from '@/store/index'
 import InformationCard from '@/components/molecules/Card/InformationCard'
 import DateConverter from '@/components/atoms/DateConverter'
 import { useGetSalesSummary } from '@/services/index'
-import { PaymentMethodEnum } from '@/graphql/graphql-types'
-import { CandelSaleModal } from '@/components/atoms/modals/CancelSaleModal'
 import { TSaleProduct } from '@/interfaces/TData'
-import ProductListModal from '@/components/atoms/modals/ProductListModal'
+import { PaymentMethodEnum, Sale } from '@/graphql/graphql-types'
+import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
+import { getCurrentDate } from '@/helpers/date.helper'
 
 interface DailySaleProps {
   user: any
 }
 
 function DailySale({ user }: DailySaleProps) {
-  const [edit, setEdit] = useState<string>('')
-  const handleCancelModal = useDisclosure()
   const router = useRouter()
   const { currentBranch } = useAppSelector(state => state.branchReducer)
-  const [products, setProducts] = useState<TSaleProduct[]>([])
+  const [, setProducts] = useState<TSaleProduct[]>([])
   const handleProductsListModal = useDisclosure()
 
-  const { data, setVariables, variables, setFilter, loading, refetch } =
-    UseGetCustomSalesPaginated(currentBranch.id)
+  const {
+    data,
+    setVariables,
+    variables,
+    setFilter,
+    loading,
+    refetch: refetchSales
+  } = UseGetCustomSalesPaginated(currentBranch.id)
 
   const {
     data: summary,
     setVariables: setSummaryVariables,
-    variables: summaryVariables
+    variables: summaryVariables,
+    refetch
   } = useGetSalesSummary()
+
+  const handleDeleteModal = useDisclosure()
+  const [selectedItem, setSelectedItem] = useState<Sale | null>(null)
 
   const handleChangeRow = (row: number) => {
     setVariables({ ...variables, rows: row, currentPage: 1 })
@@ -48,8 +56,8 @@ function DailySale({ user }: DailySaleProps) {
     setSummaryVariables({
       ...summaryVariables,
       branchIds: [currentBranch.id],
-      initialDate: new Date().toISOString().split('T')[0],
-      endDate: new Date().toISOString().split('T')[0]
+      initialDate: getCurrentDate(),
+      endDate: getCurrentDate()
     })
   }, [currentBranch.id])
 
@@ -57,8 +65,8 @@ function DailySale({ user }: DailySaleProps) {
     setVariables({
       ...variables,
       branchIds: [currentBranch.id],
-      initialDate: new Date().toISOString().split('T')[0],
-      endDate: new Date().toISOString().split('T')[0]
+      initialDate: getCurrentDate(),
+      endDate: getCurrentDate()
     })
   }, [currentBranch.id])
 
@@ -66,10 +74,6 @@ function DailySale({ user }: DailySaleProps) {
     return summary?.paymentMethods.find(
       paymentMethod => paymentMethod.method === method
     )
-  }
-  const handleCancelSale = (saleId: string) => {
-    setEdit(saleId)
-    handleCancelModal.onOpen()
   }
 
   const handleProducts = (products: TSaleProduct[]) => {
@@ -201,6 +205,7 @@ function DailySale({ user }: DailySaleProps) {
             { name: 'Descuento' },
             { name: 'Productos' },
             { name: 'Vendedor' },
+            { name: 'Observaciones' },
             { name: 'Acciones' }
           ]}
           items={(data?.getSalesPaginated?.data || []).map((sale, idx) => ({
@@ -215,7 +220,14 @@ function DailySale({ user }: DailySaleProps) {
               <div key={idx} className="w-[10rem] text-sm md:w-full">
                 <DateConverter showTime dateString={sale.date} />
               </div>,
-              <div key={idx} className={`m-auto mt-1 w-fit rounded-full  px-2 py-1 font-semibold ${sale.canceled ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+              <div
+                key={idx}
+                className={`m-auto mt-1 w-fit rounded-full  px-2 py-1 font-semibold ${
+                  sale.canceled
+                    ? 'bg-red-100 text-red-600'
+                    : 'bg-green-100 text-green-600'
+                }`}
+              >
                 {sale.canceled ? 'Cancelada' : 'Activa'}
               </div>,
               <div key={idx} className=" flex justify-center  ">
@@ -268,7 +280,19 @@ function DailySale({ user }: DailySaleProps) {
                 </div>
               </div>,
               <div key={idx}>
-                <div className="space-x-1 flex">
+                {sale.canceled && (
+                  <div className="flex h-full flex-col items-center justify-center gap-3">
+                    <p className="m-auto w-fit bg-red-600 px-4 py-1 font-bold text-white">
+                      Venta Anulada
+                    </p>
+                    <div>
+                      <DateConverter dateString={sale.canceledAt} showTime />
+                    </div>
+                  </div>
+                )}
+              </div>,
+              <div key={idx}>
+                <div className="space-x-1">
                   <ButtonComponent
                     onClick={() =>
                       router.push(`/administration-panel/sales/${sale.id}`)
@@ -284,38 +308,36 @@ function DailySale({ user }: DailySaleProps) {
                       width="w-8"
                     />
                   </ButtonComponent>
-                  <ButtonComponent
-                    onClick={() =>
-                      handleCancelSale(sale.id)
-                    }
-                    type="delete"
-                    showTooltip
-                    tooltipText="Cancelar venta"
-                    className="px-3"
-                    disabled={sale?.canceled || false}
-                  >
-                    <IconSelector
-                      name="CircleMinus"
-                      color="text-red-500"
-                      width="w-5"
-                    />
-                  </ButtonComponent>
+                  {!sale.canceled && (
+                    <ButtonComponent
+                      onClick={() => {
+                        setSelectedItem(sale as any)
+                        handleDeleteModal.onOpen()
+                      }}
+                      type="delete"
+                      showTooltip
+                      tooltipText="Eliminar"
+                    >
+                      <IconSelector
+                        name="trash"
+                        color="text-danger"
+                        width="w-8"
+                      />
+                    </ButtonComponent>
+                  )}
                 </div>
               </div>
             ]
           }))}
         />
       </div>
-      <CandelSaleModal
-      isOpen={handleCancelModal.isOpen}
-      onClose={handleCancelModal.onClose}
-      onConfirm={refetch}
-      saleId={edit}
-    />
-      <ProductListModal
-        isOpen={handleProductsListModal.isOpen}
-        onClose={handleProductsListModal.onClose}
-        values={products || []}
+      <SaleCancelModal
+        sale={selectedItem}
+        modalDisclosure={handleDeleteModal}
+        refetch={() => {
+          refetch()
+          refetchSales()
+        }}
       />
     </AdministrationLayout>
   )

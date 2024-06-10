@@ -103,11 +103,18 @@ function OrderLayout() {
   const [getBranchProduct] = useGetPublicProductsLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
-      branchId: storedBranch,
-      paginationInput: {}
+      branchId: storedBranch
     },
     onCompleted: data => {
-      setPublicProducts(data.getPublicProducts?.data as TProductBranchData[])
+      setPublicProducts(
+        (data.getPublicProducts?.data || []).reduce(
+          (prevValue: any, category: any) => [
+            ...prevValue,
+            ...category.products
+          ],
+          []
+        ) as any
+      )
     },
     onError: () => {
       showSuccessToast('Error al obtener los productos', 'error')
@@ -139,7 +146,7 @@ function OrderLayout() {
   }
 
   const onSubmit = () => {
-    if (storedBranch && customerId) {
+    if (storedBranch) {
       if (currentStepIndex === 0) {
         handleCreatePublicCustomer(
           {
@@ -174,7 +181,9 @@ function OrderLayout() {
               customerId: customerId as string,
               discount: 0,
               deliveryMethod: DeliveryMethodEnum.PICKUP,
-              paymentMethod: paymentMethod ? PaymentMethodEnum.QR_TRANSFER : PaymentMethodEnum.CASH,
+              paymentMethod: paymentMethod
+                ? PaymentMethodEnum.QR_TRANSFER
+                : PaymentMethodEnum.CASH,
               products: cartItems.map(item => ({
                 branchProductId: item.id,
                 price: item.price / item.quantity,
@@ -194,7 +203,9 @@ function OrderLayout() {
             {
               branchId: storedBranch,
               addressId: order?.addressId,
-              paymentMethod: paymentMethod ? PaymentMethodEnum.QR_TRANSFER : PaymentMethodEnum.CASH,
+              paymentMethod: paymentMethod
+                ? PaymentMethodEnum.QR_TRANSFER
+                : PaymentMethodEnum.CASH,
               deliveryMethod: DeliveryMethodEnum.DELIVERY,
               orderDetails: watch('orderDetails'),
               pickUpInformation: watch('pickUpInformation'),
@@ -219,7 +230,9 @@ function OrderLayout() {
             {
               addressId,
               branchId: storedBranch,
-              paymentMethod: paymentMethod ? PaymentMethodEnum.QR_TRANSFER : PaymentMethodEnum.CASH,
+              paymentMethod: paymentMethod
+                ? PaymentMethodEnum.QR_TRANSFER
+                : PaymentMethodEnum.CASH,
               deliveryMethod: DeliveryMethodEnum.DELIVERY,
               orderDetails: watch('orderDetails'),
               pickUpInformation: watch('pickUpInformation'),
@@ -273,12 +286,12 @@ function OrderLayout() {
       ?.getPublicCustomerById?.data?.name} ${data?.getPublicCustomerById?.data
       ?.lastName}\n* Teléfono: ${data?.getPublicCustomerById?.data
       ?.phone}\n* Correo: ${data?.getPublicCustomerById?.data?.email}\n ${
-      order?.deliveryMethod === DeliveryMethodEnum.PICKUP ? `\nTipo de entrega: 'Recojo en Sucursal'\n Sucursal: ${branch}\nDetalle del Recojo: ${details.pickUpInformation}` : `\nUbicación: \n https://maps.google.com/?q=${
-            activeDirection.location.lat
-          },${activeDirection.location.lng} \n Detalles: \n ${details.pickUpInformation}`
+      order?.deliveryMethod === DeliveryMethodEnum.PICKUP
+        ? `\nTipo de entrega: 'Recojo en Sucursal'\n Sucursal: ${branch}\nDetalle del Recojo: ${details.pickUpInformation}`
+        : `\nUbicación: \n https://maps.google.com/?q=${activeDirection.location.lat},${activeDirection.location.lng} \n Detalles: \n ${details.pickUpInformation}`
     } `
 
-    const whatsappLink = `https://api.whatsapp.com/send?phone=76475010&text=${encodeURIComponent(
+    const whatsappLink = `https://api.whatsapp.com/send?phone=73774486&text=${encodeURIComponent(
       message
     )}`
     window.open(whatsappLink, '_blank')
@@ -294,7 +307,7 @@ function OrderLayout() {
         <div className="h-24 rounded-md bg-white shadow-lg">
           <Stepper steps={currentStep} />
         </div>
-        <div className="h-72 rounded-md border bg-white shadow-lg">
+        <div className="rounded-md border bg-white shadow-lg md:h-[50vh]">
           {currentStep[0].isActive === 'active' ? (
             <RegisterForm control={control} />
           ) : currentStep[1].isActive === 'active' ? (

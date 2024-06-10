@@ -15,6 +15,7 @@ import { CloseCashRegister } from '@/components/atoms/modals/CloseCashRegisterMo
 import { OpenCashRegister } from '@/components/atoms/modals/OpenCashRegisterModal'
 import useCustomGetCashTurnMovementQuery from '@/services/UseGetTurnMovementById'
 import {
+  TurnMovementTypeEnum,
   useGetBranchByIdLazyQuery,
   useGetCashByIdLazyQuery
 } from '@/graphql/graphql-types'
@@ -150,6 +151,51 @@ function Cash({ user }: CashProps) {
                   </span>
                 </div>
               </InformationCard>
+              <InformationCard className="h-full bg-slate-200 px-3 py-6">
+                <div className="flex items-center justify-between">
+                  <div className="text-lg font-bold">
+                    <div className="text-xl">Caja abrio con:</div>
+                    <div className="text-center">
+                      {cash.data?.getCashById?.data?.currentTurn?.openInfo
+                        ?.amount || 0}{' '}
+                      Bs
+                    </div>
+                  </div>
+                  <span className="rounded-full bg-secondary p-3 ">
+                    <IconSelector
+                      name="Cash"
+                      className=" rounded-md text-white"
+                      height="h-8"
+                      width="w-8"
+                    />
+                  </span>
+                </div>
+              </InformationCard>
+              <InformationCard className="h-full bg-slate-200 px-3 py-6">
+                <div className="flex items-center justify-between">
+                  <div className="text-lg font-bold">
+                    <div className="text-xl">Aperturado por:</div>
+                    <div className="text-center">
+                      {
+                        cash.data?.getCashById?.data?.currentTurn?.openInfo
+                          ?.openByInfo?.name
+                      }{' '}
+                      {
+                        cash.data?.getCashById?.data?.currentTurn?.openInfo
+                          ?.openByInfo?.lastName
+                      }
+                    </div>
+                  </div>
+                  <span className="rounded-full bg-secondary p-3 ">
+                    <IconSelector
+                      name="user"
+                      className=" rounded-md text-white"
+                      height="h-8"
+                      width="w-8"
+                    />
+                  </span>
+                </div>
+              </InformationCard>
             </>
           )}
         </section>
@@ -223,9 +269,21 @@ function Cash({ user }: CashProps) {
                     <DateConverter showTime dateString={movement.date} />
                   </div>,
                   <div key={idx} className="text-center text-sm font-bold">
-                    <Chip color="success" variant="flat">
-                      Activo
-                    </Chip>
+                    {movement.type === TurnMovementTypeEnum.ADD && (
+                      <Chip color="success" variant="flat">
+                        Ingreso
+                      </Chip>
+                    )}
+                    {movement.type === TurnMovementTypeEnum.ADJUST && (
+                      <Chip color="warning" variant="flat">
+                        Ajuste
+                      </Chip>
+                    )}
+                    {movement.type === TurnMovementTypeEnum.WITHDRAW && (
+                      <Chip color="danger" variant="flat">
+                        Salida
+                      </Chip>
+                    )}
                   </div>,
                   <p key={idx}>
                     {movement.createdByInfo?.name}{' '}

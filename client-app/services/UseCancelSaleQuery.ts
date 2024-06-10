@@ -1,18 +1,18 @@
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
-import {
-  StatusEnum,
-  useCancelSaleMutation
-} from '@/graphql/graphql-types'
+import { StatusEnum, useCancelSaleMutation } from '@/graphql/graphql-types'
 import { TCancelSale } from '@/interfaces/TData'
 
 export const useCancelSaleQuery = () => {
-  const [createSale, {loading}] = useCancelSaleMutation()
+  const [createSale, { loading }] = useCancelSaleMutation()
 
   const handleCreateSale = (data: TCancelSale) => {
     createSale({
       variables: {
         cancelSaleInput: {
-          ...data
+          cashBack: data.returnCash,
+          id: data.saleId,
+          reason: data.reason,
+          stockReturn: data.returnStock
         }
       },
       onCompleted: result => {
@@ -23,15 +23,17 @@ export const useCancelSaleQuery = () => {
           )
         }
         if (result.cancelSale?.status === StatusEnum.OK) {
-          showSuccessToast(result.cancelSale.message || 'venta cancelada', 'success')
+          showSuccessToast(
+            result.cancelSale.message || 'venta cancelada',
+            'success'
+          )
         }
       },
-      onError: (error) => {
+      onError: error => {
         console.log(error)
         showSuccessToast('Error al cancelar la venta', 'error')
       }
-    }
-    )
+    })
   }
 
   return { handleCreateSale, loading }

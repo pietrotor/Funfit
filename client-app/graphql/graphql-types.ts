@@ -16,6 +16,7 @@ export type Scalars = {
   Date: any;
   ObjectId: any;
   Time: any;
+  Upload: any;
 };
 
 export type Address = {
@@ -64,9 +65,25 @@ export type BranchProduct = {
   stock: Scalars['Float'];
 };
 
+export type BranchProductCategorized = {
+  __typename?: 'BranchProductCategorized';
+  code: Scalars['String'];
+  id: Scalars['ObjectId'];
+  name: Scalars['String'];
+  products?: Maybe<Array<BranchProduct>>;
+};
+
 export type BranchProductResponse = ResponseBase & {
   __typename?: 'BranchProductResponse';
   data?: Maybe<BranchProduct>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type BranchProductsCategorizedResponse = ResponseBase & {
+  __typename?: 'BranchProductsCategorizedResponse';
+  data?: Maybe<Array<BranchProductCategorized>>;
   errorInput?: Maybe<Array<ErrorInput>>;
   message?: Maybe<Scalars['String']>;
   status: StatusEnum;
@@ -92,6 +109,13 @@ export type BranchResponse = ResponseBase & {
   status: StatusEnum;
 };
 
+export type BranchSales = {
+  __typename?: 'BranchSales';
+  id: Scalars['ObjectId'];
+  name: Scalars['String'];
+  total: Scalars['Float'];
+};
+
 export type BranchsResponse = ResponseBase & {
   __typename?: 'BranchsResponse';
   currentPage?: Maybe<Scalars['Int']>;
@@ -104,11 +128,29 @@ export type BranchsResponse = ResponseBase & {
   totalRecords?: Maybe<Scalars['Int']>;
 };
 
+export type BusinessBalance = {
+  __typename?: 'BusinessBalance';
+  balance: Scalars['Float'];
+  result: Scalars['Float'];
+  salesByBranch: Array<BranchSales>;
+  totalEarnings: Scalars['Float'];
+  totalExpenses: Scalars['Float'];
+  totalPaid: Scalars['Float'];
+};
+
+export type BusinessBalanceResponse = ResponseBase & {
+  __typename?: 'BusinessBalanceResponse';
+  data?: Maybe<BusinessBalance>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
 export type CancelSaleInput = {
+  cashBack: Scalars['Boolean'];
+  id: Scalars['ObjectId'];
   reason: Scalars['String'];
-  returnCash?: InputMaybe<Scalars['Boolean']>;
-  returnStock: Scalars['Boolean'];
-  saleId: Scalars['ObjectId'];
+  stockReturn: Scalars['Boolean'];
 };
 
 export type Cash = {
@@ -282,6 +324,21 @@ export type CreateDistributorInput = {
   socialReason?: InputMaybe<Scalars['String']>;
 };
 
+export type CreateDistributorSaleInput = {
+  balance: Scalars['Float'];
+  date: Scalars['Date'];
+  discount: Scalars['Float'];
+  distributorId: Scalars['ObjectId'];
+  observations?: InputMaybe<Scalars['String']>;
+  paymentMethod: DistributorSalePaymentMethod;
+  priceListId: Scalars['ObjectId'];
+  products: Array<DistributorSaleItemInput>;
+  subTotal: Scalars['Float'];
+  total: Scalars['Float'];
+  totalPaid: Scalars['Float'];
+  warehouseId: Scalars['ObjectId'];
+};
+
 export type CreateOrderInput = {
   addressId?: InputMaybe<Scalars['ObjectId']>;
   branchId: Scalars['ObjectId'];
@@ -294,6 +351,16 @@ export type CreateOrderInput = {
   products: Array<SaleItemInput>;
   subTotal: Scalars['Float'];
   total: Scalars['Float'];
+};
+
+export type CreatePaymentInput = {
+  amount: Scalars['Float'];
+  balance: Scalars['Float'];
+  date: Scalars['Date'];
+  distributorId: Scalars['ObjectId'];
+  distributorSaleId: Scalars['ObjectId'];
+  observation?: InputMaybe<Scalars['String']>;
+  totalPaid: Scalars['Float'];
 };
 
 export type CreatePriceInput = {
@@ -427,6 +494,115 @@ export type DistributorResponse = ResponseBase & {
   status: StatusEnum;
 };
 
+export type DistributorSale = {
+  __typename?: 'DistributorSale';
+  balance: Scalars['Float'];
+  canceled?: Maybe<Scalars['Boolean']>;
+  canceledAt?: Maybe<Scalars['Date']>;
+  canceledBy?: Maybe<Scalars['ObjectId']>;
+  canceledByInfo?: Maybe<User>;
+  code: Scalars['String'];
+  createdBy?: Maybe<Scalars['ObjectId']>;
+  createdByInfo?: Maybe<User>;
+  date: Scalars['Date'];
+  discount: Scalars['Float'];
+  distributor?: Maybe<Distributor>;
+  distributorId: Scalars['ObjectId'];
+  id: Scalars['ObjectId'];
+  observations?: Maybe<Scalars['String']>;
+  paymentMethod: DistributorSalePaymentMethod;
+  priceList?: Maybe<PriceList>;
+  priceListId: Scalars['ObjectId'];
+  products: Array<DistributorSaleItem>;
+  reason?: Maybe<Scalars['String']>;
+  subTotal: Scalars['Float'];
+  total: Scalars['Float'];
+  totalPaid: Scalars['Float'];
+  warehouse?: Maybe<Warehouse>;
+  warehouseId: Scalars['ObjectId'];
+};
+
+export type DistributorSaleItem = {
+  __typename?: 'DistributorSaleItem';
+  price: Scalars['Float'];
+  product?: Maybe<Product>;
+  productId: Scalars['ObjectId'];
+  qty: Scalars['Int'];
+  total: Scalars['Float'];
+};
+
+export type DistributorSaleItemInput = {
+  price: Scalars['Float'];
+  productId: Scalars['ObjectId'];
+  qty: Scalars['Int'];
+  stockId: Scalars['ObjectId'];
+  total: Scalars['Float'];
+};
+
+export type DistributorSalePaginationInput = {
+  distributorsIds?: InputMaybe<Array<Scalars['ObjectId']>>;
+  endDate?: InputMaybe<Scalars['Date']>;
+  filter?: InputMaybe<Scalars['String']>;
+  initialDate?: InputMaybe<Scalars['Date']>;
+  page?: InputMaybe<Scalars['Int']>;
+  rows?: InputMaybe<Scalars['Int']>;
+  saleBy?: InputMaybe<Scalars['ObjectId']>;
+};
+
+export enum DistributorSalePaymentMethod {
+  CASH = 'CASH',
+  CREDIT = 'CREDIT',
+  MIXED = 'MIXED'
+}
+
+export type DistributorSalePaymentsResponse = ResponseBase & {
+  __typename?: 'DistributorSalePaymentsResponse';
+  data?: Maybe<Array<Payment>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type DistributorSaleProduct = {
+  __typename?: 'DistributorSaleProduct';
+  price: Scalars['Float'];
+  priceId: Scalars['ObjectId'];
+  priceListId: Scalars['ObjectId'];
+  product?: Maybe<Product>;
+  productId: Scalars['ObjectId'];
+  stock: Scalars['Float'];
+  stockId: Scalars['ObjectId'];
+  warehouseId: Scalars['ObjectId'];
+};
+
+export type DistributorSaleProductsResponse = ResponseBase & {
+  __typename?: 'DistributorSaleProductsResponse';
+  data?: Maybe<Array<DistributorSaleProduct>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type DistributorSaleResponse = ResponseBase & {
+  __typename?: 'DistributorSaleResponse';
+  data?: Maybe<DistributorSale>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type DistributorSalesResponse = ResponseBase & {
+  __typename?: 'DistributorSalesResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<DistributorSale>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
+};
+
 export type DistributorsResponse = ResponseBase & {
   __typename?: 'DistributorsResponse';
   currentPage?: Maybe<Scalars['Int']>;
@@ -439,10 +615,30 @@ export type DistributorsResponse = ResponseBase & {
   totalRecords?: Maybe<Scalars['Int']>;
 };
 
+export type DistributorsSalesSummary = {
+  __typename?: 'DistributorsSalesSummary';
+  balance: Scalars['Float'];
+  total: Scalars['Float'];
+  totalPaid: Scalars['Float'];
+};
+
+export type DistributorsSalesSummaryResponse = ResponseBase & {
+  __typename?: 'DistributorsSalesSummaryResponse';
+  data?: Maybe<DistributorsSalesSummary>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
 export type ErrorInput = {
   __typename?: 'ErrorInput';
   field?: Maybe<Scalars['String']>;
   message: Scalars['String'];
+};
+
+export type FileInput = {
+  file: Scalars['Upload'];
+  productId: Scalars['ObjectId'];
 };
 
 export type LoginInput = {
@@ -476,6 +672,8 @@ export type Mutation = {
   createCashMovement?: Maybe<CashTurnMovementResponse>;
   createCategory?: Maybe<CategoryResponse>;
   createDistributor?: Maybe<DistributorResponse>;
+  createDistributorSale?: Maybe<DistributorSaleResponse>;
+  createPayment?: Maybe<PaymentResponse>;
   createPrice?: Maybe<PriceResponse>;
   createPriceList?: Maybe<PriceListResponse>;
   createProduct?: Maybe<ProductResponse>;
@@ -490,6 +688,7 @@ export type Mutation = {
   deletePriceList?: Maybe<PriceListResponse>;
   deleteProduct?: Maybe<ProductResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
+  deliverOrder?: Maybe<OrderResponse>;
   openCash?: Maybe<CashResponse>;
   publicCreateAddress?: Maybe<AddressResponse>;
   publicCreateCustomer?: Maybe<CustomerResponse>;
@@ -505,6 +704,7 @@ export type Mutation = {
   updateProduct?: Maybe<ProductResponse>;
   updateUser?: Maybe<UserResponse>;
   updateWarehouse?: Maybe<WarehouseResponse>;
+  uploadFile?: Maybe<ProductImageResponse>;
 };
 
 
@@ -555,6 +755,16 @@ export type MutationCreateCategoryArgs = {
 
 export type MutationCreateDistributorArgs = {
   createDistributorInput: CreateDistributorInput;
+};
+
+
+export type MutationCreateDistributorSaleArgs = {
+  createDistributorSaleInput: CreateDistributorSaleInput;
+};
+
+
+export type MutationCreatePaymentArgs = {
+  createPaymentInput: CreatePaymentInput;
 };
 
 
@@ -625,6 +835,11 @@ export type MutationDeleteProductArgs = {
 
 export type MutationDeleteWarehouseArgs = {
   id: Scalars['ObjectId'];
+};
+
+
+export type MutationDeliverOrderArgs = {
+  orderId: Scalars['ObjectId'];
 };
 
 
@@ -703,6 +918,11 @@ export type MutationUpdateWarehouseArgs = {
   updateWarehouseInput: UpdateWarehouseInput;
 };
 
+
+export type MutationUploadFileArgs = {
+  fileInput: FileInput;
+};
+
 export type OpenTurnInfo = {
   __typename?: 'OpenTurnInfo';
   amount: Scalars['Float'];
@@ -732,6 +952,7 @@ export type Order = {
   orderAceptedBy?: Maybe<Scalars['ObjectId']>;
   orderAceptedByInfo?: Maybe<User>;
   orderDetails?: Maybe<Scalars['String']>;
+  orderStatus: OrderStatusEnum;
   paymentMethod: PaymentMethodEnum;
   pickUpInformation?: Maybe<Scalars['String']>;
   products: Array<SaleItem>;
@@ -751,6 +972,7 @@ export type OrderPaginationInput = {
   orderesAcepted?: InputMaybe<Scalars['Boolean']>;
   page?: InputMaybe<Scalars['Int']>;
   rows?: InputMaybe<Scalars['Int']>;
+  status?: InputMaybe<OrderStatusEnum>;
 };
 
 export type OrderResponse = ResponseBase & {
@@ -760,6 +982,14 @@ export type OrderResponse = ResponseBase & {
   message?: Maybe<Scalars['String']>;
   status: StatusEnum;
 };
+
+export enum OrderStatusEnum {
+  ACEPTED = 'ACEPTED',
+  DELIVERED = 'DELIVERED',
+  PENDING = 'PENDING',
+  REJECTED = 'REJECTED',
+  SOLD = 'SOLD'
+}
 
 export type OrdersResponse = ResponseBase & {
   __typename?: 'OrdersResponse';
@@ -779,11 +1009,45 @@ export type PaginationInput = {
   rows?: InputMaybe<Scalars['Int']>;
 };
 
+export type Payment = {
+  __typename?: 'Payment';
+  amount: Scalars['Float'];
+  balance: Scalars['Float'];
+  createdBy?: Maybe<Scalars['ObjectId']>;
+  createdByInfo?: Maybe<User>;
+  date: Scalars['Date'];
+  distributor?: Maybe<Distributor>;
+  distributorId: Scalars['ObjectId'];
+  distributorSale?: Maybe<DistributorSale>;
+  distributorSaleId: Scalars['ObjectId'];
+  id: Scalars['ObjectId'];
+  observation?: Maybe<Scalars['String']>;
+  totalPaid: Scalars['Float'];
+};
+
 export enum PaymentMethodEnum {
   CARD = 'CARD',
   CASH = 'CASH',
   QR_TRANSFER = 'QR_TRANSFER'
 }
+
+export type PaymentPaginationInput = {
+  distributorsIds?: InputMaybe<Array<Scalars['ObjectId']>>;
+  endDate?: InputMaybe<Scalars['Date']>;
+  filter?: InputMaybe<Scalars['String']>;
+  initialDate?: InputMaybe<Scalars['Date']>;
+  page?: InputMaybe<Scalars['Int']>;
+  rows?: InputMaybe<Scalars['Int']>;
+  saleBy?: InputMaybe<Scalars['ObjectId']>;
+};
+
+export type PaymentResponse = ResponseBase & {
+  __typename?: 'PaymentResponse';
+  data?: Maybe<Payment>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
 
 export type Price = {
   __typename?: 'Price';
@@ -865,6 +1129,14 @@ export type Product = {
   warehouses: Array<Scalars['ObjectId']>;
 };
 
+export type ProductImageResponse = ResponseBase & {
+  __typename?: 'ProductImageResponse';
+  data?: Maybe<Scalars['String']>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
 export type ProductResponse = ResponseBase & {
   __typename?: 'ProductResponse';
   data?: Maybe<Product>;
@@ -892,13 +1164,19 @@ export type Query = {
   getBranchProductById?: Maybe<BranchProductResponse>;
   getBranchProductsPaginated?: Maybe<BranchProductsResponse>;
   getBranchesPaginated?: Maybe<BranchsResponse>;
+  getBusinessBalance?: Maybe<BusinessBalanceResponse>;
   getCashById?: Maybe<CashResponse>;
   getCashTurnMovements?: Maybe<CashTurnMovementsResponse>;
   getCategories?: Maybe<CategoriesResponse>;
   getCategoryById?: Maybe<CategoryResponse>;
   getConfiguration?: Maybe<ConfigurationResponse>;
   getDistributorById?: Maybe<DistributorResponse>;
+  getDistributorSale?: Maybe<DistributorSaleResponse>;
+  getDistributorSalePayments?: Maybe<DistributorSalePaymentsResponse>;
+  getDistributorSaleProducts?: Maybe<DistributorSaleProductsResponse>;
+  getDistributorSalesPaginated?: Maybe<DistributorSalesResponse>;
   getDistributorsPaginated?: Maybe<DistributorsResponse>;
+  getDistributorsSalesSummary?: Maybe<DistributorsSalesSummaryResponse>;
   getOrderById?: Maybe<OrderResponse>;
   getOrdersPaginated?: Maybe<OrdersResponse>;
   getPriceById?: Maybe<PriceResponse>;
@@ -911,7 +1189,7 @@ export type Query = {
   getProductsOutOfPriceList?: Maybe<ProductsResponse>;
   getProductsOutOfWarehouse?: Maybe<ProductsResponse>;
   getPublicCustomerById?: Maybe<CustomerResponse>;
-  getPublicProducts?: Maybe<BranchProductsResponse>;
+  getPublicProducts?: Maybe<BranchProductsCategorizedResponse>;
   getRoles?: Maybe<RolesResponse>;
   getSaleById?: Maybe<SaleResponse>;
   getSalesPaginated?: Maybe<SalesResponse>;
@@ -951,6 +1229,12 @@ export type QueryGetBranchesPaginatedArgs = {
 };
 
 
+export type QueryGetBusinessBalanceArgs = {
+  endDate: Scalars['Date'];
+  initialDate: Scalars['Date'];
+};
+
+
 export type QueryGetCashByIdArgs = {
   id: Scalars['ObjectId'];
 };
@@ -977,8 +1261,34 @@ export type QueryGetDistributorByIdArgs = {
 };
 
 
+export type QueryGetDistributorSaleArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetDistributorSalePaymentsArgs = {
+  distibutorSaleId: Scalars['ObjectId'];
+};
+
+
+export type QueryGetDistributorSaleProductsArgs = {
+  priceListId: Scalars['ObjectId'];
+  warehouseId: Scalars['ObjectId'];
+};
+
+
+export type QueryGetDistributorSalesPaginatedArgs = {
+  distributorSalePaginationInput: DistributorSalePaginationInput;
+};
+
+
 export type QueryGetDistributorsPaginatedArgs = {
   paginationInput: PaginationInput;
+};
+
+
+export type QueryGetDistributorsSalesSummaryArgs = {
+  distributorSalePaginationInput: DistributorSalePaginationInput;
 };
 
 
@@ -1048,7 +1358,6 @@ export type QueryGetPublicCustomerByIdArgs = {
 
 export type QueryGetPublicProductsArgs = {
   branchId: Scalars['ObjectId'];
-  paginationInput: PaginationInput;
 };
 
 
@@ -1729,6 +2038,13 @@ export type AcceptOrderMutationVariables = Exact<{
 
 export type AcceptOrderMutation = { __typename?: 'Mutation', acceptOrder?: { __typename?: 'OrderResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
+export type DeliverOrderMutationVariables = Exact<{
+  orderId: Scalars['ObjectId'];
+}>;
+
+
+export type DeliverOrderMutation = { __typename?: 'Mutation', deliverOrder?: { __typename?: 'OrderResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
 export type RejectOrderMutationVariables = Exact<{
   orderId: Scalars['ObjectId'];
 }>;
@@ -1791,6 +2107,27 @@ export type DeletePriceMutationVariables = Exact<{
 
 
 export type DeletePriceMutation = { __typename?: 'Mutation', deletePrice?: { __typename?: 'PriceResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
+export type CreateDistributorSaleMutationVariables = Exact<{
+  createDistributorSaleInput: CreateDistributorSaleInput;
+}>;
+
+
+export type CreateDistributorSaleMutation = { __typename?: 'Mutation', createDistributorSale?: { __typename?: 'DistributorSaleResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
+export type CreatePaymentMutationVariables = Exact<{
+  createPaymentInput: CreatePaymentInput;
+}>;
+
+
+export type CreatePaymentMutation = { __typename?: 'Mutation', createPayment?: { __typename?: 'PaymentResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
+export type UploadFileMutationVariables = Exact<{
+  fileInput: FileInput;
+}>;
+
+
+export type UploadFileMutation = { __typename?: 'Mutation', uploadFile?: { __typename?: 'ProductImageResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null } | null };
 
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1886,7 +2223,7 @@ export type GetStockHistoryQueryVariables = Exact<{
 }>;
 
 
-export type GetStockHistoryQuery = { __typename?: 'Query', getStockHistory?: { __typename?: 'StocksHistoryResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'StockHistory', id: any, stockId: any, warehouseId: any, type: StockMovementTypeEnum, date: any, stockBefore: number, stockLater: number, stock?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null } | null } | null }> | null } | null };
+export type GetStockHistoryQuery = { __typename?: 'Query', getStockHistory?: { __typename?: 'StocksHistoryResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'StockHistory', id: any, stockId: any, warehouseId: any, type: StockMovementTypeEnum, date: any, stockBefore: number, stockLater: number, stock?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null } | null } | null, createdByInfo?: { __typename?: 'User', name: string, lastName: string } | null }> | null } | null };
 
 export type GetStockByIdQueryVariables = Exact<{
   getStockByIdId: Scalars['ObjectId'];
@@ -1915,7 +2252,7 @@ export type GetProductByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetProductByIdQuery = { __typename?: 'Query', getProductById?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, image?: string | null, description: string } | null } | null };
+export type GetProductByIdQuery = { __typename?: 'Query', getProductById?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Product', id: any, name: string, code: string, suggetedPrice: number, image?: string | null, description: string } | null } | null };
 
 export type GetBranchProductsPaginatedQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -1944,7 +2281,7 @@ export type GetCashByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetCashByIdQuery = { __typename?: 'Query', getCashById?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number } | null } | null } | null };
+export type GetCashByIdQuery = { __typename?: 'Query', getCashById?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, date: any, difference: number, observation?: string | null, openBy?: any | null, physicialAmount: number, openByInfo?: { __typename?: 'User', name: string, lastName: string } | null } } | null } | null } | null };
 
 export type GetCashTurnMovementsQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -1952,14 +2289,14 @@ export type GetCashTurnMovementsQueryVariables = Exact<{
 }>;
 
 
-export type GetCashTurnMovementsQuery = { __typename?: 'Query', getCashTurnMovements?: { __typename?: 'CashTurnMovementsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'TurnMovements', id: any, turnId: any, cashId: any, amount: number, date: any, concept?: string | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string } | null }> | null } | null };
+export type GetCashTurnMovementsQuery = { __typename?: 'Query', getCashTurnMovements?: { __typename?: 'CashTurnMovementsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'TurnMovements', id: any, turnId: any, cashId: any, amount: number, date: any, concept?: string | null, type?: TurnMovementTypeEnum | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string } | null }> | null } | null };
 
 export type GetSalesPaginatedQueryVariables = Exact<{
   salesPaginationInput: SalesPaginationInput;
 }>;
 
 
-export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, total: number, discount: number, date: any, code: string, canceled?: boolean | null, products: Array<{ __typename?: 'SaleItem', productId: any, product?: { __typename?: 'Product', id: any, name: string } | null }>, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string } | null }> | null } | null };
+export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, total: number, discount: number, date: any, code: string, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, product?: { __typename?: 'Product', id: any, name: string } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string } | null }> | null } | null };
 
 export type GetSalesSummaryQueryVariables = Exact<{
   salesSummaryInput: SalesSummaryInput;
@@ -1973,7 +2310,7 @@ export type GetSaleByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetSaleByIdQuery = { __typename?: 'Query', getSaleById?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, code: string, total: number, products: Array<{ __typename?: 'SaleItem', productId: any, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, code: string, image?: string | null } | null }> } | null } | null };
+export type GetSaleByIdQuery = { __typename?: 'Query', getSaleById?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, canceled?: boolean | null, canceledAt?: any | null, code: string, total: number, products: Array<{ __typename?: 'SaleItem', productId: any, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, code: string, image?: string | null } | null }>, createdByInfo?: { __typename?: 'User', name: string, lastName: string } | null, canceledByInfo?: { __typename?: 'User', name: string, lastName: string } | null } | null } | null };
 
 export type GetCategoriesQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -2007,12 +2344,11 @@ export type GetProductStockQueryVariables = Exact<{
 export type GetProductStockQuery = { __typename?: 'Query', getProductStock?: { __typename?: 'StocksResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, units: string }> | null } | null };
 
 export type GetPublicProductsQueryVariables = Exact<{
-  paginationInput: PaginationInput;
   branchId: Scalars['ObjectId'];
 }>;
 
 
-export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }> | null } | null };
+export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'BranchProductsCategorizedResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: Array<{ __typename?: 'BranchProductCategorized', id: any, name: string, code: string, products?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, lastStockEntry?: number | null, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }> | null }> | null } | null };
 
 export type GetPublicCustomerByIdQueryVariables = Exact<{
   getPublicCustomerByIdId: Scalars['ObjectId'];
@@ -2026,7 +2362,7 @@ export type GetOrdersPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetOrdersPaginatedQuery = { __typename?: 'Query', getOrdersPaginated?: { __typename?: 'OrdersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Order', id: any, branchId: any, deliveryMethod: DeliveryMethodEnum, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, customerId: any, addressId?: any | null, pickUpInformation?: string | null, orderDetails?: string | null, orderAcepted?: boolean | null, orderAceptedAt?: any | null, orderAceptedBy?: any | null, reason?: string | null, rejected?: boolean | null, rejectedAt?: any | null, rejectedBy?: any | null, isSold: boolean, saleId?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, customerInfo?: { __typename?: 'Customer', id: any, name: string, lastName: string, email?: string | null, phone: string, lastOrderDate?: any | null, addressesIds: Array<any>, ordersIds: Array<any> } | null }> | null } | null };
+export type GetOrdersPaginatedQuery = { __typename?: 'Query', getOrdersPaginated?: { __typename?: 'OrdersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Order', id: any, branchId: any, deliveryMethod: DeliveryMethodEnum, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, customerId: any, addressId?: any | null, pickUpInformation?: string | null, orderStatus: OrderStatusEnum, orderDetails?: string | null, orderAcepted?: boolean | null, orderAceptedAt?: any | null, orderAceptedBy?: any | null, reason?: string | null, rejected?: boolean | null, rejectedAt?: any | null, rejectedBy?: any | null, isSold: boolean, saleId?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, customerInfo?: { __typename?: 'Customer', id: any, name: string, lastName: string, email?: string | null, phone: string, lastOrderDate?: any | null, addressesIds: Array<any>, ordersIds: Array<any> } | null, addressInfo?: { __typename?: 'Address', latitude: number, longitude: number, detail: string } | null }> | null } | null };
 
 export type GetDistributorsPaginatedQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -2062,6 +2398,50 @@ export type GetPriceByIdQueryVariables = Exact<{
 
 
 export type GetPriceByIdQuery = { __typename?: 'Query', getPriceById?: { __typename?: 'PriceResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'Price', id: any, productId: any, priceListId: any, price: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null } | null } | null };
+
+export type GetDistributorSaleProductsQueryVariables = Exact<{
+  warehouseId: Scalars['ObjectId'];
+  priceListId: Scalars['ObjectId'];
+}>;
+
+
+export type GetDistributorSaleProductsQuery = { __typename?: 'Query', getDistributorSaleProducts?: { __typename?: 'DistributorSaleProductsResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'DistributorSaleProduct', warehouseId: any, stockId: any, productId: any, priceListId: any, priceId: any, price: number, stock: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }> | null } | null };
+
+export type GetDistributorSalesPaginatedQueryVariables = Exact<{
+  distributorSalePaginationInput: DistributorSalePaginationInput;
+}>;
+
+
+export type GetDistributorSalesPaginatedQuery = { __typename?: 'Query', getDistributorSalesPaginated?: { __typename?: 'DistributorSalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'DistributorSale', id: any, priceListId: any, warehouseId: any, paymentMethod: DistributorSalePaymentMethod, subTotal: number, total: number, discount: number, balance: number, totalPaid: number, date: any, code: string, distributorId: any, observations?: string | null, createdBy?: any | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, canceledBy?: any | null, products: Array<{ __typename?: 'DistributorSaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', name: string } | null }>, warehouse?: { __typename?: 'Warehouse', name: string } | null, priceList?: { __typename?: 'PriceList', name: string } | null, distributor?: { __typename?: 'Distributor', name: string, code: string } | null, createdByInfo?: { __typename?: 'User', name: string, lastName: string } | null, canceledByInfo?: { __typename?: 'User', name: string, lastName: string } | null }> | null } | null };
+
+export type GetDistributorSaleQueryVariables = Exact<{
+  getDistributorSaleId: Scalars['ObjectId'];
+}>;
+
+
+export type GetDistributorSaleQuery = { __typename?: 'Query', getDistributorSale?: { __typename?: 'DistributorSaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'DistributorSale', id: any, priceListId: any, warehouseId: any, paymentMethod: DistributorSalePaymentMethod, subTotal: number, total: number, discount: number, balance: number, totalPaid: number, date: any, code: string, distributorId: any, observations?: string | null, createdBy?: any | null, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, canceledBy?: any | null, products: Array<{ __typename?: 'DistributorSaleItem', productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', name: string, image?: string | null, code: string } | null }>, warehouse?: { __typename?: 'Warehouse', name: string } | null, priceList?: { __typename?: 'PriceList', name: string } | null, distributor?: { __typename?: 'Distributor', name: string, code: string } | null, createdByInfo?: { __typename?: 'User', name: string, lastName: string } | null, canceledByInfo?: { __typename?: 'User', name: string, lastName: string } | null } | null } | null };
+
+export type GetDistributorsSalesSummaryQueryVariables = Exact<{
+  distributorSalePaginationInput: DistributorSalePaginationInput;
+}>;
+
+
+export type GetDistributorsSalesSummaryQuery = { __typename?: 'Query', getDistributorsSalesSummary?: { __typename?: 'DistributorsSalesSummaryResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'DistributorsSalesSummary', total: number, totalPaid: number, balance: number } | null } | null };
+
+export type GetDistributorSalePaymentsQueryVariables = Exact<{
+  distibutorSaleId: Scalars['ObjectId'];
+}>;
+
+
+export type GetDistributorSalePaymentsQuery = { __typename?: 'Query', getDistributorSalePayments?: { __typename?: 'DistributorSalePaymentsResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Payment', id: any, amount: number, balance: number, totalPaid: number, date: any, observation?: string | null, distributorId: any, distributorSaleId: any, createdBy?: any | null, createdByInfo?: { __typename?: 'User', name: string, lastName: string } | null }> | null } | null };
+
+export type GetBusinessBalanceQueryVariables = Exact<{
+  endDate: Scalars['Date'];
+  initialDate: Scalars['Date'];
+}>;
+
+
+export type GetBusinessBalanceQuery = { __typename?: 'Query', getBusinessBalance?: { __typename?: 'BusinessBalanceResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'BusinessBalance', totalPaid: number, balance: number, result: number, totalExpenses: number, totalEarnings: number, salesByBranch: Array<{ __typename?: 'BranchSales', id: any, name: string, total: number }> } | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -3066,6 +3446,44 @@ export function useAcceptOrderMutation(baseOptions?: Apollo.MutationHookOptions<
 export type AcceptOrderMutationHookResult = ReturnType<typeof useAcceptOrderMutation>;
 export type AcceptOrderMutationResult = Apollo.MutationResult<AcceptOrderMutation>;
 export type AcceptOrderMutationOptions = Apollo.BaseMutationOptions<AcceptOrderMutation, AcceptOrderMutationVariables>;
+export const DeliverOrderDocument = gql`
+    mutation deliverOrder($orderId: ObjectId!) {
+  deliverOrder(orderId: $orderId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type DeliverOrderMutationFn = Apollo.MutationFunction<DeliverOrderMutation, DeliverOrderMutationVariables>;
+
+/**
+ * __useDeliverOrderMutation__
+ *
+ * To run a mutation, you first call `useDeliverOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeliverOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deliverOrderMutation, { data, loading, error }] = useDeliverOrderMutation({
+ *   variables: {
+ *      orderId: // value for 'orderId'
+ *   },
+ * });
+ */
+export function useDeliverOrderMutation(baseOptions?: Apollo.MutationHookOptions<DeliverOrderMutation, DeliverOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeliverOrderMutation, DeliverOrderMutationVariables>(DeliverOrderDocument, options);
+      }
+export type DeliverOrderMutationHookResult = ReturnType<typeof useDeliverOrderMutation>;
+export type DeliverOrderMutationResult = Apollo.MutationResult<DeliverOrderMutation>;
+export type DeliverOrderMutationOptions = Apollo.BaseMutationOptions<DeliverOrderMutation, DeliverOrderMutationVariables>;
 export const RejectOrderDocument = gql`
     mutation RejectOrder($orderId: ObjectId!) {
   rejectOrder(orderId: $orderId) {
@@ -3408,6 +3826,120 @@ export function useDeletePriceMutation(baseOptions?: Apollo.MutationHookOptions<
 export type DeletePriceMutationHookResult = ReturnType<typeof useDeletePriceMutation>;
 export type DeletePriceMutationResult = Apollo.MutationResult<DeletePriceMutation>;
 export type DeletePriceMutationOptions = Apollo.BaseMutationOptions<DeletePriceMutation, DeletePriceMutationVariables>;
+export const CreateDistributorSaleDocument = gql`
+    mutation CreateDistributorSale($createDistributorSaleInput: CreateDistributorSaleInput!) {
+  createDistributorSale(createDistributorSaleInput: $createDistributorSaleInput) {
+    errorInput {
+      message
+      field
+    }
+    message
+    status
+  }
+}
+    `;
+export type CreateDistributorSaleMutationFn = Apollo.MutationFunction<CreateDistributorSaleMutation, CreateDistributorSaleMutationVariables>;
+
+/**
+ * __useCreateDistributorSaleMutation__
+ *
+ * To run a mutation, you first call `useCreateDistributorSaleMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateDistributorSaleMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createDistributorSaleMutation, { data, loading, error }] = useCreateDistributorSaleMutation({
+ *   variables: {
+ *      createDistributorSaleInput: // value for 'createDistributorSaleInput'
+ *   },
+ * });
+ */
+export function useCreateDistributorSaleMutation(baseOptions?: Apollo.MutationHookOptions<CreateDistributorSaleMutation, CreateDistributorSaleMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateDistributorSaleMutation, CreateDistributorSaleMutationVariables>(CreateDistributorSaleDocument, options);
+      }
+export type CreateDistributorSaleMutationHookResult = ReturnType<typeof useCreateDistributorSaleMutation>;
+export type CreateDistributorSaleMutationResult = Apollo.MutationResult<CreateDistributorSaleMutation>;
+export type CreateDistributorSaleMutationOptions = Apollo.BaseMutationOptions<CreateDistributorSaleMutation, CreateDistributorSaleMutationVariables>;
+export const CreatePaymentDocument = gql`
+    mutation CreatePayment($createPaymentInput: CreatePaymentInput!) {
+  createPayment(createPaymentInput: $createPaymentInput) {
+    message
+    status
+    errorInput {
+      message
+      field
+    }
+  }
+}
+    `;
+export type CreatePaymentMutationFn = Apollo.MutationFunction<CreatePaymentMutation, CreatePaymentMutationVariables>;
+
+/**
+ * __useCreatePaymentMutation__
+ *
+ * To run a mutation, you first call `useCreatePaymentMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreatePaymentMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createPaymentMutation, { data, loading, error }] = useCreatePaymentMutation({
+ *   variables: {
+ *      createPaymentInput: // value for 'createPaymentInput'
+ *   },
+ * });
+ */
+export function useCreatePaymentMutation(baseOptions?: Apollo.MutationHookOptions<CreatePaymentMutation, CreatePaymentMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreatePaymentMutation, CreatePaymentMutationVariables>(CreatePaymentDocument, options);
+      }
+export type CreatePaymentMutationHookResult = ReturnType<typeof useCreatePaymentMutation>;
+export type CreatePaymentMutationResult = Apollo.MutationResult<CreatePaymentMutation>;
+export type CreatePaymentMutationOptions = Apollo.BaseMutationOptions<CreatePaymentMutation, CreatePaymentMutationVariables>;
+export const UploadFileDocument = gql`
+    mutation UploadFile($fileInput: FileInput!) {
+  uploadFile(fileInput: $fileInput) {
+    message
+    status
+    errorInput {
+      field
+      message
+    }
+  }
+}
+    `;
+export type UploadFileMutationFn = Apollo.MutationFunction<UploadFileMutation, UploadFileMutationVariables>;
+
+/**
+ * __useUploadFileMutation__
+ *
+ * To run a mutation, you first call `useUploadFileMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUploadFileMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [uploadFileMutation, { data, loading, error }] = useUploadFileMutation({
+ *   variables: {
+ *      fileInput: // value for 'fileInput'
+ *   },
+ * });
+ */
+export function useUploadFileMutation(baseOptions?: Apollo.MutationHookOptions<UploadFileMutation, UploadFileMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UploadFileMutation, UploadFileMutationVariables>(UploadFileDocument, options);
+      }
+export type UploadFileMutationHookResult = ReturnType<typeof useUploadFileMutation>;
+export type UploadFileMutationResult = Apollo.MutationResult<UploadFileMutation>;
+export type UploadFileMutationOptions = Apollo.BaseMutationOptions<UploadFileMutation, UploadFileMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {
@@ -4130,6 +4662,10 @@ export const GetStockHistoryDocument = gql`
           image
         }
       }
+      createdByInfo {
+        name
+        lastName
+      }
     }
     totalRecords
     totalPages
@@ -4357,6 +4893,7 @@ export const GetProductByIdDocument = gql`
     data {
       id
       name
+      code
       suggetedPrice
       image
       description
@@ -4643,6 +5180,18 @@ export const GetCashByIdDocument = gql`
         cashId
         isOpen
         amountOfMovents
+        openInfo {
+          amount
+          date
+          difference
+          observation
+          openByInfo {
+            name
+            lastName
+          }
+          openBy
+          physicialAmount
+        }
       }
     }
   }
@@ -4692,6 +5241,7 @@ export const GetCashTurnMovementsDocument = gql`
       amount
       date
       concept
+      type
       createdByInfo {
         id
         name
@@ -4759,6 +5309,19 @@ export const GetSalesPaginatedDocument = gql`
       date
       code
       canceled
+      reason
+      canceledAt
+      createdBy
+      branch {
+        id
+        name
+        code
+        city
+        direction
+        phone
+        nit
+        cashId
+      }
       createdByInfo {
         id
         name
@@ -4859,6 +5422,7 @@ export const GetSaleByIdDocument = gql`
     data {
       id
       branchId
+      paymentMethod
       products {
         productId
         qty
@@ -4869,6 +5433,16 @@ export const GetSaleByIdDocument = gql`
           code
           image
         }
+      }
+      createdByInfo {
+        name
+        lastName
+      }
+      canceled
+      canceledAt
+      canceledByInfo {
+        name
+        lastName
       }
       code
       total
@@ -5105,39 +5679,41 @@ export type GetProductStockQueryHookResult = ReturnType<typeof useGetProductStoc
 export type GetProductStockLazyQueryHookResult = ReturnType<typeof useGetProductStockLazyQuery>;
 export type GetProductStockQueryResult = Apollo.QueryResult<GetProductStockQuery, GetProductStockQueryVariables>;
 export const GetPublicProductsDocument = gql`
-    query GetPublicProducts($paginationInput: PaginationInput!, $branchId: ObjectId!) {
-  getPublicProducts(paginationInput: $paginationInput, branchId: $branchId) {
+    query GetPublicProducts($branchId: ObjectId!) {
+  getPublicProducts(branchId: $branchId) {
     errorInput {
-      message
       field
+      message
     }
     status
     message
     data {
       id
-      branchId
-      productId
-      price
-      stock
-      isVisibleOnWeb
-      isVisibleOnMenu
-      product {
+      name
+      code
+      products {
         id
-        name
-        suggetedPrice
-        code
-        internalCode
-        description
-        categoryId
-        cost
-        image
-        warehouses
+        branchId
+        productId
+        price
+        stock
+        lastStockEntry
+        isVisibleOnWeb
+        isVisibleOnMenu
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          internalCode
+          description
+          categoryId
+          cost
+          image
+          warehouses
+        }
       }
     }
-    totalRecords
-    totalPages
-    rows
-    currentPage
   }
 }
     `;
@@ -5154,7 +5730,6 @@ export const GetPublicProductsDocument = gql`
  * @example
  * const { data, loading, error } = useGetPublicProductsQuery({
  *   variables: {
- *      paginationInput: // value for 'paginationInput'
  *      branchId: // value for 'branchId'
  *   },
  * });
@@ -5266,6 +5841,7 @@ export const GetOrdersPaginatedDocument = gql`
       customerId
       addressId
       pickUpInformation
+      orderStatus
       orderDetails
       orderAcepted
       orderAceptedAt
@@ -5285,6 +5861,11 @@ export const GetOrdersPaginatedDocument = gql`
         lastOrderDate
         addressesIds
         ordersIds
+      }
+      addressInfo {
+        latitude
+        longitude
+        detail
       }
     }
     totalRecords
@@ -5608,3 +6189,402 @@ export function useGetPriceByIdLazyQuery(baseOptions?: Apollo.LazyQueryHookOptio
 export type GetPriceByIdQueryHookResult = ReturnType<typeof useGetPriceByIdQuery>;
 export type GetPriceByIdLazyQueryHookResult = ReturnType<typeof useGetPriceByIdLazyQuery>;
 export type GetPriceByIdQueryResult = Apollo.QueryResult<GetPriceByIdQuery, GetPriceByIdQueryVariables>;
+export const GetDistributorSaleProductsDocument = gql`
+    query GetDistributorSaleProducts($warehouseId: ObjectId!, $priceListId: ObjectId!) {
+  getDistributorSaleProducts(warehouseId: $warehouseId, priceListId: $priceListId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      warehouseId
+      stockId
+      productId
+      priceListId
+      priceId
+      price
+      stock
+      product {
+        id
+        name
+        suggetedPrice
+        code
+        internalCode
+        description
+        categoryId
+        cost
+        image
+        warehouses
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDistributorSaleProductsQuery__
+ *
+ * To run a query within a React component, call `useGetDistributorSaleProductsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDistributorSaleProductsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDistributorSaleProductsQuery({
+ *   variables: {
+ *      warehouseId: // value for 'warehouseId'
+ *      priceListId: // value for 'priceListId'
+ *   },
+ * });
+ */
+export function useGetDistributorSaleProductsQuery(baseOptions: Apollo.QueryHookOptions<GetDistributorSaleProductsQuery, GetDistributorSaleProductsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDistributorSaleProductsQuery, GetDistributorSaleProductsQueryVariables>(GetDistributorSaleProductsDocument, options);
+      }
+export function useGetDistributorSaleProductsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDistributorSaleProductsQuery, GetDistributorSaleProductsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDistributorSaleProductsQuery, GetDistributorSaleProductsQueryVariables>(GetDistributorSaleProductsDocument, options);
+        }
+export type GetDistributorSaleProductsQueryHookResult = ReturnType<typeof useGetDistributorSaleProductsQuery>;
+export type GetDistributorSaleProductsLazyQueryHookResult = ReturnType<typeof useGetDistributorSaleProductsLazyQuery>;
+export type GetDistributorSaleProductsQueryResult = Apollo.QueryResult<GetDistributorSaleProductsQuery, GetDistributorSaleProductsQueryVariables>;
+export const GetDistributorSalesPaginatedDocument = gql`
+    query GetDistributorSalesPaginated($distributorSalePaginationInput: DistributorSalePaginationInput!) {
+  getDistributorSalesPaginated(
+    distributorSalePaginationInput: $distributorSalePaginationInput
+  ) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      products {
+        productId
+        price
+        qty
+        total
+        product {
+          name
+        }
+      }
+      priceListId
+      warehouseId
+      paymentMethod
+      subTotal
+      total
+      discount
+      balance
+      totalPaid
+      date
+      code
+      distributorId
+      observations
+      createdBy
+      canceled
+      reason
+      canceledAt
+      canceledBy
+      warehouse {
+        name
+      }
+      priceList {
+        name
+      }
+      distributor {
+        name
+        code
+      }
+      createdByInfo {
+        name
+        lastName
+      }
+      canceledByInfo {
+        name
+        lastName
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetDistributorSalesPaginatedQuery__
+ *
+ * To run a query within a React component, call `useGetDistributorSalesPaginatedQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDistributorSalesPaginatedQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDistributorSalesPaginatedQuery({
+ *   variables: {
+ *      distributorSalePaginationInput: // value for 'distributorSalePaginationInput'
+ *   },
+ * });
+ */
+export function useGetDistributorSalesPaginatedQuery(baseOptions: Apollo.QueryHookOptions<GetDistributorSalesPaginatedQuery, GetDistributorSalesPaginatedQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDistributorSalesPaginatedQuery, GetDistributorSalesPaginatedQueryVariables>(GetDistributorSalesPaginatedDocument, options);
+      }
+export function useGetDistributorSalesPaginatedLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDistributorSalesPaginatedQuery, GetDistributorSalesPaginatedQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDistributorSalesPaginatedQuery, GetDistributorSalesPaginatedQueryVariables>(GetDistributorSalesPaginatedDocument, options);
+        }
+export type GetDistributorSalesPaginatedQueryHookResult = ReturnType<typeof useGetDistributorSalesPaginatedQuery>;
+export type GetDistributorSalesPaginatedLazyQueryHookResult = ReturnType<typeof useGetDistributorSalesPaginatedLazyQuery>;
+export type GetDistributorSalesPaginatedQueryResult = Apollo.QueryResult<GetDistributorSalesPaginatedQuery, GetDistributorSalesPaginatedQueryVariables>;
+export const GetDistributorSaleDocument = gql`
+    query GetDistributorSale($getDistributorSaleId: ObjectId!) {
+  getDistributorSale(id: $getDistributorSaleId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      products {
+        productId
+        price
+        qty
+        total
+        product {
+          name
+          image
+          code
+        }
+      }
+      priceListId
+      warehouseId
+      paymentMethod
+      subTotal
+      total
+      discount
+      balance
+      totalPaid
+      date
+      code
+      distributorId
+      observations
+      createdBy
+      canceled
+      reason
+      canceledAt
+      canceledBy
+      warehouse {
+        name
+      }
+      priceList {
+        name
+      }
+      distributor {
+        name
+        code
+      }
+      createdByInfo {
+        name
+        lastName
+      }
+      canceledByInfo {
+        name
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDistributorSaleQuery__
+ *
+ * To run a query within a React component, call `useGetDistributorSaleQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDistributorSaleQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDistributorSaleQuery({
+ *   variables: {
+ *      getDistributorSaleId: // value for 'getDistributorSaleId'
+ *   },
+ * });
+ */
+export function useGetDistributorSaleQuery(baseOptions: Apollo.QueryHookOptions<GetDistributorSaleQuery, GetDistributorSaleQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDistributorSaleQuery, GetDistributorSaleQueryVariables>(GetDistributorSaleDocument, options);
+      }
+export function useGetDistributorSaleLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDistributorSaleQuery, GetDistributorSaleQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDistributorSaleQuery, GetDistributorSaleQueryVariables>(GetDistributorSaleDocument, options);
+        }
+export type GetDistributorSaleQueryHookResult = ReturnType<typeof useGetDistributorSaleQuery>;
+export type GetDistributorSaleLazyQueryHookResult = ReturnType<typeof useGetDistributorSaleLazyQuery>;
+export type GetDistributorSaleQueryResult = Apollo.QueryResult<GetDistributorSaleQuery, GetDistributorSaleQueryVariables>;
+export const GetDistributorsSalesSummaryDocument = gql`
+    query GetDistributorsSalesSummary($distributorSalePaginationInput: DistributorSalePaginationInput!) {
+  getDistributorsSalesSummary(
+    distributorSalePaginationInput: $distributorSalePaginationInput
+  ) {
+    errorInput {
+      field
+      message
+    }
+    status
+    message
+    data {
+      total
+      totalPaid
+      balance
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDistributorsSalesSummaryQuery__
+ *
+ * To run a query within a React component, call `useGetDistributorsSalesSummaryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDistributorsSalesSummaryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDistributorsSalesSummaryQuery({
+ *   variables: {
+ *      distributorSalePaginationInput: // value for 'distributorSalePaginationInput'
+ *   },
+ * });
+ */
+export function useGetDistributorsSalesSummaryQuery(baseOptions: Apollo.QueryHookOptions<GetDistributorsSalesSummaryQuery, GetDistributorsSalesSummaryQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDistributorsSalesSummaryQuery, GetDistributorsSalesSummaryQueryVariables>(GetDistributorsSalesSummaryDocument, options);
+      }
+export function useGetDistributorsSalesSummaryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDistributorsSalesSummaryQuery, GetDistributorsSalesSummaryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDistributorsSalesSummaryQuery, GetDistributorsSalesSummaryQueryVariables>(GetDistributorsSalesSummaryDocument, options);
+        }
+export type GetDistributorsSalesSummaryQueryHookResult = ReturnType<typeof useGetDistributorsSalesSummaryQuery>;
+export type GetDistributorsSalesSummaryLazyQueryHookResult = ReturnType<typeof useGetDistributorsSalesSummaryLazyQuery>;
+export type GetDistributorsSalesSummaryQueryResult = Apollo.QueryResult<GetDistributorsSalesSummaryQuery, GetDistributorsSalesSummaryQueryVariables>;
+export const GetDistributorSalePaymentsDocument = gql`
+    query GetDistributorSalePayments($distibutorSaleId: ObjectId!) {
+  getDistributorSalePayments(distibutorSaleId: $distibutorSaleId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      amount
+      balance
+      totalPaid
+      date
+      observation
+      distributorId
+      distributorSaleId
+      createdBy
+      createdByInfo {
+        name
+        lastName
+      }
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetDistributorSalePaymentsQuery__
+ *
+ * To run a query within a React component, call `useGetDistributorSalePaymentsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetDistributorSalePaymentsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetDistributorSalePaymentsQuery({
+ *   variables: {
+ *      distibutorSaleId: // value for 'distibutorSaleId'
+ *   },
+ * });
+ */
+export function useGetDistributorSalePaymentsQuery(baseOptions: Apollo.QueryHookOptions<GetDistributorSalePaymentsQuery, GetDistributorSalePaymentsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetDistributorSalePaymentsQuery, GetDistributorSalePaymentsQueryVariables>(GetDistributorSalePaymentsDocument, options);
+      }
+export function useGetDistributorSalePaymentsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetDistributorSalePaymentsQuery, GetDistributorSalePaymentsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetDistributorSalePaymentsQuery, GetDistributorSalePaymentsQueryVariables>(GetDistributorSalePaymentsDocument, options);
+        }
+export type GetDistributorSalePaymentsQueryHookResult = ReturnType<typeof useGetDistributorSalePaymentsQuery>;
+export type GetDistributorSalePaymentsLazyQueryHookResult = ReturnType<typeof useGetDistributorSalePaymentsLazyQuery>;
+export type GetDistributorSalePaymentsQueryResult = Apollo.QueryResult<GetDistributorSalePaymentsQuery, GetDistributorSalePaymentsQueryVariables>;
+export const GetBusinessBalanceDocument = gql`
+    query GetBusinessBalance($endDate: Date!, $initialDate: Date!) {
+  getBusinessBalance(endDate: $endDate, initialDate: $initialDate) {
+    errorInput {
+      field
+      message
+    }
+    status
+    message
+    data {
+      salesByBranch {
+        id
+        name
+        total
+      }
+      totalPaid
+      balance
+      result
+      totalExpenses
+      totalEarnings
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetBusinessBalanceQuery__
+ *
+ * To run a query within a React component, call `useGetBusinessBalanceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBusinessBalanceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBusinessBalanceQuery({
+ *   variables: {
+ *      endDate: // value for 'endDate'
+ *      initialDate: // value for 'initialDate'
+ *   },
+ * });
+ */
+export function useGetBusinessBalanceQuery(baseOptions: Apollo.QueryHookOptions<GetBusinessBalanceQuery, GetBusinessBalanceQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBusinessBalanceQuery, GetBusinessBalanceQueryVariables>(GetBusinessBalanceDocument, options);
+      }
+export function useGetBusinessBalanceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBusinessBalanceQuery, GetBusinessBalanceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBusinessBalanceQuery, GetBusinessBalanceQueryVariables>(GetBusinessBalanceDocument, options);
+        }
+export type GetBusinessBalanceQueryHookResult = ReturnType<typeof useGetBusinessBalanceQuery>;
+export type GetBusinessBalanceLazyQueryHookResult = ReturnType<typeof useGetBusinessBalanceLazyQuery>;
+export type GetBusinessBalanceQueryResult = Apollo.QueryResult<GetBusinessBalanceQuery, GetBusinessBalanceQueryVariables>;

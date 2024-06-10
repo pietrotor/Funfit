@@ -1,6 +1,6 @@
 import React from 'react'
 import { Accordion, AccordionItem, Radio, RadioGroup } from '@nextui-org/react'
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
+import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api'
 import { Control, FieldValues, UseFormWatch } from 'react-hook-form'
 import { activeDirection } from '../PaymentMethod/paymentMethod'
 import InputComponent from '@/components/atoms/Input'
@@ -39,7 +39,7 @@ function SendOrder({
   const branch = useAppSelector(state => state.ecommerceInformationReducer.name)
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'AIzaSyDcrnsyWSi4kyUOyUujyL0zhmuOfyubZ9U' || ''
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API || ''
   })
 
   const onSetDirection = (marker: any) => {
@@ -111,7 +111,7 @@ function SendOrder({
                   }
                 }}
               >
-                {customer.addressInfo.map((address, index) => (
+                {customer?.addressInfo?.map((address, index) => (
                   <Radio key={index} value={address.id}>
                     {address.detail}
                   </Radio>
@@ -142,7 +142,7 @@ function SendOrder({
                     zoom={17}
                     mapContainerStyle={{ width: '100%', height: '100%' }}
                   >
-                    <Marker position={activeDirection} />
+                    <MarkerF position={activeDirection} />
                   </GoogleMap>
                 )}
               </div>

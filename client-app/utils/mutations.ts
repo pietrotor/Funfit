@@ -349,6 +349,18 @@ export const ACCEPT_ORDER = gql`
     }
   }
 `
+export const DELIVER_ORDER = gql`
+  mutation deliverOrder($orderId: ObjectId!) {
+    deliverOrder(orderId: $orderId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
+`
 
 export const REJECT_ORDER = gql`
   mutation RejectOrder($orderId: ObjectId!) {
@@ -460,6 +472,46 @@ export const DELETE_PRICE = gql`
       }
       message
       status
+    }
+  }
+`
+export const CREATE_DISTRIBUTOR_SALE = gql`
+  mutation CreateDistributorSale(
+    $createDistributorSaleInput: CreateDistributorSaleInput!
+  ) {
+    createDistributorSale(
+      createDistributorSaleInput: $createDistributorSaleInput
+    ) {
+      errorInput {
+        message
+        field
+      }
+      message
+      status
+    }
+  }
+`
+export const CREATE_PAYMENT = gql`
+  mutation CreatePayment($createPaymentInput: CreatePaymentInput!) {
+    createPayment(createPaymentInput: $createPaymentInput) {
+      message
+      status
+      errorInput {
+        message
+        field
+      }
+    }
+  }
+`
+export const UPLOAD_PRODUCT_IMAGE = gql`
+  mutation UploadFile($fileInput: FileInput!) {
+    uploadFile(fileInput: $fileInput) {
+      message
+      status
+      errorInput {
+        field
+        message
+      }
     }
   }
 `

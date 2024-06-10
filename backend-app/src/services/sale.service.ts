@@ -1,6 +1,7 @@
 import {
   CancelSaleInput,
   CreateSaleInput,
+  OrderStatusEnum,
   PaymentMethodEnum,
   SalesPaginationInput,
   SalesSummaryInput
@@ -64,6 +65,7 @@ export class SalesService extends SalesRepository<objectId> {
     const result = await Sale.aggregate([
       {
         $match: {
+          canceled: false,
           ...dateFilter,
           ...branchesFilter,
           ...salesByFilter
@@ -88,15 +90,6 @@ export class SalesService extends SalesRepository<objectId> {
     const { branchIds, endDate, initialDate, saleBy } = salesSummaryInput
     const initialDateQuery = initialDate ? new Date(initialDate) : null
     if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
-    const dateFilter =
-      initialDateQuery && endDate
-        ? {
-            createdAt: {
-              $gte: initialDateQuery,
-              $lt: addDays(new Date(endDate), 1)
-            }
-          }
-        : {}
     const branchesFilter =
       branchIds.length > 0
         ? {
@@ -109,8 +102,36 @@ export class SalesService extends SalesRepository<objectId> {
 
     const result = await Sale.aggregate([
       {
+        $addFields: {
+          dateOnTz: {
+            date: {
+              $dayOfMonth: { date: '$createdAt', timezone: 'America/La_Paz' }
+            },
+            month: {
+              $month: { date: '$createdAt', timezone: 'America/La_Paz' }
+            },
+            year: { $year: { date: '$createdAt', timezone: 'America/La_Paz' } }
+          }
+        }
+      },
+      {
+        $addFields: {
+          soldAtTz: {
+            $dateFromParts: {
+              year: '$dateOnTz.year',
+              month: '$dateOnTz.month',
+              day: '$dateOnTz.date'
+            }
+          }
+        }
+      },
+      {
         $match: {
-          ...dateFilter,
+          canceled: false,
+          soldAtTz: {
+            $gte: new Date(initialDate),
+            $lte: new Date(endDate)
+          },
           ...branchesFilter,
           ...salesByFilter
         } // Aplica los a la consulta
@@ -171,11 +192,17 @@ export class SalesService extends SalesRepository<objectId> {
         { ...branchesFilter, ...filterArgs, ...salesByFilter, ...dateFilter }
       )
     }
-    return await getInstancesPagination<ISale, IModelSale>(
+    console.time('start')
+    const test = await getInstancesPagination<ISale, IModelSale>(
       Sale,
       paginationInput,
       { ...branchesFilter, ...salesByFilter, ...dateFilter }
     )
+    console.log(
+      ' ========================================== TIME ============================ '
+    )
+    console.timeEnd('start')
+    return test
   }
 
   async createSale(createSaleInput: CreateSaleInput, createdBy?: objectId) {
@@ -242,6 +269,13 @@ export class SalesService extends SalesRepository<objectId> {
       })
     )
 
+    if (
+      orderInstance?.orderStatus !== OrderStatusEnum.ACEPTED &&
+      !!orderInstance
+    ) {
+      throw new BadRequestError('No se puede vender una orden no aceptada')
+    }
+
     function generateCode(): string {
       const characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
       let code: string = ''
@@ -258,7 +292,7 @@ export class SalesService extends SalesRepository<objectId> {
     const code = generateCode()
 
     if (paymentMethod === PaymentMethodEnum.CASH) {
-      turnMovementCore.createMovement(
+      await turnMovementCore.createMovement(
         {
           amount: total,
           cashId: cashInstance._id,
@@ -303,52 +337,57 @@ export class SalesService extends SalesRepository<objectId> {
     if (orderInstance) {
       orderInstance.isSold = true
       orderInstance.saleId = saleInstance._id
-      await saleInstance.save()
+      orderInstance.orderStatus = OrderStatusEnum.SOLD
+      await orderInstance.save()
     }
     return await saleInstance.save()
   }
 
-  async cancelSale(cancelSaleInput: CancelSaleInput, canceledBy?: objectId) {
-    const { saleId, reason, returnStock, returnCash } = cancelSaleInput
-    const saleInstance = await this.getSaleById(saleId)
-    if (
-      typeof returnCash !== 'boolean' &&
-      saleInstance.paymentMethod === PaymentMethodEnum.CASH
-    ) {
+  async cancelSale(cancelSaleInput: CancelSaleInput, cancelBy?: objectId) {
+    const { id, reason, cashBack, stockReturn } = cancelSaleInput
+    const saleInstance = await this.getSaleById(id)
+    const branchInstance = await branchCore.getBranchById(saleInstance.branchId)
+    const cashInstance = await cashCore.getCashById(branchInstance.cashId)
+    if (!cashInstance.currentTurnId || !cashInstance.isOpen) {
       throw new BadRequestError(
-        'Es necesario envíar si el dinero se retornará a caja'
+        'La caja no se encuentra abierta para poder cancelar una venta'
       )
     }
-    if (saleInstance.paymentMethod === PaymentMethodEnum.CASH && returnCash) {
-      const branchInstance = await branchCore.getBranchById(
-        saleInstance.branchId
+    saleInstance.reason = reason
+    saleInstance.canceled = true
+    saleInstance.canceledAt = new Date()
+    saleInstance.canceledBy = cancelBy
+    if (cashBack) {
+      await turnMovementCore.createMovement(
+        {
+          amount: saleInstance.total,
+          cashId: branchInstance.cashId,
+          date: new Date(),
+          turnId: cashInstance.currentTurnId,
+          concept: reason,
+          type: TurnMovementTypeEnum.WITHDRAW
+        },
+        cancelBy
       )
-      const cashInstance = await cashCore.getCashById(branchInstance.cashId)
-      if (!cashInstance.isOpen) {
-        throw new BadRequestError(
-          'La caja se encuentra cerrada, debe abrir caja para retornar el dinero'
-        )
-      }
-      cashInstance.amount += saleInstance.total
-      await cashInstance.save()
     }
-    if (returnStock) {
+    if (stockReturn) {
       await Promise.all(
-        saleInstance.products.map(async product => {
-          const branchProductInstance =
-            await branchProductCore.getBranchProductByIdInstance(
-              product.branchProductId
-            )
-          if (!branchProductInstance) return
-          branchProductInstance.stock += product.qty
-          await branchProductInstance.save()
+        saleInstance.products.map(async ({ branchProductId, qty }) => {
+          try {
+            const branchProductInstance =
+              await branchProductCore.getBranchProductById(branchProductId)
+            branchProductInstance.stock += qty
+            await branchProductInstance.save()
+          } catch (error) {
+            console.log('🚀 ~ SalesService ~ awaitPromise.all ~ error:', error)
+          }
         })
       )
     }
-    saleInstance.canceled = true
-    saleInstance.canceledAt = new Date()
-    saleInstance.canceledBy = canceledBy || null
-    saleInstance.reason = reason
-    return await saleInstance.save()
+    const [saleUpdated] = await Promise.all([
+      saleInstance.save(),
+      branchInstance.save()
+    ])
+    return saleUpdated
   }
 }

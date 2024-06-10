@@ -54,19 +54,19 @@ function ClientLayout({ children }: TClientLayoutProps) {
     {
       text: 'Inicio',
       link: '/'
-    },
-    {
-      text: 'Contacto',
-      link: '/contact'
-    },
-    {
-      text: 'Seleccionar Sucursal',
-      link: '/cart',
-      onClick: () => {
-        getBranches()
-        handleSelectBranch.onOpen()
-      }
     }
+    // {
+    //   text: 'Contacto',
+    //   link: '/contact'
+    // },
+    // {
+    //   text: 'Seleccionar Sucursal',
+    //   link: '/cart',
+    //   onClick: () => {
+    //     getBranches()
+    //     handleSelectBranch.onOpen()
+    //   }
+    // }
   ]
   useEffect(() => {
     const cart = localStorage.getItem('cartItems')

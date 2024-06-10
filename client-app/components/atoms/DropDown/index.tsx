@@ -43,27 +43,44 @@ export const DropDown = ({
   return (
     <div className={` mt-8 md:me-4 ${className}`}>
       <Dropdown placement="bottom-end">
-        <DropdownTrigger >
+        <DropdownTrigger>
           <div>
             {avatar ? (
-              <Badge content={counter} color='primary' size='lg' >
-                <div onClick={onClick} className='cursor-pointer p-white rounded-full border-double border-gray-300 bg-gray-300 p-2'>
-                <IconSelector name={IconButtonName} />
-              </div>
-              </Badge>
+              <>
+                {(counter || 0) > 0 && (
+                  <Badge
+                    content={counter}
+                    color="primary"
+                    size="lg"
+                    className="-right-2 -top-2 animate-bounce"
+                  >
+                    <div
+                      onClick={onClick}
+                      className="p-white cursor-pointer rounded-full border-double border-gray-300 bg-gray-300 p-2"
+                    >
+                      <IconSelector name={IconButtonName} />
+                    </div>
+                  </Badge>
+                )}
+              </>
             ) : (
               user && (
-                <div className={` border-2 rounded-full px-2 py-1 flex items-center ${fill && 'bg-white hover:bg-gray-100 transition-all duration-100'} `}>
+                <div
+                  className={` flex items-center rounded-full border-2 px-2 py-1 ${
+                    fill &&
+                    'bg-white transition-all duration-100 hover:bg-gray-100'
+                  } `}
+                >
                   <User
-                  as="button"
-                  avatarProps={{
-                    isBordered: false,
-                    src: ''
-                  }}
-                  className="transition-transform"
-                  description={`@${label}Funfit`}
-                  name={label}
-                />
+                    as="button"
+                    avatarProps={{
+                      isBordered: false,
+                      src: ''
+                    }}
+                    className="transition-transform"
+                    description={`@${label}Funfit`}
+                    name={label}
+                  />
                 </div>
               )
             )}
@@ -76,7 +93,7 @@ export const DropDown = ({
               key={index}
               onClick={value.handleClick}
             >
-              <div className="flex space-x-2 pt-3">
+              <div className="flex items-center space-x-2 pt-3">
                 {value.counter ? (
                   <Badge
                     content={value.counter}
@@ -84,12 +101,12 @@ export const DropDown = ({
                     size="lg"
                     shape="circle"
                   >
-                    <IconSelector name={value.icon} className="me-2" />
+                    <IconSelector name={value.icon} width="w-5" height="h-5" />
                   </Badge>
                 ) : (
-                  <IconSelector name={value.icon} className="me-2" />
+                  <IconSelector name={value.icon} width="w-5" height="h-5" />
                 )}
-                <p>{value.label}</p>
+                <p className="text-sm">{value.label}</p>
               </div>
             </DropdownItem>
           ))}

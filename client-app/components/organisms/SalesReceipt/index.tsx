@@ -8,21 +8,34 @@ import EmptySale from '@/components/atoms/EmptySale'
 // import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import SaleModal from '@/components/atoms/modals/SaleModal'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
+import SaleDistributorModal from '@/components/atoms/modals/SaleDistributorModal'
+import { TpointOfSaleDistributor } from '@/interfaces/TData'
 type SalesReceiptProps = {
   selectedProducts: TPointOfSaleData
   setSelectedProducts: React.Dispatch<SetStateAction<TPointOfSaleData>>
   refetch?: () => void
+  isDistributorSale?: boolean
+  selectedDistributors?: TpointOfSaleDistributor
 }
 
 function SalesReceipt({
   selectedProducts,
   setSelectedProducts,
-  refetch
+  refetch,
+  isDistributorSale,
+  selectedDistributors
 }: SalesReceiptProps) {
   const handleSaleModal = useDisclosure()
+  const handleDistrbutorSaleModal = useDisclosure()
 
   const handleCancel = () => {
-    setSelectedProducts({ products: [], subTotal: 0, total: 0, discount: 0 })
+    setSelectedProducts({
+      products: [],
+      subTotal: 0,
+      total: 0,
+      discount: 0,
+      orderId: null
+    })
   }
 
   const handleChange = (discount: number) => {
@@ -40,7 +53,9 @@ function SalesReceipt({
     if (selectedProducts.products.length === 0) {
       showSuccessToast('No hay productos seleccionados', 'error')
     } else {
-      handleSaleModal.onOpen()
+      if (isDistributorSale) {
+        handleDistrbutorSaleModal.onOpen()
+      } else handleSaleModal.onOpen()
     }
   }
 
@@ -50,8 +65,8 @@ function SalesReceipt({
         <h3 className=" ms-6 p-4 text-left text-2xl font-bold text-gray-500">
           Recibo de venta
         </h3>
-        <div className="flex h-4/5 w-full flex-col border-y-1 border-y-secondary/30 ">
-          {selectedProducts.products?.length === 0 ? (
+        <div className="max-h-4/5 flex h-4/5 w-full flex-col overflow-y-auto border-y-1 border-y-secondary/30">
+          {selectedProducts.products.length === 0 ? (
             <EmptySale />
           ) : (
             selectedProducts.products?.map(selectedItem => {
@@ -105,14 +120,6 @@ function SalesReceipt({
                 Bs. {selectedProducts.total}
               </span>
             </Button>
-            <Button
-              onClick={() => {
-                console.log('1')
-              }}
-              className="md:text-md border-1 border-secondary bg-gray-200 text-sm"
-            >
-              Generar venta
-            </Button>
           </div>
           <div className="flex justify-between">
             <p className="md:text-md text-sm text-gray-500">
@@ -128,6 +135,14 @@ function SalesReceipt({
         </div>
       </div>
 
+      <SaleDistributorModal
+        isOpen={handleDistrbutorSaleModal.isOpen}
+        onClose={handleDistrbutorSaleModal.onClose}
+        selectedProducts={selectedProducts as any}
+        setSelectedProducts={setSelectedProducts as any}
+        selectedDistributors={selectedDistributors}
+        refetch={refetch}
+      />
       <SaleModal
         isOpen={handleSaleModal.isOpen}
         onClose={handleSaleModal.onClose}

@@ -10,7 +10,7 @@ export class CustomerService extends CustomerRepository<objectId> {
       deleted: false
     })
     if (!customerInstance) {
-      throw new BadRequestError('No se encontro la sucursal')
+      throw new BadRequestError('No se encontro el cliente')
     }
     return customerInstance
   }

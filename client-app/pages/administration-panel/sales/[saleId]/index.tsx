@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 /* eslint-disable multiline-ternary */
 import { useRouter } from 'next/router'
 import 'react-circular-progressbar/dist/styles.css'
@@ -12,6 +13,7 @@ import useCustomGetSaleById from '@/services/UseGetCustomSaleById'
 import { useAppSelector } from '@/store/index'
 import { authUserHeader } from '@/utils/verificationUser'
 import { PaymentMethodEnum } from '@/graphql/graphql-types'
+import DateConverter from '@/components/atoms/DateConverter'
 
 interface SaleDetailProps {
   user: any
@@ -116,7 +118,7 @@ function SaleDetail({ user }: SaleDetailProps) {
                   {data?.getSaleById?.data?.paymentMethod
                     ? getSalePaymentMethod(
                         data?.getSaleById?.data?.paymentMethod!
-                    ).text
+                      ).text
                     : ''}
                 </div>
               </div>
@@ -150,6 +152,23 @@ function SaleDetail({ user }: SaleDetailProps) {
             </div>
           </InformationCard>
         </section>
+        {data?.getSaleById?.data?.canceled && (
+          <section className="mb-4 w-fit rounded-md bg-red-600 p-4 px-10 text-white">
+            <h4>Venta anulada</h4>
+            <div className="flex flex-col justify-center text-sm">
+              <p className="mt-2 font-bold">Anulado en fecha: </p>
+              <DateConverter
+                dateString={data?.getSaleById?.data?.canceledAt}
+                showTime
+              />
+              <p className="mt-2 font-bold">Anulado por: </p>
+              <p>
+                {data?.getSaleById?.data?.canceledByInfo?.name}{' '}
+                {data?.getSaleById?.data?.canceledByInfo?.lastName}
+              </p>
+            </div>
+          </section>
+        )}
         <Table
           titles={[
             { name: '#' },

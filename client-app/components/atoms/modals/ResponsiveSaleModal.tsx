@@ -1,3 +1,4 @@
+import React, { SetStateAction } from 'react'
 import { MyModal } from './MyModal'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
 import SalesReceipt from '@/components/organisms/SalesReceipt'
@@ -6,7 +7,7 @@ interface ResponsiveSaleModalProps {
   isOpen: boolean
   onClose: () => void
   selectedProducts: TPointOfSaleData
-  setSelectedProducts: (products: TPointOfSaleData) => void
+  setSelectedProducts: React.Dispatch<SetStateAction<TPointOfSaleData>>
 }
 
 function ResponsiveSaleModal({
@@ -22,14 +23,14 @@ function ResponsiveSaleModal({
       onClose={onClose}
       title=""
       message=""
-      color='secondary'
+      color="secondary"
       hideSuccessButton
       hideCancelButton
-      size='5xl'
+      size="5xl"
     >
       <SalesReceipt
         selectedProducts={selectedProducts}
-        setSelectedProducts={setSelectedProducts}
+        setSelectedProducts={setSelectedProducts as any}
       />
     </MyModal>
   )

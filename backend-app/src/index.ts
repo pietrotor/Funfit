@@ -27,6 +27,7 @@ const start: any = async () => {
       throw new Error('MONGO_URL must be defined')
     }
     await mongoose.connect(process.env.MONGO_URL, options)
+
     console.log('mongodb connected')
     console.log('ENV: ', process.env.NODE_ENV)
     await startServer()
