@@ -1,4 +1,5 @@
 import {
+  BranchProductCategorized,
   CreateBranchProductInput,
   CreateBranchProductStockMovementInput,
   PaginationInput,
@@ -14,6 +15,10 @@ export abstract class BranchProductRepository<T> {
     paginationInput: PaginationInput,
     branchId: T
   ): Promise<IPaginatedResponse<IBranchProduct[]> | OutErrorResponse>
+
+  abstract getBranchProductsByCategory(
+    branchId: T
+  ): Promise<BranchProductCategorized[] | OutErrorResponse>
 
   abstract getBranchProductById(
     id: T

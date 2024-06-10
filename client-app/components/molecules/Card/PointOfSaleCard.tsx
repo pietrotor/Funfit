@@ -39,7 +39,7 @@ function PointOfSaleCard({
                   handleSelected(product.id)
               }}
             >
-              <CardBody className="relative h-full p-0">
+              <CardBody className="h-full p-0">
                 <Image
                   alt="Product image"
                   removeWrapper
@@ -55,17 +55,18 @@ function PointOfSaleCard({
                   product.stock === 0 ? 'bg-gray-300' : 'bg-primary/90'
                 } text-white`}
                 variant="solid"
+                size="sm"
               >
                 {product.stock === 0 ? 'Sin Stock' : `Inv. ${product.stock}`}
               </Chip>
               <CardFooter className="flex h-32 flex-col justify-around rounded-large">
-                <p className="w-full text-left text-xl font-bold text-secondary">
+                <p className="w-full text-left text-sm font-bold text-secondary md:text-xl">
                   {product.product?.name}
                 </p>
-                <p className="w-full overflow-hidden text-left text-tiny text-gray-500">
+                <p className="w-full overflow-hidden text-left text-[8px] text-gray-500 md:text-xs">
                   {product.product?.description}
                 </p>
-                <p className="w-full text-right text-xl font-bold text-secondary">
+                <p className="w-full text-right text-sm font-bold text-secondary md:text-xl">
                   Bs. {product.price}
                 </p>
               </CardFooter>

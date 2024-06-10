@@ -33,8 +33,8 @@ function CardPaymentMethod({
         <hr className="mx-4  flex-grow border-1 border-gray-200" />
         <p className="text-lg text-primary">Bs. 0</p>
       </div>
-      <div className="flex h-full w-full pt-2">
-        <div className="border-r-gray flex w-1/2 flex-col border-r-1 px-2">
+      <div className="flex h-full w-full flex-col pt-2 md:flex-row">
+        <div className="border-r-gray flex flex-col px-2 md:w-1/2 md:border-r-1">
           <p className="font-thin text-gray-500">Monto</p>
           <InputComponent
             control={control}

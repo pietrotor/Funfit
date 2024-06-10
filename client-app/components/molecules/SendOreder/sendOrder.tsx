@@ -1,40 +1,45 @@
-import React, { useEffect, useState } from 'react'
-import {
-  Accordion,
-  AccordionItem,
-  Button,
-  Radio,
-  RadioGroup
-} from '@nextui-org/react'
-import { GoogleMap, Marker, useJsApiLoader } from '@react-google-maps/api'
-import { useForm } from 'react-hook-form'
+import React from 'react'
+import { Accordion, AccordionItem, Radio, RadioGroup } from '@nextui-org/react'
+import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api'
+import { Control, FieldValues, UseFormWatch } from 'react-hook-form'
 import { activeDirection } from '../PaymentMethod/paymentMethod'
 import InputComponent from '@/components/atoms/Input'
 import { useAppSelector } from '@/store/index'
+import { TCustomer, TOrder } from '@/interfaces/TData'
+import { DeliveryMethodEnum } from '@/graphql/graphql-types'
+import { TDetails } from '@/components/templates/OrderLayout/orderLayout'
 
 type Props = {
-  goToStep: (e: number) => void
-  currentStepIndex: number
   activeDirection: { lat: number; lng: number }
   changeDirection: (p: activeDirection) => void
-  send: any
+  customer: TCustomer
+  control: Control<FieldValues, any>
+  watch: UseFormWatch<FieldValues>
+  order: TOrder
+  setOrder: (order: TOrder) => void
+  selectedOption: string
+  setSelectedOption: (selectedOption: string) => void
+  details: TDetails
+  setDetails: (details: TDetails) => void
 }
 
 function SendOrder({
-  goToStep,
-  currentStepIndex,
   activeDirection,
   changeDirection,
-  send
+  customer,
+  control,
+  watch,
+  order,
+  setOrder,
+  selectedOption,
+  setSelectedOption,
+  details,
+  setDetails
 }: Props) {
-  const [selectedKeys, setSelectedKeys] = useState(new Set(['0']))
-  const [selectedPlace, setSelectedPlace] = useState('')
-  const [showAlert, setShowAlert] = useState(false)
   const branch = useAppSelector(state => state.ecommerceInformationReducer.name)
-  const { handleSubmit, control, watch } = useForm()
 
   const { isLoaded } = useJsApiLoader({
-    googleMapsApiKey: 'AIzaSyDcrnsyWSi4kyUOyUujyL0zhmuOfyubZ9U' || ''
+    googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API || ''
   })
 
   const onSetDirection = (marker: any) => {
@@ -47,77 +52,88 @@ function SendOrder({
       address: watch('address')
     })
   }
-
-  // Función para actualizar las coordenadas cuando cambian en el estado
-  useEffect(() => {
-    // Puedes realizar acciones aquí cuando las coordenadas cambian en el estado
-    console.log('Coordenadas actualizadas:', activeDirection)
-  }, [activeDirection])
-
-  const onSubmit = () => {
-    if (send.current.type.trim() === '' || send.current.address.trim() === '') {
-      setShowAlert(true)
-      return
-    }
-    console.log('Formulario enviado')
-    setShowAlert(false)
-    handleNext()
-    console.log(send.current)
-  }
-
-  const handleNext = () => {
-    goToStep(currentStepIndex + 1)
-  }
-  const handlePlace = (place: string, type: string) => {
-    setSelectedPlace(type)
-    send.current = {
-      type,
-      address: place
-    }
-  }
-
   return (
-    <form
-      className="flex h-full w-full flex-col justify-between space-y-5 p-5 text-center"
-      onSubmit={handleSubmit(onSubmit)}
-    >
+    <div className="flex h-full w-full flex-col justify-between space-y-5 p-5 text-center">
       <div className="overflow-y-auto px-8">
         <h2 className="text-gray-500 md:pb-6">Datos de ubicación</h2>
-        <Accordion
-          selectedKeys={selectedKeys}
-          onSelectionChange={setSelectedKeys as any}
-        >
-          <AccordionItem
-            key="1"
-            aria-label="Recoger de la sucursal"
-            title="Recoger de la sucursal"
-          >
+        <Accordion>
+          <AccordionItem title="Recoger de la sucursal">
             <RadioGroup
               name="branch"
-              onValueChange={setSelectedPlace}
-              onChange={(e) => handlePlace(e.target.value, 'Recoger en sucursal')}
-              value={selectedPlace}
+              onValueChange={setSelectedOption}
+              onChange={event => {
+                setOrder({
+                  ...order,
+                  deliveryMethod: DeliveryMethodEnum.PICKUP,
+                  addressId: ''
+                })
+              }}
+              value={selectedOption}
               color="secondary"
             >
-              <Radio value="Recoger en sucursal">Recoger en: {branch}</Radio>
+              <Radio value={DeliveryMethodEnum.PICKUP}>
+                Recoger en: {branch}
+              </Radio>
             </RadioGroup>
+            <InputComponent
+              name="pickUpInformation"
+              control={control}
+              type="text"
+              label="Detalles para el recojo"
+              isDisabled={selectedOption !== DeliveryMethodEnum.PICKUP}
+              className="mt-3"
+              onValueChange={value => {
+                setOrder({
+                  ...order,
+                  pickUpInformation: value
+                })
+                setDetails({
+                  ...details,
+                  pickUpInformation: value
+                })
+              }}
+            />
           </AccordionItem>
-          <AccordionItem
-            key="2"
-            aria-label="Entrega a domicilio"
-            title="Entrega a domicilio"
-          >
+          <AccordionItem title="Entrega a domicilio">
             <div className="flex flex-col space-y-3">
               <RadioGroup
                 color="secondary"
                 name="delivery"
-                onValueChange={setSelectedPlace}
-                value={selectedPlace}
-                onChange={e => handlePlace(e.target.value, 'Entrega a domicilio')}
+                onValueChange={setSelectedOption}
+                value={selectedOption}
+                onChange={event => {
+                  if (event.target.value !== DeliveryMethodEnum.DELIVERY) {
+                    setOrder({
+                      ...order,
+                      deliveryMethod: DeliveryMethodEnum.DELIVERY,
+                      addressId: event.target.value
+                    })
+                  }
+                }}
               >
-                <Radio value="Entrega a domicilio">Entrega a domicilio</Radio>
+                {customer?.addressInfo?.map((address, index) => (
+                  <Radio key={index} value={address.id}>
+                    {address.detail}
+                  </Radio>
+                ))}
+                <Radio value={DeliveryMethodEnum.DELIVERY}>
+                  Otra dirección
+                </Radio>
               </RadioGroup>
-
+              <InputComponent
+                name="address"
+                control={control}
+                type="text"
+                label="Descripción de la dirección"
+                isRequired
+                isDisabled={selectedOption !== DeliveryMethodEnum.DELIVERY}
+                rules={{
+                  required: {
+                    value: selectedOption === DeliveryMethodEnum.DELIVERY,
+                    message: 'Este campo es requerido'
+                  }
+                }}
+              />
               <div className="h-96 w-full">
                 {isLoaded && (
                   <GoogleMap
@@ -126,49 +142,20 @@ function SendOrder({
                     zoom={17}
                     mapContainerStyle={{ width: '100%', height: '100%' }}
                   >
-                    <Marker position={activeDirection} />
+                    <MarkerF position={activeDirection} />
                   </GoogleMap>
                 )}
               </div>
-
-              <InputComponent
-                name="address"
-                control={control}
-                type="text"
-                placeholder="Descripción de la dirección"
-                isRequired
-                onValueChange={value =>
-                  handlePlace(value, 'Entrega a domicilio')
-                }
-                rules={{
-                  required: {
-                    value: true,
-                    message: 'Este campo es requerido'
-                  }
-                }}
-              />
             </div>
           </AccordionItem>
         </Accordion>
       </div>
-      {showAlert && (
+      {order?.deliveryMethod === undefined && (
         <div className="flex flex-col items-center justify-center">
           <p className="text-red-500">Por favor, seleccione una opción</p>
         </div>
       )}
-      <div className="flex items-center justify-between  px-6 ">
-        <Button
-          onClick={() => goToStep(currentStepIndex - 1)}
-          color="primary"
-          className="w-1/4"
-        >
-          Atrás
-        </Button>
-        <Button color="primary" className="w-1/4" type="submit">
-          Siguiente
-        </Button>
-      </div>
-    </form>
+    </div>
   )
 }
 

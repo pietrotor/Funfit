@@ -19,6 +19,9 @@ import {
   useGetBranchesPaginatedLazyQuery
 } from '@/graphql/graphql-types'
 import { setBranchInformation } from '@/store/slices/e-commerceInformation/e-commerceInformationSlice'
+import { SelectBranchProductsModal } from '@/components/atoms/modals/SelectBranchProductsModal'
+import { TDataBranch } from '@/interfaces/TData'
+import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 export type TClientLayoutProps = {
   children: React.ReactNode
 }
@@ -28,7 +31,7 @@ function ClientLayout({ children }: TClientLayoutProps) {
   const dispatch = useDispatch()
   const router = useRouter()
   const [storedBranch, setStoredBranch] = useState<string>()
-  const [getBranches, { data }] = useGetBranchesPaginatedLazyQuery({
+  const [getBranches, { data, loading }] = useGetBranchesPaginatedLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
       paginationInput: {}
@@ -40,11 +43,10 @@ function ClientLayout({ children }: TClientLayoutProps) {
       getBranchByIdId: storedBranch
     },
     onCompleted: data => {
-      console.log(data.getBranchById?.data)
       dispatch(setBranchInformation(data.getBranchById?.data))
     },
-    onError: error => {
-      console.log(error)
+    onError: () => {
+      showSuccessToast('Error al obtener la sucursal', 'error')
     }
   })
 
@@ -52,19 +54,19 @@ function ClientLayout({ children }: TClientLayoutProps) {
     {
       text: 'Inicio',
       link: '/'
-    },
-    {
-      text: 'Contacto',
-      link: '/contact'
-    },
-    {
-      text: 'Seleccionar Sucursal',
-      link: '/cart',
-      onClick: () => {
-        getBranches()
-        handleSelectBranch.onOpen()
-      }
     }
+    // {
+    //   text: 'Contacto',
+    //   link: '/contact'
+    // },
+    // {
+    //   text: 'Seleccionar Sucursal',
+    //   link: '/cart',
+    //   onClick: () => {
+    //     getBranches()
+    //     handleSelectBranch.onOpen()
+    //   }
+    // }
   ]
   useEffect(() => {
     const cart = localStorage.getItem('cartItems')
@@ -125,7 +127,7 @@ function ClientLayout({ children }: TClientLayoutProps) {
         <div className="flex-grow ">
           <UserContainer>{children}</UserContainer>
         </div>
-        <div className="fixed left-0 top-0 z-50 flex h-screen w-full items-center justify-center bg-black/40">
+        {/* <div className="fixed left-0 top-0 z-50 flex h-screen w-full items-center justify-center bg-black/40">
           <div className="max-w-lg space-y-5 rounded-xl bg-white p-7">
             <h1>Tienda en mantenimiento</h1>
             <p>
@@ -135,9 +137,8 @@ function ClientLayout({ children }: TClientLayoutProps) {
               posible
             </p>
           </div>
-        </div>
-
-        {/* <SelectBranchProductsModal
+            </div> */}
+        <SelectBranchProductsModal
           isOpen={handleSelectBranch.isOpen}
           onClose={handleSelectBranch.onClose}
           data={
@@ -146,7 +147,7 @@ function ClientLayout({ children }: TClientLayoutProps) {
             ) as TDataBranch[]
           }
           loading={loading}
-        /> */}
+        />
         <div className="">
           <UsersFooter menu={menu} />
         </div>

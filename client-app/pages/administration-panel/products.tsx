@@ -22,6 +22,7 @@ import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
+import { AddProductImageModal } from '@/components/atoms/modals/AddProductImageModal'
 
 interface IProduct {
   user: any
@@ -39,6 +40,7 @@ const Productos = ({ user }: IProduct) => {
   const [UpdateUserMutationVariables] = useUpdateProductMutation()
   const handleAddProduct = useDisclosure()
   const handleEditProduct = useDisclosure()
+  const handleUploadFileImage = useDisclosure()
   const handleConfirmDeleteProduct = useDisclosure()
   const filterProductDebounced = UseDebouncedValue(filter, 800)
 
@@ -112,6 +114,14 @@ const Productos = ({ user }: IProduct) => {
     )
     setEditProduct(product as TValueProductData)
     handleConfirmDeleteProduct.onOpen()
+  }
+
+  const handleUploadImage = (productId: string) => {
+    const product = data?.getProducts?.data?.find(
+      product => product.id === productId
+    )
+    setEditProduct(product as TValueProductData)
+    handleUploadFileImage.onOpen()
   }
 
   const handleConfirmDelete = () => {
@@ -190,7 +200,9 @@ const Productos = ({ user }: IProduct) => {
                 alt="image"
                 width={100}
                 src={
-                  product.image === 'null' || !product.image ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg' : product.image
+                  product.image === 'null' || !product.image
+                    ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
+                    : product.image
                 }
                 key={idx}
               />,
@@ -232,6 +244,18 @@ const Productos = ({ user }: IProduct) => {
                 >
                   <IconSelector name="trash" color="text-danger" width="w-8" />
                 </ButtonComponent>
+                <ButtonComponent
+                  onClick={() => handleUploadImage(product.id)}
+                  type="eye"
+                  showTooltip
+                  tooltipText="Actualizar foto"
+                >
+                  <IconSelector
+                    name="Upload"
+                    color="text-secondary"
+                    width="w-8"
+                  />
+                </ButtonComponent>
               </div>
             ]
           }))}
@@ -248,6 +272,13 @@ const Productos = ({ user }: IProduct) => {
         isOpen={handleEditProduct.isOpen}
         onClose={handleEditProduct.onClose}
         handleSendUpdateUser={handleSendUpdateUser}
+        values={editProduct as TValueProductData}
+      />
+
+      <AddProductImageModal
+        isOpen={handleUploadFileImage.isOpen}
+        onClose={handleUploadFileImage.onClose}
+        onAdd={refetch}
         values={editProduct as TValueProductData}
       />
 

@@ -2,7 +2,7 @@
 import IGeneric from '@/interfaces/generic.interface'
 import { Schema, Model, model, Document } from 'mongoose'
 
-enum PaymentMethodEnum {
+export enum PaymentMethodEnum {
   QR_TRANSFER = 'QR_TRANSFER',
   CARD = 'CARD',
   CASH = 'CASH'
@@ -25,6 +25,7 @@ export interface ISale extends Document, IGeneric {
   date: Date
   code: string
   client: string
+  orderId: objectId | null
   amountRecibed: number
   change: number
   observations: string | null
@@ -107,6 +108,11 @@ const saleSchema = new Schema<ISale>(
     canceled: {
       type: Boolean,
       default: false
+    },
+    orderId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Order',
+      default: null
     },
     reason: {
       type: String

@@ -5,8 +5,7 @@ export const UseCustomeGetBranchProductQuery = (id: string) => {
   const { data, loading } = useGetPublicProductsQuery({
     fetchPolicy: 'network-only',
     variables: {
-      branchId: id,
-      paginationInput: {}
+      branchId: id
     },
     onCompleted: result => {
       if (result.getPublicProducts?.status === StatusEnum.ERROR) {

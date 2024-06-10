@@ -1,6 +1,7 @@
+/* eslint-disable multiline-ternary */
 import { Modal, ModalContent } from '@nextui-org/react'
 import React from 'react'
-import IconSelector from '../IconSelector'
+import IconSelector, { TSvgNames } from '../IconSelector'
 import ButtonComponent from '../Button'
 
 export type ModalProps = {
@@ -22,10 +23,17 @@ export type ModalProps = {
   textBackButton?: string
   errorMessage?: string
   hideCancelButton?: boolean
+  hideSuccessButton?: boolean
   control?: any
   watch?: any
   reset?: () => void
   handleSubmit?: any
+  icon?: TSvgNames
+  textColor?: string
+  bgIconColor?: string
+  colorButon?: string
+  hoverButon?: string
+  focusButon?: string
   onSubmit?: any
   isForm?: boolean
   radius?: 'sm' | 'md' | 'lg' | 'none' | undefined
@@ -68,7 +76,14 @@ export const MyModal = ({
   isForm = true,
   backButtonDisabled = false,
   successButtonDisabled = false,
-  hideCancelButton = true
+  hideCancelButton = true,
+  icon = 'Admin',
+  textColor = 'blue-600',
+  bgIconColor = 'blue-100',
+  colorButon = 'blue-600',
+  hoverButon = 'blue-700',
+  focusButon = 'blue-500',
+  hideSuccessButton = false
 }: ModalProps) => {
   return (
     <Modal
@@ -165,7 +180,7 @@ export const MyModal = ({
               {isForm ? (
                 <form onSubmit={handleSubmit(onSubmit)}>
                   {children}
-                  <div className="justify-between bg-gray-50 px-8 py-3 sm:flex  sm:flex-row-reverse sm:px-6">
+                  <div className="mt-3 items-center justify-between bg-gray-50 px-8 py-3  sm:flex sm:flex-row-reverse sm:px-6">
                     <div className="md:space-x-3 ">
                       <ButtonComponent
                         typeOf="submit"

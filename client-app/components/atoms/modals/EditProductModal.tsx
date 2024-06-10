@@ -3,7 +3,6 @@ import { useEffect } from 'react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 import Selector from '../InputSelector'
-import { DropZone } from '@/components/molecules/DropZone'
 import { useGetCategoriesLazyQuery } from '@/graphql/graphql-types'
 import { TCategories } from '@/hooks/UseCategoryQuery'
 export type TValueProductData = {
@@ -46,7 +45,7 @@ export const EditProductModal = ({
       description: watch('description'),
       cost: parseFloat(watch('cost')),
       code: watch('code') === values.code ? undefined : watch('code'),
-      image: watch('image'),
+      image: values.image,
       suggetedPrice: parseFloat(watch('suggetedPrice')),
       categoryId: watch('category')
     })
@@ -151,7 +150,12 @@ export const EditProductModal = ({
             data?.getCategories?.data?.map(category => ({
               label: category.name,
               value: category.id
-            })) || [{ label: values?.category?.name || 'Cargando..', value: values?.category?.id }]
+            })) || [
+              {
+                label: values?.category?.name || 'Cargando..',
+                value: values?.category?.id
+              }
+            ]
           }
         />
 
@@ -164,7 +168,7 @@ export const EditProductModal = ({
           type="textArea"
         />
 
-        <DropZone />
+        {/* <DropZone /> */}
       </div>
     </MyModal>
   )

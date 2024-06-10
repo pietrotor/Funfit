@@ -265,7 +265,7 @@ function Cash({ user }: CashProps) {
                   <div key={idx} className="text-left text-sm">
                     {movement.concept}
                   </div>,
-                  <div key={idx} className="text-sm">
+                  <div key={idx} className="text-xs md:w-full w-[6rem]">
                     <DateConverter showTime dateString={movement.date} />
                   </div>,
                   <div key={idx} className="text-center text-sm font-bold">

@@ -8,22 +8,34 @@ import EmptySale from '@/components/atoms/EmptySale'
 // import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import SaleModal from '@/components/atoms/modals/SaleModal'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
-
+import SaleDistributorModal from '@/components/atoms/modals/SaleDistributorModal'
+import { TpointOfSaleDistributor } from '@/interfaces/TData'
 type SalesReceiptProps = {
   selectedProducts: TPointOfSaleData
   setSelectedProducts: React.Dispatch<SetStateAction<TPointOfSaleData>>
   refetch?: () => void
+  isDistributorSale?: boolean
+  selectedDistributors?: TpointOfSaleDistributor
 }
 
 function SalesReceipt({
   selectedProducts,
   setSelectedProducts,
-  refetch
+  refetch,
+  isDistributorSale,
+  selectedDistributors
 }: SalesReceiptProps) {
   const handleSaleModal = useDisclosure()
+  const handleDistrbutorSaleModal = useDisclosure()
 
   const handleCancel = () => {
-    setSelectedProducts({ products: [], subTotal: 0, total: 0, discount: 0 })
+    setSelectedProducts({
+      products: [],
+      subTotal: 0,
+      total: 0,
+      discount: 0,
+      orderId: null
+    })
   }
 
   const handleChange = (discount: number) => {
@@ -41,7 +53,9 @@ function SalesReceipt({
     if (selectedProducts.products.length === 0) {
       showSuccessToast('No hay productos seleccionados', 'error')
     } else {
-      handleSaleModal.onOpen()
+      if (isDistributorSale) {
+        handleDistrbutorSaleModal.onOpen()
+      } else handleSaleModal.onOpen()
     }
   }
 
@@ -51,11 +65,11 @@ function SalesReceipt({
         <h3 className=" ms-6 p-4 text-left text-2xl font-bold text-gray-500">
           Recibo de venta
         </h3>
-        <div className="flex h-4/5 w-full flex-col border-y-1 border-y-secondary/30 max-h-4/5 overflow-y-auto">
+        <div className="max-h-4/5 flex h-4/5 w-full flex-col overflow-y-auto border-y-1 border-y-secondary/30">
           {selectedProducts.products.length === 0 ? (
             <EmptySale />
           ) : (
-            selectedProducts.products.map(selectedItem => {
+            selectedProducts.products?.map(selectedItem => {
               return (
                 <SelectedProductItem
                   key={selectedItem.productId}
@@ -70,15 +84,15 @@ function SalesReceipt({
         <div className="flex w-full flex-col space-y-3 px-4 py-2">
           <div className="flex flex-col justify-between space-y-2 text-gray-500">
             <div className="flex justify-between">
-              <p>Subtotal</p>
-              <p className=" w-1/6 text-left">
+              <p className="md:text-md text-sm">Subtotal</p>
+              <p className=" md:text-md w-1/6 text-left text-sm">
                 Bs. {selectedProducts.subTotal}
               </p>
             </div>
             <tr className="border-1 border-dashed" />
             <div className="flex justify-between">
-              <p className="">Descuento</p>
-              <p className="flex w-1/6">
+              <p className="md:text-md text-sm">Descuento</p>
+              <p className="md:text-md flex w-1/6 text-sm">
                 Bs.
                 <input
                   name="discount"
@@ -94,23 +108,25 @@ function SalesReceipt({
 
           <div className="flex w-full">
             <Button
-              className="flex w-full justify-between"
+              className="flex w-full justify-between "
               variant="solid"
               color="secondary"
               onClick={handleSale}
             >
-              <p className="text-xl font-bold text-white">Finalizar venta</p>
-              <span className="w-1/6 text-xl font-bold text-white">
+              <p className="text-md font-bold text-white md:text-xl">
+                Finalizar venta
+              </p>
+              <span className="w-1/6 text-sm font-bold text-white md:text-xl">
                 Bs. {selectedProducts.total}
               </span>
             </Button>
           </div>
           <div className="flex justify-between">
-            <p className="text-gray-500">
-              Productos seleccionados: {selectedProducts.products.length}
+            <p className="md:text-md text-sm text-gray-500">
+              Productos seleccionados: {selectedProducts.products?.length}
             </p>
             <span
-              className="cursor-pointer text-secondary"
+              className="md:text-md cursor-pointer text-sm text-secondary"
               onClick={handleCancel}
             >
               Cancelar
@@ -119,6 +135,14 @@ function SalesReceipt({
         </div>
       </div>
 
+      <SaleDistributorModal
+        isOpen={handleDistrbutorSaleModal.isOpen}
+        onClose={handleDistrbutorSaleModal.onClose}
+        selectedProducts={selectedProducts as any}
+        setSelectedProducts={setSelectedProducts as any}
+        selectedDistributors={selectedDistributors}
+        refetch={refetch}
+      />
       <SaleModal
         isOpen={handleSaleModal.isOpen}
         onClose={handleSaleModal.onClose}

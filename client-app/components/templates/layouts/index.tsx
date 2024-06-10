@@ -4,15 +4,20 @@ import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import Sidebar, { TMenuStructure } from './sidebar'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
-import ToastComponent from '@/components/atoms/Toast/toasts'
+import ToastComponent, {
+  showSuccessToast
+} from '@/components/atoms/Toast/toasts'
 import {
+  OrderStatusEnum,
   RoleTypeEnum,
+  StatusEnum,
   useGetBranchesPaginatedLazyQuery,
-  useGetConfigurationLazyQuery
+  useGetConfigurationLazyQuery,
+  useGetOrdersPaginatedQuery
 } from '@/graphql/graphql-types'
 
 import { useAppDispatch, useAppSelector } from '@/store/index'
-import { setBusiness } from '@/store/slices'
+import { setBusiness, setOrder } from '@/store/slices'
 import BackButton from '@/components/atoms/BackButton/intex'
 import { setBranch, setBranches } from '@/store/slices/branches/branchSlice'
 import { DropDown } from '@/components/atoms/DropDown'
@@ -33,6 +38,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   profileButton = true,
   user
 }) => {
+  const [orderData, setOrderData] = useState<TPointOfSaleData[]>()
   const { business } = useAppSelector(state => state.configuration)
   const { branches, currentBranch } = useAppSelector(
     state => state.branchReducer
@@ -85,61 +91,73 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     router.push('/administration-panel/login')
   }
 
-  const dataToPass: TPointOfSaleData = {
-    products: [
-      {
-        id: '1',
-        branchId: '1',
-        productId: '1',
-        price: 100,
-        isVisibleOnWeb: true,
-        isVisibleOnMenu: true,
-        quantity: 1,
-        product: {
-          id: '1',
-          name: 'Producto 1',
-          description: 'Descripcion del producto'
-        },
-        stock: 10,
-        total: 100
-      },
-      {
-        id: '2',
-        branchId: '1',
-        productId: '2',
-        price: 200,
-        isVisibleOnWeb: true,
-        isVisibleOnMenu: true,
-        quantity: 2,
-        product: {
-          id: '2',
-          name: 'Producto 2',
-          description: 'Descripcion del producto'
-        },
-        stock: 10,
-        total: 200
-      },
-      {
-        id: '3',
-        branchId: '1',
-        productId: '3',
-        price: 300,
-        quantity: 1,
-        isVisibleOnWeb: true,
-        isVisibleOnMenu: true,
-        product: {
-          id: '3',
-          name: 'Producto 3',
-          description: 'Descripcion del producto'
-        },
-        stock: 10,
-        total: 300
+  const { data, refetch } = useGetOrdersPaginatedQuery({
+    fetchPolicy: 'network-only',
+    variables: {
+      orderPaginationInput: {
+        status: OrderStatusEnum.PENDING
       }
-    ],
-    subTotal: 600,
-    total: 600,
-    discount: 0
+    },
+    pollInterval: 30000,
+    onCompleted(data) {
+      if (data.getOrdersPaginated?.status === StatusEnum.ERROR) {
+        showSuccessToast(
+          data?.getOrdersPaginated?.message || 'Error al obtener las ordenes',
+          'error'
+        )
+        return
+      }
+      handleOrder()
+      dispatch(setOrder(data.getOrdersPaginated?.data))
+    },
+    onError(error) {
+      console.log('🚀 ~ file: index.tsx:31 ~ onError ~ error:', error)
+    }
+  })
+
+  useEffect(() => {
+    // const timerId = setInterval(() => {
+    //   getOrders()
+    // }, 60000)
+    // return () => {
+    //   clearInterval(timerId)
+    // }
+  }, [])
+
+  console.log(data?.getOrdersPaginated?.data, 'data')
+  const handleOrder = () => {
+    const datosTransformados = data?.getOrdersPaginated?.data?.map(order => {
+      return {
+        products: order.products.map(product => {
+          return {
+            id: product.product?.id,
+            branchId: product.branchProductId,
+            productId: product.productId,
+            price: product.price,
+            isVisibleOnWeb: true,
+            isVisibleOnMenu: true,
+            quantity: product.qty,
+            product: {
+              id: product.product?.id || '',
+              name: product.product?.name || '',
+              description: product.product?.description || ''
+            },
+            stock: product.qty,
+            total: product.total
+          }
+        }),
+        subTotal: order.subTotal,
+        total: order.total,
+        discount: order.discount
+      }
+    })
+
+    console.log(datosTransformados, 'datosTransformados')
+    setOrderData(datosTransformados as TPointOfSaleData[])
+    console.log(orderData, 'orderData')
   }
+  useEffect(() => {}, [])
+
   const menu: TMenuStructure = [
     {
       icon: 'home',
@@ -175,13 +193,13 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           icon: 'Branch',
           text: 'Sucursales',
           link: '/administration-panel/branches',
-          permissions: [RoleTypeEnum.ADMINISTRATOR]
+          permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
         },
         {
           icon: 'Bussines',
           text: 'Almacenes',
           link: '/administration-panel/warehouses',
-          permissions: [RoleTypeEnum.ADMINISTRATOR]
+          permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
         },
         {
           icon: 'Cash',
@@ -193,6 +211,18 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           icon: 'Admin',
           text: 'Categorías',
           link: '/administration-panel/categories',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
+        },
+        {
+          icon: 'Dealer',
+          text: 'Distribuidores',
+          link: '/administration-panel/dealers',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
+        },
+        {
+          icon: 'Admin',
+          text: 'Lista de precios',
+          link: '/administration-panel/price-list',
           permissions: [RoleTypeEnum.ADMINISTRATOR]
         }
       ]
@@ -213,6 +243,12 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           text: 'Ventas diarias',
           link: '/administration-panel/dailySale',
           permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
+        },
+        {
+          icon: 'Truck',
+          text: 'Ventas a distribuidores',
+          link: '/administration-panel/sales/distributors',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
         }
       ]
     },
@@ -234,6 +270,24 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       text: 'Punto de venta',
       link: '/administration-panel/point-of-sale',
       permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
+    },
+    {
+      icon: 'Basket-shopping',
+      text: 'Pedidos',
+      link: '/administration-panel/order',
+      permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
+    },
+    {
+      icon: 'Dealer',
+      text: 'Punto de venta a distribuidores',
+      link: '/administration-panel/pos-distributors',
+      permissions: [RoleTypeEnum.ADMINISTRATOR]
+    },
+    {
+      icon: 'Balance',
+      text: 'Balance',
+      link: '/administration-panel/balance',
+      permissions: [RoleTypeEnum.ADMINISTRATOR]
     }
   ]
 
@@ -310,26 +364,28 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
             >
               {showBackButton && <BackButton />}
             </div>
-            <div className={` fixed right-5 z-10 ${sidebarOpen ? '' : ''} `}>
+            <div className={` fixed right-5 z-30 ${sidebarOpen ? '' : ''} `}>
               <ToastComponent />
               <div className="flex items-center">
                 <DropDown
                   IconButtonName="Notifications"
-                  values={[
-                    {
-                      label: 'Notificaciones',
-                      value: 'notifications',
-                      icon: 'PointOfSale',
-                      handleClick: () => {
-                        router.push({
-                          pathname: '/administration-panel/point-of-sale',
-                          query: { data: JSON.stringify(dataToPass) }
-                        })
-                      },
-                      counter: 2
-                    }
-                  ]}
-                  counter={0}
+                  onClick={() => refetch()}
+                  values={
+                    data?.getOrdersPaginated?.data?.map((order, idx) => {
+                      return {
+                        label: `Nueva orden - ${order.total} Bs`,
+                        value: order.id,
+                        icon: 'Recipe',
+                        handleClick: () => {
+                          router.push({
+                            pathname: '/administration-panel/order'
+                          })
+                        },
+                        counter: 0
+                      }
+                    }) || []
+                  }
+                  counter={data?.getOrdersPaginated?.data?.length || 0}
                   avatar="https://static.vecteezy.com/system/resources/previews/000/376/699/original/notification-vector-icon.jpg"
                 />
                 <DropDown
@@ -356,7 +412,9 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
                 />
               </div>
             </div>
-            <div className="h-full w-full ps-5 pt-16 lg:pt-0">{children}</div>
+            <div className="h-full w-full ps-5 md:pt-16 lg:pt-5">
+              {children}
+            </div>
           </div>
         </main>
       ) : (

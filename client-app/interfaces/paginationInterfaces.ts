@@ -8,13 +8,20 @@ export interface PaginationInterfaceProps {
 }
 export interface PaginationInterfaceState {
   totalPages?: number
-  rows? : number
+  rows?: number
   filter?: string
   currentPage?: number
   totalRecords?: number
 }
-export interface filterPaginationInterfaceState extends PaginationInterfaceState{
+export interface filterPaginationInterfaceState
+  extends PaginationInterfaceState {
   branchIds?: string[]
+  endDate?: string
+  initialDate?: string
+  saleBy?: string
+}
+export interface DistributorPagination extends PaginationInterfaceState {
+  distributorsIds?: string[]
   endDate?: string
   initialDate?: string
   saleBy?: string

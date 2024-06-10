@@ -21,6 +21,7 @@ export const currentUser = (
       const payload = <UserPayload>(
         jwt.verify(req.headers.authorization, process.env.JWT_KEY!)
       )
+      console.log('🚀 ~ payload:', payload)
       console.log(payload)
       req.currentUser = payload
     } catch (error) {

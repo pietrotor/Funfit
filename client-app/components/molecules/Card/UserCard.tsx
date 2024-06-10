@@ -1,7 +1,6 @@
 import { Button, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
 import { SkeletonCard } from './SkeletonCard'
-import IconSelector from '@/components/atoms/IconSelector'
 import ProductModal from '@/components/atoms/modals/ProductModal'
 import Images from '@/components/atoms/Image/Image'
 
@@ -27,7 +26,7 @@ export default function UserCard({
   const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
   return (
-    <div className="overflow-hidden rounded-xl shadow-2xl transition-all duration-500 hover:scale-105">
+    <div className="group overflow-hidden rounded-xl ring-1 ring-gray-200 transition-all duration-500 hover:shadow-lg">
       {!isLoading ? (
         <div className="flex h-full flex-col">
           <Images
@@ -36,7 +35,7 @@ export default function UserCard({
             removeWrapper
             src={image as string}
           />
-          <div className="w-full bg-white px-6 py-3">
+          <div className="w-full bg-gray-100 px-6 py-3 transition-all duration-400">
             <div className="flex w-full items-center justify-between gap-4">
               <div
                 onClick={() => router.push('/producto/' + id)}
@@ -44,7 +43,7 @@ export default function UserCard({
               >
                 <h3 className="font-bold drop-shadow-2xl">{name}</h3>
                 <p
-                  className={`min-h-[3rem] text-base ${'group-hover:line-clamp-none'} line-clamp-2`}
+                  className={`h-[35px] text-base ${'group-hover:line-clamp-none'} line-clamp-2`}
                 >
                   {description}
                 </p>
@@ -54,23 +53,17 @@ export default function UserCard({
               </h3>
             </div>
             <Button
-              className="col-start-3 mt-3 flex h-fit bg-primary/80 py-1 text-tiny text-white"
+              className="col-start-3 ml-auto mr-0 mt-3 flex h-fit w-fit bg-primary py-2 text-tiny text-white"
               variant="flat"
               color="default"
               radius="lg"
               fullWidth={true}
-              size="sm"
+              size="lg"
               onClick={() => {
                 onOpen()
               }}
             >
-              <p className="text-lg font-bold">Agregar</p>
-              <IconSelector
-                name="cart"
-                width="w-10"
-                height="h-10"
-                color="text-white"
-              />
+              <p className="text-lg font-bold uppercase">Agregar al carrito</p>
             </Button>
           </div>
           <ProductModal

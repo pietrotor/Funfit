@@ -13,6 +13,7 @@ import { useAppSelector } from '@/store/index'
 import InformationCard from '@/components/molecules/Card/InformationCard'
 import DateConverter from '@/components/atoms/DateConverter'
 import { useGetSalesSummary } from '@/services/index'
+import { TSaleProduct } from '@/interfaces/TData'
 import { PaymentMethodEnum, Sale } from '@/graphql/graphql-types'
 import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
 import { getCurrentDate } from '@/helpers/date.helper'
@@ -24,9 +25,17 @@ interface DailySaleProps {
 function DailySale({ user }: DailySaleProps) {
   const router = useRouter()
   const { currentBranch } = useAppSelector(state => state.branchReducer)
+  const [, setProducts] = useState<TSaleProduct[]>([])
+  const handleProductsListModal = useDisclosure()
 
-  const { data, setVariables, variables, setFilter, loading, refetch: refetchSales } =
-    UseGetCustomSalesPaginated(currentBranch.id)
+  const {
+    data,
+    setVariables,
+    variables,
+    setFilter,
+    loading,
+    refetch: refetchSales
+  } = UseGetCustomSalesPaginated(currentBranch.id)
 
   const {
     data: summary,
@@ -65,6 +74,11 @@ function DailySale({ user }: DailySaleProps) {
     return summary?.paymentMethods.find(
       paymentMethod => paymentMethod.method === method
     )
+  }
+
+  const handleProducts = (products: TSaleProduct[]) => {
+    setProducts(products)
+    handleProductsListModal.onOpen()
   }
 
   const getSalePaymentMethod = (paymentMethod: PaymentMethodEnum) => {
@@ -185,6 +199,7 @@ function DailySale({ user }: DailySaleProps) {
           titles={[
             { name: '#' },
             { name: 'Código de venta' },
+            { name: 'Estado' },
             { name: 'Fecha de venta' },
             { name: 'Monto total' },
             { name: 'Descuento' },
@@ -199,11 +214,21 @@ function DailySale({ user }: DailySaleProps) {
                 {' '}
                 {idx + 1}
               </h3>,
-              <p key={idx} className="text-sm">
+              <p key={idx} className="text-sm ">
                 {sale.code}
               </p>,
-              <div key={idx} className="text-sm">
+              <div key={idx} className="w-[10rem] text-sm md:w-full">
                 <DateConverter showTime dateString={sale.date} />
+              </div>,
+              <div
+                key={idx}
+                className={`m-auto mt-1 w-fit rounded-full  px-2 py-1 font-semibold ${
+                  sale.canceled
+                    ? 'bg-red-100 text-red-600'
+                    : 'bg-green-100 text-green-600'
+                }`}
+              >
+                {sale.canceled ? 'Cancelada' : 'Activa'}
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm">{sale.total} Bs</div>
@@ -222,14 +247,31 @@ function DailySale({ user }: DailySaleProps) {
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm">
-                  {sale.products.map((product, idx) => (
-                    <p
-                      key={idx}
-                      className="m-auto w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                  {sale.products.length <= 3 ? (
+                    sale.products.map((product, idx) => (
+                      <p
+                        key={idx}
+                        className="m-auto mt-1 w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                      >
+                        {product.product?.name}
+                      </p>
+                    ))
+                  ) : (
+                    <ButtonComponent
+                      onClick={() =>
+                        handleProducts(sale.products as TSaleProduct[])
+                      }
+                      showTooltip
+                      tooltipText="Ver lista de productos"
+                      type="history"
                     >
-                      {product.product?.name}
-                    </p>
-                  ))}
+                      <IconSelector
+                        name="eye"
+                        color="text-blue-600"
+                        width="w-8"
+                      />
+                    </ButtonComponent>
+                  )}
                 </div>
               </div>,
               <div key={idx} className=" flex justify-center  ">
@@ -292,7 +334,10 @@ function DailySale({ user }: DailySaleProps) {
       <SaleCancelModal
         sale={selectedItem}
         modalDisclosure={handleDeleteModal}
-        refetch={() => { refetch(); refetchSales() }}
+        refetch={() => {
+          refetch()
+          refetchSales()
+        }}
       />
     </AdministrationLayout>
   )

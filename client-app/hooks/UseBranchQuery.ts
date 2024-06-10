@@ -113,16 +113,26 @@ export const useGetBranchProductQuery = (branchId: string) => {
 
 export const useGetBranchProductPOSQuery = (branchId: string) => {
   const [filter, setFilter] = useState<string>()
+  const [variables, setVariables] = useState<PaginationInterfaceState>()
   const filterDebounced = UseDebouncedValue(filter, 800)
   const { data, loading, refetch } = useGetBranchProductsPaginatedQuery({
     fetchPolicy: 'network-only',
     variables: {
       paginationInput: {
-        filter: filterDebounced
+        filter: filterDebounced,
+        page: variables?.currentPage || 1,
+        rows: variables?.rows || 20
       },
       branchId
     },
     onCompleted: result => {
+      setVariables({
+        totalPages: result.getBranchProductsPaginated?.totalPages || 1,
+        rows: result.getBranchProductsPaginated?.rows || 20,
+        filter: filterDebounced,
+        currentPage: result.getBranchProductsPaginated?.currentPage || 1,
+        totalRecords: result.getBranchProductsPaginated?.totalRecords || 1
+      })
       if (result.getBranchProductsPaginated?.status === StatusEnum.ERROR) {
         showSuccessToast(
           result.getBranchProductsPaginated?.message ||
@@ -137,6 +147,8 @@ export const useGetBranchProductPOSQuery = (branchId: string) => {
     data,
     loading,
     setFilter,
+    setVariables,
+    variables,
     refetch
   }
 }

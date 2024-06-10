@@ -7,23 +7,30 @@ import {
   UpdateProductInput,
   Product,
   Category,
-  BranchProductsResponse
+  FileInput,
+  ProductImageResponse,
+  BranchProductsCategorizedResponse
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
 import { branchProductCore, categoryCore, productCore } from '@/services/index'
+import { uploadFileToS3Bucket } from 'helpers/upload-files'
 
 // ========================================== Mutations ====================================================
 const getPublicProducts = async (
   _: any,
-  args: { paginationInput: PaginationInput; branchId: objectId }
-): Promise<BranchProductsResponse> => {
+  args: { branchId: objectId }
+): Promise<BranchProductsCategorizedResponse> => {
   try {
-    const { paginationInput, branchId } = args
-    return await branchProductCore.getBranchesProductsPaginated(
-      paginationInput,
+    const { branchId } = args
+    const categories = await branchProductCore.getBranchProductsByCategory(
       branchId
     )
+    return {
+      status: StatusEnum.OK,
+      message: 'Productos encontrados',
+      data: categories
+    }
   } catch (error) {
     console.log(error)
     return errorHandler(error)
@@ -67,6 +74,21 @@ const getProductsOutOfWarehouse = async (
     return await productCore.getProductsOutWarehouse(
       paginationInput,
       warehouseId
+    )
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
+const getProductsOutOfPriceList = async (
+  _: any,
+  args: { paginationInput: PaginationInput; priceListId: objectId }
+): Promise<ProductsResponse> => {
+  try {
+    const { paginationInput, priceListId } = args
+    return await productCore.getProductsOutOfPriceList(
+      paginationInput,
+      priceListId
     )
   } catch (error) {
     console.log(error)
@@ -133,17 +155,57 @@ const deleteProduct = async (
     return errorHandler(error)
   }
 }
+const uploadFile = async (
+  _: any,
+  args: { fileInput: FileInput },
+  context: ContextGraphQl
+): Promise<ProductImageResponse> => {
+  try {
+    const {
+      fileInput: { file, productId }
+    } = args
+
+    const { createReadStream, mimetype } = await file
+
+    const extension = mimetype.split('/')?.[1]
+
+    const stream = createReadStream()
+
+    const url = await uploadFileToS3Bucket({
+      file: stream,
+      folder: 'products/',
+      contenType: mimetype,
+      extension
+    })
+
+    await productCore.updateProduct({
+      id: productId,
+      image: url
+    })
+
+    return {
+      status: StatusEnum.OK,
+      message: 'Imagen de producto actualizada',
+      data: url
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
 
 export const productQuery = {
   getProducts,
   getPublicProducts,
   getProductById,
-  getProductsOutOfWarehouse
+  getProductsOutOfWarehouse,
+  getProductsOutOfPriceList
 }
 export const productMutation = {
   createProduct,
   updateProduct,
-  deleteProduct
+  deleteProduct,
+  uploadFile
 }
 
 export const productType = {

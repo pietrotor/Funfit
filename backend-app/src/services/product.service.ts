@@ -89,6 +89,36 @@ export class ProductService extends ProductRepository<objectId> {
     )
   }
 
+  async getProductsOutOfPriceList(
+    paginationInput: PaginationInput,
+    priceListId: objectId
+  ) {
+    const priceListFilter = {
+      priceListsIds: {
+        $nin: [priceListId]
+      }
+    }
+    const { filter } = paginationInput
+    if (filter) {
+      const filterArgs = {
+        $or: [
+          { name: { $regex: filter, $options: 'i' } },
+          { code: { $regex: filter, $options: 'i' } }
+        ]
+      }
+      return await getInstancesPagination<IProduct, IModelProduct>(
+        Product,
+        paginationInput,
+        { ...filterArgs, ...priceListFilter }
+      )
+    }
+    return await getInstancesPagination<IProduct, IModelProduct>(
+      Product,
+      paginationInput,
+      priceListFilter
+    )
+  }
+
   async createProducto(
     createProductInput: CreateProductInput,
     createdBy?: objectId | null
@@ -150,7 +180,8 @@ export class ProductService extends ProductRepository<objectId> {
         `El producto "${duplicatedProductCode.name}" ya esta registrado con este código`
       )
     }
-    updateGenericInstance(productInstance, product)
+    updateGenericInstance(productInstance, product, ['image'])
+    productInstance.image = product.image || undefined
     return await productInstance.save()
   }
 

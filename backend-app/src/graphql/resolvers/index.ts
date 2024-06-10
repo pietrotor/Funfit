@@ -1,6 +1,7 @@
 import dateTimeScalar from '../scalars/date.scalar'
 import ObjectIdScalar from '../scalars/objectid.scalar'
 import { GraphQLTime } from 'graphql-scalars'
+import { GraphQLUpload } from 'graphql-upload-ts'
 import { Resolvers } from '../graphql_types'
 import { ContextGraphQl } from '../../interfaces/context.interface'
 import { userMutation, userQuery, userType } from './user.resolver'
@@ -35,11 +36,39 @@ import {
   categoryQuery,
   categoryType
 } from './category.resolver'
+import {
+  ecommerceMutation,
+  ecommerceQuery,
+  ecommerceType
+} from './ecommerce.resolver'
+import {
+  distributorMutation,
+  distributorQuery,
+  distributorType
+} from './distributor.resolver'
+import { orderMutation, orderQuery, orderType } from './order.resolver'
+import {
+  priceListMutation,
+  priceListQuery,
+  priceListType
+} from './priceList.resolver'
+import { priceMutation, priceQuery, priceType } from './price.resolver'
+import {
+  distributorSaleMutation,
+  distributorSaleQuery,
+  distributorSaleType
+} from './distributorSale.resolver'
+import {
+  paymentType,
+  paymentsMutation,
+  paymentsQuery
+} from './payment.resolver'
 
 const resolvers: Resolvers<ContextGraphQl> = {
   Date: dateTimeScalar,
   Time: GraphQLTime,
   ObjectId: ObjectIdScalar,
+  Upload: GraphQLUpload,
   ...userType,
   ...productType,
   ...warehouseType,
@@ -51,6 +80,13 @@ const resolvers: Resolvers<ContextGraphQl> = {
   ...cashType,
   ...saleType,
   ...categoryType,
+  ...ecommerceType,
+  ...orderType,
+  ...distributorType,
+  ...priceListType,
+  ...priceType,
+  ...distributorSaleType,
+  ...paymentType,
   Query: {
     ...userQuery,
     ...roleQuery,
@@ -63,7 +99,14 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...branchProductQuery,
     ...cashQuery,
     ...saleQuery,
-    ...categoryQuery
+    ...categoryQuery,
+    ...ecommerceQuery,
+    ...orderQuery,
+    ...distributorQuery,
+    ...priceListQuery,
+    ...priceQuery,
+    ...distributorSaleQuery,
+    ...paymentsQuery
   },
   Mutation: {
     ...userMutation,
@@ -76,7 +119,14 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...branchProductMutation,
     ...cashMutation,
     ...saleMutation,
-    ...categoryMutation
+    ...categoryMutation,
+    ...ecommerceMutation,
+    ...orderMutation,
+    ...distributorMutation,
+    ...priceListMutation,
+    ...priceMutation,
+    ...distributorSaleMutation,
+    ...paymentsMutation
   }
 }
 

@@ -112,7 +112,7 @@ const InputComponent: React.FC<TInputProps> = ({
                   errors={errors}
                   name={name}
                   render={({ message }) => (
-                    <p className="ml-2 text-sm font-semibold text-red-500">
+                    <p className="ml-2 text-sm font-semibold text-red-500 text-left">
                       {message || 'Este campo es obligatorio'}
                     </p>
                   )}

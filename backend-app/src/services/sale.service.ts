@@ -1,6 +1,7 @@
 import {
   CancelSaleInput,
   CreateSaleInput,
+  OrderStatusEnum,
   PaymentMethodEnum,
   SalesPaginationInput,
   SalesSummaryInput
@@ -12,6 +13,7 @@ import {
   branchCore,
   branchProductCore,
   cashCore,
+  orderCore,
   productCore,
   turnMovementCore
 } from '.'
@@ -215,7 +217,8 @@ export class SalesService extends SalesRepository<objectId> {
       total,
       client,
       subTotal,
-      observations
+      observations,
+      orderId
     } = createSaleInput
     if (total < 0) throw new BadRequestError('El total no puede ser negativo')
     if (change < 0) throw new BadRequestError('El cambio no puede ser negativo')
@@ -237,9 +240,13 @@ export class SalesService extends SalesRepository<objectId> {
 
     const branchInstance = await branchCore.getBranchById(branchId)
 
-    const [cashInstance, isCashOpen] = await Promise.all([
+    const [cashInstance, isCashOpen, orderInstance] = await Promise.all([
       cashCore.getCashById(branchInstance.cashId),
-      cashCore.isCashOpen(branchInstance.cashId)
+      cashCore.isCashOpen(branchInstance.cashId),
+      (async () => {
+        if (orderId) return await orderCore.getOrderById(orderId)
+        return null
+      })()
     ])
 
     if (!isCashOpen) {
@@ -261,6 +268,13 @@ export class SalesService extends SalesRepository<objectId> {
         return branchProductInstance
       })
     )
+
+    if (
+      orderInstance?.orderStatus !== OrderStatusEnum.ACEPTED &&
+      !!orderInstance
+    ) {
+      throw new BadRequestError('No se puede vender una orden no aceptada')
+    }
 
     function generateCode(): string {
       const characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
@@ -320,7 +334,12 @@ export class SalesService extends SalesRepository<objectId> {
       canceled: false,
       createdBy
     })
-
+    if (orderInstance) {
+      orderInstance.isSold = true
+      orderInstance.saleId = saleInstance._id
+      orderInstance.orderStatus = OrderStatusEnum.SOLD
+      await orderInstance.save()
+    }
     return await saleInstance.save()
   }
 

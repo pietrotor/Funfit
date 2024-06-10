@@ -5,6 +5,7 @@ export type TCartItem = {
   price: number
   quantity: number
   pictureUrl: string
+  branchProductId?: string
 }
 export type TCart = {
   id: string
@@ -122,6 +123,10 @@ export const cartSlice = createSlice({
       const item = action.payload
       state.cartItems = state.cartItems.filter(
         x => x.productName !== item.productName
+      )
+      state.cartSubTotal = state.cartItems.reduce(
+        (acc, item) => acc + item.price,
+        0
       )
       localStorage.setItem('cartItems', JSON.stringify(state.cartItems))
     },

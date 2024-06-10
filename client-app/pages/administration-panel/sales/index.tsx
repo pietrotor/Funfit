@@ -9,7 +9,7 @@ import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
-import { TDataBranch } from '@/interfaces/TData'
+import { TDataBranch, TSaleProduct } from '@/interfaces/TData'
 import UseGetCustomSalesPaginated from '@/services/UseGetCustomSalesPaginated'
 import { useAppSelector } from '@/store/index'
 import InformationCard from '@/components/molecules/Card/InformationCard'
@@ -34,6 +34,7 @@ function Sales({ user }: SalesProps) {
   const { branches, currentBranch } = useAppSelector(
     state => state.branchReducer
   )
+
   const { control, watch } = useForm({
     defaultValues: {
       initialDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
@@ -43,6 +44,8 @@ function Sales({ user }: SalesProps) {
     }
   })
   const [branchSelected, setSelected] = useState<TDataBranch>(currentBranch)
+  const [, setProducts] = useState<TSaleProduct[]>()
+  const handleProductsListModal = useDisclosure()
 
   const { data: summaryData, setVariables: setSummaryVariables } =
     useGetSalesSummary()
@@ -78,6 +81,10 @@ function Sales({ user }: SalesProps) {
     return summaryData?.paymentMethods.find(
       paymentMethod => paymentMethod.method === method
     )
+  }
+  const handleProducts = (products: TSaleProduct[]) => {
+    setProducts(products)
+    handleProductsListModal.onOpen()
   }
 
   const getSalePaymentMethod = (paymentMethod: PaymentMethodEnum) => {
@@ -290,6 +297,7 @@ function Sales({ user }: SalesProps) {
           titles={[
             { name: '#' },
             { name: 'Fecha de venta' },
+            { name: 'Estado' },
             { name: 'Monto total' },
             { name: 'Descuento' },
             { name: 'Método de pago' },
@@ -304,8 +312,18 @@ function Sales({ user }: SalesProps) {
                 {' '}
                 {idx + 1}
               </h3>,
-              <div key={idx} className="text-sm">
+              <div key={idx} className="w-[10rem] text-sm md:w-full">
                 <DateConverter dateString={sale.date} showTime />
+              </div>,
+              <div
+                key={idx}
+                className={`m-auto mt-1 w-fit rounded-full  px-2 py-1 font-semibold ${
+                  sale.canceled
+                    ? 'bg-red-100 text-red-600'
+                    : 'bg-green-100 text-green-600'
+                }`}
+              >
+                {sale.canceled ? 'Cancelada' : 'Activa'}
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm font-bold">{sale.total} Bs</div>
@@ -322,14 +340,31 @@ function Sales({ user }: SalesProps) {
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm ">
-                  {sale.products.map((product, idx) => (
-                    <p
-                      key={idx}
-                      className="m-auto mt-1 w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                  {sale.products.length <= 3 ? (
+                    sale.products.map((product, idx) => (
+                      <p
+                        key={idx}
+                        className="m-auto mt-1 w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                      >
+                        {product.product?.name}
+                      </p>
+                    ))
+                  ) : (
+                    <ButtonComponent
+                      onClick={() =>
+                        handleProducts(sale.products as TSaleProduct[])
+                      }
+                      showTooltip
+                      tooltipText="Ver lista de productos"
+                      type="history"
                     >
-                      {product.qty} - {product.product?.name}
-                    </p>
-                  ))}
+                      <IconSelector
+                        name="eye"
+                        color="text-blue-600"
+                        width="w-8"
+                      />
+                    </ButtonComponent>
+                  )}
                 </div>
               </div>,
               <div key={idx} className=" flex justify-center  ">
@@ -358,7 +393,6 @@ function Sales({ user }: SalesProps) {
                     type="edit"
                     showTooltip
                     tooltipText="Ver detalles de venta"
-                    className="px-3"
                   >
                     <IconSelector
                       name="Recipe"

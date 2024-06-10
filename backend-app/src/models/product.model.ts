@@ -13,6 +13,7 @@ export interface IProduct extends Document, IGeneric {
   categoryId?: objectId
   warehouses: objectId[]
   branchesIds: objectId[]
+  priceListsIds: objectId[]
 }
 export interface IModelProduct extends Model<IProduct> {}
 const productSchema = new Schema<IProduct>(
@@ -62,6 +63,13 @@ const productSchema = new Schema<IProduct>(
         type: Schema.Types.ObjectId,
         default: [],
         ref: 'Branch'
+      }
+    ],
+    priceListsIds: [
+      {
+        type: Schema.Types.ObjectId,
+        default: [],
+        ref: 'PriceList'
       }
     ],
     // Generic Types

@@ -1,21 +1,25 @@
 import { useEffect, useState } from 'react'
-import { Spinner } from '@nextui-org/react'
+import { Pagination, Spinner, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
 import { GetServerSideProps } from 'next'
 import PointOfSaleCard from '@/components/molecules/Card/PointOfSaleCard'
 import AdministrationLayout from '@/components/templates/layouts'
 import SalesReceipt from '@/components/organisms/SalesReceipt'
-import { useGetBranchProductPOSQuery } from '@/hooks/UseBranchQuery'
 import { TProductBranchData } from '@/interfaces/TData'
 import { useAppSelector } from '@/store/index'
+import ResponsiveSaleModal from '@/components/atoms/modals/ResponsiveSaleModal'
+import ButtonComponent from '@/components/atoms/Button'
 import { authUserHeader } from '@/utils/verificationUser'
+
 import Search from '@/components/molecules/Search'
+import { useGetBranchProductPOSQuery } from '@/hooks/UseBranchQuery'
 
 export type TPointOfSaleData = {
   products: TProductBranchData[]
   subTotal: number
   total: number
   discount: number
+  orderId: string | null
 }
 interface PointOfSaleProps {
   user: any
@@ -26,11 +30,15 @@ function PointOfSale({ user }: PointOfSaleProps) {
   const { data: dataPassed } = router.query
   const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
   const branchId = useAppSelector(state => state.branchReducer.currentBranch.id)
-  const { loading, data, setFilter, refetch } =
+  const { loading, data, setFilter, setVariables, variables, refetch } =
     useGetBranchProductPOSQuery(branchId)
   const [selectedProducts, setSelectedProducts] = useState<TPointOfSaleData>(
     parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
   )
+
+  const handleResponsiveSaleModal = useDisclosure()
+
+  console.log('🚀 ~ PointOfSale ~ selectedProducts:', selectedProducts)
 
   const handleSelected = (id: string) => {
     const existingProduct = selectedProducts?.products?.find(
@@ -38,8 +46,9 @@ function PointOfSale({ user }: PointOfSaleProps) {
     )
 
     if (existingProduct) {
-      setSelectedProducts((prevProducts: TPointOfSaleData | undefined) => {
+      setSelectedProducts(prevProducts => {
         return {
+          ...prevProducts,
           products: [
             ...(prevProducts?.products ?? []).filter(
               item => item.productId !== id
@@ -62,8 +71,9 @@ function PointOfSale({ user }: PointOfSaleProps) {
       )
 
       if (newProduct) {
-        setSelectedProducts((prevProducts: TPointOfSaleData | undefined) => {
+        setSelectedProducts(prevProducts => {
           return {
+            ...prevProducts,
             products: [
               ...(prevProducts?.products ?? []),
               {
@@ -80,21 +90,31 @@ function PointOfSale({ user }: PointOfSaleProps) {
       }
     }
   }
-  useEffect(() => {
-    const { data: dataPassed } = router.query
-    const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
-    setSelectedProducts(
-      parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
-    )
-  }, [router.query])
 
   useEffect(() => {
     const { data: dataPassed } = router.query
     const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
     setSelectedProducts(
-      parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
+      parsedData || {
+        products: [],
+        subTotal: 0,
+        total: 0,
+        discount: 0,
+        orderId: null
+      }
     )
   }, [router.query])
+
+  useEffect(() => {
+    if (selectedProducts && selectedProducts.products.length > 0) {
+      selectedProducts.products.forEach(product => {
+        product.stock = data?.getBranchProductsPaginated?.data?.find(
+          item => item.productId === product.productId
+        )?.stock
+      })
+    }
+    console.log(selectedProducts)
+  }, [selectedProducts])
 
   return (
     <AdministrationLayout user={user} profileButton={false}>
@@ -104,25 +124,43 @@ function PointOfSale({ user }: PointOfSaleProps) {
             <Search setFilter={setFilter} />
           </div>
           {loading && (
-            <div className="flex h-[95vh] items-center justify-center overflow-y-auto scrollbar-hide ">
+            <div className="flex h-[90vh] items-center justify-center overflow-y-auto scrollbar-hide ">
               <Spinner label="Cargando..." color="primary" />
             </div>
           )}
-          <div className="grid max-h-[95vh] grid-cols-1 gap-4 overflow-y-auto p-4 scrollbar-hide md:grid-cols-2 lg:grid-cols-3 ">
-            {data?.getBranchProductsPaginated?.data?.map(item => (
-              <PointOfSaleCard
-                key={item.id}
-                product={item as TProductBranchData}
-                quantity={
-                  selectedProducts?.products?.find(
-                    product => product.productId === item.productId
-                  )?.quantity || 0
-                }
-                isLoading={loading}
-                handleSelected={() => handleSelected(item.productId)}
-              />
-            ))}
+          <div className="grid max-h-[90vh] grid-cols-2 gap-3 overflow-y-auto scrollbar-hide md:grid-cols-3 md:gap-4 md:p-4 ">
+            {!loading &&
+              data?.getBranchProductsPaginated?.data?.map(item => (
+                <PointOfSaleCard
+                  key={item.id}
+                  product={item as TProductBranchData}
+                  quantity={
+                    selectedProducts?.products?.find(
+                      product => product.productId === item.productId
+                    )?.quantity || 0
+                  }
+                  isLoading={loading}
+                  handleSelected={() => handleSelected(item.productId)}
+                />
+              ))}
           </div>
+          <Pagination
+            color="secondary"
+            size="lg"
+            isCompact
+            showControls
+            total={variables?.totalPages || 1}
+            page={variables?.currentPage || 1}
+            onChange={page => {
+              setVariables({ ...variables, currentPage: page })
+            }}
+          />
+          <ButtonComponent
+            className="mt-4 block w-full bg-secondary font-extrabold text-white md:hidden"
+            onClick={handleResponsiveSaleModal.onOpen}
+          >
+            Finalizar venta
+          </ButtonComponent>
         </div>
         <div className="h-full w-full md:w-1/3">
           <SalesReceipt
@@ -132,6 +170,12 @@ function PointOfSale({ user }: PointOfSaleProps) {
           />
         </div>
       </section>
+      <ResponsiveSaleModal
+        isOpen={handleResponsiveSaleModal.isOpen}
+        onClose={handleResponsiveSaleModal.onClose}
+        selectedProducts={selectedProducts}
+        setSelectedProducts={setSelectedProducts}
+      />
     </AdministrationLayout>
   )
 }

@@ -13,7 +13,7 @@ export interface StepperProps {
 
 const Stepper: React.FC<StepperProps> = ({ steps, title }) => {
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full border-b-1">
       <div className="flex w-full justify-around py-4">
         {steps.map((step, index) => (
           <div

@@ -4,7 +4,7 @@ import { Radio, RadioGroup } from '@nextui-org/react'
 import { MyModal } from './MyModal'
 import { useAppDispatch, useAppSelector } from '@/store/index'
 import { setBranch } from '@/store/slices/branches/branchSlice'
-
+import { CUSTOMER_ID } from '@/lib/constants'
 type SelectBranchModalProps = {
   isOpen: boolean
   onClose: () => void
@@ -31,8 +31,12 @@ export const SelectBranchModal = ({
   }
   useEffect(() => {
     setSelected(currentBranch.name)
-    console.log('currentBranch', currentBranch)
   }, [currentBranch])
+
+  useEffect(() => {
+    const currentBranchId = sessionStorage.getItem(CUSTOMER_ID)?.replace(/^"|"$/g, '')
+    console.log(currentBranchId)
+  }, [])
 
   return (
     <MyModal

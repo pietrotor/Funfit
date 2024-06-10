@@ -101,7 +101,7 @@ export const AddBranchProductModal = ({
       onClose={onClose}
       onSubmit={onSubmit}
     >
-      <div className="p-4 text-gray-500 md:p-8">
+      <div className=" text-gray-500 md:p-8">
         <div className="mb-4 flex flex-col space-y-4">
           <ComboInput
             rules={{
