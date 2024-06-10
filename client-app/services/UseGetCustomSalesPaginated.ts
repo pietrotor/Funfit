@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
-import { StatusEnum, useGetSalesPaginatedQuery } from '@/graphql/graphql-types'
+import {
+  StatusEnum,
+  useGetSalesPaginatedLazyQuery
+} from '@/graphql/graphql-types'
 import { filterPaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 
@@ -9,7 +12,7 @@ const UseGetCustomSalesPaginated = (branchId: string) => {
   const [filter, setFilter] = useState<string>()
   const filtroDebounced = UseDebouncedValue(filter, 500)
 
-  const { data, loading, refetch } = useGetSalesPaginatedQuery({
+  const [getSales, { data, loading, refetch }] = useGetSalesPaginatedLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
       salesPaginationInput: {
@@ -41,19 +44,22 @@ const UseGetCustomSalesPaginated = (branchId: string) => {
 
   // Use useEffect to handle changes in variables
   useEffect(() => {
+    console.log('VARIABLES ', variables)
     if (!variables?.branchIds || !variables?.branchIds?.[0]) return
-    refetch({
-      salesPaginationInput: {
-        filter: variables?.filter,
-        page: variables?.currentPage,
-        rows: variables?.rows,
-        branchIds: [branchId],
-        endDate: variables?.endDate,
-        initialDate: variables?.initialDate,
-        saleBy: variables?.saleBy
+    getSales({
+      variables: {
+        salesPaginationInput: {
+          filter: variables?.filter,
+          page: variables?.currentPage,
+          rows: variables?.rows,
+          branchIds: [branchId],
+          endDate: variables?.endDate,
+          initialDate: variables?.initialDate,
+          saleBy: variables?.saleBy
+        }
       }
     })
-  }, [variables, refetch])
+  }, [variables, getSales])
 
   return {
     data,

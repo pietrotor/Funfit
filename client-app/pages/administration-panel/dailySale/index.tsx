@@ -194,15 +194,14 @@ function DailySale({ user }: DailySaleProps) {
           totalPages={variables?.totalPages}
           enablePagination={true}
           onSearch={value => setFilter(value)}
-          totalItems={variables?.totalRecords}
+          totalItems={data?.getSalesPaginated?.totalRecords || 0}
           isLoading={loading}
           titles={[
             { name: '#' },
-            { name: 'Código de venta' },
-            { name: 'Estado' },
             { name: 'Fecha de venta' },
             { name: 'Monto total' },
             { name: 'Descuento' },
+            { name: 'Método de pago' },
             { name: 'Productos' },
             { name: 'Vendedor' },
             { name: 'Observaciones' },
@@ -214,28 +213,15 @@ function DailySale({ user }: DailySaleProps) {
                 {' '}
                 {idx + 1}
               </h3>,
-              <p key={idx} className="text-sm ">
-                {sale.code}
-              </p>,
               <div key={idx} className="w-[10rem] text-sm md:w-full">
                 <DateConverter showTime dateString={sale.date} />
-              </div>,
-              <div
-                key={idx}
-                className={`m-auto mt-1 w-fit rounded-full  px-2 py-1 font-semibold ${
-                  sale.canceled
-                    ? 'bg-red-100 text-red-600'
-                    : 'bg-green-100 text-green-600'
-                }`}
-              >
-                {sale.canceled ? 'Cancelada' : 'Activa'}
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm">{sale.total} Bs</div>
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm">
-                  {sale.discount ? sale.discount + 'Bs' : '-'}
+                  {sale.discount ? sale.discount + 'Bs' : 'S/D'}
                 </div>
               </div>,
               <div
