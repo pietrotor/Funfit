@@ -6,7 +6,6 @@ import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
-import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 // import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
@@ -25,13 +24,13 @@ interface CategoriesProps {
 
 function Categories({ user }: CategoriesProps) {
   const [edit, setEdit] = useState<TCategories>({} as TCategories)
-  const [variables, setVariables] = useState<PaginationInterfaceState>({})
 
   const handleConfirmModal = useDisclosure()
   const handleEditModal = useDisclosure()
   const handleAddCategoryModal = useDisclosure()
 
-  const { data, loading, refetch, setFilter } = UseCustomGetCategories()
+  const { data, loading, refetch, setFilter, variables, setVariables } =
+    UseCustomGetCategories()
   const { handleDeleteC } = UseCustomeDeleteCategory()
 
   const handleChangeRow = (row: number) => {
@@ -86,7 +85,7 @@ function Categories({ user }: CategoriesProps) {
           isLoading={loading}
           enablePagination={true}
           onSearch={value => setFilter(value)}
-          totalItems={variables?.totalRecords}
+          totalItems={data?.getCategories?.totalRecords || 0}
           titles={[{ name: '#' }, { name: 'Nombre' }, { name: 'Acciones' }]}
           items={(data?.getCategories?.data || []).map((category, idx) => ({
             content: [
