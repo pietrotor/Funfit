@@ -35,6 +35,13 @@ enum DistributorSalePaymentMethod {
   MIXED
   CASH
 }
+enum OrderStatusEnum {
+  PENDING
+  ACEPTED
+  SOLD
+  DELIVERED
+  REJECTED
+}
 type Query {
   # CONFIGURATION ====================================
   getConfiguration: ConfigurationResponse
@@ -142,12 +149,10 @@ type Query {
     initialDate: Date!
   ): BusinessBalanceResponse
   # ============================ ECOMMERCE ROUTES ================================
-  getPublicProducts(
-    paginationInput: PaginationInput!
-    branchId: ObjectId!
-  ): BranchProductsResponse
+  getPublicProducts(branchId: ObjectId!): BranchProductsCategorizedResponse
   getPublicCustomerById(id: ObjectId!): CustomerResponse
 }
+# **************************************************** MUTATIONS *******************************************************
 type Mutation {
   # CONFIGURATION ====================================
   updateConfiguration(
@@ -205,6 +210,7 @@ type Mutation {
   cancelSale(cancelSaleInput: CancelSaleInput!): SaleResponse
   # ORDERS =================================
   acceptOrder(orderId: ObjectId!): OrderResponse
+  deliverOrder(orderId: ObjectId!): OrderResponse
   rejectOrder(orderId: ObjectId!): OrderResponse
   # DISTRIBUTOR =================================
   createDistributor(
@@ -460,6 +466,7 @@ type Order {
   addressId: ObjectId
   pickUpInformation: String
   orderDetails: String
+  orderStatus: OrderStatusEnum!
   orderAcepted: Boolean
   orderAceptedAt: Date
   orderAceptedBy: ObjectId
@@ -606,6 +613,12 @@ type BusinessBalance {
   result: Float!
   totalEarnings: Float!
   totalExpenses: Float!
+}
+type BranchProductCategorized {
+  id: ObjectId!
+  name: String!
+  code: String!
+  products: [BranchProduct!]
 }
 # RESPONSES -----------------------------------------------------------------------------------------------------------------------------------------
 interface ResponseBase {
@@ -755,6 +768,12 @@ type BranchProductsResponse implements ResponseBase {
   totalPages: Int
   rows: Int
   currentPage: Int
+}
+type BranchProductsCategorizedResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [BranchProductCategorized!]
 }
 type BranchProductResponse implements ResponseBase {
   errorInput: [ErrorInput!]
@@ -1154,6 +1173,7 @@ input OrderPaginationInput {
   filter: String
   orderesAcepted: Boolean
   branchId: ObjectId
+  status: OrderStatusEnum
 }
 input CreateCustomerInput {
   name: String!

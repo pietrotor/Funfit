@@ -8,15 +8,15 @@ import HeroShot from '@/components/atoms/FrontPage/heroShot'
 import { TProductBranchData } from '@/interfaces/TData'
 import { useGetPublicProductsLazyQuery } from '@/graphql/graphql-types'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
+import { sortObjectsByKey } from '@/helpers/sort.helper'
 
 const Index: NextPage = () => {
   const [currentBranchId, setBranchId] = useState<string>('')
   const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false)
   const [getPublicProducts, { data, loading }] = useGetPublicProductsLazyQuery({
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-first',
     variables: {
-      branchId: currentBranchId,
-      paginationInput: {}
+      branchId: currentBranchId
     },
     onCompleted: data => {
       console.log(data)
@@ -46,16 +46,17 @@ const Index: NextPage = () => {
   return (
     <ClientLayout>
       <HeroShot />
-      <Container>
-        <UserProducts
-          data={
-            data?.getPublicProducts?.data?.filter(
-              product => product.isVisibleOnWeb === true
-            ) as TProductBranchData[]
-          }
-          loading={loading}
-        />
-      </Container>
+      {sortObjectsByKey(data?.getPublicProducts?.data || [], 'name')?.map(
+        category => (
+          <Container key={category.id}>
+            <UserProducts
+              data={category.products as TProductBranchData[]}
+              loading={loading}
+              title={category.name}
+            />
+          </Container>
+        )
+      )}
     </ClientLayout>
   )
 }

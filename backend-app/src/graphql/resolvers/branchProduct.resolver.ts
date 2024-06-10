@@ -154,13 +154,13 @@ export const branchProductType = {
       _: any,
       __: any
     ): Promise<Product | null> {
-      if (parent.productId) {
+      if (parent.productId && !parent.product) {
         const product = await productCore.getProductByIdInstance(
           parent.productId
         )
         return product
       }
-      return null
+      return parent.product || null
     },
     async branch(
       parent: BranchProduct,

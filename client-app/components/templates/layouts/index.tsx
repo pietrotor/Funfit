@@ -8,11 +8,12 @@ import ToastComponent, {
   showSuccessToast
 } from '@/components/atoms/Toast/toasts'
 import {
+  OrderStatusEnum,
   RoleTypeEnum,
   StatusEnum,
   useGetBranchesPaginatedLazyQuery,
   useGetConfigurationLazyQuery,
-  useGetOrdersPaginatedLazyQuery
+  useGetOrdersPaginatedQuery
 } from '@/graphql/graphql-types'
 
 import { useAppDispatch, useAppSelector } from '@/store/index'
@@ -90,15 +91,15 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     router.push('/administration-panel/login')
   }
 
-  const [getOrders, { data }] = useGetOrdersPaginatedLazyQuery({
+  const { data, refetch } = useGetOrdersPaginatedQuery({
     fetchPolicy: 'network-only',
     variables: {
       orderPaginationInput: {
-        orderesAcepted: false
+        status: OrderStatusEnum.PENDING
       }
     },
+    pollInterval: 30000,
     onCompleted(data) {
-      console.log(data, 'data')
       if (data.getOrdersPaginated?.status === StatusEnum.ERROR) {
         showSuccessToast(
           data?.getOrdersPaginated?.message || 'Error al obtener las ordenes',
@@ -157,61 +158,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   }
   useEffect(() => {}, [])
 
-  const dataToPass: TPointOfSaleData = {
-    products: [
-      {
-        id: '1',
-        branchId: '1',
-        productId: '1',
-        price: 100,
-        quantity: 1,
-        isVisibleOnMenu: true,
-        isVisibleOnWeb: true,
-        product: {
-          id: '1',
-          name: 'Producto 1',
-          description: 'Descripcion del producto'
-        },
-        stock: 10,
-        total: 100
-      },
-      {
-        id: '2',
-        branchId: '1',
-        productId: '2',
-        price: 200,
-        quantity: 2,
-        isVisibleOnMenu: true,
-        isVisibleOnWeb: true,
-        product: {
-          id: '2',
-          name: 'Producto 2',
-          description: 'Descripcion del producto'
-        },
-        stock: 10,
-        total: 200
-      },
-      {
-        id: '3',
-        branchId: '1',
-        productId: '3',
-        price: 300,
-        quantity: 1,
-        isVisibleOnMenu: true,
-        isVisibleOnWeb: true,
-        product: {
-          id: '3',
-          name: 'Producto 3',
-          description: 'Descripcion del producto'
-        },
-        stock: 10,
-        total: 300
-      }
-    ],
-    subTotal: 600,
-    total: 600,
-    discount: 0
-  }
   const menu: TMenuStructure = [
     {
       icon: 'home',
@@ -422,20 +368,17 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
               <ToastComponent />
               <div className="flex items-center">
                 <DropDown
-                  onClick={() => {
-                    getOrders()
-                  }}
                   IconButtonName="Notifications"
+                  onClick={() => refetch()}
                   values={
                     data?.getOrdersPaginated?.data?.map((order, idx) => {
                       return {
-                        label: `Orden ${order.products[0]?.product?.name}`,
+                        label: `Nueva orden - ${order.total} Bs`,
                         value: order.id,
-                        icon: 'Notifications',
+                        icon: 'Recipe',
                         handleClick: () => {
                           router.push({
-                            pathname: '/administration-panel/point-of-sale',
-                            query: { data: JSON.stringify(dataToPass) }
+                            pathname: '/administration-panel/order'
                           })
                         },
                         counter: 0

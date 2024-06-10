@@ -7,9 +7,9 @@ import {
   UpdateProductInput,
   Product,
   Category,
-  BranchProductsResponse,
   FileInput,
-  ProductImageResponse
+  ProductImageResponse,
+  BranchProductsCategorizedResponse
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
@@ -19,14 +19,18 @@ import { uploadFileToS3Bucket } from 'helpers/upload-files'
 // ========================================== Mutations ====================================================
 const getPublicProducts = async (
   _: any,
-  args: { paginationInput: PaginationInput; branchId: objectId }
-): Promise<BranchProductsResponse> => {
+  args: { branchId: objectId }
+): Promise<BranchProductsCategorizedResponse> => {
   try {
-    const { paginationInput, branchId } = args
-    return await branchProductCore.getBranchesProductsPaginated(
-      paginationInput,
+    const { branchId } = args
+    const categories = await branchProductCore.getBranchProductsByCategory(
       branchId
     )
+    return {
+      status: StatusEnum.OK,
+      message: 'Productos encontrados',
+      data: categories
+    }
   } catch (error) {
     console.log(error)
     return errorHandler(error)
@@ -153,7 +157,7 @@ const deleteProduct = async (
 }
 const uploadFile = async (
   _: any,
-  args: { fileInput: FileInput; productId: objectId },
+  args: { fileInput: FileInput },
   context: ContextGraphQl
 ): Promise<ProductImageResponse> => {
   try {

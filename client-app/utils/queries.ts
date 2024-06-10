@@ -375,6 +375,10 @@ export const GET_STOCK_HISTORY = gql`
             image
           }
         }
+        createdByInfo {
+          name
+          lastName
+        }
       }
       totalRecords
       totalPages
@@ -495,6 +499,7 @@ export const GET_PRODUCT_BY_ID = gql`
       data {
         id
         name
+        code
         suggetedPrice
         image
         description
@@ -673,6 +678,18 @@ export const GET_CASH_BY_ID = gql`
           cashId
           isOpen
           amountOfMovents
+          openInfo {
+            amount
+            date
+            difference
+            observation
+            openByInfo {
+              name
+              lastName
+            }
+            openBy
+            physicialAmount
+          }
         }
       }
     }
@@ -697,6 +714,7 @@ export const GET_CASH_TURN_MOVEMENTS = gql`
         amount
         date
         concept
+        type
         createdByInfo {
           id
           name
@@ -792,6 +810,7 @@ export const GET_SALES_BY_ID = gql`
       data {
         id
         branchId
+        paymentMethod
         products {
           productId
           qty
@@ -802,6 +821,16 @@ export const GET_SALES_BY_ID = gql`
             code
             image
           }
+        }
+        createdByInfo {
+          name
+          lastName
+        }
+        canceled
+        canceledAt
+        canceledByInfo {
+          name
+          lastName
         }
         code
         total
@@ -907,42 +936,41 @@ export const GET_PRODUCT_STOCK = gql`
 `
 
 export const GET_PUBLIC_BRANCH_PRODUCTS = gql`
-  query GetPublicProducts(
-    $paginationInput: PaginationInput!
-    $branchId: ObjectId!
-  ) {
-    getPublicProducts(paginationInput: $paginationInput, branchId: $branchId) {
+  query GetPublicProducts($branchId: ObjectId!) {
+    getPublicProducts(branchId: $branchId) {
       errorInput {
-        message
         field
+        message
       }
       status
       message
       data {
         id
-        branchId
-        productId
-        price
-        stock
-        isVisibleOnWeb
-        isVisibleOnMenu
-        product {
+        name
+        code
+        products {
           id
-          name
-          suggetedPrice
-          code
-          internalCode
-          description
-          categoryId
-          cost
-          image
-          warehouses
+          branchId
+          productId
+          price
+          stock
+          lastStockEntry
+          isVisibleOnWeb
+          isVisibleOnMenu
+          product {
+            id
+            name
+            suggetedPrice
+            code
+            internalCode
+            description
+            categoryId
+            cost
+            image
+            warehouses
+          }
         }
       }
-      totalRecords
-      totalPages
-      rows
-      currentPage
     }
   }
 `
@@ -1015,6 +1043,7 @@ export const GET_ORDER_PAGINATED = gql`
         customerId
         addressId
         pickUpInformation
+        orderStatus
         orderDetails
         orderAcepted
         orderAceptedAt
@@ -1034,6 +1063,11 @@ export const GET_ORDER_PAGINATED = gql`
           lastOrderDate
           addressesIds
           ordersIds
+        }
+        addressInfo {
+          latitude
+          longitude
+          detail
         }
       }
       totalRecords

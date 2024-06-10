@@ -70,6 +70,27 @@ const acceptOrder = async (
     return errorHandler(error)
   }
 }
+const deliverOrder = async (
+  _: any,
+  args: { orderId: objectId },
+  context: ContextGraphQl
+): Promise<OrderResponse> => {
+  try {
+    const { orderId } = args
+    const orderInstance = await orderCore.deliverOrder(
+      orderId,
+      context.req.currentUser?.id
+    )
+    return {
+      status: StatusEnum.OK,
+      message: 'Pedido entregado',
+      data: orderInstance
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
 
 const rejectOrder = async (
   _: any,
@@ -99,6 +120,7 @@ export const orderQuery = {
 }
 export const orderMutation = {
   acceptOrder,
+  deliverOrder,
   rejectOrder
 }
 

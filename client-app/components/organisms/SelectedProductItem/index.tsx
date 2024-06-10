@@ -1,3 +1,4 @@
+import React, { SetStateAction } from 'react'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
 import IconSelector from '@/components/atoms/IconSelector'
 import Counter from '@/components/molecules/Counter'
@@ -6,7 +7,7 @@ import { TProductBranchData } from '@/interfaces/TData'
 type SelectedProductItemProps = {
   item: TProductBranchData
   selectedProducts: TPointOfSaleData
-  setSelectedProducts: (prevProducts: TPointOfSaleData) => void
+  setSelectedProducts: React.Dispatch<SetStateAction<TPointOfSaleData>>
 }
 function SelectedProductItem({
   item,
@@ -15,7 +16,8 @@ function SelectedProductItem({
 }: SelectedProductItemProps) {
   const increment = (id: string) => {
     console.log(id)
-    setSelectedProducts({
+    setSelectedProducts(prevValue => ({
+      ...prevValue,
       products: selectedProducts.products.map(item => {
         if (item.productId === id) {
           return {
@@ -29,11 +31,12 @@ function SelectedProductItem({
       subTotal: selectedProducts.subTotal + item.price,
       total: selectedProducts.total + item.price,
       discount: selectedProducts.discount
-    })
+    }))
   }
 
   const decrement = (id: string) => {
-    setSelectedProducts({
+    setSelectedProducts(prevValue => ({
+      ...prevValue,
       products: selectedProducts.products.map(item => {
         if (item.productId === id) {
           return {
@@ -47,16 +50,17 @@ function SelectedProductItem({
       subTotal: selectedProducts.subTotal - item.price,
       total: selectedProducts.total - item.price,
       discount: selectedProducts.discount
-    })
+    }))
   }
 
   const handleDelete = (id: string) => {
-    setSelectedProducts({
+    setSelectedProducts(prevValue => ({
+      ...prevValue,
       products: selectedProducts.products.filter(item => item.productId !== id),
       subTotal: selectedProducts.subTotal - item.price * (item.quantity || 0),
       total: selectedProducts.total - item.price * (item.quantity || 0),
       discount: selectedProducts.discount
-    })
+    }))
   }
 
   return (

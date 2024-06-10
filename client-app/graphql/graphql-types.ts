@@ -65,9 +65,25 @@ export type BranchProduct = {
   stock: Scalars['Float'];
 };
 
+export type BranchProductCategorized = {
+  __typename?: 'BranchProductCategorized';
+  code: Scalars['String'];
+  id: Scalars['ObjectId'];
+  name: Scalars['String'];
+  products?: Maybe<Array<BranchProduct>>;
+};
+
 export type BranchProductResponse = ResponseBase & {
   __typename?: 'BranchProductResponse';
   data?: Maybe<BranchProduct>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type BranchProductsCategorizedResponse = ResponseBase & {
+  __typename?: 'BranchProductsCategorizedResponse';
+  data?: Maybe<Array<BranchProductCategorized>>;
   errorInput?: Maybe<Array<ErrorInput>>;
   message?: Maybe<Scalars['String']>;
   status: StatusEnum;
@@ -672,6 +688,7 @@ export type Mutation = {
   deletePriceList?: Maybe<PriceListResponse>;
   deleteProduct?: Maybe<ProductResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
+  deliverOrder?: Maybe<OrderResponse>;
   openCash?: Maybe<CashResponse>;
   publicCreateAddress?: Maybe<AddressResponse>;
   publicCreateCustomer?: Maybe<CustomerResponse>;
@@ -821,6 +838,11 @@ export type MutationDeleteWarehouseArgs = {
 };
 
 
+export type MutationDeliverOrderArgs = {
+  orderId: Scalars['ObjectId'];
+};
+
+
 export type MutationOpenCashArgs = {
   createTurnInput: CreateTurnInput;
 };
@@ -930,6 +952,7 @@ export type Order = {
   orderAceptedBy?: Maybe<Scalars['ObjectId']>;
   orderAceptedByInfo?: Maybe<User>;
   orderDetails?: Maybe<Scalars['String']>;
+  orderStatus: OrderStatusEnum;
   paymentMethod: PaymentMethodEnum;
   pickUpInformation?: Maybe<Scalars['String']>;
   products: Array<SaleItem>;
@@ -949,6 +972,7 @@ export type OrderPaginationInput = {
   orderesAcepted?: InputMaybe<Scalars['Boolean']>;
   page?: InputMaybe<Scalars['Int']>;
   rows?: InputMaybe<Scalars['Int']>;
+  status?: InputMaybe<OrderStatusEnum>;
 };
 
 export type OrderResponse = ResponseBase & {
@@ -958,6 +982,14 @@ export type OrderResponse = ResponseBase & {
   message?: Maybe<Scalars['String']>;
   status: StatusEnum;
 };
+
+export enum OrderStatusEnum {
+  ACEPTED = 'ACEPTED',
+  DELIVERED = 'DELIVERED',
+  PENDING = 'PENDING',
+  REJECTED = 'REJECTED',
+  SOLD = 'SOLD'
+}
 
 export type OrdersResponse = ResponseBase & {
   __typename?: 'OrdersResponse';
@@ -1157,7 +1189,7 @@ export type Query = {
   getProductsOutOfPriceList?: Maybe<ProductsResponse>;
   getProductsOutOfWarehouse?: Maybe<ProductsResponse>;
   getPublicCustomerById?: Maybe<CustomerResponse>;
-  getPublicProducts?: Maybe<BranchProductsResponse>;
+  getPublicProducts?: Maybe<BranchProductsCategorizedResponse>;
   getRoles?: Maybe<RolesResponse>;
   getSaleById?: Maybe<SaleResponse>;
   getSalesPaginated?: Maybe<SalesResponse>;
@@ -1326,7 +1358,6 @@ export type QueryGetPublicCustomerByIdArgs = {
 
 export type QueryGetPublicProductsArgs = {
   branchId: Scalars['ObjectId'];
-  paginationInput: PaginationInput;
 };
 
 
@@ -2007,6 +2038,13 @@ export type AcceptOrderMutationVariables = Exact<{
 
 export type AcceptOrderMutation = { __typename?: 'Mutation', acceptOrder?: { __typename?: 'OrderResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
+export type DeliverOrderMutationVariables = Exact<{
+  orderId: Scalars['ObjectId'];
+}>;
+
+
+export type DeliverOrderMutation = { __typename?: 'Mutation', deliverOrder?: { __typename?: 'OrderResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
 export type RejectOrderMutationVariables = Exact<{
   orderId: Scalars['ObjectId'];
 }>;
@@ -2185,7 +2223,7 @@ export type GetStockHistoryQueryVariables = Exact<{
 }>;
 
 
-export type GetStockHistoryQuery = { __typename?: 'Query', getStockHistory?: { __typename?: 'StocksHistoryResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'StockHistory', id: any, stockId: any, warehouseId: any, type: StockMovementTypeEnum, date: any, stockBefore: number, stockLater: number, stock?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null } | null } | null }> | null } | null };
+export type GetStockHistoryQuery = { __typename?: 'Query', getStockHistory?: { __typename?: 'StocksHistoryResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'StockHistory', id: any, stockId: any, warehouseId: any, type: StockMovementTypeEnum, date: any, stockBefore: number, stockLater: number, stock?: { __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, securityStock?: number | null, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, cost?: number | null, image?: string | null } | null } | null, createdByInfo?: { __typename?: 'User', name: string, lastName: string } | null }> | null } | null };
 
 export type GetStockByIdQueryVariables = Exact<{
   getStockByIdId: Scalars['ObjectId'];
@@ -2214,7 +2252,7 @@ export type GetProductByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetProductByIdQuery = { __typename?: 'Query', getProductById?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, image?: string | null, description: string } | null } | null };
+export type GetProductByIdQuery = { __typename?: 'Query', getProductById?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Product', id: any, name: string, code: string, suggetedPrice: number, image?: string | null, description: string } | null } | null };
 
 export type GetBranchProductsPaginatedQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -2243,7 +2281,7 @@ export type GetCashByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetCashByIdQuery = { __typename?: 'Query', getCashById?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number } | null } | null } | null };
+export type GetCashByIdQuery = { __typename?: 'Query', getCashById?: { __typename?: 'CashResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Cash', id: any, branchId: any, amount: number, currentTurnId?: any | null, isOpen: boolean, currentTurn?: { __typename?: 'Turn', id: any, cashId: any, isOpen: boolean, amountOfMovents: number, openInfo: { __typename?: 'OpenTurnInfo', amount: number, date: any, difference: number, observation?: string | null, openBy?: any | null, physicialAmount: number, openByInfo?: { __typename?: 'User', name: string, lastName: string } | null } } | null } | null } | null };
 
 export type GetCashTurnMovementsQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -2251,7 +2289,7 @@ export type GetCashTurnMovementsQueryVariables = Exact<{
 }>;
 
 
-export type GetCashTurnMovementsQuery = { __typename?: 'Query', getCashTurnMovements?: { __typename?: 'CashTurnMovementsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'TurnMovements', id: any, turnId: any, cashId: any, amount: number, date: any, concept?: string | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string } | null }> | null } | null };
+export type GetCashTurnMovementsQuery = { __typename?: 'Query', getCashTurnMovements?: { __typename?: 'CashTurnMovementsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'TurnMovements', id: any, turnId: any, cashId: any, amount: number, date: any, concept?: string | null, type?: TurnMovementTypeEnum | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string } | null }> | null } | null };
 
 export type GetSalesPaginatedQueryVariables = Exact<{
   salesPaginationInput: SalesPaginationInput;
@@ -2272,7 +2310,7 @@ export type GetSaleByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetSaleByIdQuery = { __typename?: 'Query', getSaleById?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, code: string, total: number, products: Array<{ __typename?: 'SaleItem', productId: any, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, code: string, image?: string | null } | null }> } | null } | null };
+export type GetSaleByIdQuery = { __typename?: 'Query', getSaleById?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, canceled?: boolean | null, canceledAt?: any | null, code: string, total: number, products: Array<{ __typename?: 'SaleItem', productId: any, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, code: string, image?: string | null } | null }>, createdByInfo?: { __typename?: 'User', name: string, lastName: string } | null, canceledByInfo?: { __typename?: 'User', name: string, lastName: string } | null } | null } | null };
 
 export type GetCategoriesQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -2306,12 +2344,11 @@ export type GetProductStockQueryVariables = Exact<{
 export type GetProductStockQuery = { __typename?: 'Query', getProductStock?: { __typename?: 'StocksResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, units: string }> | null } | null };
 
 export type GetPublicProductsQueryVariables = Exact<{
-  paginationInput: PaginationInput;
   branchId: Scalars['ObjectId'];
 }>;
 
 
-export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }> | null } | null };
+export type GetPublicProductsQuery = { __typename?: 'Query', getPublicProducts?: { __typename?: 'BranchProductsCategorizedResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: Array<{ __typename?: 'BranchProductCategorized', id: any, name: string, code: string, products?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, lastStockEntry?: number | null, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }> | null }> | null } | null };
 
 export type GetPublicCustomerByIdQueryVariables = Exact<{
   getPublicCustomerByIdId: Scalars['ObjectId'];
@@ -2325,7 +2362,7 @@ export type GetOrdersPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetOrdersPaginatedQuery = { __typename?: 'Query', getOrdersPaginated?: { __typename?: 'OrdersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Order', id: any, branchId: any, deliveryMethod: DeliveryMethodEnum, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, customerId: any, addressId?: any | null, pickUpInformation?: string | null, orderDetails?: string | null, orderAcepted?: boolean | null, orderAceptedAt?: any | null, orderAceptedBy?: any | null, reason?: string | null, rejected?: boolean | null, rejectedAt?: any | null, rejectedBy?: any | null, isSold: boolean, saleId?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, customerInfo?: { __typename?: 'Customer', id: any, name: string, lastName: string, email?: string | null, phone: string, lastOrderDate?: any | null, addressesIds: Array<any>, ordersIds: Array<any> } | null }> | null } | null };
+export type GetOrdersPaginatedQuery = { __typename?: 'Query', getOrdersPaginated?: { __typename?: 'OrdersResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Order', id: any, branchId: any, deliveryMethod: DeliveryMethodEnum, paymentMethod: PaymentMethodEnum, subTotal: number, total: number, discount: number, date: any, code: string, customerId: any, addressId?: any | null, pickUpInformation?: string | null, orderStatus: OrderStatusEnum, orderDetails?: string | null, orderAcepted?: boolean | null, orderAceptedAt?: any | null, orderAceptedBy?: any | null, reason?: string | null, rejected?: boolean | null, rejectedAt?: any | null, rejectedBy?: any | null, isSold: boolean, saleId?: any | null, products: Array<{ __typename?: 'SaleItem', branchProductId: any, productId: any, price: number, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, internalCode?: string | null, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any> } | null }>, customerInfo?: { __typename?: 'Customer', id: any, name: string, lastName: string, email?: string | null, phone: string, lastOrderDate?: any | null, addressesIds: Array<any>, ordersIds: Array<any> } | null, addressInfo?: { __typename?: 'Address', latitude: number, longitude: number, detail: string } | null }> | null } | null };
 
 export type GetDistributorsPaginatedQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -3409,6 +3446,44 @@ export function useAcceptOrderMutation(baseOptions?: Apollo.MutationHookOptions<
 export type AcceptOrderMutationHookResult = ReturnType<typeof useAcceptOrderMutation>;
 export type AcceptOrderMutationResult = Apollo.MutationResult<AcceptOrderMutation>;
 export type AcceptOrderMutationOptions = Apollo.BaseMutationOptions<AcceptOrderMutation, AcceptOrderMutationVariables>;
+export const DeliverOrderDocument = gql`
+    mutation deliverOrder($orderId: ObjectId!) {
+  deliverOrder(orderId: $orderId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type DeliverOrderMutationFn = Apollo.MutationFunction<DeliverOrderMutation, DeliverOrderMutationVariables>;
+
+/**
+ * __useDeliverOrderMutation__
+ *
+ * To run a mutation, you first call `useDeliverOrderMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeliverOrderMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deliverOrderMutation, { data, loading, error }] = useDeliverOrderMutation({
+ *   variables: {
+ *      orderId: // value for 'orderId'
+ *   },
+ * });
+ */
+export function useDeliverOrderMutation(baseOptions?: Apollo.MutationHookOptions<DeliverOrderMutation, DeliverOrderMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeliverOrderMutation, DeliverOrderMutationVariables>(DeliverOrderDocument, options);
+      }
+export type DeliverOrderMutationHookResult = ReturnType<typeof useDeliverOrderMutation>;
+export type DeliverOrderMutationResult = Apollo.MutationResult<DeliverOrderMutation>;
+export type DeliverOrderMutationOptions = Apollo.BaseMutationOptions<DeliverOrderMutation, DeliverOrderMutationVariables>;
 export const RejectOrderDocument = gql`
     mutation RejectOrder($orderId: ObjectId!) {
   rejectOrder(orderId: $orderId) {
@@ -4587,6 +4662,10 @@ export const GetStockHistoryDocument = gql`
           image
         }
       }
+      createdByInfo {
+        name
+        lastName
+      }
     }
     totalRecords
     totalPages
@@ -4814,6 +4893,7 @@ export const GetProductByIdDocument = gql`
     data {
       id
       name
+      code
       suggetedPrice
       image
       description
@@ -5100,6 +5180,18 @@ export const GetCashByIdDocument = gql`
         cashId
         isOpen
         amountOfMovents
+        openInfo {
+          amount
+          date
+          difference
+          observation
+          openByInfo {
+            name
+            lastName
+          }
+          openBy
+          physicialAmount
+        }
       }
     }
   }
@@ -5149,6 +5241,7 @@ export const GetCashTurnMovementsDocument = gql`
       amount
       date
       concept
+      type
       createdByInfo {
         id
         name
@@ -5329,6 +5422,7 @@ export const GetSaleByIdDocument = gql`
     data {
       id
       branchId
+      paymentMethod
       products {
         productId
         qty
@@ -5339,6 +5433,16 @@ export const GetSaleByIdDocument = gql`
           code
           image
         }
+      }
+      createdByInfo {
+        name
+        lastName
+      }
+      canceled
+      canceledAt
+      canceledByInfo {
+        name
+        lastName
       }
       code
       total
@@ -5575,39 +5679,41 @@ export type GetProductStockQueryHookResult = ReturnType<typeof useGetProductStoc
 export type GetProductStockLazyQueryHookResult = ReturnType<typeof useGetProductStockLazyQuery>;
 export type GetProductStockQueryResult = Apollo.QueryResult<GetProductStockQuery, GetProductStockQueryVariables>;
 export const GetPublicProductsDocument = gql`
-    query GetPublicProducts($paginationInput: PaginationInput!, $branchId: ObjectId!) {
-  getPublicProducts(paginationInput: $paginationInput, branchId: $branchId) {
+    query GetPublicProducts($branchId: ObjectId!) {
+  getPublicProducts(branchId: $branchId) {
     errorInput {
-      message
       field
+      message
     }
     status
     message
     data {
       id
-      branchId
-      productId
-      price
-      stock
-      isVisibleOnWeb
-      isVisibleOnMenu
-      product {
+      name
+      code
+      products {
         id
-        name
-        suggetedPrice
-        code
-        internalCode
-        description
-        categoryId
-        cost
-        image
-        warehouses
+        branchId
+        productId
+        price
+        stock
+        lastStockEntry
+        isVisibleOnWeb
+        isVisibleOnMenu
+        product {
+          id
+          name
+          suggetedPrice
+          code
+          internalCode
+          description
+          categoryId
+          cost
+          image
+          warehouses
+        }
       }
     }
-    totalRecords
-    totalPages
-    rows
-    currentPage
   }
 }
     `;
@@ -5624,7 +5730,6 @@ export const GetPublicProductsDocument = gql`
  * @example
  * const { data, loading, error } = useGetPublicProductsQuery({
  *   variables: {
- *      paginationInput: // value for 'paginationInput'
  *      branchId: // value for 'branchId'
  *   },
  * });
@@ -5736,6 +5841,7 @@ export const GetOrdersPaginatedDocument = gql`
       customerId
       addressId
       pickUpInformation
+      orderStatus
       orderDetails
       orderAcepted
       orderAceptedAt
@@ -5755,6 +5861,11 @@ export const GetOrdersPaginatedDocument = gql`
         lastOrderDate
         addressesIds
         ordersIds
+      }
+      addressInfo {
+        latitude
+        longitude
+        detail
       }
     }
     totalRecords

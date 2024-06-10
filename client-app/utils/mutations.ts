@@ -349,6 +349,18 @@ export const ACCEPT_ORDER = gql`
     }
   }
 `
+export const DELIVER_ORDER = gql`
+  mutation deliverOrder($orderId: ObjectId!) {
+    deliverOrder(orderId: $orderId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
+`
 
 export const REJECT_ORDER = gql`
   mutation RejectOrder($orderId: ObjectId!) {

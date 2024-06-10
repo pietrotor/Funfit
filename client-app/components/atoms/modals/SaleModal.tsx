@@ -1,7 +1,8 @@
 /* eslint-disable multiline-ternary */
-import { useState } from 'react'
+import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import Decimal from 'decimal.js'
+import { useRouter } from 'next/router'
 import { MyModal } from './MyModal'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
 import SalePaymentMethod from '@/components/molecules/SalePaymentMethod'
@@ -17,7 +18,7 @@ interface SaleModalProps {
   isOpen: boolean
   onClose: () => void
   selectedProducts: TPointOfSaleData
-  setSelectedProducts: (products: TPointOfSaleData) => void
+  setSelectedProducts: React.Dispatch<React.SetStateAction<TPointOfSaleData>>
   refetch?: () => void
 }
 
@@ -34,6 +35,7 @@ function SaleModal({
   setSelectedProducts,
   refetch
 }: SaleModalProps) {
+  const router = useRouter()
   const { handleSubmit, control, watch, reset, setValue } = useForm()
   const branchIdSelected = useAppSelector(
     state => state.branchReducer.currentBranch.id
@@ -47,7 +49,6 @@ function SaleModal({
   })
 
   const onSubmit = () => {
-    console.log('--- SELECTE PRODUCTS -- ', selectedProducts)
     handleCreateSale(
       {
         amountRecibed:
@@ -82,19 +83,33 @@ function SaleModal({
             ? selectedProducts.total -
               new Decimal(selectedProducts.total).mul(0.02).toNumber()
             : selectedProducts.total,
-        subTotal: selectedProducts.subTotal
+        subTotal: selectedProducts.subTotal,
+        orderId: selectedProducts.orderId
       },
       () => {
+        let isCommingFromOrders = false
         reset()
         onClose()
-        setSelectedProducts({
-          products: [],
-          subTotal: 0,
-          total: 0,
-          discount: 0
+        setSelectedProducts(prevValue => {
+          if (prevValue.orderId) {
+            isCommingFromOrders = true
+          }
+          return {
+            products: [],
+            subTotal: 0,
+            total: 0,
+            discount: 0,
+            orderId: null
+          }
         })
         setPayment({ paymentMethod: 'options', cash: 0, change: 0 })
         refetch?.()
+        if (isCommingFromOrders) {
+          router.push({
+            pathname: '/administration-panel/point-of-sale',
+            query: ''
+          })
+        }
       }
     )
   }

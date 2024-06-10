@@ -19,6 +19,7 @@ export type TPointOfSaleData = {
   subTotal: number
   total: number
   discount: number
+  orderId: string | null
 }
 interface PointOfSaleProps {
   user: any
@@ -35,9 +36,9 @@ function PointOfSale({ user }: PointOfSaleProps) {
     parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
   )
 
-  console.log('-- product -- ', selectedProducts)
-
   const handleResponsiveSaleModal = useDisclosure()
+
+  console.log('🚀 ~ PointOfSale ~ selectedProducts:', selectedProducts)
 
   const handleSelected = (id: string) => {
     const existingProduct = selectedProducts?.products?.find(
@@ -45,8 +46,9 @@ function PointOfSale({ user }: PointOfSaleProps) {
     )
 
     if (existingProduct) {
-      setSelectedProducts((prevProducts: TPointOfSaleData | undefined) => {
+      setSelectedProducts(prevProducts => {
         return {
+          ...prevProducts,
           products: [
             ...(prevProducts?.products ?? []).filter(
               item => item.productId !== id
@@ -69,8 +71,9 @@ function PointOfSale({ user }: PointOfSaleProps) {
       )
 
       if (newProduct) {
-        setSelectedProducts((prevProducts: TPointOfSaleData | undefined) => {
+        setSelectedProducts(prevProducts => {
           return {
+            ...prevProducts,
             products: [
               ...(prevProducts?.products ?? []),
               {
@@ -91,9 +94,14 @@ function PointOfSale({ user }: PointOfSaleProps) {
   useEffect(() => {
     const { data: dataPassed } = router.query
     const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
-    console.log('--- PARSE -- ', parsedData)
     setSelectedProducts(
-      parsedData || { products: [], subTotal: 0, total: 0, discount: 0 }
+      parsedData || {
+        products: [],
+        subTotal: 0,
+        total: 0,
+        discount: 0,
+        orderId: null
+      }
     )
   }, [router.query])
 

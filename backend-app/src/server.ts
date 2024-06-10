@@ -13,7 +13,6 @@ import 'graphql-import-node'
 import typeDefs from './graphql/schema.graphql'
 import resolvers from './graphql/resolvers'
 import cors from 'cors'
-// import { currentUser } from ''
 import { GraphQLError } from 'graphql'
 import { currentUser } from './graphql/middlewares/currentuser.middleware'
 const { graphqlUploadExpress } = require('graphql-upload-ts')
@@ -35,8 +34,8 @@ export async function startServer() {
       app.use(cors())
     }
 
-    app.use(currentUser)
     app.use(graphqlUploadExpress({ maxFileSize: 4000000, maxFiles: 10 }))
+    app.use(currentUser)
 
     const httpServer = http.createServer(app)
     const schema = makeExecutableSchema({ typeDefs, resolvers })

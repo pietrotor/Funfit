@@ -15,11 +15,17 @@ const authMiddleware = new ApolloLink((operation, forward) => {
   return forward(operation)
 })
 
-const uploadLink = createUploadLink({ uri: process.env.NEXT_PUBLIC_BACKENDURL })
+const uploadLink = createUploadLink({
+  uri: process.env.NEXT_PUBLIC_BACKENDURL,
+  headers: {
+    authorization: cookies.get('sao-sess')
+  }
+})
 const client = new ApolloClient({
   cache: new InMemoryCache(),
   credentials: 'include',
-  link: concat(uploadLink, authMiddleware)
+  // link: concat(uploadLink, authMiddleware)
+  link: uploadLink
 })
 
 export default client

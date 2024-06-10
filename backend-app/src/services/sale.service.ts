@@ -1,6 +1,7 @@
 import {
   CancelSaleInput,
   CreateSaleInput,
+  OrderStatusEnum,
   PaymentMethodEnum,
   SalesPaginationInput,
   SalesSummaryInput
@@ -268,6 +269,13 @@ export class SalesService extends SalesRepository<objectId> {
       })
     )
 
+    if (
+      orderInstance?.orderStatus !== OrderStatusEnum.ACEPTED &&
+      !!orderInstance
+    ) {
+      throw new BadRequestError('No se puede vender una orden no aceptada')
+    }
+
     function generateCode(): string {
       const characters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
       let code: string = ''
@@ -329,7 +337,8 @@ export class SalesService extends SalesRepository<objectId> {
     if (orderInstance) {
       orderInstance.isSold = true
       orderInstance.saleId = saleInstance._id
-      await saleInstance.save()
+      orderInstance.orderStatus = OrderStatusEnum.SOLD
+      await orderInstance.save()
     }
     return await saleInstance.save()
   }

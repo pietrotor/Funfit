@@ -60,7 +60,10 @@ const Table = ({
                   {tableName}
                 </h3>
                 <p className="rounded-full bg-primary bg-opacity-40 px-4 py-1 text-xs font-semibold text-primary">
-                  {totalItems || items.length} Registros
+                  {typeof totalItems === 'number'
+                    ? totalItems
+                    : items.length || 0}{' '}
+                  Registros
                 </p>
               </div>
               {onSearch && (

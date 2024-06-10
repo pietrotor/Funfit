@@ -4,7 +4,8 @@ import { OrderRepository } from '../repositories'
 import {
   CreateOrderInput,
   DeliveryMethodEnum,
-  OrderPaginationInput
+  OrderPaginationInput,
+  OrderStatusEnum
 } from '@/graphql/graphql_types'
 import { saleUseCase } from 'useCase'
 import {
@@ -36,13 +37,14 @@ export class OrderService extends OrderRepository<objectId> {
   }
 
   async getOrdersPaginated(orderPaginationInput: OrderPaginationInput) {
-    const { filter, branchId, orderesAcepted, ...paginationInput } =
+    const { filter, branchId, status, ...paginationInput } =
       orderPaginationInput
     const branchFilter = branchId ? { branchId } : {}
-    const orderesAceptedFilter =
-      typeof orderesAcepted === 'boolean'
-        ? { orderAcepted: orderesAcepted }
-        : {}
+    const orderStautsFilter = status
+      ? {
+          orderStatus: status
+        }
+      : {}
 
     if (filter) {
       const filterArgs = {
@@ -51,13 +53,13 @@ export class OrderService extends OrderRepository<objectId> {
       return await getInstancesPagination<IOrder, IModelOrder>(
         Order,
         paginationInput,
-        { ...filterArgs, ...branchFilter, ...orderesAceptedFilter }
+        { ...filterArgs, ...branchFilter, ...orderStautsFilter }
       )
     }
     return await getInstancesPagination<IOrder, IModelOrder>(
       Order,
       paginationInput,
-      { ...branchFilter, ...orderesAceptedFilter }
+      { ...branchFilter, ...orderStautsFilter }
     )
   }
 
@@ -157,7 +159,8 @@ export class OrderService extends OrderRepository<objectId> {
       pickUpInformation,
       customerId,
       deliveryMethod,
-      addressId
+      addressId,
+      orderStatus: OrderStatusEnum.PENDING
     })
     customerInstance.ordersIds.push(orderInstance._id)
     const [orderInstanceSaved] = await Promise.all([
@@ -169,23 +172,46 @@ export class OrderService extends OrderRepository<objectId> {
 
   async acceptOrder(orderId: objectId, acceptedBy?: objectId) {
     const orderInstance = await this.getOrderById(orderId)
-    if (orderInstance.orderAcepted)
+    if (
+      orderInstance.orderAcepted ||
+      orderInstance.orderStatus === OrderStatusEnum.ACEPTED
+    ) {
       throw new BadRequestError('EL pedido ya fue aceptado previamente')
+    }
     orderInstance.orderAcepted = true
     orderInstance.orderAceptedAt = new Date()
     orderInstance.orderAceptedBy = acceptedBy || null
+    orderInstance.orderStatus = OrderStatusEnum.ACEPTED
+    return await orderInstance.save()
+  }
+
+  async deliverOrder(orderId: objectId, acceptedBy?: objectId) {
+    const orderInstance = await this.getOrderById(orderId)
+    if (orderInstance.orderStatus === OrderStatusEnum.DELIVERED) {
+      throw new BadRequestError('EL pedido ya fue aceptado previamente')
+    }
+    orderInstance.orderAcepted = true
+    orderInstance.orderAceptedAt = new Date()
+    orderInstance.orderAceptedBy = acceptedBy || null
+    orderInstance.orderStatus = OrderStatusEnum.DELIVERED
     return await orderInstance.save()
   }
 
   async rejectOrder(orderId: objectId, acceptedBy?: objectId) {
     const orderInstance = await this.getOrderById(orderId)
-    if (orderInstance.isSold)
+    if (orderInstance.isSold) {
       throw new BadRequestError('No se puede rechazar un pedido ya vendido')
-    if (orderInstance.rejected)
+    }
+    if (
+      orderInstance.rejected ||
+      orderInstance.orderStatus === OrderStatusEnum.REJECTED
+    ) {
       throw new BadRequestError('El pedido ya fue rechazado previamente')
+    }
     orderInstance.rejected = true
     orderInstance.rejectedAt = new Date()
     orderInstance.rejectedBy = acceptedBy || null
+    orderInstance.orderStatus = OrderStatusEnum.REJECTED
     return await orderInstance.save()
   }
 }

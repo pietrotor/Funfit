@@ -22,9 +22,9 @@ const UsersNavBar: React.FC<TSubMenuLinkProps> = ({ menu }) => {
   const cartItems = useAppSelector(state => state.cartReducer.cartItems)
 
   return (
-    <header className={`${isNavOpen ? 'relative h-16' : 'h-16'}`}>
+    <header className={`${isNavOpen ? 'relative h-16' : 'h-16'} relative`}>
       <ToastComponent />
-      <div className="fixed z-[20] w-full bg-white px-6 py-4 shadow-md md:flex md:justify-between">
+      <div className="fixed z-[20] w-full bg-white px-6 py-1 shadow-md md:flex md:justify-between">
         <div className="flex items-center justify-between">
           <span className="cursor-pointer" onClick={() => router.push('/')}>
             <Images src="/common/logo.png" alt="logo" className="w-28" />

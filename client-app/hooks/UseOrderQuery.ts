@@ -1,8 +1,10 @@
 import { useState } from 'react'
+import { useRouter } from 'next/router'
 import UseDebouncedValue from './UseDebouncedValue'
 import { TPointOfSaleData } from '../pages/administration-panel/point-of-sale'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import {
+  OrderStatusEnum,
   StatusEnum,
   useAcceptOrderMutation,
   useGetOrdersPaginatedQuery,
@@ -11,7 +13,6 @@ import {
 } from '@/graphql/graphql-types'
 import { TOrder } from '@/interfaces/TData'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
-import { useRouter } from 'next/router'
 
 export const useCustomPublicCreateOrder = () => {
   const [createOrder] = usePublicCreateOrderMutation()
@@ -48,7 +49,7 @@ export const useCustomPublicCreateOrder = () => {
 
 export const useCustomGetOrdersPaginated = (
   branchId: string,
-  orderesAcepted: boolean | undefined
+  orderStatus: OrderStatusEnum | undefined
 ) => {
   const [variables, setVariables] = useState<PaginationInterfaceState>()
   const [filter, setFilter] = useState<string>()
@@ -61,10 +62,11 @@ export const useCustomGetOrdersPaginated = (
         branchId,
         filter: filtroDebounced,
         page: variables?.currentPage || 1,
-        rows: variables?.rows || 5,
-        orderesAcepted
+        rows: variables?.rows || 10,
+        status: orderStatus
       }
     },
+    pollInterval: orderStatus === OrderStatusEnum.PENDING ? 30000 : undefined,
     onCompleted: () => {
       setVariables({
         totalPages: data?.getOrdersPaginated?.totalPages || 1,
@@ -93,7 +95,7 @@ export const useCustomAcceptOrder = () => {
   const [acceptOrder] = useAcceptOrderMutation()
   const router = useRouter()
 
-  const handleAcceptOrder = (orderId: string, order:TPointOfSaleData) => {
+  const handleAcceptOrder = (orderId: string, order: TPointOfSaleData) => {
     console.log(order)
     acceptOrder({
       variables: {
@@ -129,7 +131,10 @@ export const useCustomRejectOrder = () => {
         if (result.rejectOrder?.status === StatusEnum.OK) {
           showSuccessToast('Pedido rechazado', 'success')
         } else {
-          showSuccessToast(result.rejectOrder?.message || 'Error al rechazar la orden', 'error')
+          showSuccessToast(
+            result.rejectOrder?.message || 'Error al rechazar la orden',
+            'error'
+          )
         }
       },
       onError: error => {

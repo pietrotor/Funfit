@@ -103,11 +103,18 @@ function OrderLayout() {
   const [getBranchProduct] = useGetPublicProductsLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
-      branchId: storedBranch,
-      paginationInput: {}
+      branchId: storedBranch
     },
     onCompleted: data => {
-      setPublicProducts(data.getPublicProducts?.data as TProductBranchData[])
+      setPublicProducts(
+        (data.getPublicProducts?.data || []).reduce(
+          (prevValue: any, category: any) => [
+            ...prevValue,
+            ...category.products
+          ],
+          []
+        ) as any
+      )
     },
     onError: () => {
       showSuccessToast('Error al obtener los productos', 'error')
@@ -284,7 +291,7 @@ function OrderLayout() {
         : `\nUbicación: \n https://maps.google.com/?q=${activeDirection.location.lat},${activeDirection.location.lng} \n Detalles: \n ${details.pickUpInformation}`
     } `
 
-    const whatsappLink = `https://api.whatsapp.com/send?phone=76475010&text=${encodeURIComponent(
+    const whatsappLink = `https://api.whatsapp.com/send?phone=73774486&text=${encodeURIComponent(
       message
     )}`
     window.open(whatsappLink, '_blank')

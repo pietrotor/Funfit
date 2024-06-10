@@ -29,7 +29,13 @@ function SalesReceipt({
   const handleDistrbutorSaleModal = useDisclosure()
 
   const handleCancel = () => {
-    setSelectedProducts({ products: [], subTotal: 0, total: 0, discount: 0 })
+    setSelectedProducts({
+      products: [],
+      subTotal: 0,
+      total: 0,
+      discount: 0,
+      orderId: null
+    })
   }
 
   const handleChange = (discount: number) => {
