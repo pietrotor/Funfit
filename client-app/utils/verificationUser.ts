@@ -45,7 +45,6 @@ export const authUserHeader = async (
       }
     })
 
-    console.log(result, 'result------------')
     const data = result.data
     if (
       data.currentUser?.status === StatusEnum.ERROR ||

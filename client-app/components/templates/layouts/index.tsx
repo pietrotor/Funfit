@@ -115,16 +115,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     }
   })
 
-  useEffect(() => {
-    // const timerId = setInterval(() => {
-    //   getOrders()
-    // }, 60000)
-    // return () => {
-    //   clearInterval(timerId)
-    // }
-  }, [])
-
-  console.log(data?.getOrdersPaginated?.data, 'data')
   const handleOrder = () => {
     const datosTransformados = data?.getOrdersPaginated?.data?.map(order => {
       return {
@@ -293,7 +283,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
 
   const buildMenu = useMemo(() => {
     const roleType = user.roleInfo?.type
-    console.log('🚀 ~ buildMenu ~ roleType:', roleType)
     const menuBuilded: TMenuStructure = []
     if (!roleType) return []
     menu.forEach(page => {

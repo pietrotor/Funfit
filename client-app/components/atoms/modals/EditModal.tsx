@@ -52,7 +52,6 @@ export const EditModal = ({
       }
     })
     if (values) {
-      console.log('🚀 ~ useEffect ~ values:', values)
       reset({
         name: values.name,
         lastName: values.lastName,

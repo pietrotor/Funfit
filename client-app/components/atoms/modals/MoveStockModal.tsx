@@ -56,7 +56,6 @@ export const MoveStockModal = ({
           data.creatStockMovement?.message || 'Usuario creado correctamente',
           'success'
         )
-        console.log(data, 'data')
         onAddWarehouse()
         onClose()
         reset()
@@ -70,19 +69,13 @@ export const MoveStockModal = ({
 
   const handlePlusController = () => {
     if (watch('movementType') === StockMovementTypeEnum.INWARD) {
-      console.log(stockData?.quantity, parseInt(watch('quantity')))
-      console.log(watch('movementType'))
-      console.log(stockData?.quantity + parseInt(watch('quantity')))
       return stockData?.quantity + parseInt(watch('quantity'))
     } else if (
       watch('movementType') === StockMovementTypeEnum.OUTWARD ||
       watch('movementType') === StockMovementTypeEnum.DISPOSE
     ) {
-      console.log(stockData?.quantity - parseInt(watch('quantity')))
-      console.log(stockData?.quantity, parseInt(watch('quantity')))
       return stockData?.quantity - parseInt(watch('quantity'))
     }
-    console.log(watch('date'))
     return stockData?.quantity
   }
   return (
