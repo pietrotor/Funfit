@@ -9,7 +9,6 @@ const HeroShot = () => {
         alt="Banner de la empresa"
         className="h-full w-full object-cover "
       />
-      <div className="absolute left-0 top-0 h-96 w-full bg-primary/20"></div>
     </div>
   )
 }

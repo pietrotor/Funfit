@@ -58,10 +58,7 @@ export const EditCategoryModal = ({
           label={'Nombre'}
           required={false}
           rules={{
-            pattern: {
-              value: /^[a-zA-ZÀ-ÿ\s]{1,40}$/,
-              message: 'El nombre solo puede contener letras y espacios'
-            }
+            required: 'Este campo es requerido'
           }}
           defaultValue={values.name}
         />
