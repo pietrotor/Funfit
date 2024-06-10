@@ -52,7 +52,7 @@ const Index: NextPage = () => {
             <UserProducts
               data={category.products as TProductBranchData[]}
               loading={loading}
-              title={category.name}
+              title={category.name.split('..')?.[1].trim()}
             />
           </Container>
         )

@@ -43,7 +43,7 @@ export default function UserCard({
               >
                 <h3 className="font-bold drop-shadow-2xl">{name}</h3>
                 <p
-                  className={`h-[35px] text-base ${'group-hover:line-clamp-none'} line-clamp-2`}
+                  className={`h-[50px] text-base ${'group-hover:line-clamp-none'} line-clamp-2`}
                 >
                   {description}
                 </p>
