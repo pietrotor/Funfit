@@ -4,7 +4,6 @@ import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api'
 import { Control, FieldValues, UseFormWatch } from 'react-hook-form'
 import { activeDirection } from '../PaymentMethod/paymentMethod'
 import InputComponent from '@/components/atoms/Input'
-import { useAppSelector } from '@/store/index'
 import { TCustomer, TOrder } from '@/interfaces/TData'
 import { DeliveryMethodEnum } from '@/graphql/graphql-types'
 import { TDetails } from '@/components/templates/OrderLayout/orderLayout'
@@ -36,8 +35,6 @@ function SendOrder({
   details,
   setDetails
 }: Props) {
-  const branch = useAppSelector(state => state.ecommerceInformationReducer.name)
-
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API || ''
   })
