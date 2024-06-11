@@ -17,9 +17,10 @@ import { sortObjectsByKey } from '@/helpers/sort.helper'
 
 type TSubMenuLinkProps = {
   menu: TSections
+  hideCategories: boolean
 }
 
-const UsersNavBar: React.FC<TSubMenuLinkProps> = ({ menu }) => {
+const UsersNavBar: React.FC<TSubMenuLinkProps> = ({ menu, hideCategories }) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
   const [isNavOpen, setIsNavOpen] = useState(false)
@@ -142,22 +143,24 @@ const UsersNavBar: React.FC<TSubMenuLinkProps> = ({ menu }) => {
             />
           </div>
         </div>
-        <div className="w-full max-w-[100vw] overflow-x-auto bg-secondary">
-          <div className="ml-0 mr-auto flex w-full flex-nowrap justify-start px-2 text-white md:justify-center">
-            {categories.map(category => (
-              <a
-                href={`/#${category.id}`}
-                key={category.id}
-                className={clsx(
-                  'font-amatemora min-w-fit appearance-none whitespace-nowrap border-b-5 border-transparent px-4 py-2 text-xl font-bold uppercase outline-none transition-all duration-250 hover:bg-black/10 md:px-5 xl:px-8',
-                  activeSection === category.id && '!border-primary'
-                )}
-              >
-                {getCategoryName(category.name)}
-              </a>
-            ))}
+        {!hideCategories && (
+          <div className="w-full max-w-[100vw] overflow-x-auto bg-secondary">
+            <div className="ml-0 mr-auto flex w-full flex-nowrap justify-start px-2 text-white md:justify-center">
+              {categories.map(category => (
+                <a
+                  href={`/#${category.id}`}
+                  key={category.id}
+                  className={clsx(
+                    'font-amatemora min-w-fit appearance-none whitespace-nowrap border-b-5 border-transparent px-4 py-2 text-xl font-bold uppercase outline-none transition-all duration-250 hover:bg-black/10 md:px-5 xl:px-8',
+                    activeSection === category.id && '!border-primary'
+                  )}
+                >
+                  {getCategoryName(category.name)}
+                </a>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </header>
   )

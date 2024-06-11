@@ -23,8 +23,8 @@ function Order() {
   } else {
     return (
       <div className="h-full">
-        <ClientLayout>
-          <OrderLayout/>
+        <ClientLayout hideCategories>
+          <OrderLayout />
         </ClientLayout>
       </div>
     )

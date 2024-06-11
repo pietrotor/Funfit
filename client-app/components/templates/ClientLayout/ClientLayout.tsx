@@ -24,9 +24,13 @@ import { TDataBranch } from '@/interfaces/TData'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 export type TClientLayoutProps = {
   children: React.ReactNode
+  hideCategories?: boolean
 }
 
-function ClientLayout({ children }: TClientLayoutProps) {
+function ClientLayout({
+  children,
+  hideCategories = false
+}: TClientLayoutProps) {
   const handleSelectBranch = useDisclosure()
   const dispatch = useDispatch()
   const router = useRouter()
@@ -122,7 +126,7 @@ function ClientLayout({ children }: TClientLayoutProps) {
     <>
       <div className="font-amsipro flex min-h-screen flex-col">
         <div className="">
-          <UsersNavBar menu={menu} />
+          <UsersNavBar menu={menu} hideCategories={hideCategories} />
         </div>
         <div className="flex-grow ">
           <UserContainer>{children}</UserContainer>

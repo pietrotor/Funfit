@@ -25,9 +25,9 @@ export function UsersFooter({ menu }: TProps) {
               alt="logo"
             />
           </Link>
-          <p className="lg:max-w-96 mt-6 text-white md:hidden  lg:flex">
+          <p className="lg:max-w-96 pt-6 text-white md:hidden  lg:flex">
             Todos nuestros productos son libres de gluten aptos para personas
-            celiacas e intolerantes al gluen.
+            celiacas e intolerantes al gluten.
           </p>
         </section>
         <section className="my-6 flex flex-col text-white md:w-1/3  md:items-center">
