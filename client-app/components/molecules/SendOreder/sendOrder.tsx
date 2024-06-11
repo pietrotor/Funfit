@@ -53,8 +53,8 @@ function SendOrder({
     })
   }
   return (
-    <div className="flex h-full w-full flex-col justify-between space-y-5 p-5 text-center">
-      <div className="overflow-y-auto px-8">
+    <div className="flex h-full w-full flex-col justify-between space-y-5 p-2 text-center md:p-5">
+      <div className="overflow-y-auto md:px-8">
         <h2 className="text-gray-500 md:pb-6">Datos de ubicación</h2>
         <Accordion>
           <AccordionItem title="Recoger de la sucursal">
@@ -71,8 +71,8 @@ function SendOrder({
               value={selectedOption}
               color="secondary"
             >
-              <Radio value={DeliveryMethodEnum.PICKUP}>
-                Recoger en: {branch}
+              <Radio value={DeliveryMethodEnum.PICKUP} className="!text-left">
+                Recoger en: Venezuela #520 entre san martin y lanza
               </Radio>
             </RadioGroup>
             <InputComponent

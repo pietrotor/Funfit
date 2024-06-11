@@ -130,9 +130,7 @@ const CartModal: React.FC<TProps> = ({
                           setActualDetails(e.target.value)
                         }}
                         className={`transition-all ${
-                          showTextArea
-                            ? 'h-24 w-full border-2 p-2 shadow-lg'
-                            : 'h-0 w-full'
+                          showTextArea ? 'h-24 w-full border-2 p-2 shadow-lg' : 'h-0 w-full'
                         }   resize-none overflow-hidden duration-700 ease-in-out focus:outline-none`}
                         placeholder="Describa las especificaciones para su producto (espacio no obligatorio)"
                       ></textarea>
@@ -161,7 +159,7 @@ const CartModal: React.FC<TProps> = ({
                   className="flex h-fit w-full justify-between py-3 text-white shadow-md transition-all duration-500"
                   isDisabled={cartItems.length <= 0}
                 >
-                  <p className="text-xl font-bold">Reservar pedido</p>
+                  <p className="text-xl font-bold">Comprar</p>
                   <p className="text-xl font-bold">
                     SubTotal: {totalPrice} Bs.
                   </p>

@@ -150,6 +150,7 @@ type Query {
   ): BusinessBalanceResponse
   # ============================ ECOMMERCE ROUTES ================================
   getPublicProducts(branchId: ObjectId!): BranchProductsCategorizedResponse
+  getPublicCategories: PublicCategoriesResponse
   getPublicCustomerById(id: ObjectId!): CustomerResponse
 }
 # **************************************************** MUTATIONS *******************************************************
@@ -678,6 +679,12 @@ type CategoriesResponse implements ResponseBase {
   totalPages: Int
   rows: Int
   currentPage: Int
+}
+type PublicCategoriesResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: [Category!]
 }
 type CategoryResponse implements ResponseBase {
   errorInput: [ErrorInput!]

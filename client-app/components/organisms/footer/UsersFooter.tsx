@@ -26,8 +26,8 @@ export function UsersFooter({ menu }: TProps) {
             />
           </Link>
           <p className="lg:max-w-96 mt-6 text-white md:hidden  lg:flex">
-            Lorem ipsum dolor sit amet, consectetur adipisicing elit. Neque eius
-            minus dolorum atque sunt culpa!
+            Todos nuestros productos son libres de gluten aptos para personas
+            celiacas e intolerantes al gluen.
           </p>
         </section>
         <section className="my-6 flex flex-col text-white md:w-1/3  md:items-center">
@@ -49,11 +49,14 @@ export function UsersFooter({ menu }: TProps) {
           <ul className="mt-5 flex flex-col space-y-4 ">
             <li className="flex cursor-pointer space-x-2">
               <IconSelector name="map" className="mt-1" />
-              <h4 className="md:text-md text-sm">Av. America esq. Beijing</h4>
+              <h4 className="md:text-md text-sm">
+                Venezuela #520 entre San Martín y Lanza. A media cuadra de la
+                plaza colón, Cochabamba, Bolivia
+              </h4>
             </li>
             <li className="flex cursor-pointer space-x-2">
               <IconSelector name="telf" />
-              <h4 className="md:text-md text-sm">+591 73774486</h4>
+              <h4 className="md:text-md text-sm">73774486</h4>
             </li>
           </ul>
         </section>

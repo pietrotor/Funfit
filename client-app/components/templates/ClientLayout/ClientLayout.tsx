@@ -120,7 +120,7 @@ function ClientLayout({ children }: TClientLayoutProps) {
   }, [data])
   return (
     <>
-      <div className="flex min-h-screen flex-col">
+      <div className="font-amsipro flex min-h-screen flex-col">
         <div className="">
           <UsersNavBar menu={menu} />
         </div>

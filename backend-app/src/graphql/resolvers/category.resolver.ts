@@ -4,7 +4,8 @@ import {
   CategoriesResponse,
   CategoryResponse,
   CreateCategoryInput,
-  UpdateCategoryInput
+  UpdateCategoryInput,
+  PublicCategoriesResponse
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
@@ -19,6 +20,23 @@ const getCategories = async (
   try {
     const { paginationInput } = args
     return await categoryCore.getCategoriesPaginated(paginationInput)
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
+const getPublicCategories = async (
+  _: any,
+  __: any,
+  context: ContextGraphQl
+): Promise<PublicCategoriesResponse> => {
+  try {
+    const data = await categoryCore.getCategories()
+    return {
+      status: StatusEnum.OK,
+      message: 'Categorias encontradas',
+      data
+    }
   } catch (error) {
     console.log(error)
     return errorHandler(error)
@@ -104,7 +122,8 @@ const deleteCategory = async (
 
 export const categoryQuery = {
   getCategories,
-  getCategoryById
+  getCategoryById,
+  getPublicCategories
 }
 export const categoryMutation = {
   createCategory,

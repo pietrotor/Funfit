@@ -181,9 +181,7 @@ function OrderLayout() {
               customerId: customerId as string,
               discount: 0,
               deliveryMethod: DeliveryMethodEnum.PICKUP,
-              paymentMethod: paymentMethod
-                ? PaymentMethodEnum.QR_TRANSFER
-                : PaymentMethodEnum.CASH,
+              paymentMethod: paymentMethod ? PaymentMethodEnum.QR_TRANSFER : PaymentMethodEnum.CASH,
               products: cartItems.map(item => ({
                 branchProductId: item.id,
                 price: item.price / item.quantity,
@@ -203,9 +201,7 @@ function OrderLayout() {
             {
               branchId: storedBranch,
               addressId: order?.addressId,
-              paymentMethod: paymentMethod
-                ? PaymentMethodEnum.QR_TRANSFER
-                : PaymentMethodEnum.CASH,
+              paymentMethod: paymentMethod ? PaymentMethodEnum.QR_TRANSFER : PaymentMethodEnum.CASH,
               deliveryMethod: DeliveryMethodEnum.DELIVERY,
               orderDetails: watch('orderDetails'),
               pickUpInformation: watch('pickUpInformation'),
@@ -230,9 +226,7 @@ function OrderLayout() {
             {
               addressId,
               branchId: storedBranch,
-              paymentMethod: paymentMethod
-                ? PaymentMethodEnum.QR_TRANSFER
-                : PaymentMethodEnum.CASH,
+              paymentMethod: paymentMethod ? PaymentMethodEnum.QR_TRANSFER : PaymentMethodEnum.CASH,
               deliveryMethod: DeliveryMethodEnum.DELIVERY,
               orderDetails: watch('orderDetails'),
               pickUpInformation: watch('pickUpInformation'),
@@ -286,9 +280,7 @@ function OrderLayout() {
       ?.getPublicCustomerById?.data?.name} ${data?.getPublicCustomerById?.data
       ?.lastName}\n* Teléfono: ${data?.getPublicCustomerById?.data
       ?.phone}\n* Correo: ${data?.getPublicCustomerById?.data?.email}\n ${
-      order?.deliveryMethod === DeliveryMethodEnum.PICKUP
-        ? `\nTipo de entrega: 'Recojo en Sucursal'\n Sucursal: ${branch}\nDetalle del Recojo: ${details.pickUpInformation}`
-        : `\nUbicación: \n https://maps.google.com/?q=${activeDirection.location.lat},${activeDirection.location.lng} \n Detalles: \n ${details.pickUpInformation}`
+      order?.deliveryMethod === DeliveryMethodEnum.PICKUP ? `\nTipo de entrega: 'Recojo en Sucursal'\n Sucursal: ${branch}\nDetalle del Recojo: ${details.pickUpInformation}` : `\nUbicación: \n https://maps.google.com/?q=${activeDirection.location.lat},${activeDirection.location.lng} \n Detalles: \n ${details.pickUpInformation}`
     } `
 
     const whatsappLink = `https://api.whatsapp.com/send?phone=73774486&text=${encodeURIComponent(
@@ -300,7 +292,7 @@ function OrderLayout() {
 
   return (
     <form
-      className="mx-6 flex min-h-screen items-center justify-between space-x-4 md:px-7"
+      className="mx-0 mt-3 md:mt-0 flex min-h-screen items-center justify-between space-x-4 md:px-7"
       onSubmit={handleSubmit(onSubmit)}
     >
       <div className="flex w-full flex-col  shadow-2xl lg:w-2/3">

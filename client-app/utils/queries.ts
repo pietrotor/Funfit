@@ -1465,3 +1465,20 @@ export const GET_BUSINESS_BALANCE = gql`
     }
   }
 `
+export const PUBLIC_GET_CATEGORIES = gql`
+  query GetPublicCategories {
+    getPublicCategories {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+      data {
+        id
+        name
+        code
+      }
+    }
+  }
+`

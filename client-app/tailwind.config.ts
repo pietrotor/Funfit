@@ -10,6 +10,10 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        amsipro: ["'amsipro'", 'sans-serif'],
+        amatemora: ["'amatemora'", 'sans-serif']
+      },
       backgroundImage: {
         banner: 'url("banner.png")'
       },

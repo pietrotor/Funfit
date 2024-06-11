@@ -7,7 +7,12 @@ const HeroShot = () => {
       <Images
         src="/common/portada-funfit.png"
         alt="Banner de la empresa"
-        className="h-full w-full object-cover "
+        className="hidden h-full w-full object-cover md:block"
+      />
+      <Images
+        src="/common/portada-mobile.jpg"
+        alt="Banner de la empresa"
+        className="block h-full w-full object-cover md:hidden"
       />
     </div>
   )

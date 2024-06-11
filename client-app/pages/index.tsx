@@ -1,6 +1,7 @@
 'use client'
 import { NextPage } from 'next'
 import React, { useEffect, useState } from 'react'
+import { getCategoryName } from '../helpers'
 import ClientLayout from '@/components/templates/ClientLayout/ClientLayout'
 import { UserProducts } from '@/components/organisms/Products/UserProducts'
 import Container from '@/components/molecules/Container/Container'
@@ -47,12 +48,12 @@ const Index: NextPage = () => {
     <ClientLayout>
       <HeroShot />
       {sortObjectsByKey(data?.getPublicProducts?.data || [], 'name')?.map(
-        category => (
-          <Container key={category.id}>
+        (category, idx) => (
+          <Container id={category.id} key={idx}>
             <UserProducts
               data={category.products as TProductBranchData[]}
               loading={loading}
-              title={category.name.split('..')?.[1].trim()}
+              title={getCategoryName(category.name)}
             />
           </Container>
         )

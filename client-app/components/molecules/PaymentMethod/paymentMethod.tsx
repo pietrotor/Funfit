@@ -39,8 +39,8 @@ function PaymentMethod({
   }
 
   return (
-    <div className="flex h-full w-full flex-col justify-between space-y-5 p-5 text-center">
-      <div className="overflow-y-auto px-8">
+    <div className="flex h-full w-full flex-col justify-between space-y-5 p-2 text-center md:p-5">
+      <div className="overflow-y-auto md:px-8">
         <h2 className="text-gray-500 md:pb-6">Datos de contacto</h2>
         <Accordion
           selectedKeys={paymentMethod ? ['qr'] : ['cash']}
@@ -55,8 +55,8 @@ function PaymentMethod({
               <Image
                 id="qr"
                 alt="QR"
-                src="https://blog.tcea.org/wp-content/uploads/2022/05/qrcode_tcea.org-1.png"
-                className="w-1/5 "
+                src="/common/qr-funfit.jpg"
+                className="w-[150px] md:w-[400px]"
                 removeWrapper
               />
               <Button
@@ -66,6 +66,8 @@ function PaymentMethod({
                     (document.getElementById('qr') as HTMLImageElement)?.src
                   )
                 }
+                size="sm"
+                variant="faded"
               >
                 Descargar QR
               </Button>

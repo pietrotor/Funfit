@@ -2,17 +2,62 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+  @font-face {
+    font-family: 'amsipro';
+    font-weight: 200;
+    src: local(''), url('/fonts/amsipronarw/ULTRA.TTF');
+  }
+  @font-face {
+    font-family: 'amsipro';
+    font-weight: 400;
+    src: local(''), url('/fonts/amsipronarw/REGULAR.TTF');
+  }
+  @font-face {
+    font-family: 'amsipro';
+    font-weight: 600;
+    src: local(''), url('/fonts/amsipronarw/SEMI-BOLD.TTF');
+  }
+  @font-face {
+    font-family: 'amsipro';
+    font-weight: 700;
+    src: local(''), url('/fonts/amsipronarw/BOLD.TTF');
+  }
+  @font-face {
+    font-family: 'amsipro';
+    font-weight: 900;
+    src:
+      local(''),
+      url('/fonts/amsipronarw/BLACK.TTF') format('ttf');
+  }
+
+  @font-face {
+    font-family: 'amatemora';
+    src: local(''), url('/fonts/amatemora/AMATEMORA.OTF');
+  }
+  /* @font-face {
+    font-family: 'amatemora';
+    font-weight: 600;
+    font-style: italic;
+    src: local(''), url('/fonts/amatemora/ITALIC.ttf');
+  } */
+}
+
 @layer components {
   h1 {
-    @apply font-bold text-4xl;
+    @apply text-4xl font-bold;
   }
   h2 {
-    @apply font-bold text-3xl;
+    @apply text-3xl font-bold;
   }
   h3 {
-    @apply font-bold text-2xl;
+    @apply text-2xl font-bold;
   }
   h4 {
-    @apply font-bold text-xl;
+    @apply text-xl font-bold;
   }
+}
+
+html {
+  scroll-behavior: smooth;
 }

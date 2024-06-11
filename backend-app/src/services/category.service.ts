@@ -28,16 +28,25 @@ export class CategoryService extends CategoryRepository<objectId> {
       paginationInput
     )
   }
+
+  async getCategories() {
+    return await Category.find({
+      deleted: false
+    })
+  }
+
   public async getCategoryById(id: objectId) {
     const categoryInstance = await Category.findOne({
       _id: id,
       deleted: false
     })
-    if (!categoryInstance)
+    if (!categoryInstance) {
       throw new BadRequestError('No se encontro la categoría')
+    }
 
     return categoryInstance
   }
+
   public async getCategoryByIdInstance(id: objectId) {
     const categoryInstance = await Category.findOne({
       _id: id,
@@ -52,8 +61,9 @@ export class CategoryService extends CategoryRepository<objectId> {
       deleted: false,
       name
     })
-    if (duplicatedCategoryName)
+    if (duplicatedCategoryName) {
       throw new BadRequestError('Ya existe una categoría con este nombre')
+    }
   }
 
   async createCategory(createCategoryInput: CreateCategoryInput) {

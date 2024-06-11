@@ -22,6 +22,8 @@ export default abstract class CategoryRepository<T> {
     paginationInput: PaginationInput
   ): Promise<IPaginatedResponse<ICategory[]> | OutErrorResponse>
 
+  abstract getCategories(): Promise<ICategory[] | OutErrorResponse>
+
   abstract getCategoryById(id: T): Promise<ICategory | OutErrorResponse>
   abstract getCategoryByIdInstance(id: T): Promise<ICategory | null>
 }

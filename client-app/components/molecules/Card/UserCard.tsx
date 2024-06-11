@@ -26,7 +26,7 @@ export default function UserCard({
   const { isOpen, onOpen, onClose } = useDisclosure()
   const router = useRouter()
   return (
-    <div className="group overflow-hidden rounded-xl ring-1 ring-gray-200 transition-all duration-500 hover:shadow-lg">
+    <div className="group overflow-hidden rounded-xl transition-all duration-500 hover:shadow-lg">
       {!isLoading ? (
         <div className="flex h-full flex-col">
           <Images

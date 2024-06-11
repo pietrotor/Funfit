@@ -9,7 +9,7 @@ export function UserProducts({ data, loading, title }: TProps) {
   return (
     <div>
       <div className="mt-4 w-full">
-        <h3 className="w-fitp-1  text-left text-5xl font-extrabold text-primary">
+        <h3 className="w-fitp-1  font-amatemora text-left text-7xl font-extrabold text-primary">
           {title}
         </h3>
         <div className="mt-4 border-2 border-primary bg-primary"></div>

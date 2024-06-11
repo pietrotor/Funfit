@@ -1157,6 +1157,14 @@ export type ProductsResponse = ResponseBase & {
   totalRecords?: Maybe<Scalars['Int']>;
 };
 
+export type PublicCategoriesResponse = ResponseBase & {
+  __typename?: 'PublicCategoriesResponse';
+  data?: Maybe<Array<Category>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
 export type Query = {
   __typename?: 'Query';
   currentUser?: Maybe<UserResponse>;
@@ -1188,6 +1196,7 @@ export type Query = {
   getProducts?: Maybe<ProductsResponse>;
   getProductsOutOfPriceList?: Maybe<ProductsResponse>;
   getProductsOutOfWarehouse?: Maybe<ProductsResponse>;
+  getPublicCategories?: Maybe<PublicCategoriesResponse>;
   getPublicCustomerById?: Maybe<CustomerResponse>;
   getPublicProducts?: Maybe<BranchProductsCategorizedResponse>;
   getRoles?: Maybe<RolesResponse>;
@@ -2442,6 +2451,11 @@ export type GetBusinessBalanceQueryVariables = Exact<{
 
 
 export type GetBusinessBalanceQuery = { __typename?: 'Query', getBusinessBalance?: { __typename?: 'BusinessBalanceResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'BusinessBalance', totalPaid: number, balance: number, result: number, totalExpenses: number, totalEarnings: number, salesByBranch: Array<{ __typename?: 'BranchSales', id: any, name: string, total: number }> } | null } | null };
+
+export type GetPublicCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPublicCategoriesQuery = { __typename?: 'Query', getPublicCategories?: { __typename?: 'PublicCategoriesResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Category', id: any, name: string, code: string }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -6588,3 +6602,47 @@ export function useGetBusinessBalanceLazyQuery(baseOptions?: Apollo.LazyQueryHoo
 export type GetBusinessBalanceQueryHookResult = ReturnType<typeof useGetBusinessBalanceQuery>;
 export type GetBusinessBalanceLazyQueryHookResult = ReturnType<typeof useGetBusinessBalanceLazyQuery>;
 export type GetBusinessBalanceQueryResult = Apollo.QueryResult<GetBusinessBalanceQuery, GetBusinessBalanceQueryVariables>;
+export const GetPublicCategoriesDocument = gql`
+    query GetPublicCategories {
+  getPublicCategories {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+    data {
+      id
+      name
+      code
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPublicCategoriesQuery__
+ *
+ * To run a query within a React component, call `useGetPublicCategoriesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPublicCategoriesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPublicCategoriesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPublicCategoriesQuery(baseOptions?: Apollo.QueryHookOptions<GetPublicCategoriesQuery, GetPublicCategoriesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPublicCategoriesQuery, GetPublicCategoriesQueryVariables>(GetPublicCategoriesDocument, options);
+      }
+export function useGetPublicCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPublicCategoriesQuery, GetPublicCategoriesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPublicCategoriesQuery, GetPublicCategoriesQueryVariables>(GetPublicCategoriesDocument, options);
+        }
+export type GetPublicCategoriesQueryHookResult = ReturnType<typeof useGetPublicCategoriesQuery>;
+export type GetPublicCategoriesLazyQueryHookResult = ReturnType<typeof useGetPublicCategoriesLazyQuery>;
+export type GetPublicCategoriesQueryResult = Apollo.QueryResult<GetPublicCategoriesQuery, GetPublicCategoriesQueryVariables>;
