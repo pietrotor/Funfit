@@ -2,7 +2,7 @@ import IconSelector from '../IconSelector'
 
 function EmptySale() {
   return (
-    <div className="flex flex-col items-center justify-center h-full w-full">
+    <div className="flex h-full w-full flex-col items-center justify-center p-4">
       <div className="flex flex-col items-center justify-center">
         <IconSelector
           name="cart"
@@ -10,8 +10,12 @@ function EmptySale() {
           height="md:h-20 h-10"
           color="text-gray-500"
         />
-        <p className="md:text-2xl text-md font-bold text-gray-500">No tiene productos añadidos</p>
-        <p className="md:text-xl text-sm text-gray-500">Acá verá los productos añadidos para su venta</p>
+        <p className="text-md font-bold text-gray-500 md:text-2xl text-center">
+          No tiene productos añadidos
+        </p>
+        <p className="text-sm text-gray-500 md:text-xl text-center">
+          Acá verá los productos añadidos para su venta
+        </p>
       </div>
     </div>
   )

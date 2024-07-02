@@ -1,11 +1,4 @@
-import {
-  Badge,
-  Card,
-  CardBody,
-  CardFooter,
-  Chip,
-  Image
-} from '@nextui-org/react'
+import { Badge, Card, CardBody, Chip, Image } from '@nextui-org/react'
 import { SkeletonCard } from './SkeletonCard'
 import { TProductBranchData } from '@/interfaces/TData'
 
@@ -59,17 +52,14 @@ function PointOfSaleCard({
               >
                 {product.stock === 0 ? 'Sin Stock' : `Inv. ${product.stock}`}
               </Chip>
-              <CardFooter className="flex h-32 flex-col justify-around rounded-large">
-                <p className="w-full text-left text-sm font-bold text-secondary md:text-xl">
+              <div className="flex h-36 w-full flex-col justify-around rounded-large p-1">
+                <p className="w-full text-left text-sm font-bold text-secondary md:text-lg xl:text-xl">
                   {product.product?.name}
                 </p>
-                <p className="w-full overflow-hidden text-left text-[8px] text-gray-500 md:text-xs">
-                  {product.product?.description}
-                </p>
-                <p className="w-full text-right text-sm font-bold text-primary md:text-xl">
+                <p className="w-full text-right text-sm font-bold text-primary md:text-lg xl:text-xl">
                   Bs. {product.price}
                 </p>
-              </CardFooter>
+              </div>
             </Card>
           </div>
         </Badge>
