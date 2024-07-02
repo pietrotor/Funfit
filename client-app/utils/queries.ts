@@ -517,6 +517,7 @@ export const GET_BRANCH_PRODUCTS = gql`
     getBranchProductsPaginated(
       paginationInput: $paginationInput
       branchId: $branchId
+      posMenu: $posMenu
     ) {
       errorInput {
         message
