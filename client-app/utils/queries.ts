@@ -512,6 +512,7 @@ export const GET_BRANCH_PRODUCTS = gql`
   query GetBranchProductsPaginated(
     $paginationInput: PaginationInput!
     $branchId: ObjectId!
+    $posMenu: Boolean
   ) {
     getBranchProductsPaginated(
       paginationInput: $paginationInput

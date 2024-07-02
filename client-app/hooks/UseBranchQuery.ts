@@ -123,7 +123,8 @@ export const useGetBranchProductPOSQuery = (branchId: string) => {
         page: variables?.currentPage || 1,
         rows: variables?.rows || 20
       },
-      branchId
+      branchId,
+      posMenu: true
     },
     onCompleted: result => {
       setVariables({
