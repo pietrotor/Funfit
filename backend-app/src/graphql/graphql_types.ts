@@ -1232,6 +1232,7 @@ export type QueryGetBranchProductByIdArgs = {
 export type QueryGetBranchProductsPaginatedArgs = {
   branchId: Scalars['ObjectId']['input'];
   paginationInput: PaginationInput;
+  posMenu?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 
