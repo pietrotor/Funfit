@@ -13,7 +13,8 @@ import { IBranchProduct } from '@/models/index'
 export abstract class BranchProductRepository<T> {
   abstract getBranchesProductsPaginated(
     paginationInput: PaginationInput,
-    branchId: T
+    branchId: T,
+    posMenu: boolean
   ): Promise<IPaginatedResponse<IBranchProduct[]> | OutErrorResponse>
 
   abstract getBranchProductsByCategory(

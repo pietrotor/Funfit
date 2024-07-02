@@ -17,13 +17,18 @@ import { branchCore, branchProductCore, productCore } from '@/services/index'
 // ========================================== Queries ====================================================
 const getBranchProductsPaginated = async (
   _: any,
-  args: { paginationInput: PaginationInput; branchId: objectId }
+  args: {
+    paginationInput: PaginationInput
+    branchId: objectId
+    posMenu: boolean
+  }
 ): Promise<BranchProductsResponse> => {
   try {
-    const { paginationInput, branchId } = args
+    const { paginationInput, branchId, posMenu = false } = args
     return await branchProductCore.getBranchesProductsPaginated(
       paginationInput,
-      branchId
+      branchId,
+      posMenu
     )
   } catch (error) {
     console.log(error)

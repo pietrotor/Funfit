@@ -10,11 +10,13 @@ export type activeDirection = {
 type PaymentMethodProps = {
   paymentMethod: boolean
   setPaymentMethod: (paymentMethod: boolean) => void
+  isDelivery: boolean
 }
 
 function PaymentMethod({
   paymentMethod,
-  setPaymentMethod
+  setPaymentMethod,
+  isDelivery
 }: PaymentMethodProps) {
   const download = (filename: string, content: any) => {
     try {
@@ -71,6 +73,10 @@ function PaymentMethod({
               >
                 Descargar QR
               </Button>
+              <p>
+                Una vez realizado tu pago por Qr, es necesario que nos envíes el
+                comprobante a nuestro WhatsApp
+              </p>
             </div>
           </AccordionItem>
           <AccordionItem
@@ -78,6 +84,10 @@ function PaymentMethod({
             aria-label="Paga al recibir tu pedido"
             title="Paga al recibir tu pedido"
           >
+            Paga en efectivo{' '}
+            {isDelivery
+              ? 'cuando tu pedido te sea entregado.'
+              : 'cuando vengas a recoger tu pedido.'}{' '}
             Te estaremos contactando a través de Whatsapp para confirmar la
             dirección. Luego, enviaremos tu pedido con uno de nuestros deliverys
             y, cuando llegue, podrás pagar en ese momento.

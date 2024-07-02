@@ -34,7 +34,10 @@ export class PriceService extends PriceRepository<objectId> {
     }
     return await getInstancesPagination<IPrice, IModelPrice>(
       Price,
-      pricePaginationInput
+      pricePaginationInput,
+      {
+        priceListId
+      }
     )
   }
 
@@ -64,7 +67,8 @@ export class PriceService extends PriceRepository<objectId> {
     const [duplicatedPrice] = await Promise.all([
       Price.findOne({
         productId,
-        deleted: false
+        deleted: false,
+        priceListId
       })
     ])
     const productInstance = await productCore.getProductById(productId)
@@ -92,8 +96,9 @@ export class PriceService extends PriceRepository<objectId> {
     })
 
     if (price.price) {
-      if (price.price < 0)
+      if (price.price < 0) {
         throw new BadRequestError('El precio no puede ser negativo')
+      }
     }
     if (!priceInstance) throw new BadRequestError('El precio no existe')
     updateGenericInstance(priceInstance, price)

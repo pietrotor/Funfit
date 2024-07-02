@@ -38,8 +38,6 @@ function PointOfSale({ user }: PointOfSaleProps) {
 
   const handleResponsiveSaleModal = useDisclosure()
 
-  console.log('🚀 ~ PointOfSale ~ selectedProducts:', selectedProducts)
-
   const handleSelected = (id: string) => {
     const existingProduct = selectedProducts?.products?.find(
       item => item.productId === id
@@ -61,8 +59,7 @@ function PointOfSale({ user }: PointOfSaleProps) {
             }
           ],
           subTotal: (prevProducts?.subTotal || 0) + existingProduct.price,
-          total: (prevProducts?.total || 0) + existingProduct.price,
-          discount: 0
+          total: (prevProducts?.total || 0) + existingProduct.price
         }
       })
     } else {
@@ -83,8 +80,7 @@ function PointOfSale({ user }: PointOfSaleProps) {
               }
             ],
             subTotal: (prevProducts?.subTotal || 0) + newProduct.price,
-            total: (prevProducts?.total || 0) + newProduct.price,
-            discount: 0
+            total: (prevProducts?.total || 0) + newProduct.price
           }
         })
       }
@@ -113,7 +109,6 @@ function PointOfSale({ user }: PointOfSaleProps) {
         )?.stock
       })
     }
-    console.log(selectedProducts)
   }, [selectedProducts])
 
   return (

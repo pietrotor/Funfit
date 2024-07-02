@@ -535,6 +535,7 @@ export const GET_BRANCH_PRODUCTS = gql`
         product {
           id
           name
+          image
         }
       }
       totalRecords

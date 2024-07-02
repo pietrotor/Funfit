@@ -18,8 +18,15 @@ import Product from '@/models/product.model'
 export class BranchProductService extends BranchProductRepository<objectId> {
   async getBranchesProductsPaginated(
     paginationInput: PaginationInput,
-    branchId: objectId
+    branchId: objectId,
+    posMenu: boolean
   ) {
+    const menuFilter = posMenu
+      ? {
+          isVisibleOnMenu: true
+        }
+      : {}
+
     const { filter } = paginationInput
     if (filter) {
       const products = await Product.find({
@@ -36,11 +43,12 @@ export class BranchProductService extends BranchProductRepository<objectId> {
       return await getInstancesPagination<IBranchProduct, IModelBranchProduct>(
         BranchProduct,
         paginationInput,
-        { productId: productsIds, branchId, deleted: false }
+        { productId: productsIds, branchId, deleted: false, ...menuFilter }
       )
     }
     const extraArgs = {
-      branchId
+      branchId,
+      ...menuFilter
     }
     return await getInstancesPagination<IBranchProduct, IModelBranchProduct>(
       BranchProduct,
@@ -54,7 +62,8 @@ export class BranchProductService extends BranchProductRepository<objectId> {
       {
         $match: {
           deleted: false,
-          branchId
+          branchId,
+          isVisibleOnWeb: true
         }
       },
       {
