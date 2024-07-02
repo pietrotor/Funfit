@@ -20,7 +20,7 @@ const getBranchProductsPaginated = async (
   args: {
     paginationInput: PaginationInput
     branchId: objectId
-    posMenu: boolean
+    posMenu?: boolean | undefined | null
   }
 ): Promise<BranchProductsResponse> => {
   try {
@@ -28,7 +28,7 @@ const getBranchProductsPaginated = async (
     return await branchProductCore.getBranchesProductsPaginated(
       paginationInput,
       branchId,
-      posMenu
+      Boolean(posMenu)
     )
   } catch (error) {
     console.log(error)

@@ -2267,6 +2267,7 @@ export type GetProductByIdQuery = { __typename?: 'Query', getProductById?: { __t
 export type GetBranchProductsPaginatedQueryVariables = Exact<{
   paginationInput: PaginationInput;
   branchId: Scalars['ObjectId'];
+  posMenu?: InputMaybe<Scalars['Boolean']>;
 }>;
 
 
@@ -4945,7 +4946,7 @@ export type GetProductByIdQueryHookResult = ReturnType<typeof useGetProductByIdQ
 export type GetProductByIdLazyQueryHookResult = ReturnType<typeof useGetProductByIdLazyQuery>;
 export type GetProductByIdQueryResult = Apollo.QueryResult<GetProductByIdQuery, GetProductByIdQueryVariables>;
 export const GetBranchProductsPaginatedDocument = gql`
-    query GetBranchProductsPaginated($paginationInput: PaginationInput!, $branchId: ObjectId!) {
+    query GetBranchProductsPaginated($paginationInput: PaginationInput!, $branchId: ObjectId!, $posMenu: Boolean) {
   getBranchProductsPaginated(
     paginationInput: $paginationInput
     branchId: $branchId
@@ -4993,6 +4994,7 @@ export const GetBranchProductsPaginatedDocument = gql`
  *   variables: {
  *      paginationInput: // value for 'paginationInput'
  *      branchId: // value for 'branchId'
+ *      posMenu: // value for 'posMenu'
  *   },
  * });
  */
