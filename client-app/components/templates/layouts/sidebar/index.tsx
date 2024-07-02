@@ -185,7 +185,6 @@ const Sidebar: React.FC<TSidebarProps> = ({
           <div>
             <div
               onClick={() => {
-                console.log('🚀 ~ user.roleInfo:', user.roleInfo)
                 if (user.roleInfo?.type === RoleTypeEnum.ADMINISTRATOR) {
                   getBranch()
                   handleChangeBranch.onOpen()

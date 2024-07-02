@@ -4,7 +4,6 @@ import { useDisclosure } from '@nextui-org/react'
 import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
 import Table from '@/components/organisms/tableNext/Table'
-import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { authUserHeader } from '@/utils/verificationUser'
 import { AddListProductModal } from '@/components/atoms/modals/AddListProductModal'
@@ -24,13 +23,13 @@ interface WarehouseProps {
   user: any
 }
 function PriceList({ user }: WarehouseProps) {
-  const [variables, setVariables] = useState<PaginationInterfaceState>({
-    rows: 5,
-    filter: '',
-    currentPage: 1
-  })
-  const { data, loading, refetch } = useCustomGetPricePaginatedQuery()
-  const [filter, setFilter] = useState<string>('')
+  // const [variables, setVariables] = useState<PaginationInterfaceState>({
+  //   rows: 5,
+  //   filter: '',
+  //   currentPage: 1
+  // })
+  const { data, loading, refetch, setVariables, variables, setFilter } =
+    useCustomGetPricePaginatedQuery()
   const [currentItem, setCurrentItem] = useState<Price>()
   const handleAddModal = useDisclosure()
   const handleEditModal = useDisclosure()
@@ -60,7 +59,6 @@ function PriceList({ user }: WarehouseProps) {
 
   const handleChangeRow = (row: number) => {
     setVariables({ ...variables, rows: row, currentPage: 1 })
-    console.log(filter)
   }
   return (
     <AdministrationLayout user={user} showBackButton={true}>

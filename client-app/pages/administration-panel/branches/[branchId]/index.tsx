@@ -195,8 +195,8 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
             { name: 'Producto' },
             { name: 'Precio' },
             { name: 'Stock' },
-            { name: 'Visible en la página' },
-            { name: 'Visible en la web' },
+            { name: 'Visible en el POS' },
+            { name: 'Visible en la Web' },
             { name: 'Acciones' }
           ]}
           items={(data?.getBranchProductsPaginated?.data || []).map(

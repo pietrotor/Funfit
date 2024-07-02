@@ -97,6 +97,7 @@ type Query {
   getBranchProductsPaginated(
     paginationInput: PaginationInput!
     branchId: ObjectId!
+    posMenu: Boolean
   ): BranchProductsResponse
   getBranchProductById(id: ObjectId!): BranchProductResponse
   # CASH ==================================

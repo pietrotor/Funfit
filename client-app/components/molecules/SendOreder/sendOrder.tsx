@@ -114,7 +114,7 @@ function SendOrder({
                   </Radio>
                 ))}
                 <Radio value={DeliveryMethodEnum.DELIVERY}>
-                  Otra dirección
+                  Nueva dirección
                 </Radio>
               </RadioGroup>
               <InputComponent

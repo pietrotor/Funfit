@@ -1230,6 +1230,7 @@ export type QueryGetBranchProductByIdArgs = {
 export type QueryGetBranchProductsPaginatedArgs = {
   branchId: Scalars['ObjectId'];
   paginationInput: PaginationInput;
+  posMenu?: InputMaybe<Scalars['Boolean']>;
 };
 
 
@@ -2269,7 +2270,7 @@ export type GetBranchProductsPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetBranchProductsPaginatedQuery = { __typename?: 'Query', getBranchProductsPaginated?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, lastStockEntry?: number | null, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string } | null }> | null } | null };
+export type GetBranchProductsPaginatedQuery = { __typename?: 'Query', getBranchProductsPaginated?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, lastStockEntry?: number | null, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, image?: string | null } | null }> | null } | null };
 
 export type GetBranchesPaginatedQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -4967,6 +4968,7 @@ export const GetBranchProductsPaginatedDocument = gql`
       product {
         id
         name
+        image
       }
     }
     totalRecords
