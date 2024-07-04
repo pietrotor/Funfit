@@ -32,6 +32,7 @@ export type TOrderDetails = {
   paymentMethod: string
   deliveryMethod: string
   details: string
+  number?: string
   address?: {
     mapUrl: string
     detail: string
@@ -255,6 +256,7 @@ const Orders = ({ orderStatus }: OrdersProps) => {
                   paymentMethod: orders.paymentMethod || '',
                   deliveryMethod: orders.deliveryMethod || '',
                   details: orders.orderDetails || '',
+                  number: orders.customerInfo?.phone || '',
                   address:
                     // eslint-disable-next-line multiline-ternary
                     orders.deliveryMethod === DeliveryMethodEnum.DELIVERY
@@ -345,7 +347,8 @@ const Orders = ({ orderStatus }: OrdersProps) => {
             client: '',
             paymentMethod: '',
             deliveryMethod: '',
-            details: ''
+            details: '',
+            number: ''
           }
         }
       />

@@ -63,6 +63,12 @@ function OrderDetailsModal({
               </p>
             </div>
           </div>
+          <div className="space-y-4">
+            <div>
+              <h3 className="text-lg font-bold text-gray-500">Celular</h3>
+              <p>{details.number}</p>
+            </div>
+          </div>
         </div>
         {details.address && (
           <div className="m-5 w-full">
