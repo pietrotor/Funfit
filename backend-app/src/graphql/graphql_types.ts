@@ -301,6 +301,17 @@ export type CreateCategoryInput = {
   name: Scalars['String']['input'];
 };
 
+export type CreateComboInput = {
+  categoryId?: InputMaybe<Scalars['ObjectId']['input']>;
+  code: Scalars['String']['input'];
+  cost?: InputMaybe<Scalars['Float']['input']>;
+  description: Scalars['String']['input'];
+  image?: InputMaybe<Scalars['String']['input']>;
+  name: Scalars['String']['input'];
+  subProducts: Array<SubProductInput>;
+  suggetedPrice: Scalars['Float']['input'];
+};
+
 export type CreateCustomerInput = {
   email?: InputMaybe<Scalars['String']['input']>;
   lastName: Scalars['String']['input'];
@@ -673,6 +684,7 @@ export type Mutation = {
   createBranchProductStockMovement?: Maybe<BranchProductResponse>;
   createCashMovement?: Maybe<CashTurnMovementResponse>;
   createCategory?: Maybe<CategoryResponse>;
+  createCombo?: Maybe<ProductResponse>;
   createDistributor?: Maybe<DistributorResponse>;
   createDistributorSale?: Maybe<DistributorSaleResponse>;
   createPayment?: Maybe<PaymentResponse>;
@@ -752,6 +764,11 @@ export type MutationCreateCashMovementArgs = {
 
 export type MutationCreateCategoryArgs = {
   createCategoryInput: CreateCategoryInput;
+};
+
+
+export type MutationCreateComboArgs = {
+  createComboInput: CreateComboInput;
 };
 
 
@@ -1127,7 +1144,9 @@ export type Product = {
   image?: Maybe<Scalars['String']['output']>;
   internalCode?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  subProducts?: Maybe<Array<SubProducts>>;
   suggetedPrice: Scalars['Float']['output'];
+  type: ProductTypeEnum;
   warehouses: Array<Scalars['ObjectId']['output']>;
 };
 
@@ -1146,6 +1165,11 @@ export type ProductResponse = ResponseBase & {
   message?: Maybe<Scalars['String']['output']>;
   status: StatusEnum;
 };
+
+export enum ProductTypeEnum {
+  COMBO = 'COMBO',
+  SIMPLE = 'SIMPLE'
+}
 
 export type ProductsResponse = ResponseBase & {
   __typename?: 'ProductsResponse';
@@ -1348,6 +1372,7 @@ export type QueryGetProductStockArgs = {
 
 export type QueryGetProductsArgs = {
   paginationInput: PaginationInput;
+  type: ProductTypeEnum;
 };
 
 
@@ -1658,6 +1683,18 @@ export type StocksResponse = ResponseBase & {
   totalRecords?: Maybe<Scalars['Int']['output']>;
 };
 
+export type SubProductInput = {
+  productId: Scalars['ObjectId']['input'];
+  stockRequirement: Scalars['Int']['input'];
+};
+
+export type SubProducts = {
+  __typename?: 'SubProducts';
+  product?: Maybe<Product>;
+  productId: Scalars['ObjectId']['output'];
+  stockRequirement: Scalars['Int']['output'];
+};
+
 export type Turn = {
   __typename?: 'Turn';
   amountOfMovents: Scalars['Int']['output'];
@@ -1708,6 +1745,18 @@ export type UpdateBranchProductInput = {
 export type UpdateCategoryInput = {
   id: Scalars['ObjectId']['input'];
   name?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type UpdateComboInput = {
+  categoryId?: InputMaybe<Scalars['ObjectId']['input']>;
+  code?: InputMaybe<Scalars['String']['input']>;
+  cost?: InputMaybe<Scalars['Float']['input']>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ObjectId']['input'];
+  image?: InputMaybe<Scalars['String']['input']>;
+  name?: InputMaybe<Scalars['String']['input']>;
+  subProducts?: InputMaybe<Array<SubProductInput>>;
+  suggetedPrice?: InputMaybe<Scalars['Float']['input']>;
 };
 
 export type UpdateConfigurationInput = {
@@ -1973,6 +2022,7 @@ export type ResolversTypes = {
   CreateBranchProductInput: CreateBranchProductInput;
   CreateBranchProductStockMovementInput: CreateBranchProductStockMovementInput;
   CreateCategoryInput: CreateCategoryInput;
+  CreateComboInput: CreateComboInput;
   CreateCustomerInput: CreateCustomerInput;
   CreateDistrbutorOwnerInformationInput: CreateDistrbutorOwnerInformationInput;
   CreateDistributorInput: CreateDistributorInput;
@@ -2038,6 +2088,7 @@ export type ResolversTypes = {
   Product: ResolverTypeWrapper<Product>;
   ProductImageResponse: ResolverTypeWrapper<ProductImageResponse>;
   ProductResponse: ResolverTypeWrapper<ProductResponse>;
+  ProductTypeEnum: ProductTypeEnum;
   ProductsResponse: ResolverTypeWrapper<ProductsResponse>;
   PublicCategoriesResponse: ResolverTypeWrapper<PublicCategoriesResponse>;
   Query: ResolverTypeWrapper<{}>;
@@ -2064,6 +2115,8 @@ export type ResolversTypes = {
   StocksHistoryResponse: ResolverTypeWrapper<StocksHistoryResponse>;
   StocksResponse: ResolverTypeWrapper<StocksResponse>;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
+  SubProductInput: SubProductInput;
+  SubProducts: ResolverTypeWrapper<SubProducts>;
   Time: ResolverTypeWrapper<Scalars['Time']['output']>;
   Turn: ResolverTypeWrapper<Turn>;
   TurnMovementTypeEnum: TurnMovementTypeEnum;
@@ -2071,6 +2124,7 @@ export type ResolversTypes = {
   UpdateBranchInput: UpdateBranchInput;
   UpdateBranchProductInput: UpdateBranchProductInput;
   UpdateCategoryInput: UpdateCategoryInput;
+  UpdateComboInput: UpdateComboInput;
   UpdateConfigurationInput: UpdateConfigurationInput;
   UpdateDistrbutorOwnerInformationInput: UpdateDistrbutorOwnerInformationInput;
   UpdateDistributorInput: UpdateDistributorInput;
@@ -2124,6 +2178,7 @@ export type ResolversParentTypes = {
   CreateBranchProductInput: CreateBranchProductInput;
   CreateBranchProductStockMovementInput: CreateBranchProductStockMovementInput;
   CreateCategoryInput: CreateCategoryInput;
+  CreateComboInput: CreateComboInput;
   CreateCustomerInput: CreateCustomerInput;
   CreateDistrbutorOwnerInformationInput: CreateDistrbutorOwnerInformationInput;
   CreateDistributorInput: CreateDistributorInput;
@@ -2208,12 +2263,15 @@ export type ResolversParentTypes = {
   StocksHistoryResponse: StocksHistoryResponse;
   StocksResponse: StocksResponse;
   String: Scalars['String']['output'];
+  SubProductInput: SubProductInput;
+  SubProducts: SubProducts;
   Time: Scalars['Time']['output'];
   Turn: Turn;
   TurnMovements: TurnMovements;
   UpdateBranchInput: UpdateBranchInput;
   UpdateBranchProductInput: UpdateBranchProductInput;
   UpdateCategoryInput: UpdateCategoryInput;
+  UpdateComboInput: UpdateComboInput;
   UpdateConfigurationInput: UpdateConfigurationInput;
   UpdateDistrbutorOwnerInformationInput: UpdateDistrbutorOwnerInformationInput;
   UpdateDistributorInput: UpdateDistributorInput;
@@ -2654,6 +2712,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   createBranchProductStockMovement?: Resolver<Maybe<ResolversTypes['BranchProductResponse']>, ParentType, ContextType, RequireFields<MutationCreateBranchProductStockMovementArgs, 'createBranchProductStockMovementInput'>>;
   createCashMovement?: Resolver<Maybe<ResolversTypes['CashTurnMovementResponse']>, ParentType, ContextType, RequireFields<MutationCreateCashMovementArgs, 'createTurnMovementInput'>>;
   createCategory?: Resolver<Maybe<ResolversTypes['CategoryResponse']>, ParentType, ContextType, RequireFields<MutationCreateCategoryArgs, 'createCategoryInput'>>;
+  createCombo?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationCreateComboArgs, 'createComboInput'>>;
   createDistributor?: Resolver<Maybe<ResolversTypes['DistributorResponse']>, ParentType, ContextType, RequireFields<MutationCreateDistributorArgs, 'createDistributorInput'>>;
   createDistributorSale?: Resolver<Maybe<ResolversTypes['DistributorSaleResponse']>, ParentType, ContextType, RequireFields<MutationCreateDistributorSaleArgs, 'createDistributorSaleInput'>>;
   createPayment?: Resolver<Maybe<ResolversTypes['PaymentResponse']>, ParentType, ContextType, RequireFields<MutationCreatePaymentArgs, 'createPaymentInput'>>;
@@ -2849,7 +2908,9 @@ export type ProductResolvers<ContextType = any, ParentType extends ResolversPare
   image?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   internalCode?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  subProducts?: Resolver<Maybe<Array<ResolversTypes['SubProducts']>>, ParentType, ContextType>;
   suggetedPrice?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  type?: Resolver<ResolversTypes['ProductTypeEnum'], ParentType, ContextType>;
   warehouses?: Resolver<Array<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
@@ -2917,7 +2978,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getPricesPaginated?: Resolver<Maybe<ResolversTypes['PricesResponse']>, ParentType, ContextType, RequireFields<QueryGetPricesPaginatedArgs, 'pricePaginationInput'>>;
   getProductById?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<QueryGetProductByIdArgs, 'id'>>;
   getProductStock?: Resolver<Maybe<ResolversTypes['StocksResponse']>, ParentType, ContextType, RequireFields<QueryGetProductStockArgs, 'paginationInput' | 'productId'>>;
-  getProducts?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsArgs, 'paginationInput'>>;
+  getProducts?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsArgs, 'paginationInput' | 'type'>>;
   getProductsOutOfPriceList?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsOutOfPriceListArgs, 'paginationInput' | 'priceListId'>>;
   getProductsOutOfWarehouse?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsOutOfWarehouseArgs, 'paginationInput' | 'warehouseId'>>;
   getPublicCategories?: Resolver<Maybe<ResolversTypes['PublicCategoriesResponse']>, ParentType, ContextType>;
@@ -3108,6 +3169,13 @@ export type StocksResponseResolvers<ContextType = any, ParentType extends Resolv
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 };
 
+export type SubProductsResolvers<ContextType = any, ParentType extends ResolversParentTypes['SubProducts'] = ResolversParentTypes['SubProducts']> = {
+  product?: Resolver<Maybe<ResolversTypes['Product']>, ParentType, ContextType>;
+  productId?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
+  stockRequirement?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
 export interface TimeScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes['Time'], any> {
   name: 'Time';
 }
@@ -3280,6 +3348,7 @@ export type Resolvers<ContextType = any> = {
   StockResponse?: StockResponseResolvers<ContextType>;
   StocksHistoryResponse?: StocksHistoryResponseResolvers<ContextType>;
   StocksResponse?: StocksResponseResolvers<ContextType>;
+  SubProducts?: SubProductsResolvers<ContextType>;
   Time?: GraphQLScalarType;
   Turn?: TurnResolvers<ContextType>;
   TurnMovements?: TurnMovementsResolvers<ContextType>;

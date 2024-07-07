@@ -1,6 +1,9 @@
 import {
+  CreateComboInput,
   CreateProductInput,
   PaginationInput,
+  ProductTypeEnum,
+  UpdateComboInput,
   UpdateProductInput
 } from '@/graphql/graphql_types'
 import { IPaginatedResponse } from '@/interfaces/generic.interface'
@@ -9,7 +12,8 @@ import { IProduct } from '@/models/product.model'
 
 export default abstract class ProductRepository<T> {
   abstract getProductsPaginated(
-    paginationInput: PaginationInput
+    paginationInput: PaginationInput,
+    type: ProductTypeEnum
   ): Promise<IPaginatedResponse<IProduct[]> | OutErrorResponse>
 
   abstract getProductById(id: T): Promise<IProduct | OutErrorResponse>
@@ -30,8 +34,17 @@ export default abstract class ProductRepository<T> {
     createdBy?: T | null
   ): Promise<IProduct | OutErrorResponse>
 
+  abstract createCombo(
+    createComboInput: CreateComboInput,
+    createdBy?: T | null
+  ): Promise<IProduct | OutErrorResponse>
+
   abstract updateProduct(
     updateProductInput: UpdateProductInput
+  ): Promise<IProduct | OutErrorResponse>
+
+  abstract updateCombo(
+    updateComboInput: UpdateComboInput
   ): Promise<IProduct | OutErrorResponse>
 
   abstract deleteProduct(

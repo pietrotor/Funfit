@@ -11,6 +11,10 @@ enum RoleTypeEnum {
   ADMINISTRATOR
   SALESMAN
 }
+enum ProductTypeEnum {
+  SIMPLE
+  COMBO
+}
 enum StockMovementTypeEnum {
   INWARD
   OUTWARD
@@ -55,7 +59,10 @@ type Query {
   getCategories(paginationInput: PaginationInput!): CategoriesResponse
   getCategoryById(id: ObjectId!): CategoryResponse
   # PRODUCTS ==========================================
-  getProducts(paginationInput: PaginationInput!): ProductsResponse
+  getProducts(
+    paginationInput: PaginationInput!
+    type: ProductTypeEnum!
+  ): ProductsResponse
   getProductById(id: ObjectId!): ProductResponse
   getProductsOutOfWarehouse(
     paginationInput: PaginationInput!
@@ -172,7 +179,9 @@ type Mutation {
   deleteCategory(id: ObjectId!): CategoryResponse
   # PRODUCTS ==========================================
   createProduct(createProductInput: CreateProductInput!): ProductResponse
+  createCombo(createComboInput: CreateComboInput!): ProductResponse
   updateProduct(updateProductInput: UpdateProductInput!): ProductResponse
+  updateCombo(updateComboInput: UpdateComboInput!): ProductResponse
   deleteProduct(id: ObjectId!): ProductResponse
   # WAREHOUSES =======================================
   createWarehouse(
@@ -288,6 +297,12 @@ type Category {
   name: String!
   code: String!
 }
+type SubProducts {
+  productId: ObjectId!
+  stockRequirement: Int!
+  # Field resolvers
+  product: Product
+}
 type Product {
   id: ObjectId!
   name: String!
@@ -299,6 +314,8 @@ type Product {
   categoryId: ObjectId
   cost: Float
   image: String
+  subProducts: [SubProducts!]
+  type: ProductTypeEnum!
   warehouses: [ObjectId!]!
   # FieldsResolvers
   category: Category
@@ -1022,6 +1039,20 @@ input CreateProductInput {
   cost: Float
   image: String
 }
+input SubProductInput {
+  productId: ObjectId!
+  stockRequirement: Int!
+}
+input CreateComboInput {
+  name: String!
+  code: String!
+  suggetedPrice: Float!
+  description: String!
+  categoryId: ObjectId
+  cost: Float
+  image: String
+  subProducts: [SubProductInput!]!
+}
 input UpdateProductInput {
   id: ObjectId!
   name: String
@@ -1032,6 +1063,17 @@ input UpdateProductInput {
   categoryId: ObjectId
   cost: Float
   image: String
+}
+input UpdateComboInput {
+  id: ObjectId!
+  name: String
+  code: String
+  suggetedPrice: Float
+  description: String
+  categoryId: ObjectId
+  cost: Float
+  image: String
+  subProducts: [SubProductInput!]
 }
 input CreateWarehouseInput {
   name: String!

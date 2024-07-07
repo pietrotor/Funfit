@@ -299,6 +299,17 @@ export type CreateCategoryInput = {
   name: Scalars['String'];
 };
 
+export type CreateComboInput = {
+  categoryId?: InputMaybe<Scalars['ObjectId']>;
+  code: Scalars['String'];
+  cost?: InputMaybe<Scalars['Float']>;
+  description: Scalars['String'];
+  image?: InputMaybe<Scalars['String']>;
+  name: Scalars['String'];
+  subProducts: Array<SubProductInput>;
+  suggetedPrice: Scalars['Float'];
+};
+
 export type CreateCustomerInput = {
   email?: InputMaybe<Scalars['String']>;
   lastName: Scalars['String'];
@@ -671,6 +682,7 @@ export type Mutation = {
   createBranchProductStockMovement?: Maybe<BranchProductResponse>;
   createCashMovement?: Maybe<CashTurnMovementResponse>;
   createCategory?: Maybe<CategoryResponse>;
+  createCombo?: Maybe<ProductResponse>;
   createDistributor?: Maybe<DistributorResponse>;
   createDistributorSale?: Maybe<DistributorSaleResponse>;
   createPayment?: Maybe<PaymentResponse>;
@@ -750,6 +762,11 @@ export type MutationCreateCashMovementArgs = {
 
 export type MutationCreateCategoryArgs = {
   createCategoryInput: CreateCategoryInput;
+};
+
+
+export type MutationCreateComboArgs = {
+  createComboInput: CreateComboInput;
 };
 
 
@@ -1125,7 +1142,9 @@ export type Product = {
   image?: Maybe<Scalars['String']>;
   internalCode?: Maybe<Scalars['String']>;
   name: Scalars['String'];
+  subProducts?: Maybe<Array<SubProducts>>;
   suggetedPrice: Scalars['Float'];
+  type: ProductTypeEnum;
   warehouses: Array<Scalars['ObjectId']>;
 };
 
@@ -1144,6 +1163,11 @@ export type ProductResponse = ResponseBase & {
   message?: Maybe<Scalars['String']>;
   status: StatusEnum;
 };
+
+export enum ProductTypeEnum {
+  COMBO = 'COMBO',
+  SIMPLE = 'SIMPLE'
+}
 
 export type ProductsResponse = ResponseBase & {
   __typename?: 'ProductsResponse';
@@ -1346,6 +1370,7 @@ export type QueryGetProductStockArgs = {
 
 export type QueryGetProductsArgs = {
   paginationInput: PaginationInput;
+  type: ProductTypeEnum;
 };
 
 
@@ -1656,6 +1681,18 @@ export type StocksResponse = ResponseBase & {
   totalRecords?: Maybe<Scalars['Int']>;
 };
 
+export type SubProductInput = {
+  productId: Scalars['ObjectId'];
+  stockRequirement: Scalars['Int'];
+};
+
+export type SubProducts = {
+  __typename?: 'SubProducts';
+  product?: Maybe<Product>;
+  productId: Scalars['ObjectId'];
+  stockRequirement: Scalars['Int'];
+};
+
 export type Turn = {
   __typename?: 'Turn';
   amountOfMovents: Scalars['Int'];
@@ -1706,6 +1743,18 @@ export type UpdateBranchProductInput = {
 export type UpdateCategoryInput = {
   id: Scalars['ObjectId'];
   name?: InputMaybe<Scalars['String']>;
+};
+
+export type UpdateComboInput = {
+  categoryId?: InputMaybe<Scalars['ObjectId']>;
+  code?: InputMaybe<Scalars['String']>;
+  cost?: InputMaybe<Scalars['Float']>;
+  description?: InputMaybe<Scalars['String']>;
+  id: Scalars['ObjectId'];
+  image?: InputMaybe<Scalars['String']>;
+  name?: InputMaybe<Scalars['String']>;
+  subProducts?: InputMaybe<Array<SubProductInput>>;
+  suggetedPrice?: InputMaybe<Scalars['Float']>;
 };
 
 export type UpdateConfigurationInput = {
@@ -2172,6 +2221,7 @@ export type GetUsersQuery = { __typename?: 'Query', getUsers?: { __typename?: 'U
 
 export type GetProductsQueryVariables = Exact<{
   paginationInput: PaginationInput;
+  type: ProductTypeEnum;
 }>;
 
 
@@ -2458,6 +2508,13 @@ export type GetPublicCategoriesQueryVariables = Exact<{ [key: string]: never; }>
 
 
 export type GetPublicCategoriesQuery = { __typename?: 'Query', getPublicCategories?: { __typename?: 'PublicCategoriesResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Category', id: any, name: string, code: string }> | null } | null };
+
+export type CreateComboMutationVariables = Exact<{
+  createComboInput: CreateComboInput;
+}>;
+
+
+export type CreateComboMutation = { __typename?: 'Mutation', createCombo?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -4213,8 +4270,8 @@ export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
 export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
 export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
 export const GetProductsDocument = gql`
-    query GetProducts($paginationInput: PaginationInput!) {
-  getProducts(paginationInput: $paginationInput) {
+    query GetProducts($paginationInput: PaginationInput!, $type: ProductTypeEnum!) {
+  getProducts(paginationInput: $paginationInput, type: $type) {
     errorInput {
       message
       field
@@ -4258,6 +4315,7 @@ export const GetProductsDocument = gql`
  * const { data, loading, error } = useGetProductsQuery({
  *   variables: {
  *      paginationInput: // value for 'paginationInput'
+ *      type: // value for 'type'
  *   },
  * });
  */
@@ -6650,3 +6708,41 @@ export function useGetPublicCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetPublicCategoriesQueryHookResult = ReturnType<typeof useGetPublicCategoriesQuery>;
 export type GetPublicCategoriesLazyQueryHookResult = ReturnType<typeof useGetPublicCategoriesLazyQuery>;
 export type GetPublicCategoriesQueryResult = Apollo.QueryResult<GetPublicCategoriesQuery, GetPublicCategoriesQueryVariables>;
+export const CreateComboDocument = gql`
+    mutation CreateCombo($createComboInput: CreateComboInput!) {
+  createCombo(createComboInput: $createComboInput) {
+    errorInput {
+      field
+      message
+    }
+    status
+    message
+  }
+}
+    `;
+export type CreateComboMutationFn = Apollo.MutationFunction<CreateComboMutation, CreateComboMutationVariables>;
+
+/**
+ * __useCreateComboMutation__
+ *
+ * To run a mutation, you first call `useCreateComboMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateComboMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createComboMutation, { data, loading, error }] = useCreateComboMutation({
+ *   variables: {
+ *      createComboInput: // value for 'createComboInput'
+ *   },
+ * });
+ */
+export function useCreateComboMutation(baseOptions?: Apollo.MutationHookOptions<CreateComboMutation, CreateComboMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateComboMutation, CreateComboMutationVariables>(CreateComboDocument, options);
+      }
+export type CreateComboMutationHookResult = ReturnType<typeof useCreateComboMutation>;
+export type CreateComboMutationResult = Apollo.MutationResult<CreateComboMutation>;
+export type CreateComboMutationOptions = Apollo.BaseMutationOptions<CreateComboMutation, CreateComboMutationVariables>;

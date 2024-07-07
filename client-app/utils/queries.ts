@@ -120,8 +120,11 @@ export const GET_USERS = gql`
   }
 `
 export const GET_PRODUCTS = gql`
-  query GetProducts($paginationInput: PaginationInput!) {
-    getProducts(paginationInput: $paginationInput) {
+  query GetProducts(
+    $paginationInput: PaginationInput!
+    $type: ProductTypeEnum!
+  ) {
+    getProducts(paginationInput: $paginationInput, type: $type) {
       errorInput {
         message
         field

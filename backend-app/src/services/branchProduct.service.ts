@@ -3,6 +3,7 @@ import {
   CreateBranchProductInput,
   CreateBranchProductStockMovementInput,
   PaginationInput,
+  ProductTypeEnum,
   StockMovementTypeEnum,
   UpdateBranchProductInput
 } from '@/graphql/graphql_types'
@@ -180,6 +181,21 @@ export class BranchProductService extends BranchProductRepository<objectId> {
         'El producto ya se encuentra registrado en la sucursal'
       )
     }
+    if (productInstance.type === ProductTypeEnum.COMBO) {
+      await Promise.all(
+        (productInstance.subProducts || []).map(async ({ productId }) => {
+          const branchProduct = await BranchProduct.findOne({
+            deleted: false,
+            productId
+          })
+          if (!branchProduct) {
+            throw new BadRequestError(
+              'Uno de los productos del combo no esta registrado en la sucursal'
+            )
+          }
+        })
+      )
+    }
     const branchProductInstance = new BranchProduct({
       ...createBranchProductInput,
       createdBy
@@ -214,6 +230,21 @@ export class BranchProductService extends BranchProductRepository<objectId> {
     const productInstance = await productCore.getProductById(
       branchProduct.productId
     )
+    if (productInstance.type === ProductTypeEnum.SIMPLE) {
+      const combos = await Product.find({
+        deleted: false,
+        'subProducts.productId': id
+      })
+      await Promise.all(
+        combos.map(async combo => {
+          const updatedSubProducts = combo.subProducts.filter(
+            ({ productId }) => productId.toString() === id.toString()
+          )
+          combo.subProducts = updatedSubProducts
+          await combo.save()
+        })
+      )
+    }
     branchInstance.productsIds = branchInstance.productsIds.filter(
       productId => productId.toString() !== branchProduct.productId.toString()
     )

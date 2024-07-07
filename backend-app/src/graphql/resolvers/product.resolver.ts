@@ -9,7 +9,10 @@ import {
   Category,
   FileInput,
   ProductImageResponse,
-  BranchProductsCategorizedResponse
+  BranchProductsCategorizedResponse,
+  ProductTypeEnum,
+  CreateComboInput,
+  UpdateComboInput
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
@@ -38,11 +41,11 @@ const getPublicProducts = async (
 }
 const getProducts = async (
   _: any,
-  args: { paginationInput: PaginationInput }
+  args: { paginationInput: PaginationInput; type: ProductTypeEnum }
 ): Promise<ProductsResponse> => {
   try {
-    const { paginationInput } = args
-    return await productCore.getProductsPaginated(paginationInput)
+    const { paginationInput, type } = args
+    return await productCore.getProductsPaginated(paginationInput, type)
   } catch (error) {
     console.log(error)
     return errorHandler(error)
@@ -117,6 +120,27 @@ const createProduct = async (
     return errorHandler(error)
   }
 }
+const createCombo = async (
+  _: any,
+  args: { createComboInput: CreateComboInput },
+  context: ContextGraphQl
+): Promise<ProductResponse> => {
+  try {
+    const { createComboInput } = args
+    const product = await productCore.createCombo(
+      createComboInput,
+      context.req.currentUser?.id
+    )
+    return {
+      status: StatusEnum.OK,
+      message: 'Combo creado correctamente',
+      data: product
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
 const updateProduct = async (
   _: any,
   args: { updateProductInput: UpdateProductInput }
@@ -124,6 +148,23 @@ const updateProduct = async (
   try {
     const { updateProductInput } = args
     const product = await productCore.updateProduct(updateProductInput)
+    return {
+      status: StatusEnum.OK,
+      message: 'Producto actualizado correcatmente',
+      data: product
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
+const updateCombo = async (
+  _: any,
+  args: { updateComboInput: UpdateComboInput }
+): Promise<ProductResponse> => {
+  try {
+    const { updateComboInput } = args
+    const product = await productCore.updateCombo(updateComboInput)
     return {
       status: StatusEnum.OK,
       message: 'Producto actualizado correcatmente',
@@ -203,7 +244,9 @@ export const productQuery = {
 }
 export const productMutation = {
   createProduct,
+  createCombo,
   updateProduct,
+  updateCombo,
   deleteProduct,
   uploadFile
 }
