@@ -42,7 +42,10 @@ const getPublicProducts = async (
 }
 const getProducts = async (
   _: any,
-  args: { paginationInput: PaginationInput; type: ProductTypeEnum }
+  args: {
+    paginationInput: PaginationInput
+    type?: ProductTypeEnum | undefined | null
+  }
 ): Promise<ProductsResponse> => {
   try {
     const { paginationInput, type } = args

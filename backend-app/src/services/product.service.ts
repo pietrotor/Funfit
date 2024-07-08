@@ -19,7 +19,7 @@ import Warehouse from '@/models/warehouse.model'
 export class ProductService extends ProductRepository<objectId> {
   async getProductsPaginated(
     paginationInput: PaginationInput,
-    type?: ProductTypeEnum
+    type?: ProductTypeEnum | null | undefined
   ) {
     const { filter } = paginationInput
     const typeFilter = type ? { type } : {}
