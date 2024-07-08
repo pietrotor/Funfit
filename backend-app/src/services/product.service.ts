@@ -1,6 +1,9 @@
 import {
+  CreateComboInput,
   CreateProductInput,
   PaginationInput,
+  ProductTypeEnum,
+  UpdateComboInput,
   UpdateProductInput
 } from '@/graphql/graphql_types'
 import ProductRepository from '@/repositories/product.repository'
@@ -14,14 +17,19 @@ import { Branch, BranchProduct } from '../models'
 import Warehouse from '@/models/warehouse.model'
 
 export class ProductService extends ProductRepository<objectId> {
-  async getProductsPaginated(paginationInput: PaginationInput) {
+  async getProductsPaginated(
+    paginationInput: PaginationInput,
+    type?: ProductTypeEnum | null | undefined
+  ) {
     const { filter } = paginationInput
+    const typeFilter = type ? { type } : {}
     if (filter) {
       const filterArgs = {
         $or: [
           { name: { $regex: filter, $options: 'i' } },
           { code: { $regex: filter, $options: 'i' } }
-        ]
+        ],
+        ...typeFilter
       }
       return await getInstancesPagination<IProduct, IModelProduct>(
         Product,
@@ -31,7 +39,8 @@ export class ProductService extends ProductRepository<objectId> {
     }
     return await getInstancesPagination<IProduct, IModelProduct>(
       Product,
-      paginationInput
+      paginationInput,
+      typeFilter
     )
   }
 
@@ -148,6 +157,52 @@ export class ProductService extends ProductRepository<objectId> {
     const productInstance = new Product({
       ...createProductInput,
       internalCode,
+      type: ProductTypeEnum.SIMPLE,
+      createdBy
+    })
+    return await productInstance.save()
+  }
+
+  async createCombo(
+    createProductInput: CreateComboInput,
+    createdBy?: objectId | null
+  ) {
+    const { name, code, subProducts } = createProductInput
+    const [duplicatedProductName, duplicatedProductCode] = await Promise.all([
+      Product.findOne({
+        name,
+        deleted: false
+      }),
+      Product.findOne({
+        code,
+        deleted: false
+      })
+    ])
+    if (duplicatedProductName) {
+      throw new BadRequestError(
+        'Ya existe un producto registrado con el mismo nombre'
+      )
+    }
+    if (duplicatedProductCode) {
+      throw new BadRequestError(
+        `El producto "${duplicatedProductCode.name}" ya esta registrado con este código`
+      )
+    }
+    await Promise.all(
+      subProducts.map(async subProduct => {
+        if (subProduct.stockRequirement <= 0) {
+          throw new BadRequestError(
+            'La cantidad de un sub producto debe ser mayor a 0'
+          )
+        }
+        await this.getProductById(subProduct.productId)
+      })
+    )
+    const internalCode = internalCodeGenerator(name)
+    const productInstance = new Product({
+      ...createProductInput,
+      internalCode,
+      type: ProductTypeEnum.COMBO,
       createdBy
     })
     return await productInstance.save()
@@ -182,6 +237,47 @@ export class ProductService extends ProductRepository<objectId> {
     }
     updateGenericInstance(productInstance, product, ['image'])
     productInstance.image = product.image || undefined
+    return await productInstance.save()
+  }
+
+  async updateCombo(updateComboInput: UpdateComboInput) {
+    const { id, ...product } = updateComboInput
+    const productInstance = await this.getProductById(id)
+    const [duplicatedProductName, duplicatedProductCode] = await Promise.all([
+      Product.findOne({
+        name: product.name,
+        deleted: false
+      }),
+      Product.findOne({
+        code: product.code,
+        deleted: false
+      })
+    ])
+    if (duplicatedProductName) {
+      throw new BadRequestError(
+        'Ya existe un producto registrado con el mismo nombre'
+      )
+    }
+    if (duplicatedProductCode) {
+      throw new BadRequestError(
+        `El producto "${duplicatedProductCode.name}" ya esta registrado con este código`
+      )
+    }
+    updateGenericInstance(productInstance, product, ['image', 'subProducts'])
+    productInstance.image = product.image || undefined
+    if (updateComboInput.subProducts) {
+      await Promise.all(
+        updateComboInput.subProducts.map(async subProduct => {
+          if (subProduct.stockRequirement < 1) {
+            throw new BadRequestError(
+              'La cantidad de un producto no puede ser menor a 0'
+            )
+          }
+          await this.getProductById(subProduct.productId)
+        })
+      )
+      productInstance.subProducts = updateComboInput.subProducts
+    }
     return await productInstance.save()
   }
 

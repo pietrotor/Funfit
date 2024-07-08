@@ -8,7 +8,8 @@ import {
   BranchProduct,
   Product,
   Branch,
-  CreateBranchProductStockMovementInput
+  CreateBranchProductStockMovementInput,
+  BranchProductStockResponse
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
@@ -46,6 +47,23 @@ const getBranchProductById = async (
       status: StatusEnum.OK,
       message: 'Producto encontrado',
       data: branch
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
+const getBranchProductStock = async (
+  _: any,
+  args: { id: objectId }
+): Promise<BranchProductStockResponse> => {
+  try {
+    const { id } = args
+    const stock = await branchProductCore.getBranchProductStock(id)
+    return {
+      status: StatusEnum.OK,
+      message: 'Stock encontrado',
+      data: stock
     }
   } catch (error) {
     console.log(error)
@@ -143,7 +161,8 @@ const createBranchProductStockMovement = async (
 
 export const branchProductQuery = {
   getBranchProductsPaginated,
-  getBranchProductById
+  getBranchProductById,
+  getBranchProductStock
 }
 export const branchProductMutation = {
   createBranchProduct,

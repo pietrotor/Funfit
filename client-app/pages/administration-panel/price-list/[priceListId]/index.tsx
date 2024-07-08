@@ -97,7 +97,7 @@ function PriceList({ user }: WarehouseProps) {
                 <ButtonComponent
                   onClick={() => {
                     handleEditModal.onOpen()
-                    setCurrentItem(price)
+                    setCurrentItem(price as any)
                   }}
                   type="edit"
                   showTooltip
@@ -107,7 +107,7 @@ function PriceList({ user }: WarehouseProps) {
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() => {
-                    setCurrentItem(price)
+                    setCurrentItem(price as any)
                     handleConfirmModal.onOpen()
                   }}
                   type="delete"

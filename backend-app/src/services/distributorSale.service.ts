@@ -8,10 +8,8 @@ import { DistributorSaleRepository } from '../repositories'
 import { BadRequestError } from '@/lib/graphqlerrors'
 import { distributorSaleUseCase } from 'useCase'
 import {
-  customerCore,
   distributorCore,
   paymentCore,
-  priceCore,
   priceListCore,
   productCore,
   stockCore,
@@ -28,7 +26,6 @@ import { addDays } from 'helpers'
 import Decimal from 'decimal.js'
 import { AddDistributorSalePayment } from 'dtos'
 import Stock from '@/models/stock.model'
-import { OutErrorResponse } from '@/lib/graphqlerrors/custom.error'
 
 export class DistributorSaleService extends DistributorSaleRepository<objectId> {
   async getDistributorSalesProducts(
@@ -282,7 +279,7 @@ export class DistributorSaleService extends DistributorSaleRepository<objectId> 
         date,
         distributorSaleId: saleDistributorInstance._id,
         observation: `pago por venta con código: ${code}.`,
-        balance: balance,
+        balance,
         totalPaid
       },
       false,
@@ -298,8 +295,9 @@ export class DistributorSaleService extends DistributorSaleRepository<objectId> 
     const distributorSaleInstance = await this.getDistributorSaleById(id)
     const { balance, totalPaid } = distributorSaleInstance
     if (amount <= 0) throw new BadRequestError('El pago debe ser mayor a 0 Bs')
-    if (amount > balance)
+    if (amount > balance) {
       throw new BadRequestError('El pago no puede ser mayor al saldo pendiente')
+    }
 
     const newBalance = new Decimal(balance).minus(amount).toNumber()
     const newTotalPaid = new Decimal(totalPaid).add(amount).toNumber()

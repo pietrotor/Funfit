@@ -3,6 +3,7 @@ import {
   CreateBranchProductInput,
   CreateBranchProductStockMovementInput,
   PaginationInput,
+  ProductTypeEnum,
   StockMovementTypeEnum,
   UpdateBranchProductInput
 } from '@/graphql/graphql_types'
@@ -132,7 +133,6 @@ export class BranchProductService extends BranchProductRepository<objectId> {
         }
       }))
     }))
-    console.log('-items - ', JSON.stringify(items))
     return items
   }
 
@@ -145,6 +145,48 @@ export class BranchProductService extends BranchProductRepository<objectId> {
       throw new BadRequestError('No se encontro el producto en la sucursal')
     }
     return branchInstance
+  }
+
+  async getBranchProudctByProudctAndBranchId(
+    productId: objectId,
+    branchId: objectId
+  ) {
+    const branchInstance = await BranchProduct.findOne({
+      productId,
+      branchId,
+      deleted: false
+    })
+    if (!branchInstance) {
+      throw new BadRequestError('No se encontro el producto en la sucursal')
+    }
+    return branchInstance
+  }
+
+  async getBranchProductStock(id: objectId) {
+    const { productId, branchId, stock } = await this.getBranchProductById(id)
+    const productInstance = await productCore.getProductById(productId)
+    if (productInstance.type === ProductTypeEnum.SIMPLE) return stock
+
+    const subProductsInstances = await Promise.all(
+      productInstance.subProducts.map(async subProduct => {
+        const subBranchProudctInstance =
+          await this.getBranchProudctByProudctAndBranchId(
+            subProduct.productId,
+            branchId
+          )
+        return Math.ceil(
+          subBranchProudctInstance.stock / subProduct.stockRequirement
+        )
+      })
+    )
+
+    let minStock: number | null = null
+    subProductsInstances.forEach((stock, index) => {
+      if (index === 0) minStock = stock
+      else if (stock < (minStock as number)) minStock = stock
+    })
+
+    return minStock || 0
   }
 
   async getBranchProductByIdInstance(id: objectId) {
@@ -178,6 +220,21 @@ export class BranchProductService extends BranchProductRepository<objectId> {
     if (existsBranchOnProduct) {
       throw new BadRequestError(
         'El producto ya se encuentra registrado en la sucursal'
+      )
+    }
+    if (productInstance.type === ProductTypeEnum.COMBO) {
+      await Promise.all(
+        (productInstance.subProducts || []).map(async ({ productId }) => {
+          const branchProduct = await BranchProduct.findOne({
+            deleted: false,
+            productId
+          })
+          if (!branchProduct) {
+            throw new BadRequestError(
+              'Uno de los productos del combo no esta registrado en la sucursal'
+            )
+          }
+        })
       )
     }
     const branchProductInstance = new BranchProduct({
@@ -214,6 +271,21 @@ export class BranchProductService extends BranchProductRepository<objectId> {
     const productInstance = await productCore.getProductById(
       branchProduct.productId
     )
+    if (productInstance.type === ProductTypeEnum.SIMPLE) {
+      const combos = await Product.find({
+        deleted: false,
+        'subProducts.productId': id
+      })
+      await Promise.all(
+        combos.map(async combo => {
+          const updatedSubProducts = combo.subProducts.filter(
+            ({ productId }) => productId.toString() === id.toString()
+          )
+          combo.subProducts = updatedSubProducts
+          await combo.save()
+        })
+      )
+    }
     branchInstance.productsIds = branchInstance.productsIds.filter(
       productId => productId.toString() !== branchProduct.productId.toString()
     )

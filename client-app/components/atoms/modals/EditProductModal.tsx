@@ -3,7 +3,10 @@ import { useEffect } from 'react'
 import { MyModal } from './MyModal'
 import Input from '../Input'
 import Selector from '../InputSelector'
-import { useGetCategoriesLazyQuery } from '@/graphql/graphql-types'
+import {
+  ProductTypeEnum,
+  useGetCategoriesLazyQuery
+} from '@/graphql/graphql-types'
 import { TCategories } from '@/hooks/UseCategoryQuery'
 export type TValueProductData = {
   id?: any
@@ -17,6 +20,7 @@ export type TValueProductData = {
   warehouses?: string[]
   categoryId?: string
   category?: TCategories
+  type?: ProductTypeEnum
 }
 interface EditProductModalProps {
   isOpen: boolean

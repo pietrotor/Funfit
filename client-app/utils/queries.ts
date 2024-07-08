@@ -120,8 +120,11 @@ export const GET_USERS = gql`
   }
 `
 export const GET_PRODUCTS = gql`
-  query GetProducts($paginationInput: PaginationInput!) {
-    getProducts(paginationInput: $paginationInput) {
+  query GetProducts(
+    $paginationInput: PaginationInput!
+    $type: ProductTypeEnum
+  ) {
+    getProducts(paginationInput: $paginationInput, type: $type) {
       errorInput {
         message
         field
@@ -142,6 +145,13 @@ export const GET_PRODUCTS = gql`
           id
           name
           code
+        }
+        subProducts {
+          productId
+          stockRequirement
+          product {
+            name
+          }
         }
       }
       totalRecords
@@ -538,12 +548,26 @@ export const GET_BRANCH_PRODUCTS = gql`
           id
           name
           image
+          type
         }
       }
       totalRecords
       totalPages
       rows
       currentPage
+    }
+  }
+`
+export const GET_BRANCH_PRODUCT_STOCK = gql`
+  query GetBranchProductStock($id: ObjectId!) {
+    getBranchProductStock(id: $id) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data
     }
   }
 `

@@ -1,5 +1,11 @@
+/* eslint-disable no-unused-vars */
 import { Document, Model, Schema, model } from 'mongoose'
 import IGeneric from '@/interfaces/generic.interface'
+
+export enum ProductTypeEnum {
+  SIMPLE = 'SIMPLE',
+  COMBO = 'COMBO'
+}
 
 export interface IProduct extends Document, IGeneric {
   id: objectId
@@ -11,6 +17,11 @@ export interface IProduct extends Document, IGeneric {
   cost: number | null
   image?: string
   categoryId?: objectId
+  subProducts: {
+    productId: objectId
+    stockRequirement: number
+  }[]
+  type: ProductTypeEnum
   warehouses: objectId[]
   branchesIds: objectId[]
   priceListsIds: objectId[]
@@ -44,6 +55,11 @@ const productSchema = new Schema<IProduct>(
       type: String,
       required: [true, 'descripción es obligatorio']
     },
+    type: {
+      type: String,
+      enum: ProductTypeEnum,
+      default: ProductTypeEnum.SIMPLE
+    },
     image: {
       type: String
     },
@@ -51,6 +67,20 @@ const productSchema = new Schema<IProduct>(
       type: Schema.Types.ObjectId,
       ref: 'Category'
     },
+    subProducts: [
+      {
+        _id: false,
+        productId: {
+          type: Schema.Types.ObjectId,
+          required: true,
+          ref: 'Product'
+        },
+        stockRequirement: {
+          type: Number,
+          required: true
+        }
+      }
+    ],
     warehouses: [
       {
         type: Schema.Types.ObjectId,

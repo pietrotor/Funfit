@@ -17,7 +17,7 @@ import {
   productCore,
   turnMovementCore
 } from '.'
-import { TurnMovementTypeEnum } from '../models'
+import { BranchProduct, ProductTypeEnum, TurnMovementTypeEnum } from '../models'
 import Sale, { IModelSale, ISale } from '@/models/sales.model'
 import { getInstancesPagination } from './generic.service'
 import { addDays } from 'helpers'
@@ -257,13 +257,38 @@ export class SalesService extends SalesRepository<objectId> {
       products.map(async product => {
         const branchProductInstance =
           await branchProductCore.getBranchProductById(product.branchProductId)
-        if (product.qty > branchProductInstance.stock) {
-          const productInstance = await productCore.getProductById(
-            product.productId
-          )
-          throw new BadRequestError(
-            'El stock de ' + productInstance.name + ' es menor al requerido'
-          )
+        const productInstance = await productCore.getProductById(
+          product.productId
+        )
+        if (productInstance.type === ProductTypeEnum.SIMPLE) {
+          if (product.qty > branchProductInstance.stock) {
+            throw new BadRequestError(
+              'El stock de ' + productInstance.name + ' es menor al requerido'
+            )
+          }
+        } else {
+          for (const subProduct of productInstance.subProducts) {
+            const subBranchProductInstance = await BranchProduct.findOne({
+              deleted: false,
+              branchId,
+              productId: subProduct.productId
+            }).populate('productId')
+            if (!subBranchProductInstance) {
+              throw new BadRequestError(
+                'No se encontro un sub producto de un combo'
+              )
+            }
+            if (
+              subBranchProductInstance.stock <
+              subProduct.stockRequirement * product.qty
+            ) {
+              throw new BadRequestError(
+                `El stock de ${
+                  (subBranchProductInstance.productId as any).name
+                } es menor al requerido para el combo ${productInstance.name}`
+              )
+            }
+          }
         }
         return branchProductInstance
       })
@@ -312,8 +337,26 @@ export class SalesService extends SalesRepository<objectId> {
             branchProduct._id.toString() === product.branchProductId.toString()
         )
         if (branchProductInstance) {
-          branchProductInstance.stock -= product.qty
-          await branchProductInstance.save()
+          const productInfo = await productCore.getProductById(
+            branchProductInstance.productId
+          )
+          if (productInfo.type === ProductTypeEnum.SIMPLE) {
+            branchProductInstance.stock -= product.qty
+            await branchProductInstance.save()
+          } else if (productInfo.type === ProductTypeEnum.COMBO) {
+            for (const subProduct of productInfo.subProducts) {
+              const subBranchProudctInstance = await BranchProduct.findOne({
+                deleted: false,
+                branchId,
+                productId: subProduct.productId
+              })
+              if (subBranchProudctInstance) {
+                subBranchProudctInstance.stock -=
+                  subProduct.stockRequirement * product.qty
+                await subBranchProudctInstance.save()
+              }
+            }
+          }
         }
       })
     )

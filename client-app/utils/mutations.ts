@@ -38,6 +38,18 @@ export const CREATE_PRODUCT = gql`
     }
   }
 `
+export const CREATE_COMBO = gql`
+  mutation CreateCombo($createComboInput: CreateComboInput!) {
+    createCombo(createComboInput: $createComboInput) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+    }
+  }
+`
 export const UPDATE_PRODUCT = gql`
   mutation UpdateProduct($updateProductInput: UpdateProductInput!) {
     updateProduct(updateProductInput: $updateProductInput) {

@@ -203,7 +203,7 @@ function SaleDetail({ user }: SaleDetailProps) {
                 {sale.qty}
               </div>,
               <div key={idx} className="flex justify-center space-x-3 text-sm">
-                {sale.total}
+                {sale.total} Bs
               </div>
             ]
           }))}

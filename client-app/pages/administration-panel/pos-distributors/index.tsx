@@ -2,6 +2,7 @@ import { GetServerSideProps } from 'next'
 import { useEffect, useState } from 'react'
 import { Spinner, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
+import Decimal from 'decimal.js'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 import AdministrationLayout from '@/components/templates/layouts'
@@ -63,12 +64,17 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
             {
               ...existingProduct,
               quantity: (existingProduct.quantity || 1) + 1,
-              total:
-                ((existingProduct.quantity || 1) + 1) * existingProduct.price
+              total: new Decimal(existingProduct.price)
+                .mul((existingProduct.quantity || 1) + 1)
+                .toNumber()
             }
           ],
-          subTotal: (prevProducts?.subTotal || 0) + existingProduct.price,
-          total: (prevProducts?.total || 0) + existingProduct.price,
+          subTotal: new Decimal(existingProduct.price)
+            .plus(prevProducts?.subTotal || 0)
+            .toNumber(),
+          total: new Decimal(existingProduct.price)
+            .plus(prevProducts?.total || 0)
+            .toNumber(),
           discount: 0
         }
       })
@@ -88,8 +94,12 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
                 total: newProduct.price
               }
             ],
-            subTotal: (prevProducts?.subTotal || 0) + newProduct.price,
-            total: (prevProducts?.total || 0) + newProduct.price,
+            subTotal: new Decimal(newProduct.price)
+              .plus(prevProducts?.subTotal || 0)
+              .toNumber(),
+            total: new Decimal(newProduct.price)
+              .plus(prevProducts?.total || 0)
+              .toNumber(),
             discount: 0
           }
         })
