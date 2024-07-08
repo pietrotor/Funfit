@@ -1,18 +1,53 @@
-// import moment from 'moment-timezone'
-// import { SCHEDULE, WORKDAYS } from '@/utils/defaultBusiness'
+import moment from 'moment-timezone'
 
-// export default function isBusinessOpen(): boolean {
-//   const zonaHorariaBolivia = 'America/La_Paz'
-//   moment.tz.setDefault(zonaHorariaBolivia)
-//   const today = moment()
-//   const todayDay = today.day()
-//   const workingDays = WORKDAYS
-//   if (!workingDays.includes(todayDay)) {
-//     return false
-//   }
-//   // Verify if the current hour is between the Day Schedule
-//   const openBusinessHour = moment(SCHEDULE[todayDay].open, 'HH:mm')
-//   const closeBusinessHour = moment(SCHEDULE[todayDay].close, 'HH:mm')
+export const WORKDAYS = [1, 2, 3, 4, 5, 6] // Domingo = 0
+export const DAYS_OF_WEEK = [
+  'Lunes',
+  'Martes',
+  'Miercoles',
+  'Jueves',
+  'Viernes',
+  'Sabado',
+  'Domingo'
+] // Domingo = 0
+export const SCHEDULE = [
+  [],
+  [
+    { open: '09:00', close: '12:30' },
+    { open: '20:00', close: '16:00' }
+  ],
+  [
+    { open: '09:00', close: '12:30' },
+    { open: '20:00', close: '16:00' }
+  ],
+  [
+    { open: '09:00', close: '12:30' },
+    { open: '20:00', close: '16:00' }
+  ],
+  [
+    { open: '09:00', close: '12:30' },
+    { open: '20:00', close: '16:00' }
+  ],
+  [
+    { open: '09:00', close: '12:30' },
+    { open: '20:00', close: '16:00' }
+  ],
+  [{ open: '09:00', close: '12:30' }]
+]
 
-//   return today.isBetween(openBusinessHour, closeBusinessHour)
-// }
+export default function isBusinessOpen(): boolean {
+  const zonaHorariaBolivia = 'America/La_Paz'
+  moment.tz.setDefault(zonaHorariaBolivia)
+  const today = moment()
+  const todayDay = today.day()
+  if (!WORKDAYS.includes(todayDay)) {
+    return false
+  }
+
+  return SCHEDULE[todayDay].some(schedule => {
+    const openBusinessHour = moment(schedule.open, 'HH:mm')
+    const closeBusinessHour = moment(schedule.close, 'HH:mm')
+
+    return today.isBetween(openBusinessHour, closeBusinessHour)
+  })
+}

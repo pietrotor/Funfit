@@ -22,6 +22,7 @@ import { setBranchInformation } from '@/store/slices/e-commerceInformation/e-com
 import { SelectBranchProductsModal } from '@/components/atoms/modals/SelectBranchProductsModal'
 import { TDataBranch } from '@/interfaces/TData'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
+import { ScheduleModal } from '@/components/molecules/ScheduleModal/ScheduleModal'
 export type TClientLayoutProps = {
   children: React.ReactNode
   hideCategories?: boolean
@@ -124,7 +125,7 @@ function ClientLayout({
   }, [data])
   return (
     <>
-      <div className="font-amsipro flex min-h-screen flex-col">
+      <div className="flex min-h-screen flex-col font-amsipro">
         <div className="">
           <UsersNavBar menu={menu} hideCategories={hideCategories} />
         </div>
@@ -156,6 +157,7 @@ function ClientLayout({
           <UsersFooter menu={menu} />
         </div>
       </div>
+      <ScheduleModal />
     </>
   )
 }

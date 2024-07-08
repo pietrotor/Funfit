@@ -24,6 +24,7 @@ import { useAppSelector } from '@/store/index'
 import { clearCart } from '@/store/slices'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import { useCustomPublicCreateOrder } from '@/hooks/UseOrderQuery'
+import isBusinessOpen from '@/helpers/business-state'
 
 export type TUserInfo = {
   name: string
@@ -347,7 +348,12 @@ function OrderLayout() {
           >
             Atrás
           </Button>
-          <Button color="primary" className="w-1/4" type="submit">
+          <Button
+            color="primary"
+            className="w-1/4"
+            type="submit"
+            isDisabled={!isBusinessOpen()}
+          >
             Siguiente
           </Button>
         </div>
