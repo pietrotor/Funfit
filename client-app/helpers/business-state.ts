@@ -14,23 +14,23 @@ export const SCHEDULE = [
   [],
   [
     { open: '09:00', close: '12:30' },
-    { open: '20:00', close: '16:00' }
+    { open: '16:00', close: '20:00' }
   ],
   [
     { open: '09:00', close: '12:30' },
-    { open: '20:00', close: '16:00' }
+    { open: '16:00', close: '20:00' }
   ],
   [
     { open: '09:00', close: '12:30' },
-    { open: '20:00', close: '16:00' }
+    { open: '16:00', close: '20:00' }
   ],
   [
     { open: '09:00', close: '12:30' },
-    { open: '20:00', close: '16:00' }
+    { open: '16:00', close: '20:00' }
   ],
   [
     { open: '09:00', close: '12:30' },
-    { open: '20:00', close: '16:00' }
+    { open: '16:00', close: '20:00' }
   ],
   [{ open: '09:00', close: '12:30' }]
 ]
