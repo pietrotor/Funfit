@@ -15,8 +15,8 @@ const ScheduleModal = () => {
             En este momento no estamos atendiendo
           </h3>
           <p>
-            Lamentamos informarte que nuestro ecommerce está cerrado
-            temporalmente para mantenimiento.
+            Lamentamos informarte que nuestra tienda en línea no esta recibiendo
+            pedidos en este momento, nuestros horarios son los siguientes
           </p>
           <p className="mb-1 mt-2 font-semibold">Nuestros horarios</p>
           <div className="space-y-4 rounded-md bg-blue-100 p-3">
