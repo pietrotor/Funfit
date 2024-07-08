@@ -1,5 +1,5 @@
 import { BadRequestError } from '@/lib/graphqlerrors'
-import { IModelOrder, IOrder, Order } from '../models'
+import { IModelOrder, IOrder, Order, ProductTypeEnum } from '../models'
 import { OrderRepository } from '../repositories'
 import {
   CreateOrderInput,
@@ -122,12 +122,35 @@ export class OrderService extends OrderRepository<objectId> {
       products.map(async product => {
         const branchProductInstance =
           await branchProductCore.getBranchProductById(product.branchProductId)
-        if (product.qty > branchProductInstance.stock) {
-          const productInstance = await productCore.getProductById(
-            product.productId
-          )
-          throw new BadRequestError(
-            'El stock de ' + productInstance.name + ' es menor al requerido'
+        const productInstance = await productCore.getProductById(
+          product.productId
+        )
+        if (productInstance.type === ProductTypeEnum.SIMPLE) {
+          if (product.qty > branchProductInstance.stock) {
+            const productInstance = await productCore.getProductById(
+              product.productId
+            )
+            throw new BadRequestError(
+              'El stock de ' + productInstance.name + ' es menor al requerido'
+            )
+          }
+        } else if (productInstance.type === ProductTypeEnum.COMBO) {
+          await Promise.all(
+            productInstance.subProducts.map(async subProduct => {
+              const subBranchProductInstance =
+                await branchProductCore.getBranchProudctByProudctAndBranchId(
+                  subProduct.productId,
+                  branchId
+                )
+              const totalStockRequired =
+                subBranchProductInstance.stock -
+                product.qty * subProduct.stockRequirement
+              if (totalStockRequired < 0) {
+                throw new BadRequestError(
+                  'No se tiene sufiente stock para este producto'
+                )
+              }
+            })
           )
         }
         return branchProductInstance

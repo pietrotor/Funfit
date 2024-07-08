@@ -1,9 +1,12 @@
 import { DistributorSaleItemInput } from '@/graphql/graphql_types'
 import { BadRequestError } from '@/lib/graphqlerrors'
+import Decimal from 'decimal.js'
 
 export class DistributorSaleUseCase {
   isOkProductSubTotal(product: DistributorSaleItemInput) {
-    return product.price * product.qty === product.total
+    return (
+      new Decimal(product.price).mul(product.qty).toNumber() === product.total
+    )
   }
 
   validateSaleSubTotal(product: DistributorSaleItemInput) {
@@ -20,7 +23,11 @@ export class DistributorSaleUseCase {
     discount: number
   ) {
     const calculatedTotal =
-      products.reduce((total, product) => total + product.total, 0) - discount
+      products.reduce(
+        (total, product) => new Decimal(total).plus(product.total).toNumber(),
+        0
+      ) - discount
+    console.log(calculatedTotal, total)
     return calculatedTotal === total
   }
 }

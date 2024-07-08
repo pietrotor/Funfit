@@ -1,6 +1,9 @@
 import { Badge, Card, CardBody, Chip, Image } from '@nextui-org/react'
+import clsx from 'clsx'
 import { SkeletonCard } from './SkeletonCard'
+import { StockChip } from './StockChip'
 import { TProductBranchData } from '@/interfaces/TData'
+import { ProductTypeEnum } from '@/graphql/graphql-types'
 
 export type TPointOfSaleCardProps = {
   product: TProductBranchData
@@ -26,9 +29,10 @@ function PointOfSaleCard({
               isPressable
               className="relative h-60 w-full border-1 border-transparent transition-all duration-700 ease-in-out hover:border-secondary hover:shadow-lg "
               onPress={() => {
-                product?.stock &&
+                ;((product?.stock &&
                   quantity < product?.stock &&
-                  quantity + 1 >= 1 &&
+                  quantity + 1 >= 1) ||
+                  product.product?.type === ProductTypeEnum.COMBO) &&
                   handleSelected(product.id)
               }}
             >
@@ -43,15 +47,25 @@ function PointOfSaleCard({
                   className="h-full w-full rounded-b-none border-b object-cover"
                 />
               </CardBody>
-              <Chip
-                className={`absolute left-1/2 top-36 z-10 -translate-x-1/2 -translate-y-1/4 transform  ${
-                  product.stock === 0 ? 'bg-gray-300' : 'bg-primary'
-                } text-white`}
-                variant="solid"
-                size="sm"
-              >
-                {product.stock === 0 ? 'Sin Stock' : `Inv. ${product.stock}`}
-              </Chip>
+
+              {product?.product?.type === ProductTypeEnum.COMBO ? (
+                <StockChip branchProudctId={product.id} />
+              ) : (
+                <Chip
+                  className={clsx(
+                    'absolute left-1/2 top-36 z-10 -translate-x-1/2 -translate-y-1/4 transform  text-white',
+                    product.stock === 0 ? ' bg-gray-300' : 'bg-primary'
+                  )}
+                  variant="solid"
+                  size="sm"
+                >
+                  <span>
+                    {product?.stock === 0
+                      ? 'Sin Stock'
+                      : `Inv. ${product.stock}`}
+                  </span>
+                </Chip>
+              )}
               <div className="flex h-36 w-full flex-col justify-around rounded-large p-1">
                 <p className="w-full text-left text-sm font-bold text-secondary md:text-lg xl:text-xl">
                   {product.product?.name}

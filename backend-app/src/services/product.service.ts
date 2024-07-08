@@ -19,16 +19,17 @@ import Warehouse from '@/models/warehouse.model'
 export class ProductService extends ProductRepository<objectId> {
   async getProductsPaginated(
     paginationInput: PaginationInput,
-    type: ProductTypeEnum
+    type?: ProductTypeEnum
   ) {
     const { filter } = paginationInput
+    const typeFilter = type ? { type } : {}
     if (filter) {
       const filterArgs = {
         $or: [
           { name: { $regex: filter, $options: 'i' } },
           { code: { $regex: filter, $options: 'i' } }
         ],
-        type
+        ...typeFilter
       }
       return await getInstancesPagination<IProduct, IModelProduct>(
         Product,
@@ -39,7 +40,7 @@ export class ProductService extends ProductRepository<objectId> {
     return await getInstancesPagination<IProduct, IModelProduct>(
       Product,
       paginationInput,
-      { type }
+      typeFilter
     )
   }
 
@@ -197,7 +198,6 @@ export class ProductService extends ProductRepository<objectId> {
         await this.getProductById(subProduct.productId)
       })
     )
-    console.log('---------- LLEOG HASTA ACA ---------')
     const internalCode = internalCodeGenerator(name)
     const productInstance = new Product({
       ...createProductInput,

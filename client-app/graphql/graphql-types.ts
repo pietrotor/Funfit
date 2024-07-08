@@ -81,6 +81,14 @@ export type BranchProductResponse = ResponseBase & {
   status: StatusEnum;
 };
 
+export type BranchProductStockResponse = ResponseBase & {
+  __typename?: 'BranchProductStockResponse';
+  data?: Maybe<Scalars['Int']>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
 export type BranchProductsCategorizedResponse = ResponseBase & {
   __typename?: 'BranchProductsCategorizedResponse';
   data?: Maybe<Array<BranchProductCategorized>>;
@@ -709,6 +717,7 @@ export type Mutation = {
   updateBranch?: Maybe<BranchResponse>;
   updateBranchProduct?: Maybe<BranchProductResponse>;
   updateCategory?: Maybe<CategoryResponse>;
+  updateCombo?: Maybe<ProductResponse>;
   updateConfiguration?: Maybe<ConfigurationResponse>;
   updateDistributor?: Maybe<DistributorResponse>;
   updatePrice?: Maybe<PriceResponse>;
@@ -897,6 +906,11 @@ export type MutationUpdateBranchProductArgs = {
 
 export type MutationUpdateCategoryArgs = {
   updateCategoryInput: UpdateCategoryInput;
+};
+
+
+export type MutationUpdateComboArgs = {
+  updateComboInput: UpdateComboInput;
 };
 
 
@@ -1194,6 +1208,7 @@ export type Query = {
   currentUser?: Maybe<UserResponse>;
   getBranchById?: Maybe<BranchResponse>;
   getBranchProductById?: Maybe<BranchProductResponse>;
+  getBranchProductStock?: Maybe<BranchProductStockResponse>;
   getBranchProductsPaginated?: Maybe<BranchProductsResponse>;
   getBranchesPaginated?: Maybe<BranchsResponse>;
   getBusinessBalance?: Maybe<BusinessBalanceResponse>;
@@ -1247,6 +1262,11 @@ export type QueryGetBranchByIdArgs = {
 
 
 export type QueryGetBranchProductByIdArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetBranchProductStockArgs = {
   id: Scalars['ObjectId'];
 };
 
@@ -1370,7 +1390,7 @@ export type QueryGetProductStockArgs = {
 
 export type QueryGetProductsArgs = {
   paginationInput: PaginationInput;
-  type: ProductTypeEnum;
+  type?: InputMaybe<ProductTypeEnum>;
 };
 
 
@@ -1936,6 +1956,13 @@ export type CreateProductMutationVariables = Exact<{
 
 export type CreateProductMutation = { __typename?: 'Mutation', createProduct?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
+export type CreateComboMutationVariables = Exact<{
+  createComboInput: CreateComboInput;
+}>;
+
+
+export type CreateComboMutation = { __typename?: 'Mutation', createCombo?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null } | null };
+
 export type UpdateProductMutationVariables = Exact<{
   updateProductInput: UpdateProductInput;
 }>;
@@ -2221,11 +2248,11 @@ export type GetUsersQuery = { __typename?: 'Query', getUsers?: { __typename?: 'U
 
 export type GetProductsQueryVariables = Exact<{
   paginationInput: PaginationInput;
-  type: ProductTypeEnum;
+  type?: InputMaybe<ProductTypeEnum>;
 }>;
 
 
-export type GetProductsQuery = { __typename?: 'Query', getProducts?: { __typename?: 'ProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, category?: { __typename?: 'Category', id: any, name: string, code: string } | null }> | null } | null };
+export type GetProductsQuery = { __typename?: 'Query', getProducts?: { __typename?: 'ProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, category?: { __typename?: 'Category', id: any, name: string, code: string } | null, subProducts?: Array<{ __typename?: 'SubProducts', productId: any, stockRequirement: number, product?: { __typename?: 'Product', name: string } | null }> | null }> | null } | null };
 
 export type GetWarehousesQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -2321,7 +2348,7 @@ export type GetBranchProductsPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetBranchProductsPaginatedQuery = { __typename?: 'Query', getBranchProductsPaginated?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, lastStockEntry?: number | null, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, image?: string | null } | null }> | null } | null };
+export type GetBranchProductsPaginatedQuery = { __typename?: 'Query', getBranchProductsPaginated?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, lastStockEntry?: number | null, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, image?: string | null, type: ProductTypeEnum } | null }> | null } | null };
 
 export type GetBranchesPaginatedQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -2509,12 +2536,12 @@ export type GetPublicCategoriesQueryVariables = Exact<{ [key: string]: never; }>
 
 export type GetPublicCategoriesQuery = { __typename?: 'Query', getPublicCategories?: { __typename?: 'PublicCategoriesResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Category', id: any, name: string, code: string }> | null } | null };
 
-export type CreateComboMutationVariables = Exact<{
-  createComboInput: CreateComboInput;
+export type GetBranchProductStockQueryVariables = Exact<{
+  id: Scalars['ObjectId'];
 }>;
 
 
-export type CreateComboMutation = { __typename?: 'Mutation', createCombo?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null } | null };
+export type GetBranchProductStockQuery = { __typename?: 'Query', getBranchProductStock?: { __typename?: 'BranchProductStockResponse', status: StatusEnum, message?: string | null, data?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -2632,6 +2659,44 @@ export function useCreateProductMutation(baseOptions?: Apollo.MutationHookOption
 export type CreateProductMutationHookResult = ReturnType<typeof useCreateProductMutation>;
 export type CreateProductMutationResult = Apollo.MutationResult<CreateProductMutation>;
 export type CreateProductMutationOptions = Apollo.BaseMutationOptions<CreateProductMutation, CreateProductMutationVariables>;
+export const CreateComboDocument = gql`
+    mutation CreateCombo($createComboInput: CreateComboInput!) {
+  createCombo(createComboInput: $createComboInput) {
+    errorInput {
+      field
+      message
+    }
+    status
+    message
+  }
+}
+    `;
+export type CreateComboMutationFn = Apollo.MutationFunction<CreateComboMutation, CreateComboMutationVariables>;
+
+/**
+ * __useCreateComboMutation__
+ *
+ * To run a mutation, you first call `useCreateComboMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateComboMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createComboMutation, { data, loading, error }] = useCreateComboMutation({
+ *   variables: {
+ *      createComboInput: // value for 'createComboInput'
+ *   },
+ * });
+ */
+export function useCreateComboMutation(baseOptions?: Apollo.MutationHookOptions<CreateComboMutation, CreateComboMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateComboMutation, CreateComboMutationVariables>(CreateComboDocument, options);
+      }
+export type CreateComboMutationHookResult = ReturnType<typeof useCreateComboMutation>;
+export type CreateComboMutationResult = Apollo.MutationResult<CreateComboMutation>;
+export type CreateComboMutationOptions = Apollo.BaseMutationOptions<CreateComboMutation, CreateComboMutationVariables>;
 export const UpdateProductDocument = gql`
     mutation UpdateProduct($updateProductInput: UpdateProductInput!) {
   updateProduct(updateProductInput: $updateProductInput) {
@@ -4270,7 +4335,7 @@ export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
 export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
 export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
 export const GetProductsDocument = gql`
-    query GetProducts($paginationInput: PaginationInput!, $type: ProductTypeEnum!) {
+    query GetProducts($paginationInput: PaginationInput!, $type: ProductTypeEnum) {
   getProducts(paginationInput: $paginationInput, type: $type) {
     errorInput {
       message
@@ -4292,6 +4357,13 @@ export const GetProductsDocument = gql`
         id
         name
         code
+      }
+      subProducts {
+        productId
+        stockRequirement
+        product {
+          name
+        }
       }
     }
     totalRecords
@@ -5029,6 +5101,7 @@ export const GetBranchProductsPaginatedDocument = gql`
         id
         name
         image
+        type
       }
     }
     totalRecords
@@ -6709,41 +6782,44 @@ export function useGetPublicCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetPublicCategoriesQueryHookResult = ReturnType<typeof useGetPublicCategoriesQuery>;
 export type GetPublicCategoriesLazyQueryHookResult = ReturnType<typeof useGetPublicCategoriesLazyQuery>;
 export type GetPublicCategoriesQueryResult = Apollo.QueryResult<GetPublicCategoriesQuery, GetPublicCategoriesQueryVariables>;
-export const CreateComboDocument = gql`
-    mutation CreateCombo($createComboInput: CreateComboInput!) {
-  createCombo(createComboInput: $createComboInput) {
+export const GetBranchProductStockDocument = gql`
+    query GetBranchProductStock($id: ObjectId!) {
+  getBranchProductStock(id: $id) {
     errorInput {
       field
       message
     }
     status
     message
+    data
   }
 }
     `;
-export type CreateComboMutationFn = Apollo.MutationFunction<CreateComboMutation, CreateComboMutationVariables>;
 
 /**
- * __useCreateComboMutation__
+ * __useGetBranchProductStockQuery__
  *
- * To run a mutation, you first call `useCreateComboMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useCreateComboMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
+ * To run a query within a React component, call `useGetBranchProductStockQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBranchProductStockQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
  *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const [createComboMutation, { data, loading, error }] = useCreateComboMutation({
+ * const { data, loading, error } = useGetBranchProductStockQuery({
  *   variables: {
- *      createComboInput: // value for 'createComboInput'
+ *      id: // value for 'id'
  *   },
  * });
  */
-export function useCreateComboMutation(baseOptions?: Apollo.MutationHookOptions<CreateComboMutation, CreateComboMutationVariables>) {
+export function useGetBranchProductStockQuery(baseOptions: Apollo.QueryHookOptions<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<CreateComboMutation, CreateComboMutationVariables>(CreateComboDocument, options);
+        return Apollo.useQuery<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>(GetBranchProductStockDocument, options);
       }
-export type CreateComboMutationHookResult = ReturnType<typeof useCreateComboMutation>;
-export type CreateComboMutationResult = Apollo.MutationResult<CreateComboMutation>;
-export type CreateComboMutationOptions = Apollo.BaseMutationOptions<CreateComboMutation, CreateComboMutationVariables>;
+export function useGetBranchProductStockLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>(GetBranchProductStockDocument, options);
+        }
+export type GetBranchProductStockQueryHookResult = ReturnType<typeof useGetBranchProductStockQuery>;
+export type GetBranchProductStockLazyQueryHookResult = ReturnType<typeof useGetBranchProductStockLazyQuery>;
+export type GetBranchProductStockQueryResult = Apollo.QueryResult<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>;

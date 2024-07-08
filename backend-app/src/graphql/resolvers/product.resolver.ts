@@ -12,7 +12,8 @@ import {
   BranchProductsCategorizedResponse,
   ProductTypeEnum,
   CreateComboInput,
-  UpdateComboInput
+  UpdateComboInput,
+  SubProducts
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
@@ -261,6 +262,15 @@ export const productType = {
         return category
       }
       return null
+    }
+  },
+  SubProducts: {
+    async product(
+      parent: SubProducts,
+      _: any,
+      __: any
+    ): Promise<Product | null> {
+      return await productCore.getProductByIdInstance(parent.productId)
     }
   }
 }

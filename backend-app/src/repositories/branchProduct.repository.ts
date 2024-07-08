@@ -27,6 +27,13 @@ export abstract class BranchProductRepository<T> {
 
   abstract getBranchProductByIdInstance(id: T): Promise<IBranchProduct | null>
 
+  abstract getBranchProudctByProudctAndBranchId(
+    productId: T,
+    branchId: T
+  ): Promise<IBranchProduct | null>
+
+  abstract getBranchProductStock(id: T): Promise<number | null>
+
   abstract createBranchProduct(
     createBranchProductInput: CreateBranchProductInput,
     createdBy?: T | null

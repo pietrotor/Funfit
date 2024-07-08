@@ -1,8 +1,10 @@
 import React, { SetStateAction } from 'react'
+import Decimal from 'decimal.js'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
 import IconSelector from '@/components/atoms/IconSelector'
 import Counter from '@/components/molecules/Counter'
 import { TProductBranchData } from '@/interfaces/TData'
+import { ProductTypeEnum } from '@/graphql/graphql-types'
 
 type SelectedProductItemProps = {
   item: TProductBranchData
@@ -14,7 +16,9 @@ function SelectedProductItem({
   selectedProducts,
   setSelectedProducts
 }: SelectedProductItemProps) {
+  console.log('------- THIS ARE THE RPROUDCT -------', selectedProducts)
   const increment = (id: string) => {
+    console.log('--------- ENTRO ACA ---------')
     setSelectedProducts(prevValue => ({
       ...prevValue,
       products: selectedProducts.products.map(item => {
@@ -22,13 +26,17 @@ function SelectedProductItem({
           return {
             ...item,
             quantity: (item.quantity || 0) + 1,
-            total: ((item.quantity || 0) + 1) * item.price
+            total: new Decimal(item.price)
+              .mul((item.quantity || 0) + 1)
+              .toNumber()
           }
         }
         return item
       }),
-      subTotal: selectedProducts.subTotal + item.price,
-      total: selectedProducts.total + item.price,
+      subTotal: new Decimal(item.price)
+        .plus(selectedProducts.subTotal)
+        .toNumber(),
+      total: new Decimal(item.price).plus(selectedProducts.total).toNumber(),
       discount: selectedProducts.discount
     }))
   }
@@ -41,13 +49,17 @@ function SelectedProductItem({
           return {
             ...item,
             quantity: (item.quantity || 0) - 1,
-            total: ((item.quantity || 0) - 1) * item.price
+            total: new Decimal(item.price)
+              .mul((item.quantity || 0) - 1)
+              .toNumber()
           }
         }
         return item
       }),
-      subTotal: selectedProducts.subTotal - item.price,
-      total: selectedProducts.total - item.price,
+      subTotal: new Decimal(selectedProducts.subTotal)
+        .minus(item.price)
+        .toNumber(),
+      total: new Decimal(selectedProducts.total).minus(item.price).toNumber(),
       discount: selectedProducts.discount
     }))
   }
@@ -79,15 +91,16 @@ function SelectedProductItem({
             item.quantity && item.quantity > 1 && decrement(item.productId)
           }}
           increment={() => {
-            item.quantity &&
-              item.stock &&
-              item?.stock > item?.quantity &&
+            ;((item.quantity && item.stock && item?.stock > item?.quantity) ||
+              item.product?.type === ProductTypeEnum.COMBO) &&
               increment(item.productId)
           }}
         />
       </div>
       <div className="flex h-full w-1/6 flex-col items-center justify-between">
-        <p className="font-semibold">Bs. {item.price * (item.quantity || 0)}</p>
+        <p className="font-semibold">
+          Bs. {new Decimal(item.price).mul(item.quantity || 0).toNumber()}
+        </p>
         <span
           className=" rounded-full px-1 transition hover:bg-gray-200 hover:text-danger hover:duration-300"
           onClick={() => handleDelete(item.productId)}

@@ -61,7 +61,7 @@ type Query {
   # PRODUCTS ==========================================
   getProducts(
     paginationInput: PaginationInput!
-    type: ProductTypeEnum!
+    type: ProductTypeEnum
   ): ProductsResponse
   getProductById(id: ObjectId!): ProductResponse
   getProductsOutOfWarehouse(
@@ -107,6 +107,7 @@ type Query {
     posMenu: Boolean
   ): BranchProductsResponse
   getBranchProductById(id: ObjectId!): BranchProductResponse
+  getBranchProductStock(id: ObjectId!): BranchProductStockResponse
   # CASH ==================================
   getCashById(id: ObjectId!): CashResponse
   getCashTurnMovements(
@@ -805,6 +806,12 @@ type BranchProductResponse implements ResponseBase {
   status: StatusEnum!
   message: String
   data: BranchProduct
+}
+type BranchProductStockResponse implements ResponseBase {
+  errorInput: [ErrorInput!]
+  status: StatusEnum!
+  message: String
+  data: Int
 }
 type CashResponse implements ResponseBase {
   errorInput: [ErrorInput!]

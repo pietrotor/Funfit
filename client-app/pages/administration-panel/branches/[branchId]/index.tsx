@@ -19,6 +19,7 @@ import { MoveBranchStockModal } from '@/components/atoms/modals/MoveBranchStockM
 import { TProductBranchData } from '@/interfaces/TData'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import {
+  ProductTypeEnum,
   StatusEnum,
   useDeleteBranchProductMutation,
   useUpdateBranchMutation
@@ -27,6 +28,7 @@ import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import { authUserHeader } from '@/utils/verificationUser'
 import { UpdateBranchProductModal } from '@/components/atoms/modals/UpdateBranchProductModal'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
+import { StockComboCircularProgressBar } from '@/components/atoms/StockComboCircularProgressBar/StockComboCircularProgressBar'
 
 interface ProductOnBranchProps {
   user: any
@@ -208,14 +210,42 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
                     idx +
                     1}
                 </h3>,
-                <p key={idx}>{productBranch.product?.name}</p>,
+                <div key={idx} className="flex gap-2">
+                  <Image
+                    alt="image"
+                    width={80}
+                    src={
+                      productBranch.product?.image === 'null' ||
+                      !productBranch.product?.image
+                        ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
+                        : productBranch.product?.image
+                    }
+                  />
+                  <div className="flex flex-col justify-center">
+                    <p className="text-base font-semibold">
+                      {productBranch.product?.name}
+                    </p>
+                    <p className="text-left font-thin text-gray-500">
+                      {productBranch.product?.type === ProductTypeEnum.COMBO
+                        ? 'Combo'
+                        : 'Simple'}
+                    </p>
+                    ,
+                  </div>
+                </div>,
                 <p key={idx}>{productBranch.price} Bs</p>,
                 <div key={idx} className="mx-auto w-16 text-sm">
-                  <CircularProgressbar
-                    value={productBranch.stock}
-                    maxValue={productBranch.lastStockEntry as number}
-                    text={`${productBranch.stock}`}
-                  />
+                  {productBranch.product?.type === ProductTypeEnum.COMBO ? (
+                    <StockComboCircularProgressBar
+                      branchProductId={productBranch.id}
+                    />
+                  ) : (
+                    <CircularProgressbar
+                      value={productBranch.stock}
+                      maxValue={productBranch.lastStockEntry as number}
+                      text={`${productBranch.stock}`}
+                    />
+                  )}
                 </div>,
                 <Switch
                   key={idx}
@@ -246,21 +276,23 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
                   {productBranch.isVisibleOnWeb ? 'Sí' : 'No'}
                 </Switch>,
                 <div key={idx} className="flex gap-2">
-                  <ButtonComponent
-                    onClick={() =>
-                      handleEdit(productBranch as TProductBranchData)
-                    }
-                    type="eye"
-                    showTooltip
-                    tooltipText="Mover Stock"
-                    className="px-3"
-                  >
-                    <IconSelector
-                      name="Stock"
-                      color="text-secondary"
-                      width="w-5"
-                    />
-                  </ButtonComponent>
+                  {productBranch.product?.type !== ProductTypeEnum.COMBO && (
+                    <ButtonComponent
+                      onClick={() =>
+                        handleEdit(productBranch as TProductBranchData)
+                      }
+                      type="eye"
+                      showTooltip
+                      tooltipText="Mover Stock"
+                      className="px-3"
+                    >
+                      <IconSelector
+                        name="Stock"
+                        color="text-secondary"
+                        width="w-5"
+                      />
+                    </ButtonComponent>
+                  )}
                   <ButtonComponent
                     onClick={() =>
                       handleEditPrice(productBranch as TProductBranchData)

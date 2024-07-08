@@ -49,6 +49,7 @@ const CombosTable = ({
         { name: 'Imagen' },
         { name: 'Nombre' },
         { name: 'Categoría' },
+        { name: 'Productos' },
         { name: 'Precio' },
         { name: 'Costo' },
         { name: 'Código' },
@@ -85,6 +86,16 @@ const CombosTable = ({
           >
             {product.category?.name || 'Sin categoría'}
           </Chip>,
+          <div key={idx} className="flex flex-wrap gap-2">
+            {(product.subProducts || [])?.map(subProduct => (
+              <p
+                className="w-fit rounded border-2 border-primary px-3 py-1 font-medium text-primary"
+                key={subProduct.productId}
+              >
+                {subProduct.product?.name} ({subProduct.stockRequirement})
+              </p>
+            ))}
+          </div>,
           product.suggetedPrice + ' Bs.',
           product.cost + ' Bs.',
           <div key={idx} className="text-left text-sm">

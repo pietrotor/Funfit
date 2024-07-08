@@ -83,6 +83,14 @@ export type BranchProductResponse = ResponseBase & {
   status: StatusEnum;
 };
 
+export type BranchProductStockResponse = ResponseBase & {
+  __typename?: 'BranchProductStockResponse';
+  data?: Maybe<Scalars['Int']['output']>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']['output']>;
+  status: StatusEnum;
+};
+
 export type BranchProductsCategorizedResponse = ResponseBase & {
   __typename?: 'BranchProductsCategorizedResponse';
   data?: Maybe<Array<BranchProductCategorized>>;
@@ -711,6 +719,7 @@ export type Mutation = {
   updateBranch?: Maybe<BranchResponse>;
   updateBranchProduct?: Maybe<BranchProductResponse>;
   updateCategory?: Maybe<CategoryResponse>;
+  updateCombo?: Maybe<ProductResponse>;
   updateConfiguration?: Maybe<ConfigurationResponse>;
   updateDistributor?: Maybe<DistributorResponse>;
   updatePrice?: Maybe<PriceResponse>;
@@ -899,6 +908,11 @@ export type MutationUpdateBranchProductArgs = {
 
 export type MutationUpdateCategoryArgs = {
   updateCategoryInput: UpdateCategoryInput;
+};
+
+
+export type MutationUpdateComboArgs = {
+  updateComboInput: UpdateComboInput;
 };
 
 
@@ -1196,6 +1210,7 @@ export type Query = {
   currentUser?: Maybe<UserResponse>;
   getBranchById?: Maybe<BranchResponse>;
   getBranchProductById?: Maybe<BranchProductResponse>;
+  getBranchProductStock?: Maybe<BranchProductStockResponse>;
   getBranchProductsPaginated?: Maybe<BranchProductsResponse>;
   getBranchesPaginated?: Maybe<BranchsResponse>;
   getBusinessBalance?: Maybe<BusinessBalanceResponse>;
@@ -1249,6 +1264,11 @@ export type QueryGetBranchByIdArgs = {
 
 
 export type QueryGetBranchProductByIdArgs = {
+  id: Scalars['ObjectId']['input'];
+};
+
+
+export type QueryGetBranchProductStockArgs = {
   id: Scalars['ObjectId']['input'];
 };
 
@@ -1372,7 +1392,7 @@ export type QueryGetProductStockArgs = {
 
 export type QueryGetProductsArgs = {
   paginationInput: PaginationInput;
-  type: ProductTypeEnum;
+  type?: InputMaybe<ProductTypeEnum>;
 };
 
 
@@ -1986,7 +2006,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping of interface types */
 export type ResolversInterfaceTypes<RefType extends Record<string, unknown>> = {
-  ResponseBase: ( AddressResponse ) | ( BranchProductResponse ) | ( BranchProductsCategorizedResponse ) | ( BranchProductsResponse ) | ( BranchResponse ) | ( BranchsResponse ) | ( BusinessBalanceResponse ) | ( CashResponse ) | ( CashTurnMovementResponse ) | ( CashTurnMovementsResponse ) | ( CategoriesResponse ) | ( CategoryResponse ) | ( ConfigurationResponse ) | ( CustomerResponse ) | ( DistributorResponse ) | ( DistributorSalePaymentsResponse ) | ( DistributorSaleProductsResponse ) | ( DistributorSaleResponse ) | ( DistributorSalesResponse ) | ( DistributorsResponse ) | ( DistributorsSalesSummaryResponse ) | ( LoginResponse ) | ( OrderResponse ) | ( OrdersResponse ) | ( PaymentResponse ) | ( PriceListResponse ) | ( PriceListsResponse ) | ( PriceResponse ) | ( PricesResponse ) | ( ProductImageResponse ) | ( ProductResponse ) | ( ProductsResponse ) | ( PublicCategoriesResponse ) | ( Response ) | ( RolesResponse ) | ( SaleResponse ) | ( SalesResponse ) | ( SalesSummaryResponse ) | ( StockResponse ) | ( StocksHistoryResponse ) | ( StocksResponse ) | ( UserResponse ) | ( UsersResponse ) | ( WarehouseResponse ) | ( WarehousesResponse );
+  ResponseBase: ( AddressResponse ) | ( BranchProductResponse ) | ( BranchProductStockResponse ) | ( BranchProductsCategorizedResponse ) | ( BranchProductsResponse ) | ( BranchResponse ) | ( BranchsResponse ) | ( BusinessBalanceResponse ) | ( CashResponse ) | ( CashTurnMovementResponse ) | ( CashTurnMovementsResponse ) | ( CategoriesResponse ) | ( CategoryResponse ) | ( ConfigurationResponse ) | ( CustomerResponse ) | ( DistributorResponse ) | ( DistributorSalePaymentsResponse ) | ( DistributorSaleProductsResponse ) | ( DistributorSaleResponse ) | ( DistributorSalesResponse ) | ( DistributorsResponse ) | ( DistributorsSalesSummaryResponse ) | ( LoginResponse ) | ( OrderResponse ) | ( OrdersResponse ) | ( PaymentResponse ) | ( PriceListResponse ) | ( PriceListsResponse ) | ( PriceResponse ) | ( PricesResponse ) | ( ProductImageResponse ) | ( ProductResponse ) | ( ProductsResponse ) | ( PublicCategoriesResponse ) | ( Response ) | ( RolesResponse ) | ( SaleResponse ) | ( SalesResponse ) | ( SalesSummaryResponse ) | ( StockResponse ) | ( StocksHistoryResponse ) | ( StocksResponse ) | ( UserResponse ) | ( UsersResponse ) | ( WarehouseResponse ) | ( WarehousesResponse );
 };
 
 /** Mapping between all available schema types and the resolvers types */
@@ -1998,6 +2018,7 @@ export type ResolversTypes = {
   BranchProduct: ResolverTypeWrapper<BranchProduct>;
   BranchProductCategorized: ResolverTypeWrapper<BranchProductCategorized>;
   BranchProductResponse: ResolverTypeWrapper<BranchProductResponse>;
+  BranchProductStockResponse: ResolverTypeWrapper<BranchProductStockResponse>;
   BranchProductsCategorizedResponse: ResolverTypeWrapper<BranchProductsCategorizedResponse>;
   BranchProductsResponse: ResolverTypeWrapper<BranchProductsResponse>;
   BranchResponse: ResolverTypeWrapper<BranchResponse>;
@@ -2154,6 +2175,7 @@ export type ResolversParentTypes = {
   BranchProduct: BranchProduct;
   BranchProductCategorized: BranchProductCategorized;
   BranchProductResponse: BranchProductResponse;
+  BranchProductStockResponse: BranchProductStockResponse;
   BranchProductsCategorizedResponse: BranchProductsCategorizedResponse;
   BranchProductsResponse: BranchProductsResponse;
   BranchResponse: BranchResponse;
@@ -2348,6 +2370,14 @@ export type BranchProductCategorizedResolvers<ContextType = any, ParentType exte
 
 export type BranchProductResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['BranchProductResponse'] = ResolversParentTypes['BranchProductResponse']> = {
   data?: Resolver<Maybe<ResolversTypes['BranchProduct']>, ParentType, ContextType>;
+  errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+};
+
+export type BranchProductStockResponseResolvers<ContextType = any, ParentType extends ResolversParentTypes['BranchProductStockResponse'] = ResolversParentTypes['BranchProductStockResponse']> = {
+  data?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
@@ -2739,6 +2769,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   updateBranch?: Resolver<Maybe<ResolversTypes['BranchResponse']>, ParentType, ContextType, RequireFields<MutationUpdateBranchArgs, 'updateBranchInput'>>;
   updateBranchProduct?: Resolver<Maybe<ResolversTypes['BranchProductResponse']>, ParentType, ContextType, RequireFields<MutationUpdateBranchProductArgs, 'updateBranchProductInput'>>;
   updateCategory?: Resolver<Maybe<ResolversTypes['CategoryResponse']>, ParentType, ContextType, RequireFields<MutationUpdateCategoryArgs, 'updateCategoryInput'>>;
+  updateCombo?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationUpdateComboArgs, 'updateComboInput'>>;
   updateConfiguration?: Resolver<Maybe<ResolversTypes['ConfigurationResponse']>, ParentType, ContextType, RequireFields<MutationUpdateConfigurationArgs, 'updateConfigurationInput'>>;
   updateDistributor?: Resolver<Maybe<ResolversTypes['DistributorResponse']>, ParentType, ContextType, RequireFields<MutationUpdateDistributorArgs, 'updateDistributorInput'>>;
   updatePrice?: Resolver<Maybe<ResolversTypes['PriceResponse']>, ParentType, ContextType, RequireFields<MutationUpdatePriceArgs, 'updatePriceInput'>>;
@@ -2955,6 +2986,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   currentUser?: Resolver<Maybe<ResolversTypes['UserResponse']>, ParentType, ContextType>;
   getBranchById?: Resolver<Maybe<ResolversTypes['BranchResponse']>, ParentType, ContextType, RequireFields<QueryGetBranchByIdArgs, 'id'>>;
   getBranchProductById?: Resolver<Maybe<ResolversTypes['BranchProductResponse']>, ParentType, ContextType, RequireFields<QueryGetBranchProductByIdArgs, 'id'>>;
+  getBranchProductStock?: Resolver<Maybe<ResolversTypes['BranchProductStockResponse']>, ParentType, ContextType, RequireFields<QueryGetBranchProductStockArgs, 'id'>>;
   getBranchProductsPaginated?: Resolver<Maybe<ResolversTypes['BranchProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetBranchProductsPaginatedArgs, 'branchId' | 'paginationInput'>>;
   getBranchesPaginated?: Resolver<Maybe<ResolversTypes['BranchsResponse']>, ParentType, ContextType, RequireFields<QueryGetBranchesPaginatedArgs, 'paginationInput'>>;
   getBusinessBalance?: Resolver<Maybe<ResolversTypes['BusinessBalanceResponse']>, ParentType, ContextType, RequireFields<QueryGetBusinessBalanceArgs, 'endDate' | 'initialDate'>>;
@@ -2978,7 +3010,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getPricesPaginated?: Resolver<Maybe<ResolversTypes['PricesResponse']>, ParentType, ContextType, RequireFields<QueryGetPricesPaginatedArgs, 'pricePaginationInput'>>;
   getProductById?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<QueryGetProductByIdArgs, 'id'>>;
   getProductStock?: Resolver<Maybe<ResolversTypes['StocksResponse']>, ParentType, ContextType, RequireFields<QueryGetProductStockArgs, 'paginationInput' | 'productId'>>;
-  getProducts?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsArgs, 'paginationInput' | 'type'>>;
+  getProducts?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsArgs, 'paginationInput'>>;
   getProductsOutOfPriceList?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsOutOfPriceListArgs, 'paginationInput' | 'priceListId'>>;
   getProductsOutOfWarehouse?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsOutOfWarehouseArgs, 'paginationInput' | 'warehouseId'>>;
   getPublicCategories?: Resolver<Maybe<ResolversTypes['PublicCategoriesResponse']>, ParentType, ContextType>;
@@ -3009,7 +3041,7 @@ export type ResponseResolvers<ContextType = any, ParentType extends ResolversPar
 };
 
 export type ResponseBaseResolvers<ContextType = any, ParentType extends ResolversParentTypes['ResponseBase'] = ResolversParentTypes['ResponseBase']> = {
-  __resolveType: TypeResolveFn<'AddressResponse' | 'BranchProductResponse' | 'BranchProductsCategorizedResponse' | 'BranchProductsResponse' | 'BranchResponse' | 'BranchsResponse' | 'BusinessBalanceResponse' | 'CashResponse' | 'CashTurnMovementResponse' | 'CashTurnMovementsResponse' | 'CategoriesResponse' | 'CategoryResponse' | 'ConfigurationResponse' | 'CustomerResponse' | 'DistributorResponse' | 'DistributorSalePaymentsResponse' | 'DistributorSaleProductsResponse' | 'DistributorSaleResponse' | 'DistributorSalesResponse' | 'DistributorsResponse' | 'DistributorsSalesSummaryResponse' | 'LoginResponse' | 'OrderResponse' | 'OrdersResponse' | 'PaymentResponse' | 'PriceListResponse' | 'PriceListsResponse' | 'PriceResponse' | 'PricesResponse' | 'ProductImageResponse' | 'ProductResponse' | 'ProductsResponse' | 'PublicCategoriesResponse' | 'Response' | 'RolesResponse' | 'SaleResponse' | 'SalesResponse' | 'SalesSummaryResponse' | 'StockResponse' | 'StocksHistoryResponse' | 'StocksResponse' | 'UserResponse' | 'UsersResponse' | 'WarehouseResponse' | 'WarehousesResponse', ParentType, ContextType>;
+  __resolveType: TypeResolveFn<'AddressResponse' | 'BranchProductResponse' | 'BranchProductStockResponse' | 'BranchProductsCategorizedResponse' | 'BranchProductsResponse' | 'BranchResponse' | 'BranchsResponse' | 'BusinessBalanceResponse' | 'CashResponse' | 'CashTurnMovementResponse' | 'CashTurnMovementsResponse' | 'CategoriesResponse' | 'CategoryResponse' | 'ConfigurationResponse' | 'CustomerResponse' | 'DistributorResponse' | 'DistributorSalePaymentsResponse' | 'DistributorSaleProductsResponse' | 'DistributorSaleResponse' | 'DistributorSalesResponse' | 'DistributorsResponse' | 'DistributorsSalesSummaryResponse' | 'LoginResponse' | 'OrderResponse' | 'OrdersResponse' | 'PaymentResponse' | 'PriceListResponse' | 'PriceListsResponse' | 'PriceResponse' | 'PricesResponse' | 'ProductImageResponse' | 'ProductResponse' | 'ProductsResponse' | 'PublicCategoriesResponse' | 'Response' | 'RolesResponse' | 'SaleResponse' | 'SalesResponse' | 'SalesSummaryResponse' | 'StockResponse' | 'StocksHistoryResponse' | 'StocksResponse' | 'UserResponse' | 'UsersResponse' | 'WarehouseResponse' | 'WarehousesResponse', ParentType, ContextType>;
   errorInput?: Resolver<Maybe<Array<ResolversTypes['ErrorInput']>>, ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   status?: Resolver<ResolversTypes['StatusEnum'], ParentType, ContextType>;
@@ -3276,6 +3308,7 @@ export type Resolvers<ContextType = any> = {
   BranchProduct?: BranchProductResolvers<ContextType>;
   BranchProductCategorized?: BranchProductCategorizedResolvers<ContextType>;
   BranchProductResponse?: BranchProductResponseResolvers<ContextType>;
+  BranchProductStockResponse?: BranchProductStockResponseResolvers<ContextType>;
   BranchProductsCategorizedResponse?: BranchProductsCategorizedResponseResolvers<ContextType>;
   BranchProductsResponse?: BranchProductsResponseResolvers<ContextType>;
   BranchResponse?: BranchResponseResolvers<ContextType>;
