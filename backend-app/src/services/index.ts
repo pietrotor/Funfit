@@ -20,6 +20,7 @@ import { PriceListService } from './priceList.service'
 import { PriceService } from './price.service'
 import { PaymentService } from './payment.service'
 import { DistributorSaleService } from './distributorSale.service'
+import { BillService } from './bill.service'
 
 export const configurationCore = new ConfigurationService()
 export const userCore = new UserService()
@@ -43,3 +44,4 @@ export const priceListCore = new PriceListService()
 export const priceCore = new PriceService()
 export const paymentCore = new PaymentService()
 export const distributorSaleCore = new DistributorSaleService()
+export const billCore = new BillService()

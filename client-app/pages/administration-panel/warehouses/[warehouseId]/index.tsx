@@ -17,6 +17,7 @@ import { TStockData } from '@/interfaces/TData'
 import { WarehouseRoute } from '@/utils/routes'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { authUserHeader } from '@/utils/verificationUser'
+import { Image } from '@nextui-org/react'
 
 interface WarehouseProps {
   user: any
@@ -96,8 +97,26 @@ function Warehouse({ user }: WarehouseProps) {
                   idx +
                   1}
               </h3>,
-              <div key={idx} className="text-center">
-                {stock?.product?.name}
+              <div key={idx} className="flex gap-2">
+                <Image
+                  alt="image"
+                  width={80}
+                  src={
+                    stock.product?.image === 'null' || !stock.product?.image
+                      ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
+                      : stock.product?.image
+                  }
+                />
+                <div className="flex flex-col justify-center align-baseline">
+                  <p className="text-left text-base font-semibold">
+                    {stock.product?.name}
+                  </p>
+                  <p className="text-left font-normal text-gray-500">
+                    Código:{' '}
+                    <span className="font-bold">{stock.product?.code}</span>
+                  </p>
+                  ,
+                </div>
               </div>,
               <div key={idx} className="mx-auto w-16 text-sm">
                 <CircularProgressbar

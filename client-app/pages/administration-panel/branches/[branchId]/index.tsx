@@ -221,14 +221,23 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
                         : productBranch.product?.image
                     }
                   />
-                  <div className="flex flex-col justify-center">
-                    <p className="text-base font-semibold">
+                  <div className="flex flex-col justify-center align-baseline">
+                    <p className="text-left text-base font-semibold">
                       {productBranch.product?.name}
                     </p>
-                    <p className="text-left font-thin text-gray-500">
-                      {productBranch.product?.type === ProductTypeEnum.COMBO
-                        ? 'Combo'
-                        : 'Simple'}
+                    <p className="text-left font-normal text-gray-500">
+                      Código:{' '}
+                      <span className="font-bold">
+                        {productBranch.product?.code}
+                      </span>
+                    </p>
+                    <p className="text-left font-normal text-gray-500">
+                      Tipo de producto:{' '}
+                      <span className="font-bold">
+                        {productBranch.product?.type === ProductTypeEnum.COMBO
+                          ? 'Combo'
+                          : 'Simple'}
+                      </span>
                     </p>
                     ,
                   </div>

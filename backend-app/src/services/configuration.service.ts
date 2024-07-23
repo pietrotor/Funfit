@@ -1,15 +1,11 @@
-import {
-  ProductTypeEnum,
-  UpdateConfigurationInput
-} from '@/graphql/graphql_types'
+import { UpdateConfigurationInput } from '@/graphql/graphql_types'
 import { BadRequestError } from '@/lib/graphqlerrors'
 import { updateGenericInstance } from '@/lib/updateInstance'
 import Configuration from '@/models/configuration.model'
 import { ConfigurationRepository } from '@/repositories/configuration.repository'
 import { BusinessBalanceDto } from 'dtos'
 import { Branch } from '../models'
-import { distributorSaleCore, saleCore } from '.'
-import Product from '@/models/product.model'
+import { billCore, distributorSaleCore, saleCore } from '.'
 
 export class ConfigurationService extends ConfigurationRepository<objectId> {
   async getConfiguration() {
@@ -74,13 +70,19 @@ export class ConfigurationService extends ConfigurationRepository<objectId> {
       0
     )
 
+    const bills = await billCore.getTotalBills({
+      endDate,
+      initialDate
+    })
+
     const totalEarnings = totalSales + totalPaid
-    const totalExpenses = balance
+    const totalExpenses = balance + bills
 
     const result = totalEarnings - totalExpenses
 
     return {
       balance: parseFloat(balance.toFixed(2)),
+      bills: parseFloat(bills.toFixed(2)),
       totalPaid: parseFloat(totalPaid.toFixed(2)),
       salesByBranch,
       result: parseFloat(result.toFixed(2)),

@@ -192,16 +192,11 @@ export class SalesService extends SalesRepository<objectId> {
         { ...branchesFilter, ...filterArgs, ...salesByFilter, ...dateFilter }
       )
     }
-    console.time('start')
     const test = await getInstancesPagination<ISale, IModelSale>(
       Sale,
       paginationInput,
       { ...branchesFilter, ...salesByFilter, ...dateFilter }
     )
-    console.log(
-      ' ========================================== TIME ============================ '
-    )
-    console.timeEnd('start')
     return test
   }
 

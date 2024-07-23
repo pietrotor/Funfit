@@ -26,3 +26,7 @@ export interface DistributorPagination extends PaginationInterfaceState {
   initialDate?: string
   saleBy?: string
 }
+export interface BillPaginationInterface extends PaginationInterfaceState {
+  endDate?: string
+  initialDate?: string
+}

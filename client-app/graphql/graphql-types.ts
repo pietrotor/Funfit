@@ -37,6 +37,58 @@ export type AddressResponse = ResponseBase & {
   status: StatusEnum;
 };
 
+export type Bill = {
+  __typename?: 'Bill';
+  amount: Scalars['Float'];
+  createdBy?: Maybe<Scalars['ObjectId']>;
+  createdByInfo?: Maybe<User>;
+  date: Scalars['Date'];
+  detail?: Maybe<Scalars['String']>;
+  id: Scalars['ObjectId'];
+  title: Scalars['String'];
+};
+
+export type BillPaginationInput = {
+  endDate?: InputMaybe<Scalars['Date']>;
+  filter?: InputMaybe<Scalars['String']>;
+  initialDate?: InputMaybe<Scalars['Date']>;
+  page?: InputMaybe<Scalars['Int']>;
+  rows?: InputMaybe<Scalars['Int']>;
+};
+
+export type BillResponse = ResponseBase & {
+  __typename?: 'BillResponse';
+  data?: Maybe<Bill>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type BillSummaryInput = {
+  endDate: Scalars['Date'];
+  initialDate: Scalars['Date'];
+};
+
+export type BillSummaryResponse = ResponseBase & {
+  __typename?: 'BillSummaryResponse';
+  data?: Maybe<Scalars['Float']>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  status: StatusEnum;
+};
+
+export type BillsResponse = ResponseBase & {
+  __typename?: 'BillsResponse';
+  currentPage?: Maybe<Scalars['Int']>;
+  data?: Maybe<Array<Bill>>;
+  errorInput?: Maybe<Array<ErrorInput>>;
+  message?: Maybe<Scalars['String']>;
+  rows?: Maybe<Scalars['Int']>;
+  status: StatusEnum;
+  totalPages?: Maybe<Scalars['Int']>;
+  totalRecords?: Maybe<Scalars['Int']>;
+};
+
 export type Branch = {
   __typename?: 'Branch';
   cash?: Maybe<Cash>;
@@ -139,6 +191,7 @@ export type BranchsResponse = ResponseBase & {
 export type BusinessBalance = {
   __typename?: 'BusinessBalance';
   balance: Scalars['Float'];
+  bills: Scalars['Float'];
   result: Scalars['Float'];
   salesByBranch: Array<BranchSales>;
   totalEarnings: Scalars['Float'];
@@ -273,6 +326,13 @@ export type CreateAddressInput = {
   detail: Scalars['String'];
   latitude: Scalars['Float'];
   longitude: Scalars['Float'];
+};
+
+export type CreateBillInput = {
+  amount: Scalars['Float'];
+  date: Scalars['Date'];
+  detail?: InputMaybe<Scalars['String']>;
+  title: Scalars['String'];
 };
 
 export type CreateBranchInput = {
@@ -685,6 +745,7 @@ export type Mutation = {
   cancelSale?: Maybe<SaleResponse>;
   closeCash?: Maybe<CashResponse>;
   creatStockMovement?: Maybe<StockResponse>;
+  createBill?: Maybe<BillResponse>;
   createBranch?: Maybe<BranchResponse>;
   createBranchProduct?: Maybe<BranchProductResponse>;
   createBranchProductStockMovement?: Maybe<BranchProductResponse>;
@@ -701,6 +762,7 @@ export type Mutation = {
   createStock?: Maybe<StockResponse>;
   createUser?: Maybe<UserResponse>;
   createWarehouse?: Maybe<WarehouseResponse>;
+  deleteBill?: Maybe<BillResponse>;
   deleteBranch?: Maybe<BranchResponse>;
   deleteBranchProduct?: Maybe<BranchProductResponse>;
   deleteCategory?: Maybe<CategoryResponse>;
@@ -746,6 +808,11 @@ export type MutationCloseCashArgs = {
 
 export type MutationCreatStockMovementArgs = {
   createStockMovementInput: CreateStockMovementInput;
+};
+
+
+export type MutationCreateBillArgs = {
+  createBillInput: CreateBillInput;
 };
 
 
@@ -826,6 +893,11 @@ export type MutationCreateUserArgs = {
 
 export type MutationCreateWarehouseArgs = {
   createWarehouseInput: CreateWarehouseInput;
+};
+
+
+export type MutationDeleteBillArgs = {
+  id: Scalars['ObjectId'];
 };
 
 
@@ -1206,6 +1278,9 @@ export type PublicCategoriesResponse = ResponseBase & {
 export type Query = {
   __typename?: 'Query';
   currentUser?: Maybe<UserResponse>;
+  getBill?: Maybe<BillResponse>;
+  getBillSummary?: Maybe<BillSummaryResponse>;
+  getBills?: Maybe<BillsResponse>;
   getBranchById?: Maybe<BranchResponse>;
   getBranchProductById?: Maybe<BranchProductResponse>;
   getBranchProductStock?: Maybe<BranchProductStockResponse>;
@@ -1253,6 +1328,21 @@ export type Query = {
   getWarehouses?: Maybe<WarehousesResponse>;
   getWarehousesOfProduct?: Maybe<WarehousesResponse>;
   login?: Maybe<LoginResponse>;
+};
+
+
+export type QueryGetBillArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type QueryGetBillSummaryArgs = {
+  billSummaryInput: BillSummaryInput;
+};
+
+
+export type QueryGetBillsArgs = {
+  billPaginationInput: BillPaginationInput;
 };
 
 
@@ -2215,6 +2305,20 @@ export type UploadFileMutationVariables = Exact<{
 
 export type UploadFileMutation = { __typename?: 'Mutation', uploadFile?: { __typename?: 'ProductImageResponse', message?: string | null, status: StatusEnum, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null } | null };
 
+export type CreateBillMutationVariables = Exact<{
+  createBillInput: CreateBillInput;
+}>;
+
+
+export type CreateBillMutation = { __typename?: 'Mutation', createBill?: { __typename?: 'BillResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null } | null };
+
+export type DeleteBillMutationVariables = Exact<{
+  deleteBillId: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteBillMutation = { __typename?: 'Mutation', deleteBill?: { __typename?: 'BillResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
 export type GetConfigurationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -2332,7 +2436,7 @@ export type GetWarehouseStockQueryVariables = Exact<{
 }>;
 
 
-export type GetWarehouseStockQuery = { __typename?: 'Query', getWarehouseStock?: { __typename?: 'StocksResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string } | null, warehouse?: { __typename?: 'Warehouse', id: any } | null }> | null } | null };
+export type GetWarehouseStockQuery = { __typename?: 'Query', getWarehouseStock?: { __typename?: 'StocksResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, lastStockEntry: number, units: string, product?: { __typename?: 'Product', id: any, name: string, image?: string | null, type: ProductTypeEnum, code: string } | null, warehouse?: { __typename?: 'Warehouse', id: any } | null }> | null } | null };
 
 export type GetProductByIdQueryVariables = Exact<{
   getProductByIdId: Scalars['ObjectId'];
@@ -2348,7 +2452,14 @@ export type GetBranchProductsPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetBranchProductsPaginatedQuery = { __typename?: 'Query', getBranchProductsPaginated?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, lastStockEntry?: number | null, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, image?: string | null, type: ProductTypeEnum } | null }> | null } | null };
+export type GetBranchProductsPaginatedQuery = { __typename?: 'Query', getBranchProductsPaginated?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, lastStockEntry?: number | null, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, image?: string | null, code: string, type: ProductTypeEnum } | null }> | null } | null };
+
+export type GetBranchProductStockQueryVariables = Exact<{
+  id: Scalars['ObjectId'];
+}>;
+
+
+export type GetBranchProductStockQuery = { __typename?: 'Query', getBranchProductStock?: { __typename?: 'BranchProductStockResponse', status: StatusEnum, message?: string | null, data?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null } | null };
 
 export type GetBranchesPaginatedQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -2529,19 +2640,26 @@ export type GetBusinessBalanceQueryVariables = Exact<{
 }>;
 
 
-export type GetBusinessBalanceQuery = { __typename?: 'Query', getBusinessBalance?: { __typename?: 'BusinessBalanceResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'BusinessBalance', totalPaid: number, balance: number, result: number, totalExpenses: number, totalEarnings: number, salesByBranch: Array<{ __typename?: 'BranchSales', id: any, name: string, total: number }> } | null } | null };
+export type GetBusinessBalanceQuery = { __typename?: 'Query', getBusinessBalance?: { __typename?: 'BusinessBalanceResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'BusinessBalance', totalPaid: number, balance: number, bills: number, result: number, totalExpenses: number, totalEarnings: number, salesByBranch: Array<{ __typename?: 'BranchSales', id: any, name: string, total: number }> } | null } | null };
 
 export type GetPublicCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetPublicCategoriesQuery = { __typename?: 'Query', getPublicCategories?: { __typename?: 'PublicCategoriesResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Category', id: any, name: string, code: string }> | null } | null };
 
-export type GetBranchProductStockQueryVariables = Exact<{
-  id: Scalars['ObjectId'];
+export type GetBillsQueryVariables = Exact<{
+  billPaginationInput: BillPaginationInput;
 }>;
 
 
-export type GetBranchProductStockQuery = { __typename?: 'Query', getBranchProductStock?: { __typename?: 'BranchProductStockResponse', status: StatusEnum, message?: string | null, data?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null } | null };
+export type GetBillsQuery = { __typename?: 'Query', getBills?: { __typename?: 'BillsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: Array<{ __typename?: 'Bill', id: any, title: string, date: any, amount: number, detail?: string | null, createdBy?: any | null, createdByInfo?: { __typename?: 'User', name: string, lastName: string } | null }> | null } | null };
+
+export type GetBillSummaryQueryVariables = Exact<{
+  billSummaryInput: BillSummaryInput;
+}>;
+
+
+export type GetBillSummaryQuery = { __typename?: 'Query', getBillSummary?: { __typename?: 'BillSummaryResponse', status: StatusEnum, message?: string | null, data?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -4078,6 +4196,82 @@ export function useUploadFileMutation(baseOptions?: Apollo.MutationHookOptions<U
 export type UploadFileMutationHookResult = ReturnType<typeof useUploadFileMutation>;
 export type UploadFileMutationResult = Apollo.MutationResult<UploadFileMutation>;
 export type UploadFileMutationOptions = Apollo.BaseMutationOptions<UploadFileMutation, UploadFileMutationVariables>;
+export const CreateBillDocument = gql`
+    mutation CreateBill($createBillInput: CreateBillInput!) {
+  createBill(createBillInput: $createBillInput) {
+    errorInput {
+      field
+      message
+    }
+    status
+    message
+  }
+}
+    `;
+export type CreateBillMutationFn = Apollo.MutationFunction<CreateBillMutation, CreateBillMutationVariables>;
+
+/**
+ * __useCreateBillMutation__
+ *
+ * To run a mutation, you first call `useCreateBillMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateBillMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createBillMutation, { data, loading, error }] = useCreateBillMutation({
+ *   variables: {
+ *      createBillInput: // value for 'createBillInput'
+ *   },
+ * });
+ */
+export function useCreateBillMutation(baseOptions?: Apollo.MutationHookOptions<CreateBillMutation, CreateBillMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateBillMutation, CreateBillMutationVariables>(CreateBillDocument, options);
+      }
+export type CreateBillMutationHookResult = ReturnType<typeof useCreateBillMutation>;
+export type CreateBillMutationResult = Apollo.MutationResult<CreateBillMutation>;
+export type CreateBillMutationOptions = Apollo.BaseMutationOptions<CreateBillMutation, CreateBillMutationVariables>;
+export const DeleteBillDocument = gql`
+    mutation DeleteBill($deleteBillId: ObjectId!) {
+  deleteBill(id: $deleteBillId) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type DeleteBillMutationFn = Apollo.MutationFunction<DeleteBillMutation, DeleteBillMutationVariables>;
+
+/**
+ * __useDeleteBillMutation__
+ *
+ * To run a mutation, you first call `useDeleteBillMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteBillMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteBillMutation, { data, loading, error }] = useDeleteBillMutation({
+ *   variables: {
+ *      deleteBillId: // value for 'deleteBillId'
+ *   },
+ * });
+ */
+export function useDeleteBillMutation(baseOptions?: Apollo.MutationHookOptions<DeleteBillMutation, DeleteBillMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteBillMutation, DeleteBillMutationVariables>(DeleteBillDocument, options);
+      }
+export type DeleteBillMutationHookResult = ReturnType<typeof useDeleteBillMutation>;
+export type DeleteBillMutationResult = Apollo.MutationResult<DeleteBillMutation>;
+export type DeleteBillMutationOptions = Apollo.BaseMutationOptions<DeleteBillMutation, DeleteBillMutationVariables>;
 export const GetConfigurationDocument = gql`
     query GetConfiguration {
   getConfiguration {
@@ -4987,6 +5181,9 @@ export const GetWarehouseStockDocument = gql`
       product {
         id
         name
+        image
+        type
+        code
       }
       warehouse {
         id
@@ -5101,6 +5298,7 @@ export const GetBranchProductsPaginatedDocument = gql`
         id
         name
         image
+        code
         type
       }
     }
@@ -5141,6 +5339,47 @@ export function useGetBranchProductsPaginatedLazyQuery(baseOptions?: Apollo.Lazy
 export type GetBranchProductsPaginatedQueryHookResult = ReturnType<typeof useGetBranchProductsPaginatedQuery>;
 export type GetBranchProductsPaginatedLazyQueryHookResult = ReturnType<typeof useGetBranchProductsPaginatedLazyQuery>;
 export type GetBranchProductsPaginatedQueryResult = Apollo.QueryResult<GetBranchProductsPaginatedQuery, GetBranchProductsPaginatedQueryVariables>;
+export const GetBranchProductStockDocument = gql`
+    query GetBranchProductStock($id: ObjectId!) {
+  getBranchProductStock(id: $id) {
+    errorInput {
+      field
+      message
+    }
+    status
+    message
+    data
+  }
+}
+    `;
+
+/**
+ * __useGetBranchProductStockQuery__
+ *
+ * To run a query within a React component, call `useGetBranchProductStockQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBranchProductStockQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBranchProductStockQuery({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useGetBranchProductStockQuery(baseOptions: Apollo.QueryHookOptions<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>(GetBranchProductStockDocument, options);
+      }
+export function useGetBranchProductStockLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>(GetBranchProductStockDocument, options);
+        }
+export type GetBranchProductStockQueryHookResult = ReturnType<typeof useGetBranchProductStockQuery>;
+export type GetBranchProductStockLazyQueryHookResult = ReturnType<typeof useGetBranchProductStockLazyQuery>;
+export type GetBranchProductStockQueryResult = Apollo.QueryResult<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>;
 export const GetBranchesPaginatedDocument = gql`
     query GetBranchesPaginated($paginationInput: PaginationInput!) {
   getBranchesPaginated(paginationInput: $paginationInput) {
@@ -6702,6 +6941,7 @@ export const GetBusinessBalanceDocument = gql`
       }
       totalPaid
       balance
+      bills
       result
       totalExpenses
       totalEarnings
@@ -6782,9 +7022,65 @@ export function useGetPublicCategoriesLazyQuery(baseOptions?: Apollo.LazyQueryHo
 export type GetPublicCategoriesQueryHookResult = ReturnType<typeof useGetPublicCategoriesQuery>;
 export type GetPublicCategoriesLazyQueryHookResult = ReturnType<typeof useGetPublicCategoriesLazyQuery>;
 export type GetPublicCategoriesQueryResult = Apollo.QueryResult<GetPublicCategoriesQuery, GetPublicCategoriesQueryVariables>;
-export const GetBranchProductStockDocument = gql`
-    query GetBranchProductStock($id: ObjectId!) {
-  getBranchProductStock(id: $id) {
+export const GetBillsDocument = gql`
+    query getBills($billPaginationInput: BillPaginationInput!) {
+  getBills(billPaginationInput: $billPaginationInput) {
+    errorInput {
+      field
+      message
+    }
+    status
+    message
+    data {
+      id
+      title
+      date
+      amount
+      detail
+      createdBy
+      createdByInfo {
+        name
+        lastName
+      }
+    }
+    totalRecords
+    totalPages
+    rows
+    currentPage
+  }
+}
+    `;
+
+/**
+ * __useGetBillsQuery__
+ *
+ * To run a query within a React component, call `useGetBillsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBillsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBillsQuery({
+ *   variables: {
+ *      billPaginationInput: // value for 'billPaginationInput'
+ *   },
+ * });
+ */
+export function useGetBillsQuery(baseOptions: Apollo.QueryHookOptions<GetBillsQuery, GetBillsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBillsQuery, GetBillsQueryVariables>(GetBillsDocument, options);
+      }
+export function useGetBillsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBillsQuery, GetBillsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBillsQuery, GetBillsQueryVariables>(GetBillsDocument, options);
+        }
+export type GetBillsQueryHookResult = ReturnType<typeof useGetBillsQuery>;
+export type GetBillsLazyQueryHookResult = ReturnType<typeof useGetBillsLazyQuery>;
+export type GetBillsQueryResult = Apollo.QueryResult<GetBillsQuery, GetBillsQueryVariables>;
+export const GetBillSummaryDocument = gql`
+    query GetBillSummary($billSummaryInput: BillSummaryInput!) {
+  getBillSummary(billSummaryInput: $billSummaryInput) {
     errorInput {
       field
       message
@@ -6797,29 +7093,29 @@ export const GetBranchProductStockDocument = gql`
     `;
 
 /**
- * __useGetBranchProductStockQuery__
+ * __useGetBillSummaryQuery__
  *
- * To run a query within a React component, call `useGetBranchProductStockQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetBranchProductStockQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useGetBillSummaryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBillSummaryQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useGetBranchProductStockQuery({
+ * const { data, loading, error } = useGetBillSummaryQuery({
  *   variables: {
- *      id: // value for 'id'
+ *      billSummaryInput: // value for 'billSummaryInput'
  *   },
  * });
  */
-export function useGetBranchProductStockQuery(baseOptions: Apollo.QueryHookOptions<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>) {
+export function useGetBillSummaryQuery(baseOptions: Apollo.QueryHookOptions<GetBillSummaryQuery, GetBillSummaryQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>(GetBranchProductStockDocument, options);
+        return Apollo.useQuery<GetBillSummaryQuery, GetBillSummaryQueryVariables>(GetBillSummaryDocument, options);
       }
-export function useGetBranchProductStockLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>) {
+export function useGetBillSummaryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBillSummaryQuery, GetBillSummaryQueryVariables>) {
           const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>(GetBranchProductStockDocument, options);
+          return Apollo.useLazyQuery<GetBillSummaryQuery, GetBillSummaryQueryVariables>(GetBillSummaryDocument, options);
         }
-export type GetBranchProductStockQueryHookResult = ReturnType<typeof useGetBranchProductStockQuery>;
-export type GetBranchProductStockLazyQueryHookResult = ReturnType<typeof useGetBranchProductStockLazyQuery>;
-export type GetBranchProductStockQueryResult = Apollo.QueryResult<GetBranchProductStockQuery, GetBranchProductStockQueryVariables>;
+export type GetBillSummaryQueryHookResult = ReturnType<typeof useGetBillSummaryQuery>;
+export type GetBillSummaryLazyQueryHookResult = ReturnType<typeof useGetBillSummaryLazyQuery>;
+export type GetBillSummaryQueryResult = Apollo.QueryResult<GetBillSummaryQuery, GetBillSummaryQueryVariables>;

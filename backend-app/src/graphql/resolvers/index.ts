@@ -63,6 +63,7 @@ import {
   paymentsMutation,
   paymentsQuery
 } from './payment.resolver'
+import { billMutation, billQuery, billType } from './bill.resolver'
 
 const resolvers: Resolvers<ContextGraphQl> = {
   Date: dateTimeScalar,
@@ -87,6 +88,7 @@ const resolvers: Resolvers<ContextGraphQl> = {
   ...priceType,
   ...distributorSaleType,
   ...paymentType,
+  ...billType,
   Query: {
     ...userQuery,
     ...roleQuery,
@@ -106,7 +108,8 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...priceListQuery,
     ...priceQuery,
     ...distributorSaleQuery,
-    ...paymentsQuery
+    ...paymentsQuery,
+    ...billQuery
   },
   Mutation: {
     ...userMutation,
@@ -126,7 +129,8 @@ const resolvers: Resolvers<ContextGraphQl> = {
     ...priceListMutation,
     ...priceMutation,
     ...distributorSaleMutation,
-    ...paymentsMutation
+    ...paymentsMutation,
+    ...billMutation
   }
 }
 

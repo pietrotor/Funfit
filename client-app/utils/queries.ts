@@ -485,6 +485,9 @@ export const GET_WAREHOUSE_STOCKS = gql`
         product {
           id
           name
+          image
+          type
+          code
         }
         warehouse {
           id
@@ -548,6 +551,7 @@ export const GET_BRANCH_PRODUCTS = gql`
           id
           name
           image
+          code
           type
         }
       }
@@ -1485,6 +1489,7 @@ export const GET_BUSINESS_BALANCE = gql`
         }
         totalPaid
         balance
+        bills
         result
         totalExpenses
         totalEarnings
@@ -1506,6 +1511,47 @@ export const PUBLIC_GET_CATEGORIES = gql`
         name
         code
       }
+    }
+  }
+`
+export const GET_BILLS = gql`
+  query getBills($billPaginationInput: BillPaginationInput!) {
+    getBills(billPaginationInput: $billPaginationInput) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data {
+        id
+        title
+        date
+        amount
+        detail
+        createdBy
+        createdByInfo {
+          name
+          lastName
+        }
+      }
+      totalRecords
+      totalPages
+      rows
+      currentPage
+    }
+  }
+`
+export const GET_BILLS_SUMMARY = gql`
+  query GetBillSummary($billSummaryInput: BillSummaryInput!) {
+    getBillSummary(billSummaryInput: $billSummaryInput) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+      data
     }
   }
 `
