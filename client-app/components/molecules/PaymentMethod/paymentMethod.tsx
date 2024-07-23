@@ -1,5 +1,12 @@
 import React from 'react'
-import { Accordion, AccordionItem, Button, Image } from '@nextui-org/react'
+import {
+  Accordion,
+  AccordionItem,
+  Button,
+  Image,
+  Radio,
+  RadioGroup
+} from '@nextui-org/react'
 export type activeDirection = {
   location: {
     lat: number
@@ -52,6 +59,14 @@ function PaymentMethod({
             key="qr"
             aria-label="Recoger de la sucursal"
             title="Pago mediante código QR"
+            indicator={
+              <RadioGroup
+                value={paymentMethod ? 'qr' : 'cash'}
+                onValueChange={() => setPaymentMethod(!paymentMethod)}
+              >
+                <Radio value="qr"></Radio>
+              </RadioGroup>
+            }
           >
             <div className="flex w-full flex-col items-center justify-center">
               <Image
@@ -83,6 +98,14 @@ function PaymentMethod({
             key="cash"
             aria-label="Paga al recibir tu pedido"
             title="Paga al recibir tu pedido"
+            indicator={
+              <RadioGroup
+                value={paymentMethod ? 'qr' : 'cash'}
+                onValueChange={() => setPaymentMethod(!paymentMethod)}
+              >
+                <Radio value="cash"></Radio>
+              </RadioGroup>
+            }
           >
             Paga en efectivo{' '}
             {isDelivery

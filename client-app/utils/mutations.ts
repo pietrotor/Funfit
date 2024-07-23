@@ -527,3 +527,27 @@ export const UPLOAD_PRODUCT_IMAGE = gql`
     }
   }
 `
+export const CREATE_BILL = gql`
+  mutation CreateBill($createBillInput: CreateBillInput!) {
+    createBill(createBillInput: $createBillInput) {
+      errorInput {
+        field
+        message
+      }
+      status
+      message
+    }
+  }
+`
+export const DELETE_BILL = gql`
+  mutation DeleteBill($deleteBillId: ObjectId!) {
+    deleteBill(id: $deleteBillId) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
+`

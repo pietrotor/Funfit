@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Accordion, AccordionItem, Radio, RadioGroup } from '@nextui-org/react'
 import { GoogleMap, MarkerF, useJsApiLoader } from '@react-google-maps/api'
 import { Control, FieldValues, UseFormWatch } from 'react-hook-form'
@@ -35,6 +35,20 @@ function SendOrder({
   details,
   setDetails
 }: Props) {
+  const [currenAccordion, setCurrenAccordion] = useState<
+    'delivery' | 'pickup' | ''
+  >('')
+  const handleChangeAccordion = (value: any) => {
+    setCurrenAccordion(preValue => {
+      if (!value) return preValue
+      if (preValue === value && !!preValue) {
+        return preValue
+      }
+
+      return value
+    })
+  }
+
   const { isLoaded } = useJsApiLoader({
     googleMapsApiKey: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API || ''
   })
@@ -53,8 +67,24 @@ function SendOrder({
     <div className="flex h-full w-full flex-col justify-between space-y-5 p-2 text-center md:p-5">
       <div className="overflow-y-auto md:px-8">
         <h2 className="text-gray-500 md:pb-6">Datos de ubicación</h2>
-        <Accordion>
-          <AccordionItem title="Recoger de la sucursal">
+        <Accordion
+          selectedKeys={[currenAccordion]}
+          onSelectionChange={value =>
+            handleChangeAccordion((value as any).anchorKey)
+          }
+        >
+          <AccordionItem
+            key={'pickup'}
+            title="Recoger de la sucursal"
+            indicator={
+              <RadioGroup
+                value={currenAccordion}
+                onValueChange={() => handleChangeAccordion('pickup')}
+              >
+                <Radio value="pickup"></Radio>
+              </RadioGroup>
+            }
+          >
             <RadioGroup
               name="branch"
               onValueChange={setSelectedOption}
@@ -91,7 +121,18 @@ function SendOrder({
               }}
             />
           </AccordionItem>
-          <AccordionItem title="Entrega a domicilio">
+          <AccordionItem
+            key={'delivery'}
+            title="Entrega a domicilio"
+            indicator={
+              <RadioGroup
+                value={currenAccordion}
+                onValueChange={() => handleChangeAccordion('delivery')}
+              >
+                <Radio value="delivery"></Radio>
+              </RadioGroup>
+            }
+          >
             <div className="flex flex-col space-y-3">
               <RadioGroup
                 color="secondary"

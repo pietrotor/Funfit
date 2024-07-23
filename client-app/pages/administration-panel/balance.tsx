@@ -67,7 +67,7 @@ function BalancePage({ user }: SalesProps) {
           />
           <InputComponent
             isRequired={false}
-            name="finalDate"
+            name="endDate"
             label="Fecha final"
             type="date"
             defaultValue={new Date().toISOString().split('T')[0]}
@@ -203,6 +203,18 @@ function BalancePage({ user }: SalesProps) {
                   </div>
                   <p className="ml-auto mr-0 w-fit justify-end self-end rounded-md bg-red-100 px-1 text-right text-base font-semibold text-red-500">
                     {data?.getBusinessBalance?.data?.balance || 0} Bs
+                  </p>
+                  <p className="text-base font-bold"></p>
+                </div>
+              </div>
+              <div className="mt-3 space-y-1">
+                <div className="grid w-full grid-cols-4">
+                  <div className="col-span-2 flex w-full items-center gap-1">
+                    <IconSelector name="Minus" width="w-5" height="h-5" />
+                    <p className="text-base font-bold">Gastos registrados</p>
+                  </div>
+                  <p className="ml-auto mr-0 w-fit justify-end self-end rounded-md bg-red-100 px-1 text-right text-base font-semibold text-red-500">
+                    {data?.getBusinessBalance?.data?.bills || 0} Bs
                   </p>
                   <p className="text-base font-bold"></p>
                 </div>
