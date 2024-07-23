@@ -6,7 +6,8 @@ import {
   CreateBillInput,
   Bill,
   User,
-  BillSummaryInput
+  BillSummaryInput,
+  BillSummaryResponse
 } from '@/graphql/graphql_types'
 import { ContextGraphQl } from '@/interfaces/context.interface'
 import { errorHandler } from '@/lib/graphqlerrors'
@@ -48,7 +49,7 @@ const getBillSummary = async (
   _: any,
   args: { billSummaryInput: BillSummaryInput },
   context: ContextGraphQl
-): Promise<BillResponse> => {
+): Promise<BillSummaryResponse> => {
   try {
     const { billSummaryInput } = args
     const data = await billCore.getTotalBills(billSummaryInput)
