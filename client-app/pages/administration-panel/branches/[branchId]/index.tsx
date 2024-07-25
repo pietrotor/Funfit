@@ -112,8 +112,7 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
     productBranch: TProductBranchData,
     field: string
   ) => {
-    console.log(productBranch, field)
-    handleUpdateBranchProduct(productBranch, field)
+    handleUpdateBranchProduct(productBranch, field, refetch)
   }
   const handleEdit = (
     productBranch: TProductBranchData,

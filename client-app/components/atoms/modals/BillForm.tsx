@@ -22,8 +22,8 @@ const BillForm = ({ isOpen, onClose, onSubmit, isLoading }: BillFormProps) => {
   return (
     <MyModal
       handleCancel={onClose}
-      title="Agregar producto"
-      message="Ingrese los datos del nuevo producto"
+      title="Agregar gasto"
+      message="Ingrese los datos de tu gasto"
       color="success"
       loading={isLoading}
       isOpen={isOpen}

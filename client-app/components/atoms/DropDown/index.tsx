@@ -7,6 +7,7 @@ import {
   User
 } from '@nextui-org/react'
 import IconSelector, { TSvgNames } from '../IconSelector'
+import { useEffect } from 'react'
 
 type TValuesDropDown = {
   label: string
@@ -35,11 +36,30 @@ export const DropDown = ({
   IconButtonName,
   avatar,
   user,
-  counter,
+  counter = 0,
   className,
   fill,
   onClick
 }: DropDownProps) => {
+  useEffect(() => {
+    const makeSound = () => {
+      const audio = new Audio('/sounds/notification-sound.mp3')
+      audio.play()
+    }
+    let interval: any
+
+    if (counter > 0) {
+      setTimeout(() => {
+        makeSound()
+      }, 5000)
+      interval = setInterval(() => {
+        makeSound()
+      }, 3000)
+    }
+
+    return () => clearInterval(interval)
+  }, [counter])
+
   return (
     <div className={` mt-8 md:me-4 ${className}`}>
       <Dropdown placement="bottom-end">

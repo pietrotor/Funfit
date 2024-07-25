@@ -98,7 +98,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         status: OrderStatusEnum.PENDING
       }
     },
-    pollInterval: 30000,
+    pollInterval: 5000,
     onCompleted(data) {
       if (data.getOrdersPaginated?.status === StatusEnum.ERROR) {
         showSuccessToast(
