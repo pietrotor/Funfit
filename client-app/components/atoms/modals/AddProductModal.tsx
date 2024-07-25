@@ -1,7 +1,7 @@
 import { useForm } from 'react-hook-form'
 
 import { Image, useDisclosure } from '@nextui-org/react'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { MyModal } from './MyModal'
 import { SearchProductModal } from './SearchProductsModal'
 import Input from '../Input'
@@ -50,6 +50,16 @@ export const AddProductModal = ({
     }
   })
   const productsDisclosure = useDisclosure()
+
+  const earningPorcent = useMemo(() => {
+    if (!watch('suggetedPrice') || !watch('cost')) return null
+    const price = parseFloat(watch('suggetedPrice')?.toString())
+    const cost = parseFloat(watch('cost')!.toString())
+
+    return (
+      (parseFloat(((price - cost) / price).toString()) as any).toFixed(4) * 100
+    )
+  }, [watch('suggetedPrice'), watch('cost')])
 
   const handleCreateCombo = (data: CreateProductInput) => {
     createCombo({
@@ -245,6 +255,12 @@ export const AddProductModal = ({
             label="Descripción"
             type="textArea"
           />
+          {!!earningPorcent && (
+            <p>
+              Porcentaje de ganancia:{' '}
+              <span className="font-bold">{earningPorcent}%</span>
+            </p>
+          )}
           {isCombo && (
             <p
               className="cursor-pointer text-right font-semibold text-secondary hover:underline"

@@ -159,7 +159,8 @@ export const useUpdateBranchProductQuery = () => {
   const [updateBranchProduct] = useUpdateBranchProductMutation()
   const handleUpdateBranchProduct = (
     data: BranchProductData,
-    field: string
+    field: string,
+    callback?: () => void
   ) => {
     updateBranchProduct({
       variables: {
@@ -182,6 +183,7 @@ export const useUpdateBranchProductQuery = () => {
         }
         if (result.updateBranchProduct?.status === StatusEnum.OK) {
           showSuccessToast('Producto actualizado correctamente', 'success')
+          callback?.()
         }
       }
     })

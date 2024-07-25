@@ -9,9 +9,13 @@ interface BranchesProps {
   children: React.ReactNode
   showBackButton?: boolean
 }
-export default function MainPage({ user, children, showBackButton }: BranchesProps) {
+export default function MainPage({
+  user,
+  children,
+  showBackButton
+}: BranchesProps) {
   return (
-    <AdministrationLayout user={user} showBackButton= {showBackButton}>
+    <AdministrationLayout user={user} showBackButton={showBackButton}>
       {children}
     </AdministrationLayout>
   )
