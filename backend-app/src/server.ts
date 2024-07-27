@@ -15,6 +15,8 @@ import resolvers from './graphql/resolvers'
 import cors from 'cors'
 import { GraphQLError } from 'graphql'
 import { currentUser } from './graphql/middlewares/currentuser.middleware'
+import dotenv from 'dotenv'
+dotenv.config()
 const { graphqlUploadExpress } = require('graphql-upload-ts')
 
 export async function startServer() {
@@ -23,12 +25,25 @@ export async function startServer() {
     const app = express()
     // middleware
     app.set('trust proxy', true)
-    if (process.env.NODE_ENV === 'production') {
-      // app.use(cors({
-      //   origin: ['https://cotizaciones.ferroblack.com', 'http://client-ferroblack-service'],
-      //   credentials: true,
-      //   allowedHeaders: ['Content-Type', 'Authorization', 'Content-Length', 'X-Requested-With', 'Accept', 'Origin', 'Host', 'Connection', 'Accept-Encoding', 'Accept-Language']
-      // }))
+    if (process.env.NODE_ENV === 'PRODUCTION') {
+      app.use(
+        cors({
+          origin: ['https://funfitbo.shop'],
+          credentials: true,
+          allowedHeaders: [
+            'Content-Type',
+            'Authorization',
+            'Content-Length',
+            'X-Requested-With',
+            'Accept',
+            'Origin',
+            'Host',
+            'Connection',
+            'Accept-Encoding',
+            'Accept-Language'
+          ]
+        })
+      )
       app.use(cors())
     } else {
       app.use(cors())
@@ -60,9 +75,9 @@ export async function startServer() {
       },
       introspection: process.env.NODE_ENV !== 'production',
       plugins: [
-        // process.env.NODE_ENV === 'production'
-        //   ? ApolloServerPluginLandingPageDisabled()
-        //   : ApolloServerPluginLandingPageGraphQLPlayground(),
+        process.env.NODE_ENV === 'PRODUCTION'
+          ? ApolloServerPluginLandingPageDisabled()
+          : ApolloServerPluginLandingPageGraphQLPlayground(),
         ApolloServerPluginDrainHttpServer({ httpServer })
       ]
     })
