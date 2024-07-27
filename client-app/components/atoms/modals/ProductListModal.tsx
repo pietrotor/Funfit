@@ -52,9 +52,12 @@ function ProductListModal({
                     {product.qty} x Bs.{product.price}
                   </p>
                 ) : (
-                  <p className="flex items-center justify-center ">
-                    {product.qty}
-                  </p>
+                  <div>
+                    <p className="flex items-center justify-center text-sm">
+                      {product.qty} Unidad
+                    </p>
+                    <p className="text-base font-bold">{product.total} Bs</p>
+                  </div>
                 )}
               </li>
             ))}
