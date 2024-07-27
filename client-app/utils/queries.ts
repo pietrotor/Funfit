@@ -774,6 +774,8 @@ export const GET_SALES_PAGINATED = gql`
         paymentMethod
         products {
           productId
+          qty
+          total
           product {
             id
             name

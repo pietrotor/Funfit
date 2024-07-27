@@ -17,6 +17,7 @@ import { TSaleProduct } from '@/interfaces/TData'
 import { PaymentMethodEnum, Sale } from '@/graphql/graphql-types'
 import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
 import { getCurrentDate } from '@/helpers/date.helper'
+import ProductListModal from '@/components/atoms/modals/ProductListModal'
 
 interface DailySaleProps {
   user: any
@@ -25,7 +26,7 @@ interface DailySaleProps {
 function DailySale({ user }: DailySaleProps) {
   const router = useRouter()
   const { currentBranch } = useAppSelector(state => state.branchReducer)
-  const [, setProducts] = useState<TSaleProduct[]>([])
+  const [productsDetiail, setProducts] = useState<TSaleProduct[]>([])
   const handleProductsListModal = useDisclosure()
 
   const {
@@ -324,6 +325,11 @@ function DailySale({ user }: DailySaleProps) {
           refetch()
           refetchSales()
         }}
+      />
+      <ProductListModal
+        isOpen={handleProductsListModal.isOpen}
+        onClose={handleProductsListModal.onClose}
+        values={productsDetiail || []}
       />
     </AdministrationLayout>
   )

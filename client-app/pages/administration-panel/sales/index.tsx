@@ -25,6 +25,7 @@ import {
 } from '@/graphql/graphql-types'
 import { useGetSalesSummary } from '@/services/useGetSalesSummary'
 import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
+import ProductListModal from '@/components/atoms/modals/ProductListModal'
 
 interface SalesProps {
   user: any
@@ -45,7 +46,7 @@ function Sales({ user }: SalesProps) {
     }
   })
   const [branchSelected, setSelected] = useState<TDataBranch>(currentBranch)
-  const [, setProducts] = useState<TSaleProduct[]>()
+  const [productsDetiail, setProducts] = useState<TSaleProduct[]>()
   const handleProductsListModal = useDisclosure()
 
   const { data: summaryData, setVariables: setSummaryVariables } =
@@ -195,7 +196,7 @@ function Sales({ user }: SalesProps) {
               }))
             }}
           />
-          <div className="col-start-1 col-end-3 bg-white lg:col-start-4 lg:col-end-5">
+          <div className="col-start-1 col-end-3 bg-white lg:col-start-3 lg:col-end-5">
             <ComboInput
               label="Producto"
               name="productId"
@@ -461,6 +462,11 @@ function Sales({ user }: SalesProps) {
         sale={selectedItem}
         modalDisclosure={handleDeleteModal}
         refetch={refetch}
+      />
+      <ProductListModal
+        isOpen={handleProductsListModal.isOpen}
+        onClose={handleProductsListModal.onClose}
+        values={productsDetiail || []}
       />
     </AdministrationLayout>
   )
