@@ -40,7 +40,8 @@ export class SalesService extends SalesRepository<objectId> {
   }
 
   async getTotalSales(salesSummaryInput: SalesSummaryInput) {
-    const { branchIds, endDate, initialDate, saleBy } = salesSummaryInput
+    const { branchIds, endDate, initialDate, saleBy, productId } =
+      salesSummaryInput
     const initialDateQuery = initialDate ? new Date(initialDate) : null
     if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
     const dateFilter =
@@ -62,13 +63,23 @@ export class SalesService extends SalesRepository<objectId> {
         : {}
     const salesByFilter = saleBy ? { createdBy: saleBy } : {}
 
+    const getProductAndSubProducts = async () => {
+      if (!productId) return {}
+      const ids = (
+        await productCore.getProductsAndSubProductsById(productId)
+      ).map(({ _id }) => _id)
+      return { 'products.productId': { $in: ids } }
+    }
+    const productsFilter = await getProductAndSubProducts()
+
     const result = await Sale.aggregate([
       {
         $match: {
           canceled: false,
           ...dateFilter,
           ...branchesFilter,
-          ...salesByFilter
+          ...salesByFilter,
+          ...productsFilter
         } // Aplica los a la consulta
       },
       {
@@ -87,7 +98,8 @@ export class SalesService extends SalesRepository<objectId> {
   }
 
   async getSummaryByPaymentMethod(salesSummaryInput: SalesSummaryInput) {
-    const { branchIds, endDate, initialDate, saleBy } = salesSummaryInput
+    const { branchIds, endDate, initialDate, saleBy, productId } =
+      salesSummaryInput
     const initialDateQuery = initialDate ? new Date(initialDate) : null
     if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
     const branchesFilter =
@@ -99,6 +111,15 @@ export class SalesService extends SalesRepository<objectId> {
           }
         : {}
     const salesByFilter = saleBy ? { createdBy: saleBy } : {}
+
+    const getProductAndSubProducts = async () => {
+      if (!productId) return {}
+      const ids = (
+        await productCore.getProductsAndSubProductsById(productId)
+      ).map(({ _id }) => _id)
+      return { 'products.productId': { $in: ids } }
+    }
+    const productsFilter = await getProductAndSubProducts()
 
     const result = await Sale.aggregate([
       {
@@ -133,7 +154,8 @@ export class SalesService extends SalesRepository<objectId> {
             $lte: new Date(endDate)
           },
           ...branchesFilter,
-          ...salesByFilter
+          ...salesByFilter,
+          ...productsFilter
         } // Aplica los a la consulta
       },
       {
@@ -160,6 +182,7 @@ export class SalesService extends SalesRepository<objectId> {
       endDate,
       initialDate,
       saleBy,
+      productId,
       ...paginationInput
     } = salesPaginationInput
     const initialDateQuery = initialDate ? new Date(initialDate) : null
@@ -182,6 +205,14 @@ export class SalesService extends SalesRepository<objectId> {
           }
         : {}
     const salesByFilter = saleBy ? { createdBy: saleBy } : {}
+    const getProductAndSubProducts = async () => {
+      if (!productId) return {}
+      const ids = (
+        await productCore.getProductsAndSubProductsById(productId)
+      ).map(({ _id }) => _id)
+      return { 'products.productId': { $in: ids } }
+    }
+    const productsFilter = await getProductAndSubProducts()
     if (filter) {
       const filterArgs = {
         $or: [{ code: { $regex: filter, $options: 'i' } }]
@@ -189,13 +220,19 @@ export class SalesService extends SalesRepository<objectId> {
       return await getInstancesPagination<ISale, IModelSale>(
         Sale,
         paginationInput,
-        { ...branchesFilter, ...filterArgs, ...salesByFilter, ...dateFilter }
+        {
+          ...branchesFilter,
+          ...filterArgs,
+          ...salesByFilter,
+          ...dateFilter,
+          ...productsFilter
+        }
       )
     }
     const test = await getInstancesPagination<ISale, IModelSale>(
       Sale,
       paginationInput,
-      { ...branchesFilter, ...salesByFilter, ...dateFilter }
+      { ...branchesFilter, ...salesByFilter, ...dateFilter, ...productsFilter }
     )
     return test
   }

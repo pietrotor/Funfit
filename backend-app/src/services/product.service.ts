@@ -128,6 +128,12 @@ export class ProductService extends ProductRepository<objectId> {
     )
   }
 
+  async getProductsAndSubProductsById(id: objectId) {
+    return await Product.find({
+      $or: [{ _id: id }, { 'subProducts.productId': id }]
+    })
+  }
+
   async createProducto(
     createProductInput: CreateProductInput,
     createdBy?: objectId | null

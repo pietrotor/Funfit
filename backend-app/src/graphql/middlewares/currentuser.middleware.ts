@@ -15,7 +15,10 @@ export const currentUser = (
   // console.log(req.headers.authorization)
   // console.log('-------------------------------------------------------------------------------------------')
   if (req.headers.authorization) {
-    console.log('🚀 ~ process.env.JWT_KEY:', process.env.JWT_KEY)
+    console.log(
+      '🚀 ~ process.env.JWT_KEY: =================================',
+      process.env.JWT_KEY
+    )
     console.log('🚀 ~ req.headers.authorization:', req.headers.authorization)
     try {
       const payload = <UserPayload>(

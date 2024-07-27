@@ -77,7 +77,11 @@ const Productos = ({ user }: IProduct) => {
     }
   })
 
-  const { data: comboData, refetch: refetchCombo } = useGetProductsQuery({
+  const {
+    data: comboData,
+    refetch: refetchCombo,
+    loading: loadingCombos
+  } = useGetProductsQuery({
     variables: {
       paginationInput: {
         page: variablesCombo?.currentPage,
@@ -350,9 +354,14 @@ const Productos = ({ user }: IProduct) => {
             <CombosTable
               combos={comboData?.getProducts?.data || []}
               changeRow={handleChangeComboRow}
-              changePage={page =>
-                setVariablesCombo(prevState => ({ ...prevState, page }))
-              }
+              isLoading={loadingCombos}
+              changePage={page => {
+                console.log(page)
+                setVariablesCombo(prevState => ({
+                  ...prevState,
+                  currentPage: page
+                }))
+              }}
               onSearch={value => {
                 setFilterCombo(value)
                 setVariablesCombo({

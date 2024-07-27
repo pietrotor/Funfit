@@ -32,7 +32,8 @@ const LoginPage: NextPage = () => {
           // localStorage.setItem('token', data.login.token?.toString()!)
           Cookies.set('sao-sess', data.login.token?.toString()!, { expires: 7 })
           showSuccessToast(data.login.message || 'Bienvenido', 'success')
-          router.push('/administration-panel/dailySale')
+          // router.push('/administration-panel/dailySale')
+          router.reload()
           return
         }
         showSuccessToast(
