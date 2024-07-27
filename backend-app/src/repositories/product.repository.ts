@@ -19,6 +19,7 @@ export default abstract class ProductRepository<T> {
   abstract getProductById(id: T): Promise<IProduct | OutErrorResponse>
   abstract getProductByIdInstance(id: T): Promise<IProduct | null>
   abstract getProductByIdSaleItemFieldResolver(id: T): Promise<IProduct | null>
+  abstract getProductsAndSubProductsById(id: T): Promise<IProduct[]>
   abstract getProductsOutWarehouse(
     paginationInput: PaginationInput,
     warehouseId: T

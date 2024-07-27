@@ -26,7 +26,8 @@ const UseGetCustomSalesPaginated = (branchId: string) => {
           new Date(new Date().getFullYear(), new Date().getMonth(), 1)
             .toISOString()
             .split('T')[0],
-        saleBy: variables?.saleBy
+        saleBy: variables?.saleBy,
+        productId: variables?.productId
       }
     },
     onCompleted: result => {
@@ -54,7 +55,8 @@ const UseGetCustomSalesPaginated = (branchId: string) => {
           branchIds: [branchId],
           endDate: variables?.endDate,
           initialDate: variables?.initialDate,
-          saleBy: variables?.saleBy
+          saleBy: variables?.saleBy,
+          productId: variables?.productId
         }
       }
     })

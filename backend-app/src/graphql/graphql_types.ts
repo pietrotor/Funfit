@@ -459,7 +459,7 @@ export type CreateProductInput = {
   categoryId?: InputMaybe<Scalars['ObjectId']['input']>;
   code: Scalars['String']['input'];
   cost?: InputMaybe<Scalars['Float']['input']>;
-  description: Scalars['String']['input'];
+  description?: InputMaybe<Scalars['String']['input']>;
   image?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   suggetedPrice: Scalars['Float']['input'];
@@ -1684,6 +1684,7 @@ export type SalesPaginationInput = {
   filter?: InputMaybe<Scalars['String']['input']>;
   initialDate?: InputMaybe<Scalars['Date']['input']>;
   page?: InputMaybe<Scalars['Int']['input']>;
+  productId?: InputMaybe<Scalars['ObjectId']['input']>;
   rows?: InputMaybe<Scalars['Int']['input']>;
   saleBy?: InputMaybe<Scalars['ObjectId']['input']>;
 };
@@ -1710,6 +1711,7 @@ export type SalesSummaryInput = {
   branchIds: Array<Scalars['ObjectId']['input']>;
   endDate?: InputMaybe<Scalars['Date']['input']>;
   initialDate?: InputMaybe<Scalars['Date']['input']>;
+  productId?: InputMaybe<Scalars['ObjectId']['input']>;
   saleBy?: InputMaybe<Scalars['ObjectId']['input']>;
 };
 

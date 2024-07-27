@@ -20,6 +20,7 @@ import DateConverter from '@/components/atoms/DateConverter'
 import {
   PaymentMethodEnum,
   Sale,
+  useGetProductsLazyQuery,
   useGetUsersLazyQuery
 } from '@/graphql/graphql-types'
 import { useGetSalesSummary } from '@/services/useGetSalesSummary'
@@ -75,7 +76,18 @@ function Sales({ user }: SalesProps) {
   const [getUsers, { data: users }] = useGetUsersLazyQuery({
     fetchPolicy: 'cache-first',
     variables: {
-      paginationInput: {}
+      paginationInput: {
+        rows: 250
+      }
+    }
+  })
+
+  const [getProducts, { data: products }] = useGetProductsLazyQuery({
+    fetchPolicy: 'cache-first',
+    variables: {
+      paginationInput: {
+        rows: 400
+      }
     }
   })
 
@@ -144,7 +156,7 @@ function Sales({ user }: SalesProps) {
           </RadioGroup>
         </InformationCard>
 
-        <div className="mt-10 grid grid-cols-2 gap-2 md:grid-cols-5 md:gap-4 md:space-y-0">
+        <div className="mt-10 grid grid-cols-2 gap-2 md:gap-4 md:space-y-0 lg:grid-cols-5">
           <InputComponent
             isRequired={false}
             name="initialDate"
@@ -183,7 +195,34 @@ function Sales({ user }: SalesProps) {
               }))
             }}
           />
-          <div className="col-start-1 col-end-3 rounded-md bg-white md:col-start-5 md:col-end-6 ">
+          <div className="col-start-1 col-end-3 bg-white lg:col-start-4 lg:col-end-5">
+            <ComboInput
+              label="Producto"
+              name="productId"
+              control={control}
+              onSelectionChange={e => {
+                setVariables({ ...variables, productId: e })
+                setSummaryVariables(prevVariables => ({
+                  ...prevVariables,
+                  branchIds: [currentBranch.id],
+                  productId: e
+                }))
+              }}
+              onClick={() => getProducts()}
+              options={
+                products?.getProducts?.data?.map(product => ({
+                  label: product.name,
+                  value: product.id
+                })) || [
+                  {
+                    label: 'cargando...',
+                    value: ''
+                  }
+                ]
+              }
+            />
+          </div>
+          <div className="col-start-1 col-end-3 rounded-md bg-white lg:col-start-5 lg:col-end-6 ">
             <ComboInput
               label="Vendedor"
               name="seller"

@@ -1081,7 +1081,7 @@ input CreateProductInput {
   code: String!
   # TODO: Change to pricelist
   suggetedPrice: Float!
-  description: String!
+  description: String
   categoryId: ObjectId
   cost: Float
   image: String
@@ -1229,6 +1229,7 @@ input SalesPaginationInput {
   initialDate: Date
   endDate: Date
   saleBy: ObjectId
+  productId: ObjectId
 }
 input SaleItemInput {
   branchProductId: ObjectId!
@@ -1257,6 +1258,7 @@ input SalesSummaryInput {
   initialDate: Date
   endDate: Date
   saleBy: ObjectId
+  productId: ObjectId
 }
 input CancelSaleInput {
   id: ObjectId!

@@ -19,6 +19,7 @@ export interface filterPaginationInterfaceState
   endDate?: string
   initialDate?: string
   saleBy?: string
+  productId?: string
 }
 export interface DistributorPagination extends PaginationInterfaceState {
   distributorsIds?: string[]

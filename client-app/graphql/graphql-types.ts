@@ -457,7 +457,7 @@ export type CreateProductInput = {
   categoryId?: InputMaybe<Scalars['ObjectId']>;
   code: Scalars['String'];
   cost?: InputMaybe<Scalars['Float']>;
-  description: Scalars['String'];
+  description?: InputMaybe<Scalars['String']>;
   image?: InputMaybe<Scalars['String']>;
   name: Scalars['String'];
   suggetedPrice: Scalars['Float'];
@@ -1682,6 +1682,7 @@ export type SalesPaginationInput = {
   filter?: InputMaybe<Scalars['String']>;
   initialDate?: InputMaybe<Scalars['Date']>;
   page?: InputMaybe<Scalars['Int']>;
+  productId?: InputMaybe<Scalars['ObjectId']>;
   rows?: InputMaybe<Scalars['Int']>;
   saleBy?: InputMaybe<Scalars['ObjectId']>;
 };
@@ -1708,6 +1709,7 @@ export type SalesSummaryInput = {
   branchIds: Array<Scalars['ObjectId']>;
   endDate?: InputMaybe<Scalars['Date']>;
   initialDate?: InputMaybe<Scalars['Date']>;
+  productId?: InputMaybe<Scalars['ObjectId']>;
   saleBy?: InputMaybe<Scalars['ObjectId']>;
 };
 

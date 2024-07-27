@@ -65,7 +65,7 @@ export const AddProductModal = ({
     createCombo({
       variables: {
         createComboInput: {
-          description: data.description,
+          description: data.description || '',
           name: data.name,
           image: data.image,
           code: data.code,
@@ -84,6 +84,7 @@ export const AddProductModal = ({
             data.createCombo.message || 'Ocurrió un error',
             'error'
           )
+          onClose()
         } else {
           showSuccessToast(
             data.createCombo?.message || 'Combo guardado correctamente',
@@ -93,6 +94,11 @@ export const AddProductModal = ({
           reset()
           onAdd()
         }
+      },
+      onError(error) {
+        showSuccessToast('No se pudo crear el combo', 'error')
+        console.error('🚀 ~ onError ~ error:', error)
+        onClose()
       }
     })
   }
