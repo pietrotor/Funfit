@@ -62,7 +62,18 @@ export const UPDATE_PRODUCT = gql`
     }
   }
 `
-
+export const UPDATE_COMBO = gql`
+  mutation UpdateCombo($updateComboInput: UpdateComboInput!) {
+    updateCombo(updateComboInput: $updateComboInput) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
+`
 export const DELETE_PRODUCT = gql`
   mutation DeleteProduct($deleteProductId: ObjectId!) {
     deleteProduct(id: $deleteProductId) {
