@@ -1,4 +1,5 @@
-import { Chip, Image } from '@nextui-org/react'
+import { Chip } from '@nextui-org/react'
+import { ProductLabel } from '../ProductLabel'
 import Table from '@/components/organisms/tableNext/Table'
 import { GetProductsQuery, Product } from '@/graphql/graphql-types'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
@@ -46,13 +47,11 @@ const CombosTable = ({
       onChangePage={changePage}
       titles={[
         { name: '#' },
-        { name: 'Imagen' },
         { name: 'Nombre' },
         { name: 'Categoría' },
         { name: 'Productos' },
         { name: 'Precio' },
         { name: 'Costo' },
-        { name: 'Código' },
         { name: 'Descripción' },
         { name: 'Acciones' }
       ]}
@@ -63,19 +62,12 @@ const CombosTable = ({
               idx +
               1}
           </h3>,
-          <Image
-            alt="image"
-            width={100}
-            src={
-              product.image === 'null' || !product.image
-                ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
-                : product.image
-            }
+          <ProductLabel
             key={idx}
+            code={product?.code || ''}
+            name={product?.name || ''}
+            image={product?.image}
           />,
-          <div key={idx} className="text-left text-sm">
-            {product.name}
-          </div>,
           <Chip
             key={idx}
             className="text-left text-sm"
@@ -98,9 +90,6 @@ const CombosTable = ({
           </div>,
           product.suggetedPrice + ' Bs.',
           product.cost + ' Bs.',
-          <div key={idx} className="text-left text-sm">
-            {product.code}
-          </div>,
           <div key={idx} className="text-left text-sm">
             {product.description}
           </div>,

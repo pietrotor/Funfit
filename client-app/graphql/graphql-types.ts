@@ -2062,6 +2062,13 @@ export type UpdateProductMutationVariables = Exact<{
 
 export type UpdateProductMutation = { __typename?: 'Mutation', updateProduct?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
+export type UpdateComboMutationVariables = Exact<{
+  updateComboInput: UpdateComboInput;
+}>;
+
+
+export type UpdateComboMutation = { __typename?: 'Mutation', updateCombo?: { __typename?: 'ProductResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
 export type DeleteProductMutationVariables = Exact<{
   deleteProductId: Scalars['ObjectId'];
 }>;
@@ -2358,7 +2365,7 @@ export type GetProductsQueryVariables = Exact<{
 }>;
 
 
-export type GetProductsQuery = { __typename?: 'Query', getProducts?: { __typename?: 'ProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, category?: { __typename?: 'Category', id: any, name: string, code: string } | null, subProducts?: Array<{ __typename?: 'SubProducts', productId: any, stockRequirement: number, product?: { __typename?: 'Product', name: string } | null }> | null }> | null } | null };
+export type GetProductsQuery = { __typename?: 'Query', getProducts?: { __typename?: 'ProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Product', id: any, name: string, suggetedPrice: number, code: string, description: string, categoryId?: any | null, cost?: number | null, image?: string | null, warehouses: Array<any>, type: ProductTypeEnum, category?: { __typename?: 'Category', id: any, name: string, code: string } | null, subProducts?: Array<{ __typename?: 'SubProducts', productId: any, stockRequirement: number, product?: { __typename?: 'Product', id: any, name: string, image?: string | null, code: string } | null }> | null }> | null } | null };
 
 export type GetWarehousesQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -2855,6 +2862,44 @@ export function useUpdateProductMutation(baseOptions?: Apollo.MutationHookOption
 export type UpdateProductMutationHookResult = ReturnType<typeof useUpdateProductMutation>;
 export type UpdateProductMutationResult = Apollo.MutationResult<UpdateProductMutation>;
 export type UpdateProductMutationOptions = Apollo.BaseMutationOptions<UpdateProductMutation, UpdateProductMutationVariables>;
+export const UpdateComboDocument = gql`
+    mutation UpdateCombo($updateComboInput: UpdateComboInput!) {
+  updateCombo(updateComboInput: $updateComboInput) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type UpdateComboMutationFn = Apollo.MutationFunction<UpdateComboMutation, UpdateComboMutationVariables>;
+
+/**
+ * __useUpdateComboMutation__
+ *
+ * To run a mutation, you first call `useUpdateComboMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateComboMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateComboMutation, { data, loading, error }] = useUpdateComboMutation({
+ *   variables: {
+ *      updateComboInput: // value for 'updateComboInput'
+ *   },
+ * });
+ */
+export function useUpdateComboMutation(baseOptions?: Apollo.MutationHookOptions<UpdateComboMutation, UpdateComboMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateComboMutation, UpdateComboMutationVariables>(UpdateComboDocument, options);
+      }
+export type UpdateComboMutationHookResult = ReturnType<typeof useUpdateComboMutation>;
+export type UpdateComboMutationResult = Apollo.MutationResult<UpdateComboMutation>;
+export type UpdateComboMutationOptions = Apollo.BaseMutationOptions<UpdateComboMutation, UpdateComboMutationVariables>;
 export const DeleteProductDocument = gql`
     mutation DeleteProduct($deleteProductId: ObjectId!) {
   deleteProduct(id: $deleteProductId) {
@@ -4549,6 +4594,7 @@ export const GetProductsDocument = gql`
       cost
       image
       warehouses
+      type
       category {
         id
         name
@@ -4558,7 +4604,10 @@ export const GetProductsDocument = gql`
         productId
         stockRequirement
         product {
+          id
           name
+          image
+          code
         }
       }
     }

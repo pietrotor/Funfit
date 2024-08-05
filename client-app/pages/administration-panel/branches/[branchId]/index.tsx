@@ -29,6 +29,7 @@ import { authUserHeader } from '@/utils/verificationUser'
 import { UpdateBranchProductModal } from '@/components/atoms/modals/UpdateBranchProductModal'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import { StockComboCircularProgressBar } from '@/components/atoms/StockComboCircularProgressBar/StockComboCircularProgressBar'
+import { ProductLabel } from '@/components/molecules'
 
 interface ProductOnBranchProps {
   user: any
@@ -209,38 +210,13 @@ function ProductOnBranch({ user }: ProductOnBranchProps) {
                     idx +
                     1}
                 </h3>,
-                <div key={idx} className="flex gap-2">
-                  <Image
-                    alt="image"
-                    width={80}
-                    src={
-                      productBranch.product?.image === 'null' ||
-                      !productBranch.product?.image
-                        ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
-                        : productBranch.product?.image
-                    }
-                  />
-                  <div className="flex flex-col justify-center align-baseline">
-                    <p className="text-left text-base font-semibold">
-                      {productBranch.product?.name}
-                    </p>
-                    <p className="text-left font-normal text-gray-500">
-                      Código:{' '}
-                      <span className="font-bold">
-                        {productBranch.product?.code}
-                      </span>
-                    </p>
-                    <p className="text-left font-normal text-gray-500">
-                      Tipo de producto:{' '}
-                      <span className="font-bold">
-                        {productBranch.product?.type === ProductTypeEnum.COMBO
-                          ? 'Combo'
-                          : 'Simple'}
-                      </span>
-                    </p>
-                    ,
-                  </div>
-                </div>,
+                <ProductLabel
+                  key={idx}
+                  code={productBranch.product?.code || ''}
+                  name={productBranch.product?.name || ''}
+                  image={productBranch.product?.image}
+                  type={productBranch.product?.type}
+                />,
                 <p key={idx}>{productBranch.price} Bs</p>,
                 <div key={idx} className="mx-auto w-16 text-sm">
                   {productBranch.product?.type === ProductTypeEnum.COMBO ? (

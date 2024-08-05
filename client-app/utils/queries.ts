@@ -141,6 +141,7 @@ export const GET_PRODUCTS = gql`
         cost
         image
         warehouses
+        type
         category {
           id
           name
@@ -150,7 +151,10 @@ export const GET_PRODUCTS = gql`
           productId
           stockRequirement
           product {
+            id
             name
+            image
+            code
           }
         }
       }

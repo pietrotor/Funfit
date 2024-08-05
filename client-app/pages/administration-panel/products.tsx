@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react'
-import { Chip, Image, Tab, Tabs, useDisclosure } from '@nextui-org/react'
+import { Chip, Tab, Tabs, useDisclosure } from '@nextui-org/react'
 import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
 import Table from '@/components/organisms/tableNext/Table'
@@ -15,6 +15,7 @@ import {
   StatusEnum,
   useDeleteProductMutation,
   useGetProductsQuery,
+  useUpdateComboMutation,
   useUpdateProductMutation
 } from '@/graphql/graphql-types'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
@@ -26,6 +27,7 @@ import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import { AddProductImageModal } from '@/components/atoms/modals/AddProductImageModal'
 import { CombosTable } from '@/components/molecules/CombosTable'
+import { ProductLabel } from '@/components/molecules'
 
 interface IProduct {
   user: any
@@ -48,6 +50,7 @@ const Productos = ({ user }: IProduct) => {
   const [filterCombo, setFilterCombo] = useState<string>('')
   const [DeleteteProductMutation] = useDeleteProductMutation()
   const [UpdateUserMutationVariables] = useUpdateProductMutation()
+  const [UpdateComboMutation] = useUpdateComboMutation()
   const [selectedTab, setSelectedTab] = useState('products')
   const handleAddProduct = useDisclosure()
   const handleEditProduct = useDisclosure()
@@ -105,14 +108,48 @@ const Productos = ({ user }: IProduct) => {
   const isCombo = useMemo(() => selectedTab === 'combo', [selectedTab])
 
   const handleUpdateProduct = (productId: string) => {
-    const product = data?.getProducts?.data?.find(
-      product => product.id === productId
-    )
+    const product =
+      data?.getProducts?.data?.find(product => product.id === productId) ||
+      comboData?.getProducts?.data?.find(product => product.id === productId)
+    console.log(product)
     setEditProduct(product as TValueProductData)
     handleEditProduct.onOpen()
   }
 
-  const handleSendUpdateUser = async (values: TValueProductData) => {
+  const handleUpdateCombo = async (values: TValueProductData) => {
+    UpdateComboMutation({
+      variables: {
+        updateComboInput: {
+          id: editProduct?.id,
+          name: values.name,
+          suggetedPrice: values.suggetedPrice,
+          code: values.code,
+          cost: values.cost,
+          description: values.description,
+          image: values.image,
+          categoryId: values.categoryId,
+          subProducts: values.subProducts
+        }
+      },
+      onCompleted: data => {
+        if (data.updateCombo?.status === StatusEnum.ERROR) {
+          showSuccessToast(
+            data.updateCombo.message || 'Ocurrio un error',
+            'error'
+          )
+          return
+        }
+        showSuccessToast(
+          data.updateCombo?.message || 'Usuario actualizado correctamente',
+          'success'
+        )
+        refetchCombo()
+        handleEditProduct.onClose()
+      }
+    })
+  }
+
+  const handleUpdateSimpleProduct = async (values: TValueProductData) => {
     UpdateUserMutationVariables({
       variables: {
         updateProductInput: {
@@ -143,6 +180,15 @@ const Productos = ({ user }: IProduct) => {
       }
     })
   }
+
+  const handleOnUpdateProduct = async (values: TValueProductData) => {
+    if (values.type === ProductTypeEnum.COMBO) {
+      handleUpdateCombo(values)
+    } else if (values.type === ProductTypeEnum.SIMPLE) {
+      handleUpdateSimpleProduct(values)
+    } else showSuccessToast('No se pudo actualizar el producto', 'error')
+  }
+
   const handleChangeRow = (row: number) => {
     setVariables({ ...variables, rows: row, currentPage: 1 })
   }
@@ -250,12 +296,10 @@ const Productos = ({ user }: IProduct) => {
               }
               titles={[
                 { name: '#' },
-                { name: 'Imagen' },
                 { name: 'Nombre' },
                 { name: 'Categoría' },
                 { name: 'Precio' },
                 { name: 'Costo' },
-                { name: 'Código' },
                 { name: 'Descripción' },
                 { name: 'Acciones' }
               ]}
@@ -267,19 +311,12 @@ const Productos = ({ user }: IProduct) => {
                       idx +
                       1}
                   </h3>,
-                  <Image
-                    alt="image"
-                    width={100}
-                    src={
-                      product.image === 'null' || !product.image
-                        ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
-                        : product.image
-                    }
+                  <ProductLabel
                     key={idx}
+                    code={product?.code || ''}
+                    name={product?.name || ''}
+                    image={product?.image || ''}
                   />,
-                  <div key={idx} className="text-left text-sm">
-                    {product.name}
-                  </div>,
                   <Chip
                     key={idx}
                     className="text-left text-sm"
@@ -294,9 +331,6 @@ const Productos = ({ user }: IProduct) => {
                   </Chip>,
                   product.suggetedPrice + ' Bs.',
                   product.cost + ' Bs.',
-                  <div key={idx} className="text-left text-sm">
-                    {product.code}
-                  </div>,
                   <div key={idx} className="text-left text-sm">
                     {product.description}
                   </div>,
@@ -389,8 +423,9 @@ const Productos = ({ user }: IProduct) => {
       <EditProductModal
         isOpen={handleEditProduct.isOpen}
         onClose={handleEditProduct.onClose}
-        handleSendUpdateUser={handleSendUpdateUser}
+        handleUpdateProduct={handleOnUpdateProduct}
         values={editProduct as TValueProductData}
+        isCombo={selectedTab === 'combo'}
       />
 
       <AddProductImageModal
