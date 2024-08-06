@@ -1,6 +1,7 @@
 import {
   CreateDistributorSaleInput,
   DistributorSalePaginationInput,
+  DistributorSalePaymentMethod,
   DistributorSaleProduct,
   StockMovementTypeEnum
 } from '@/graphql/graphql_types'
@@ -272,19 +273,24 @@ export class DistributorSaleService extends DistributorSaleRepository<objectId> 
       priceListId,
       paid: isPaid
     })
-    await paymentCore.createPayment(
-      {
-        amount: totalPaid,
-        distributorId,
-        date,
-        distributorSaleId: saleDistributorInstance._id,
-        observation: `pago por venta con código: ${code}.`,
-        balance,
-        totalPaid
-      },
-      false,
-      createdBy
-    )
+    if (
+      paymentMethod !== DistributorSalePaymentMethod.CREDIT &&
+      totalPaid !== 0
+    ) {
+      await paymentCore.createPayment(
+        {
+          amount: totalPaid,
+          distributorId,
+          date,
+          distributorSaleId: saleDistributorInstance._id,
+          observation: `pago por venta con código: ${code}.`,
+          balance,
+          totalPaid
+        },
+        false,
+        createdBy
+      )
+    }
     return await saleDistributorInstance.save()
   }
 
