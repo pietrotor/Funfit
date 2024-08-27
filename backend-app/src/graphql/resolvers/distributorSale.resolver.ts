@@ -194,7 +194,6 @@ export const distributorSaleType = {
       _: any,
       __: any
     ): Promise<Product | null> {
-      console.log('--- PRODUCTO --, ', parent.productId)
       if (parent.productId) {
         const product = await productCore.getProductByIdInstance(
           parent.productId

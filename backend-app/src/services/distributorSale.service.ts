@@ -98,10 +98,7 @@ export class DistributorSaleService extends DistributorSaleRepository<objectId> 
       distributorsIds,
       ...paginationInput
     } = distributorSalePaginationInput
-    console.log(
-      '--- respuest --- ',
-      await this.getTotalSaled(distributorSalePaginationInput)
-    )
+
     const initialDateQuery = initialDate ? new Date(initialDate) : null
     if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
     const dateFilter =
@@ -192,7 +189,7 @@ export class DistributorSaleService extends DistributorSaleRepository<objectId> 
     )
     if (!isTotalOk) throw new BadRequestError('El total no es correcto')
 
-    if (subTotal - discount !== total) {
+    if (new Decimal(subTotal).minus(discount).toNumber() !== total) {
       throw new BadRequestError('El sub total no es correcto')
     }
 
@@ -390,6 +387,8 @@ export class DistributorSaleService extends DistributorSaleRepository<objectId> 
         }
       ])
     ])
+
+    console.log(total, totalPaid, balance)
 
     return {
       total: total[0]?.total || 0,

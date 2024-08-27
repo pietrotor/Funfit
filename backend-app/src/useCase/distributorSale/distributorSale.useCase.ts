@@ -22,11 +22,14 @@ export class DistributorSaleUseCase {
     total: number,
     discount: number
   ) {
-    const calculatedTotal =
+    const calculatedTotal = new Decimal(
       products.reduce(
         (total, product) => new Decimal(total).plus(product.total).toNumber(),
         0
-      ) - discount
+      )
+    )
+      .minus(discount)
+      .toNumber()
     console.log(calculatedTotal, total)
     return calculatedTotal === total
   }

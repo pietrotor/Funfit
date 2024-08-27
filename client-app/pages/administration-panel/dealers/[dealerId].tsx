@@ -267,9 +267,11 @@ function DealersDetailPage({ user }: BranchesProps) {
                   <p className="text-xs font-semibold text-blue-500">
                     Total pagado: <span>{sale.totalPaid} Bs</span>
                   </p>
-                  <p className="text-xs font-semibold text-red-500">
-                    Saldo: <span>{sale.balance} Bs</span>
-                  </p>
+                  {!!sale.balance && (
+                    <p className="text-xs font-semibold text-red-500">
+                      Saldo: <span>{sale.balance} Bs</span>
+                    </p>
+                  )}
                 </div>,
                 <div
                   key={idx}

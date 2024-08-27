@@ -29,6 +29,8 @@ function useGetDistributorsSalesSummary() {
     return response?.getDistributorsSalesSummary?.data
   }, [response])
 
+  console.log(data)
+
   return {
     data,
     loading,
