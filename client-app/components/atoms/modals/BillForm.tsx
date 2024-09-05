@@ -67,7 +67,6 @@ const BillForm = ({ isOpen, onClose, onSubmit, isLoading }: BillFormProps) => {
           <div className="w-full flex-1">
             <Input
               control={control}
-              valueAs="number"
               name="date"
               type="date"
               label="Fecha"
