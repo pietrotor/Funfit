@@ -23,7 +23,7 @@ import { uploadFileToS3Bucket } from 'helpers/upload-files'
 // ========================================== Mutations ====================================================
 const getPublicProducts = async (
   _: any,
-  args: { branchId?: objectId }
+  args: { branchId?: objectId | null | undefined }
 ): Promise<BranchProductsCategorizedResponse> => {
   try {
     const { branchId = null } = args
