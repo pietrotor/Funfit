@@ -1504,7 +1504,7 @@ export type QueryGetPublicCustomerByIdArgs = {
 
 
 export type QueryGetPublicProductsArgs = {
-  branchId: Scalars['ObjectId']['input'];
+  branchId?: InputMaybe<Scalars['ObjectId']['input']>;
 };
 
 
@@ -3166,7 +3166,7 @@ export type QueryResolvers<ContextType = any, ParentType extends ResolversParent
   getProductsOutOfWarehouse?: Resolver<Maybe<ResolversTypes['ProductsResponse']>, ParentType, ContextType, RequireFields<QueryGetProductsOutOfWarehouseArgs, 'paginationInput' | 'warehouseId'>>;
   getPublicCategories?: Resolver<Maybe<ResolversTypes['PublicCategoriesResponse']>, ParentType, ContextType>;
   getPublicCustomerById?: Resolver<Maybe<ResolversTypes['CustomerResponse']>, ParentType, ContextType, RequireFields<QueryGetPublicCustomerByIdArgs, 'id'>>;
-  getPublicProducts?: Resolver<Maybe<ResolversTypes['BranchProductsCategorizedResponse']>, ParentType, ContextType, RequireFields<QueryGetPublicProductsArgs, 'branchId'>>;
+  getPublicProducts?: Resolver<Maybe<ResolversTypes['BranchProductsCategorizedResponse']>, ParentType, ContextType, Partial<QueryGetPublicProductsArgs>>;
   getRoles?: Resolver<Maybe<ResolversTypes['RolesResponse']>, ParentType, ContextType, RequireFields<QueryGetRolesArgs, 'paginationInput'>>;
   getSaleById?: Resolver<Maybe<ResolversTypes['SaleResponse']>, ParentType, ContextType, RequireFields<QueryGetSaleByIdArgs, 'id'>>;
   getSalesPaginated?: Resolver<Maybe<ResolversTypes['SalesResponse']>, ParentType, ContextType, RequireFields<QueryGetSalesPaginatedArgs, 'salesPaginationInput'>>;

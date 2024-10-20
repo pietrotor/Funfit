@@ -10,6 +10,15 @@ import { Branch, Cash, IBranch, IModelBranch } from '../models'
 import { BranchRepository } from '../repositories'
 
 export class BranchService extends BranchRepository<objectId> {
+  async getDefaultBranch() {
+    const branchInstance = await Branch.findOne({
+      deleted: false,
+      defaultOnWeb: true
+    })
+    if (!branchInstance) throw new BadRequestError('No se ninguna sucursal')
+    return branchInstance
+  }
+
   async getBranchesPaginated(paginationInput: PaginationInput) {
     const { filter } = paginationInput
     if (filter) {

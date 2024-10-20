@@ -162,7 +162,7 @@ type Query {
   getBill(id: ObjectId!): BillResponse
   getBillSummary(billSummaryInput: BillSummaryInput!): BillSummaryResponse
   # ============================ ECOMMERCE ROUTES ================================
-  getPublicProducts(branchId: ObjectId!): BranchProductsCategorizedResponse
+  getPublicProducts(branchId: ObjectId): BranchProductsCategorizedResponse
   getPublicCategories: PublicCategoriesResponse
   getPublicCustomerById(id: ObjectId!): CustomerResponse
 }

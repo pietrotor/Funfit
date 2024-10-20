@@ -5,9 +5,7 @@ import React, { useState } from 'react'
 import { Controller, useForm } from 'react-hook-form'
 import { useRouter } from 'next/router'
 import { StatusEnum, useLoginLazyQuery } from '@/graphql/graphql-types'
-import ToastComponent, {
-  showSuccessToast
-} from '@/components/atoms/Toast/toasts'
+import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import { userVerificated } from '@/utils/userVericated'
 
 type TLoginInput = {
@@ -99,7 +97,6 @@ const LoginPage: NextPage = () => {
           )}
         </form>
       </div>
-      <ToastComponent />
     </div>
   )
 }

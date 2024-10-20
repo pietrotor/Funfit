@@ -1,15 +1,15 @@
 import { useRouter } from 'next/router'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { Badge, useDisclosure } from '@nextui-org/react'
 
 import clsx from 'clsx'
+import { throttle } from 'lodash'
 import IconSelector from '@/components/atoms/IconSelector'
 import Accordion from '@/components/molecules/Accordion'
 import { TSections } from '@/interfaces/Sections'
 import Images from '@/components/atoms/Image/Image'
 import Nav from '@/components/organisms/navBar/Nav'
 import CartModal from '@/components/atoms/modals/CartsModal'
-import ToastComponent from '@/components/atoms/Toast/toasts'
 import { useAppSelector } from '@/store/index'
 import { useGetPublicCategoriesQuery } from '@/graphql/graphql-types'
 import { getCategoryName } from '@/helpers/clean-category-name'
@@ -29,22 +29,22 @@ const UsersNavBar: React.FC<TSubMenuLinkProps> = ({ menu, hideCategories }) => {
     fetchPolicy: 'cache-first'
   })
 
-  const categories = sortObjectsByKey(
-    data?.getPublicCategories?.data || [],
-    'name'
+  const categories = useMemo(
+    () => sortObjectsByKey(data?.getPublicCategories?.data || [], 'name'),
+    [data?.getPublicCategories?.data]
   )
 
   const [activeSection, setActiveSection] = useState<string>('')
   const observer = useRef<IntersectionObserver | null>(null)
 
   useEffect(() => {
-    const handleIntersect = (entries: any) => {
+    const handleIntersect = throttle((entries: any) => {
       entries.forEach((entry: any) => {
         if (entry.isIntersecting) {
           setActiveSection(entry.target.id)
         }
       })
-    }
+    })
 
     observer.current = new IntersectionObserver(handleIntersect, {
       threshold: 0.01, // Adjust the threshold as needed
@@ -67,7 +67,6 @@ const UsersNavBar: React.FC<TSubMenuLinkProps> = ({ menu, hideCategories }) => {
 
   return (
     <header className={`${isNavOpen ? 'relative h-16' : 'h-16'} relative`}>
-      <ToastComponent />
       <div className="fixed z-[20] w-full">
         <div className="w-full bg-white px-6 py-1 shadow-md md:flex md:justify-between">
           <div className="flex items-center justify-between">
@@ -151,7 +150,7 @@ const UsersNavBar: React.FC<TSubMenuLinkProps> = ({ menu, hideCategories }) => {
                   href={`/#${category.id}`}
                   key={category.id}
                   className={clsx(
-                    'font-amatemora min-w-fit appearance-none whitespace-nowrap border-b-5 border-transparent px-4 py-2 text-xl font-bold uppercase outline-none transition-all duration-250 hover:bg-black/10 md:px-5 xl:px-8',
+                    'min-w-fit appearance-none whitespace-nowrap border-b-5 border-transparent px-4 py-2 font-amatemora text-xl font-bold uppercase outline-none transition-all duration-250 hover:bg-black/10 md:px-5 xl:px-8',
                     activeSection === category.id && '!border-primary'
                   )}
                 >

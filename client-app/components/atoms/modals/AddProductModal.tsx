@@ -62,6 +62,9 @@ export const AddProductModal = ({
   }, [watch('suggetedPrice'), watch('cost')])
 
   const handleCreateCombo = (data: CreateProductInput) => {
+    if (!subProducts.length) {
+      return showSuccessToast('Debes agregar al menos un sub producto', 'error')
+    }
     createCombo({
       variables: {
         createComboInput: {

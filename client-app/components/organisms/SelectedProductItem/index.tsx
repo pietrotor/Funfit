@@ -5,6 +5,7 @@ import IconSelector from '@/components/atoms/IconSelector'
 import Counter from '@/components/molecules/Counter'
 import { TProductBranchData } from '@/interfaces/TData'
 import { ProductTypeEnum } from '@/graphql/graphql-types'
+import { useProductHandler } from '@/hooks/useProductsHandler'
 
 type SelectedProductItemProps = {
   item: TProductBranchData
@@ -16,51 +17,11 @@ function SelectedProductItem({
   selectedProducts,
   setSelectedProducts
 }: SelectedProductItemProps) {
-  const increment = (id: string) => {
-    setSelectedProducts(prevValue => ({
-      ...prevValue,
-      products: selectedProducts.products.map(item => {
-        if (item.productId === id) {
-          return {
-            ...item,
-            quantity: (item.quantity || 0) + 1,
-            total: new Decimal(item.price)
-              .mul((item.quantity || 0) + 1)
-              .toNumber()
-          }
-        }
-        return item
-      }),
-      subTotal: new Decimal(item.price)
-        .plus(selectedProducts.subTotal)
-        .toNumber(),
-      total: new Decimal(item.price).plus(selectedProducts.total).toNumber(),
-      discount: selectedProducts.discount
-    }))
-  }
-
-  const decrement = (id: string) => {
-    setSelectedProducts(prevValue => ({
-      ...prevValue,
-      products: selectedProducts.products.map(item => {
-        if (item.productId === id) {
-          return {
-            ...item,
-            quantity: (item.quantity || 0) - 1,
-            total: new Decimal(item.price)
-              .mul((item.quantity || 0) - 1)
-              .toNumber()
-          }
-        }
-        return item
-      }),
-      subTotal: new Decimal(selectedProducts.subTotal)
-        .minus(item.price)
-        .toNumber(),
-      total: new Decimal(selectedProducts.total).minus(item.price).toNumber(),
-      discount: selectedProducts.discount
-    }))
-  }
+  const { decrement, increment } = useProductHandler({
+    item,
+    selectedProducts,
+    setSelectedProducts
+  })
 
   const handleDelete = (id: string) => {
     setSelectedProducts(prevValue => ({

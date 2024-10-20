@@ -1,5 +1,5 @@
 'use client'
-import { NextPage } from 'next'
+import { GetStaticProps } from 'next'
 import React, { useEffect, useState } from 'react'
 import { getCategoryName } from '../helpers'
 import ClientLayout from '@/components/templates/ClientLayout/ClientLayout'
@@ -7,25 +7,17 @@ import { UserProducts } from '@/components/organisms/Products/UserProducts'
 import Container from '@/components/molecules/Container/Container'
 import HeroShot from '@/components/atoms/FrontPage/heroShot'
 import { TProductBranchData } from '@/interfaces/TData'
-import { useGetPublicProductsLazyQuery } from '@/graphql/graphql-types'
-import { showSuccessToast } from '@/components/atoms/Toast/toasts'
+import {
+  GetPublicProductsQuery,
+  GetPublicProductsQueryVariables
+} from '@/graphql/graphql-types'
 import { sortObjectsByKey } from '@/helpers/sort.helper'
+import apolloClientSSR from '@/graphql/apollo-ssr'
+import { GET_PUBLIC_BRANCH_PRODUCTS } from '@/utils/queries'
 
-const Index: NextPage = () => {
+const Index = ({ data }: { data: GetPublicProductsQuery }) => {
   const [currentBranchId, setBranchId] = useState<string>('')
   const [isInitialLoadComplete, setIsInitialLoadComplete] = useState(false)
-  const [getPublicProducts, { data, loading }] = useGetPublicProductsLazyQuery({
-    fetchPolicy: 'cache-first',
-    variables: {
-      branchId: currentBranchId
-    },
-    onCompleted: data => {
-      console.log(data)
-    },
-    onError: error => {
-      showSuccessToast('Error al cargar los productos' + error, 'error')
-    }
-  })
 
   useEffect(() => {
     const branchId = sessionStorage.getItem('branchId')?.replace(/^"|"$/g, '')
@@ -40,7 +32,7 @@ const Index: NextPage = () => {
     const branchId = sessionStorage.getItem('branchId')?.replace(/^"|"$/g, '')
 
     if (branchId && isInitialLoadComplete) {
-      getPublicProducts()
+      // getPublicProducts()
     }
   }, [isInitialLoadComplete, currentBranchId])
 
@@ -52,7 +44,7 @@ const Index: NextPage = () => {
           <Container id={category.id} key={idx}>
             <UserProducts
               data={category.products as TProductBranchData[]}
-              loading={loading}
+              loading={false}
               title={getCategoryName(category.name)}
             />
           </Container>
@@ -63,3 +55,26 @@ const Index: NextPage = () => {
 }
 
 export default Index
+
+export const getStaticProps: GetStaticProps = async context => {
+  try {
+    const { data } = await apolloClientSSR.query<
+      GetPublicProductsQuery,
+      GetPublicProductsQueryVariables
+    >({
+      query: GET_PUBLIC_BRANCH_PRODUCTS
+    })
+
+    return {
+      props: {
+        data
+      },
+      revalidate: 60
+    }
+  } catch (error) {
+    return {
+      props: {},
+      revalidate: 60
+    }
+  }
+}

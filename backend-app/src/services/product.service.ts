@@ -174,6 +174,11 @@ export class ProductService extends ProductRepository<objectId> {
     createdBy?: objectId | null
   ) {
     const { name, code, subProducts } = createProductInput
+
+    if (!subProducts.length) {
+      throw new BadRequestError('Debe tener almenos un subproducto')
+    }
+
     const [duplicatedProductName, duplicatedProductCode] = await Promise.all([
       Product.findOne({
         name,

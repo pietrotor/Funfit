@@ -1,5 +1,5 @@
 import { GetServerSideProps } from 'next'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Spinner, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
 import Decimal from 'decimal.js'
@@ -36,6 +36,7 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
   const router = useRouter()
   const { data: dataPassed } = router.query
   const parsedData = dataPassed ? JSON.parse(dataPassed as string) : null
+  const [filter, setFilter] = useState('')
   const [getProducts, { loading, data, refetch }] =
     useGetDistributorSaleProductsLazyQuery({
       fetchPolicy: 'network-only'
@@ -48,6 +49,18 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
 
   const handleResponsiveSaleModal = useDisclosure()
   const handleSelectWarehouseModal = useDisclosure()
+
+  const products = useMemo(() => {
+    if (!filter) return data?.getDistributorSaleProducts?.data || []
+
+    return (
+      data?.getDistributorSaleProducts?.data?.filter(
+        item =>
+          item.product?.name?.toLowerCase().includes(filter.toLowerCase()) ||
+          item.product?.code?.toLowerCase().includes(filter.toLowerCase())
+      ) || []
+    )
+  }, [data?.getDistributorSaleProducts?.data, filter])
 
   const handleSelected = (id: string) => {
     const existingProduct = selectedProducts?.products?.find(
@@ -106,6 +119,7 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
       }
     }
   }
+
   useEffect(() => {
     handleSelectWarehouseModal.onOpen()
   }, [])
@@ -118,34 +132,28 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
     )
   }, [router.query])
 
-  // useEffect(() => {
-  //   if (selectedProducts && selectedProducts.products.length > 0) {
-  //     selectedProducts.products.forEach(product => {
-  //       product.stock = data?.getDistributorSaleProducts?.data?.find(
-  //         item => item.productId === product.productId
-  //       )?.stock
-  //     })
-  //   }
-  // }, [selectedProducts])
-
   return (
-    <AdministrationLayout user={user} profileButton={false}>
-      <section className="flex h-full w-full ">
-        <div className="w-2/3 border-1 border-secondary/30  bg-secondary/10 p-4">
+    <AdministrationLayout
+      user={user}
+      profileButton={false}
+      containerClassName="!p-0 !pl-2"
+    >
+      <section className="flex h-full w-full flex-col md:flex-row">
+        <div className="w-full border-1 border-secondary/30 bg-secondary/10  p-4 md:w-2/3">
           <div className="flex w-full">
-            <Search setFilter={() => {}} />
+            <Search setFilter={value => setFilter(value)} />
           </div>
           {loading && (
             <div className="flex h-[90vh] items-center justify-center overflow-y-auto scrollbar-hide ">
               <Spinner label="Cargando..." color="primary" />
             </div>
           )}
-          <div className="grid max-h-[90vh] grid-cols-2 gap-3 overflow-y-auto scrollbar-hide md:grid-cols-3 md:gap-4 md:p-4 ">
+          <div className="grid max-h-[90vh] grid-cols-2 gap-3 overflow-y-auto scrollbar-hide md:gap-4 md:p-4 xl:grid-cols-3 ">
             {!loading &&
-              data?.getDistributorSaleProducts?.data?.map(item => (
+              products.map(item => (
                 <DistributorSaleProductCard
                   key={item.productId}
-                  product={item as TDistributorProductSaleProduct}
+                  product={item as any}
                   quantity={
                     selectedProducts?.products?.find(
                       product => product.productId === item.productId
@@ -153,6 +161,8 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
                   }
                   isLoading={loading}
                   handleSelected={() => handleSelected(item.productId)}
+                  selectedProducts={selectedProducts as any}
+                  setSelectedProducts={setSelectedProducts as any}
                 />
               ))}
           </div>
@@ -163,22 +173,21 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
             Finalizar venta
           </ButtonComponent>
         </div>
-        <div className="hidden h-full md:block md:w-1/3">
+        <div className="h-full w-full md:block md:w-1/3">
           <SalesReceipt
             selectedProducts={selectedProducts as any}
             setSelectedProducts={setSelectedProducts as any}
             selectedDistributors={selectedDistributors}
             isDistributorSale
-            refetch={refetch}
+            refetch={() => {
+              refetch()
+              setTimeout(() => {
+                router.reload()
+              }, 1500)
+            }}
           />
         </div>
       </section>
-      {/* <ResponsiveSaleModal
-        isOpen={handleResponsiveSaleModal.isOpen}
-        onClose={handleResponsiveSaleModal.onClose}
-        selectedProducts={selectedProducts}
-        setSelectedProducts={setSelectedProducts}
-      /> */}
       <SelectPOSDistributorModal
         isOpen={handleSelectWarehouseModal.isOpen}
         onClose={handleSelectWarehouseModal.onClose}

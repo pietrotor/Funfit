@@ -1502,7 +1502,7 @@ export type QueryGetPublicCustomerByIdArgs = {
 
 
 export type QueryGetPublicProductsArgs = {
-  branchId: Scalars['ObjectId'];
+  branchId?: InputMaybe<Scalars['ObjectId']>;
 };
 
 
@@ -2461,7 +2461,7 @@ export type GetBranchProductsPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetBranchProductsPaginatedQuery = { __typename?: 'Query', getBranchProductsPaginated?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, lastStockEntry?: number | null, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, image?: string | null, code: string, type: ProductTypeEnum } | null }> | null } | null };
+export type GetBranchProductsPaginatedQuery = { __typename?: 'Query', getBranchProductsPaginated?: { __typename?: 'BranchProductsResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'BranchProduct', id: any, branchId: any, productId: any, price: number, stock: number, lastStockEntry?: number | null, isVisibleOnWeb: boolean, isVisibleOnMenu: boolean, product?: { __typename?: 'Product', id: any, name: string, image?: string | null, description: string, code: string, type: ProductTypeEnum } | null }> | null } | null };
 
 export type GetBranchProductStockQueryVariables = Exact<{
   id: Scalars['ObjectId'];
@@ -2552,7 +2552,7 @@ export type GetProductStockQueryVariables = Exact<{
 export type GetProductStockQuery = { __typename?: 'Query', getProductStock?: { __typename?: 'StocksResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Stock', id: any, productId: any, warehouseId: any, quantity: number, units: string }> | null } | null };
 
 export type GetPublicProductsQueryVariables = Exact<{
-  branchId: Scalars['ObjectId'];
+  branchId?: InputMaybe<Scalars['ObjectId']>;
 }>;
 
 
@@ -5349,6 +5349,7 @@ export const GetBranchProductsPaginatedDocument = gql`
         id
         name
         image
+        description
         code
         type
       }
@@ -6121,7 +6122,7 @@ export type GetProductStockQueryHookResult = ReturnType<typeof useGetProductStoc
 export type GetProductStockLazyQueryHookResult = ReturnType<typeof useGetProductStockLazyQuery>;
 export type GetProductStockQueryResult = Apollo.QueryResult<GetProductStockQuery, GetProductStockQueryVariables>;
 export const GetPublicProductsDocument = gql`
-    query GetPublicProducts($branchId: ObjectId!) {
+    query GetPublicProducts($branchId: ObjectId) {
   getPublicProducts(branchId: $branchId) {
     errorInput {
       field
@@ -6176,7 +6177,7 @@ export const GetPublicProductsDocument = gql`
  *   },
  * });
  */
-export function useGetPublicProductsQuery(baseOptions: Apollo.QueryHookOptions<GetPublicProductsQuery, GetPublicProductsQueryVariables>) {
+export function useGetPublicProductsQuery(baseOptions?: Apollo.QueryHookOptions<GetPublicProductsQuery, GetPublicProductsQueryVariables>) {
         const options = {...defaultOptions, ...baseOptions}
         return Apollo.useQuery<GetPublicProductsQuery, GetPublicProductsQueryVariables>(GetPublicProductsDocument, options);
       }

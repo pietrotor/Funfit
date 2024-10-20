@@ -23,27 +23,29 @@ export const showSuccessToast = (message: string, type: Ttoast) => {
 
 const ToastComponent: React.FC = () => {
   return (
-    <div>
-      <Toaster
-        position="bottom-right"
-        toastOptions={{
+    <Toaster
+      position="bottom-right"
+      containerStyle={{
+        zIndex: '99999 !important'
+      }}
+      toastOptions={{
+        style: {
+          background: 'white',
+          color: 'black',
+          height: '70px',
+          fontWeight: 600,
+          border: '2px solid #CCE266',
+          zIndex: '99999 !important'
+        },
+        error: {
           style: {
-            background: 'white',
-            color: 'black',
-            height: '70px',
-            fontWeight: 600,
-            border: '2px solid #CCE266'
-          },
-          error: {
-            style: {
-              border: '2px solid red',
-              color: 'red',
-              fontWeight: 600
-            }
+            border: '2px solid red',
+            color: 'red',
+            fontWeight: 600
           }
-        }}
-      />
-    </div>
+        }
+      }}
+    />
   )
 }
 

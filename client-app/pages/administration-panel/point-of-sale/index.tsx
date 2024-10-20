@@ -112,9 +112,13 @@ function PointOfSale({ user }: PointOfSaleProps) {
   }, [selectedProducts])
 
   return (
-    <AdministrationLayout user={user} profileButton={false}>
+    <AdministrationLayout
+      user={user}
+      profileButton={false}
+      containerClassName="!p-0 !pl-2"
+    >
       <section className="flex h-full w-full flex-col-reverse md:flex-row ">
-        <div className="w-full border-1 border-secondary/30 bg-secondary/10  p-4 md:w-2/3">
+        <div className="h-full w-full border-1 border-secondary/30 bg-secondary/10  p-4 md:w-2/3">
           <div className="flex w-full">
             <Search setFilter={setFilter} />
           </div>
@@ -123,7 +127,7 @@ function PointOfSale({ user }: PointOfSaleProps) {
               <Spinner label="Cargando..." color="primary" />
             </div>
           )}
-          <div className="grid max-h-[90vh] grid-cols-2 gap-3 overflow-y-auto scrollbar-hide md:grid-cols-3 md:gap-4 md:p-4 ">
+          <div className="grid max-h-[calc(100vh-110px)] grid-cols-2 gap-3 overflow-y-auto scrollbar-hide md:gap-4 md:p-4 xl:grid-cols-3 ">
             {!loading &&
               data?.getBranchProductsPaginated?.data?.map(item => (
                 <PointOfSaleCard
@@ -136,6 +140,8 @@ function PointOfSale({ user }: PointOfSaleProps) {
                   }
                   isLoading={loading}
                   handleSelected={() => handleSelected(item.productId)}
+                  selectedProducts={selectedProducts}
+                  setSelectedProducts={setSelectedProducts}
                 />
               ))}
           </div>

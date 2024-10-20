@@ -12,6 +12,7 @@ export interface IBranch extends Document, IGeneric {
   cashId: objectId
   productsIds: objectId[]
   visibleOnWeb: boolean
+  defaultOnWeb?: boolean
 }
 export interface IModelBranch extends Model<IBranch> {}
 
@@ -47,6 +48,10 @@ const branchSchema = new Schema<IBranch>(
       ref: 'Cash'
     },
     visibleOnWeb: {
+      type: Boolean,
+      default: true
+    },
+    defaultOnWeb: {
       type: Boolean,
       default: true
     },

@@ -14,6 +14,7 @@ import {
   useGetCategoriesLazyQuery
 } from '@/graphql/graphql-types'
 import { TCategories } from '@/hooks/UseCategoryQuery'
+import { showSuccessToast } from '../Toast/toasts'
 
 type SubProduct = Product & { stockRequirement: number }
 export type TValueProductData = {
@@ -58,6 +59,9 @@ export const EditProductModal = ({
   const productsDisclosure = useDisclosure()
 
   const onSubmit = () => {
+    if (isCombo && !subProducts.length) {
+      return showSuccessToast('Debes agregar almenos un subproducto', 'error')
+    }
     handleUpdateProduct({
       id: values.id,
       name: watch('name') === values.name ? undefined : watch('name'),

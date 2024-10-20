@@ -9,6 +9,8 @@ import { OutErrorResponse } from '@/lib/graphqlerrors/custom.error'
 import { IBranch } from '@/models/index'
 
 export abstract class BranchRepository<T> {
+  abstract getDefaultBranch(): Promise<IBranch | null>
+
   abstract getBranchesPaginated(
     paginationInput: PaginationInput
   ): Promise<IPaginatedResponse<IBranch[]> | OutErrorResponse>

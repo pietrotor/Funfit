@@ -58,7 +58,13 @@ export class BranchProductService extends BranchProductRepository<objectId> {
     )
   }
 
-  async getBranchProductsByCategory(branchId: objectId) {
+  async getBranchProductsByCategory(branchIdParam: objectId | null) {
+    let branchId = branchIdParam
+    if (!branchId) {
+      const branch = await branchCore.getDefaultBranch()
+      branchId = branch._id
+    }
+
     const results: BranchProductCategorized[] = await BranchProduct.aggregate([
       {
         $match: {
@@ -167,6 +173,11 @@ export class BranchProductService extends BranchProductRepository<objectId> {
     const productInstance = await productCore.getProductById(productId)
     if (productInstance.type === ProductTypeEnum.SIMPLE) return stock
 
+    console.log(
+      '------------------------- HERE ----------------',
+      productInstance
+    )
+
     const subProductsInstances = await Promise.all(
       productInstance.subProducts.map(async subProduct => {
         const subBranchProudctInstance =
@@ -179,6 +190,8 @@ export class BranchProductService extends BranchProductRepository<objectId> {
         )
       })
     )
+
+    console.log({ subProductsInstances })
 
     let minStock: number | null = null
     subProductsInstances.forEach((stock, index) => {

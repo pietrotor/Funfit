@@ -58,6 +58,35 @@
   }
 }
 
-html {
-  scroll-behavior: smooth;
+.text-clamp-2 {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+
+
+  @supports (-webkit-line-clamp: 2) {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: initial;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
 }
+
+/* @keyframes smoothscroll1 {
+  from, to { scroll-behavior: smooth; }
+}
+
+@keyframes smoothscroll2 {
+  from, to { scroll-behavior: smooth; }
+}
+
+html {
+  animation: smoothscroll1 1s;
+}
+
+html:focus-within {
+  animation-name: smoothscroll2;
+  scroll-behavior: smooth;
+} */

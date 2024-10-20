@@ -2,11 +2,10 @@ import Head from 'next/head'
 import React, { useEffect, useMemo, useState } from 'react'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
+import clsx from 'clsx'
 import Sidebar, { TMenuStructure } from './sidebar'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
-import ToastComponent, {
-  showSuccessToast
-} from '@/components/atoms/Toast/toasts'
+import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import {
   OrderStatusEnum,
   RoleTypeEnum,
@@ -29,6 +28,7 @@ type TAdministrationLayoutProps = {
   onSubmit?: () => void
   profileButton?: boolean
   user: ICurrentUser
+  containerClassName?: HTMLElement['className']
 }
 
 const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
@@ -36,7 +36,8 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   showBackButton = false,
   children,
   profileButton = true,
-  user
+  user,
+  containerClassName
 }) => {
   const [orderData, setOrderData] = useState<TPointOfSaleData[]>()
   const { business } = useAppSelector(state => state.configuration)
@@ -142,9 +143,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       }
     })
 
-    console.log(datosTransformados, 'datosTransformados')
     setOrderData(datosTransformados as TPointOfSaleData[])
-    console.log(orderData, 'orderData')
   }
   useEffect(() => {}, [])
 
@@ -360,7 +359,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
               {showBackButton && <BackButton />}
             </div>
             <div className={` fixed right-5 z-30 ${sidebarOpen ? '' : ''} `}>
-              <ToastComponent />
               <div className="flex items-center">
                 <DropDown
                   IconButtonName="Notifications"
@@ -407,7 +405,12 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
                 />
               </div>
             </div>
-            <div className="h-full w-full ps-5 md:pt-16 lg:pt-5">
+            <div
+              className={clsx(
+                'h-full w-full ps-5 md:pt-16 lg:pt-5',
+                containerClassName
+              )}
+            >
               {children}
             </div>
           </div>

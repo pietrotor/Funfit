@@ -29,12 +29,16 @@ export default function UserCard({
     <div className="group overflow-hidden rounded-xl transition-all duration-500 hover:shadow-lg">
       {!isLoading ? (
         <div className="flex h-full flex-col">
-          <Images
-            alt="Product image"
-            className="h-96 object-cover"
-            removeWrapper
-            src={image as string}
-          />
+          <div className="relative h-96 w-full bg-gray-200">
+            <Images
+              alt="Product image"
+              className="h-96 w-[500px] object-cover"
+              removeWrapper={false}
+              loading={'lazy'}
+              src={image as string}
+            />
+          </div>
+
           <div className="w-full bg-gray-100 px-6 py-3 transition-all duration-400">
             <div className="flex w-full items-center justify-between gap-4">
               <div

@@ -555,6 +555,7 @@ export const GET_BRANCH_PRODUCTS = gql`
           id
           name
           image
+          description
           code
           type
         }
@@ -973,7 +974,7 @@ export const GET_PRODUCT_STOCK = gql`
 `
 
 export const GET_PUBLIC_BRANCH_PRODUCTS = gql`
-  query GetPublicProducts($branchId: ObjectId!) {
+  query GetPublicProducts($branchId: ObjectId) {
     getPublicProducts(branchId: $branchId) {
       errorInput {
         field

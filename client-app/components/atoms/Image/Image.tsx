@@ -10,6 +10,7 @@ type TImageProps = {
   removeWrapper?: boolean
   className?: React.ComponentProps<'div'>['className']
   radius?: TSizes
+  loading?: 'eager' | 'lazy'
 }
 
 const Images: React.FC<TImageProps> = ({
@@ -17,7 +18,8 @@ const Images: React.FC<TImageProps> = ({
   alt,
   removeWrapper = true,
   className = '',
-  radius = 'none'
+  radius = 'none',
+  loading
 }) => {
   const [imgSrc, setImgSrc] = useState(src)
   return (
@@ -27,6 +29,7 @@ const Images: React.FC<TImageProps> = ({
       removeWrapper={removeWrapper}
       src={`${imgSrc}`}
       radius={`${radius}`}
+      {...(!removeWrapper && { loading })}
       onErrorCapture={e => setImgSrc(onImagePreviewError(e as any))}
     />
   )
