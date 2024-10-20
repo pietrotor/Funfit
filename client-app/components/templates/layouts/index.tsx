@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import Head from 'next/head'
 import React, { useEffect, useMemo, useState } from 'react'
 import Cookies from 'js-cookie'
