@@ -4,8 +4,7 @@
 #
 
 app = 'funfit-backend-production'
-# primary_region = 'scl'
-primary_region = 'den'
+primary_region = 'scl'
 
 
 [build]
