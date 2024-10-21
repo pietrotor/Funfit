@@ -62,7 +62,8 @@ export const getStaticProps: GetStaticProps = async context => {
       GetPublicProductsQuery,
       GetPublicProductsQueryVariables
     >({
-      query: GET_PUBLIC_BRANCH_PRODUCTS
+      query: GET_PUBLIC_BRANCH_PRODUCTS,
+      fetchPolicy: 'network-only'
     })
 
     return {
