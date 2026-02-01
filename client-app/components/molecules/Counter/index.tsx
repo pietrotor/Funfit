@@ -36,25 +36,43 @@ function Counter({
       <Button
         isIconOnly
         size="sm"
-        variant="flat"
-        color="primary"
+        variant={isDisabledRemove ? 'flat' : 'flat'}
+        color={isDisabledRemove ? 'default' : 'primary'}
         onClick={() => decrement(productId)}
         disabled={isDisabledRemove}
         isDisabled={isDisabledRemove}
+        className={
+          isDisabledRemove
+            ? '!bg-gray-100 !text-gray-300 !opacity-100 cursor-not-allowed border border-gray-200'
+            : '!bg-primary/20 !text-primary hover:!bg-primary/30 active:!bg-primary/40'
+        }
       >
-        <IconSelector name="Minus" width="w-3" />
+        <IconSelector 
+          name="Minus" 
+          width="w-3" 
+          className={isDisabledRemove ? 'text-gray-300' : 'text-primary'} 
+        />
       </Button>
-      <span>{quantity}</span>
+      <span className="font-medium text-gray-700 min-w-[24px] text-center">{quantity}</span>
       <Button
         isIconOnly
         size="sm"
-        variant="flat"
-        color="primary"
+        variant={isDisabledIncrement ? 'flat' : 'flat'}
+        color={isDisabledIncrement ? 'default' : 'primary'}
         onClick={() => increment(productId)}
         disabled={isDisabledIncrement}
         isDisabled={isDisabledIncrement}
+        className={
+          isDisabledIncrement
+            ? '!bg-gray-100 !text-gray-300 !opacity-100 cursor-not-allowed border border-gray-200'
+            : '!bg-primary/20 !text-primary hover:!bg-primary/30 active:!bg-primary/40'
+        }
       >
-        {<IconSelector name="Plus" width="w-3" />}
+        <IconSelector 
+          name="Plus" 
+          width="w-3" 
+          className={isDisabledIncrement ? 'text-gray-300' : 'text-primary'} 
+        />
       </Button>
     </div>
   )

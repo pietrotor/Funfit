@@ -46,6 +46,7 @@ function SelectedProductItem({
         <Counter
           productId={item.productId}
           quantity={item.quantity || 0}
+          stock={item.product?.type === ProductTypeEnum.COMBO ? undefined : item.stock}
           decrement={() => {
             item.quantity && item.quantity > 1 && decrement(item.productId)
           }}
