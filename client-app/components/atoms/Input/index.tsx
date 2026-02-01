@@ -32,7 +32,7 @@ const Label = ({
 type TInputProps = InputProps & {
   name: string
   control?: Control<any>
-  type?: 'text' | 'number' | 'date' | 'textArea' | 'email' | 'password'
+  type?: 'text' | 'number' | 'date' | 'time' | 'textArea' | 'email' | 'password'
   variant?: 'bordered' | 'flat' | 'faded' | 'underlined'
   valueAs?: 'number' | 'date' | 'string'
   placeholder?: string

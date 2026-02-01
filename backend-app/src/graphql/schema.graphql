@@ -1230,6 +1230,9 @@ input SalesPaginationInput {
   endDate: Date
   saleBy: ObjectId
   productId: ObjectId
+  # Hour filter (format: "HH:mm", e.g. "08:00", "17:30")
+  initialHour: String
+  endHour: String
 }
 input SaleItemInput {
   branchProductId: ObjectId!
@@ -1259,6 +1262,9 @@ input SalesSummaryInput {
   endDate: Date
   saleBy: ObjectId
   productId: ObjectId
+  # Hour filter (format: "HH:mm", e.g. "08:00", "17:30")
+  initialHour: String
+  endHour: String
 }
 input CancelSaleInput {
   id: ObjectId!

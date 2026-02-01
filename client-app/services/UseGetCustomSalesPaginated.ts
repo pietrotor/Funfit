@@ -27,7 +27,9 @@ const UseGetCustomSalesPaginated = (branchId: string) => {
             .toISOString()
             .split('T')[0],
         saleBy: variables?.saleBy,
-        productId: variables?.productId
+        productId: variables?.productId,
+        initialHour: variables?.initialHour || null,
+        endHour: variables?.endHour || null
       }
     },
     onCompleted: result => {
@@ -56,7 +58,9 @@ const UseGetCustomSalesPaginated = (branchId: string) => {
           endDate: variables?.endDate,
           initialDate: variables?.initialDate,
           saleBy: variables?.saleBy,
-          productId: variables?.productId
+          productId: variables?.productId,
+          initialHour: variables?.initialHour || null,
+          endHour: variables?.endHour || null
         }
       }
     })

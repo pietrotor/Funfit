@@ -1679,8 +1679,10 @@ export type SalesByPaymentMethodSummary = {
 export type SalesPaginationInput = {
   branchIds: Array<Scalars['ObjectId']>;
   endDate?: InputMaybe<Scalars['Date']>;
+  endHour?: InputMaybe<Scalars['String']>;
   filter?: InputMaybe<Scalars['String']>;
   initialDate?: InputMaybe<Scalars['Date']>;
+  initialHour?: InputMaybe<Scalars['String']>;
   page?: InputMaybe<Scalars['Int']>;
   productId?: InputMaybe<Scalars['ObjectId']>;
   rows?: InputMaybe<Scalars['Int']>;
@@ -1708,7 +1710,9 @@ export type SalesSummary = {
 export type SalesSummaryInput = {
   branchIds: Array<Scalars['ObjectId']>;
   endDate?: InputMaybe<Scalars['Date']>;
+  endHour?: InputMaybe<Scalars['String']>;
   initialDate?: InputMaybe<Scalars['Date']>;
+  initialHour?: InputMaybe<Scalars['String']>;
   productId?: InputMaybe<Scalars['ObjectId']>;
   saleBy?: InputMaybe<Scalars['ObjectId']>;
 };

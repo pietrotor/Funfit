@@ -21,6 +21,59 @@ import { BranchProduct, ProductTypeEnum, TurnMovementTypeEnum } from '../models'
 import Sale, { IModelSale, ISale } from '@/models/sales.model'
 import { getInstancesPagination } from './generic.service'
 import { addDays } from 'helpers'
+import mongoose from 'mongoose'
+
+// Helper para construir el filtro de hora usando $expr
+const buildHourFilter = (initialHour?: string | null, endHour?: string | null) => {
+  if (!initialHour || !endHour) return {}
+  
+  // Parse hours (format: "HH:mm")
+  const [startH, startM] = initialHour.split(':').map(Number)
+  const [endH, endM] = endHour.split(':').map(Number)
+  
+  // Convertir a minutos desde medianoche para comparación más fácil
+  const startMinutes = startH * 60 + startM
+  const endMinutes = endH * 60 + endM
+  
+  return {
+    $expr: {
+      $and: [
+        {
+          $gte: [
+            {
+              $add: [
+                { $multiply: [{ $hour: { date: '$createdAt', timezone: 'America/La_Paz' } }, 60] },
+                { $minute: { date: '$createdAt', timezone: 'America/La_Paz' } }
+              ]
+            },
+            startMinutes
+          ]
+        },
+        {
+          $lte: [
+            {
+              $add: [
+                { $multiply: [{ $hour: { date: '$createdAt', timezone: 'America/La_Paz' } }, 60] },
+                { $minute: { date: '$createdAt', timezone: 'America/La_Paz' } }
+              ]
+            },
+            endMinutes
+          ]
+        }
+      ]
+    }
+  }
+}
+
+export interface SalesExportInput {
+  branchIds: string[]
+  initialDate: string
+  endDate: string
+  saleBy?: string
+  productId?: string
+  initialHour?: string
+  endHour?: string
+}
 
 export class SalesService extends SalesRepository<objectId> {
   async getSaleById(id: objectId) {
@@ -40,7 +93,7 @@ export class SalesService extends SalesRepository<objectId> {
   }
 
   async getTotalSales(salesSummaryInput: SalesSummaryInput) {
-    const { branchIds, endDate, initialDate, saleBy, productId } =
+    const { branchIds, endDate, initialDate, saleBy, productId, initialHour, endHour } =
       salesSummaryInput
     const initialDateQuery = initialDate ? new Date(initialDate) : null
     if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
@@ -62,6 +115,7 @@ export class SalesService extends SalesRepository<objectId> {
           }
         : {}
     const salesByFilter = saleBy ? { createdBy: saleBy } : {}
+    const hourFilter = buildHourFilter(initialHour, endHour)
 
     const getProductAndSubProducts = async () => {
       if (!productId) return {}
@@ -79,7 +133,8 @@ export class SalesService extends SalesRepository<objectId> {
           ...dateFilter,
           ...branchesFilter,
           ...salesByFilter,
-          ...productsFilter
+          ...productsFilter,
+          ...hourFilter
         } // Aplica los a la consulta
       },
       {
@@ -98,7 +153,7 @@ export class SalesService extends SalesRepository<objectId> {
   }
 
   async getSummaryByPaymentMethod(salesSummaryInput: SalesSummaryInput) {
-    const { branchIds, endDate, initialDate, saleBy, productId } =
+    const { branchIds, endDate, initialDate, saleBy, productId, initialHour, endHour } =
       salesSummaryInput
     const initialDateQuery = initialDate ? new Date(initialDate) : null
     if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
@@ -111,6 +166,7 @@ export class SalesService extends SalesRepository<objectId> {
           }
         : {}
     const salesByFilter = saleBy ? { createdBy: saleBy } : {}
+    const hourFilter = buildHourFilter(initialHour, endHour)
 
     const getProductAndSubProducts = async () => {
       if (!productId) return {}
@@ -155,7 +211,8 @@ export class SalesService extends SalesRepository<objectId> {
           },
           ...branchesFilter,
           ...salesByFilter,
-          ...productsFilter
+          ...productsFilter,
+          ...hourFilter
         } // Aplica los a la consulta
       },
       {
@@ -183,6 +240,8 @@ export class SalesService extends SalesRepository<objectId> {
       initialDate,
       saleBy,
       productId,
+      initialHour,
+      endHour,
       ...paginationInput
     } = salesPaginationInput
     const initialDateQuery = initialDate ? new Date(initialDate) : null
@@ -205,6 +264,7 @@ export class SalesService extends SalesRepository<objectId> {
           }
         : {}
     const salesByFilter = saleBy ? { createdBy: saleBy } : {}
+    const hourFilter = buildHourFilter(initialHour, endHour)
     const getProductAndSubProducts = async () => {
       if (!productId) return {}
       const ids = (
@@ -225,14 +285,15 @@ export class SalesService extends SalesRepository<objectId> {
           ...filterArgs,
           ...salesByFilter,
           ...dateFilter,
-          ...productsFilter
+          ...productsFilter,
+          ...hourFilter
         }
       )
     }
     const test = await getInstancesPagination<ISale, IModelSale>(
       Sale,
       paginationInput,
-      { ...branchesFilter, ...salesByFilter, ...dateFilter, ...productsFilter }
+      { ...branchesFilter, ...salesByFilter, ...dateFilter, ...productsFilter, ...hourFilter }
     )
     return test
   }
@@ -464,5 +525,70 @@ export class SalesService extends SalesRepository<objectId> {
       branchInstance.save()
     ])
     return saleUpdated
+  }
+
+  /**
+   * Retorna un cursor para iterar sobre las ventas de forma eficiente
+   * Esto evita cargar todas las ventas en memoria de una sola vez
+   */
+  getSalesExportCursor(exportInput: SalesExportInput) {
+    const { branchIds, endDate, initialDate, saleBy, productId, initialHour, endHour } = exportInput
+    const initialDateQuery = initialDate ? new Date(initialDate) : null
+    if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
+
+    const dateFilter =
+      initialDateQuery && endDate
+        ? {
+            createdAt: {
+              $gte: initialDateQuery,
+              $lt: addDays(new Date(endDate), 1)
+            }
+          }
+        : {}
+
+    const branchesFilter =
+      branchIds.length > 0
+        ? {
+            branchId: {
+              $in: branchIds
+            }
+          }
+        : {}
+
+    const salesByFilter = saleBy ? { createdBy: saleBy } : {}
+    const hourFilter = buildHourFilter(initialHour, endHour)
+
+    // Nota: El filtro por producto se hace después si es necesario
+    // para evitar una consulta adicional antes de iniciar el cursor
+
+    return {
+      cursor: Sale.find({
+        deleted: false,
+        ...branchesFilter,
+        ...salesByFilter,
+        ...dateFilter,
+        ...hourFilter
+      })
+        .populate('branchId')
+        .populate('createdBy')
+        .populate({
+          path: 'products.productId',
+          model: 'Product'
+        })
+        .sort({ createdAt: -1 })
+        .cursor({ batchSize: 100 }), // Procesa 100 documentos a la vez
+      productIdFilter: productId || null
+    }
+  }
+
+  /**
+   * Obtiene los IDs de productos y subproductos para filtrado
+   */
+  async getProductIdsForFilter(productId: string): Promise<string[]> {
+    const productObjectId = new mongoose.Types.ObjectId(productId)
+    const products = await productCore.getProductsAndSubProductsById(
+      productObjectId as any
+    )
+    return products.map(({ _id }) => _id.toString())
   }
 }

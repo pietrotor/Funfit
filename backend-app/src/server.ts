@@ -16,6 +16,7 @@ import cors from 'cors'
 import { GraphQLError } from 'graphql'
 import { currentUser } from './graphql/middlewares/currentuser.middleware'
 import dotenv from 'dotenv'
+import apiRoutes from './routes'
 dotenv.config()
 const { graphqlUploadExpress } = require('graphql-upload-ts')
 
@@ -51,6 +52,10 @@ export async function startServer() {
 
     app.use(graphqlUploadExpress({ maxFileSize: 4000000, maxFiles: 10 }))
     app.use(currentUser)
+    app.use(express.json())
+
+    // REST API Routes
+    app.use('/api', apiRoutes)
 
     const httpServer = http.createServer(app)
     const schema = makeExecutableSchema({ typeDefs, resolvers })

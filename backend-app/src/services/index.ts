@@ -21,6 +21,7 @@ import { PriceService } from './price.service'
 import { PaymentService } from './payment.service'
 import { DistributorSaleService } from './distributorSale.service'
 import { BillService } from './bill.service'
+import { ExcelService } from './excel.service'
 
 export const configurationCore = new ConfigurationService()
 export const userCore = new UserService()
@@ -45,3 +46,4 @@ export const priceCore = new PriceService()
 export const paymentCore = new PaymentService()
 export const distributorSaleCore = new DistributorSaleService()
 export const billCore = new BillService()
+export const excelCore = new ExcelService()
