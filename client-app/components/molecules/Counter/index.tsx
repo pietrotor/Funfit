@@ -47,10 +47,10 @@ function Counter({
             : '!bg-primary/20 !text-primary hover:!bg-primary/30 active:!bg-primary/40'
         }
       >
-        <IconSelector 
-          name="Minus" 
-          width="w-3" 
-          className={isDisabledRemove ? 'text-gray-300' : 'text-primary'} 
+        <IconSelector
+          name="Minus"
+          width="w-3"
+          className={isDisabledRemove ? 'text-gray-300' : 'text-primary'}
         />
       </Button>
       <span className="font-medium text-gray-700 min-w-[24px] text-center">{quantity}</span>
@@ -68,10 +68,10 @@ function Counter({
             : '!bg-primary/20 !text-primary hover:!bg-primary/30 active:!bg-primary/40'
         }
       >
-        <IconSelector 
-          name="Plus" 
-          width="w-3" 
-          className={isDisabledIncrement ? 'text-gray-300' : 'text-primary'} 
+        <IconSelector
+          name="Plus"
+          width="w-3"
+          className={isDisabledIncrement ? 'text-gray-300' : 'text-primary'}
         />
       </Button>
     </div>

@@ -27,7 +27,6 @@ import { useGetSalesSummary } from '@/services/useGetSalesSummary'
 import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
 import ProductListModal from '@/components/atoms/modals/ProductListModal'
 import ExportModal from '@/components/atoms/modals/ExportModal'
-import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 
 interface SalesProps {
   user: any
@@ -195,7 +194,7 @@ function Sales({ user }: SalesProps) {
 
       const backendUrl = process.env.NEXT_PUBLIC_BACKENDURL?.replace('/graphql-api', '') || 'http://localhost:4000'
       const response = await fetch(`${backendUrl}/api/sales/export?${params.toString()}`)
-      
+
       if (!response.ok) {
         throw new Error('Error al exportar')
       }
@@ -209,7 +208,7 @@ function Sales({ user }: SalesProps) {
       a.click()
       window.URL.revokeObjectURL(url)
       document.body.removeChild(a)
-      
+
       setExportStatus('success')
     } catch (error: any) {
       console.error('Error al exportar:', error)
@@ -444,12 +443,12 @@ function Sales({ user }: SalesProps) {
           >
             {/* Efecto de brillo */}
             <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-            
+
             {/* Icono */}
             <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
               <IconSelector name="Download" width="w-5" height="h-5" className="text-white" />
             </div>
-            
+
             {/* Texto */}
             <div className="relative flex flex-col items-start">
               <span className="text-sm font-bold tracking-wide">Exportar a Excel</span>
