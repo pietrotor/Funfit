@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import IGeneric from '@/interfaces/generic.interface'
-import { Schema, Model, model, Document } from 'mongoose'
+import { Schema, Model, model, Document, models } from 'mongoose'
 
 export enum PaymentMethodEnum {
   QR_TRANSFER = 'QR_TRANSFER',
@@ -141,7 +141,7 @@ const saleSchema = new Schema<ISale>(
   { timestamps: true }
 )
 
-const Sale = model<ISale, IModelSale>('Sale', saleSchema, 'sale')
+const Sale = (models.Sale as IModelSale) || model<ISale, IModelSale>('Sale', saleSchema, 'sale')
 
 saleSchema.index({ createdAt: 1 })
 

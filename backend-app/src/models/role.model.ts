@@ -1,4 +1,4 @@
-import { Document, model, Model, Schema } from 'mongoose'
+import { Document, model, Model, Schema, models } from 'mongoose'
 import IGeneric from '../interfaces/generic.interface'
 
 enum RoleTypeEnum {
@@ -46,6 +46,6 @@ const roleSchema = new Schema<IRole>(
   { timestamps: true }
 )
 
-const Role = model<IRole, IModelRole>('Role', roleSchema, 'role')
+const Role = (models.Role as IModelRole) || model<IRole, IModelRole>('Role', roleSchema, 'role')
 
 export { Role }

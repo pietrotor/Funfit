@@ -1,5 +1,5 @@
 import IGeneric from '@/interfaces/generic.interface'
-import { Document, Model, Schema, model } from 'mongoose'
+import { Document, Model, Schema, model, models } from 'mongoose'
 
 export interface ITurn extends Document, IGeneric {
   id: objectId;
@@ -101,4 +101,4 @@ const turnSchema = new Schema<ITurn>(
   { timestamps: true }
 )
 
-export const Turn = model<ITurn, IModelTurn>('Turn', turnSchema, 'turn')
+export const Turn = (models.Turn as IModelTurn) || model<ITurn, IModelTurn>('Turn', turnSchema, 'turn')

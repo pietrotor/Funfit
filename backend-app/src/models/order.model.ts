@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import IGeneric from '@/interfaces/generic.interface'
-import { Schema, Model, model, Document } from 'mongoose'
+import { Schema, Model, model, Document, models } from 'mongoose'
 import { PaymentMethodEnum } from './sales.model'
 
 enum DeliveryMethodEnum {
@@ -177,6 +177,6 @@ const orderSchema = new Schema<IOrder>(
   { timestamps: true }
 )
 
-const Order = model<IOrder, IModelOrder>('Order', orderSchema, 'order')
+const Order = (models.Order as IModelOrder) || model<IOrder, IModelOrder>('Order', orderSchema, 'order')
 
 export { Order, IOrder, IModelOrder }

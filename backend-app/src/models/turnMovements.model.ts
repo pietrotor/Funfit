@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import IGeneric from '@/interfaces/generic.interface'
-import { Document, Model, Schema, model } from 'mongoose'
+import { Document, Model, Schema, model, models } from 'mongoose'
 
 export enum TurnMovementTypeEnum {
   ADD = 'ADD',
@@ -58,7 +58,7 @@ const turnMovementsSchema = new Schema<ITurnMovements>(
   { timestamps: true }
 )
 
-export const TurnMovements = model<ITurnMovements, IModelTurnMovements>(
+export const TurnMovements = (models.TurnMovements as IModelTurnMovements) || model<ITurnMovements, IModelTurnMovements>(
   'TurnMovements',
   turnMovementsSchema,
   'turnMovements'

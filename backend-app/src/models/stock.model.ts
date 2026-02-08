@@ -1,4 +1,4 @@
-import { Document, Model, Schema, model } from 'mongoose'
+import { Document, Model, Schema, model, models } from 'mongoose'
 import IGeneric from '@/interfaces/generic.interface'
 
 export interface IStock extends Document, IGeneric {
@@ -51,6 +51,6 @@ const stockSchema = new Schema<IStock>(
   { timestamps: true }
 )
 
-const Stock = model<IStock, IModelStock>('Stock', stockSchema, 'stocks')
+const Stock = (models.Stock as IModelStock) || model<IStock, IModelStock>('Stock', stockSchema, 'stocks')
 
 export default Stock

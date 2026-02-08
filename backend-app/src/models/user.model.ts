@@ -1,5 +1,5 @@
 import IGeneric from '../interfaces/generic.interface'
-import { Document, Model, Schema, model } from 'mongoose'
+import { Document, Model, Schema, model, models } from 'mongoose'
 
 export interface IUser extends Document, IGeneric {
   id: objectId
@@ -62,6 +62,6 @@ const usersSchema = new Schema<IUser>(
   { timestamps: true }
 )
 
-const User = model<IUser, IModelUser>('User', usersSchema, 'users')
+const User = (models.User as IModelUser) || model<IUser, IModelUser>('User', usersSchema, 'users')
 
 export default User

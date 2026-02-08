@@ -1,5 +1,5 @@
 import IGeneric from '../interfaces/generic.interface'
-import { Document, Model, Schema, model } from 'mongoose'
+import { Document, Model, Schema, model, models } from 'mongoose'
 
 export interface IBusiness extends Document, IGeneric {
   id: objectId
@@ -41,6 +41,6 @@ const businessSchema = new Schema<IBusiness>({
   }
 }, { timestamps: true })
 
-const Business = model<IBusiness, IModelBusiness>('Business', businessSchema, 'businesses')
+const Business = (models.Business as IModelBusiness) || model<IBusiness, IModelBusiness>('Business', businessSchema, 'businesses')
 
 export default Business

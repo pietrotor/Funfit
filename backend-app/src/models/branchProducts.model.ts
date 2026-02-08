@@ -1,5 +1,5 @@
 import IGeneric from '@/interfaces/generic.interface'
-import { Document, Model, Schema, model } from 'mongoose'
+import { Document, Model, Schema, model, models } from 'mongoose'
 
 export interface IBranchProduct extends Document, IGeneric {
   id: objectId
@@ -54,7 +54,7 @@ const branchProductSchema = new Schema<IBranchProduct>(
   { timestamps: true }
 )
 
-export const BranchProduct = model<IBranchProduct, IModelBranchProduct>(
+export const BranchProduct = (models.BranchProduct as IModelBranchProduct) || model<IBranchProduct, IModelBranchProduct>(
   'BranchProduct',
   branchProductSchema,
   'branchProduct'

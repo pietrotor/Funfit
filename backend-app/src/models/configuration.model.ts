@@ -1,4 +1,4 @@
-import { Document, Model, Schema, model } from "mongoose";
+import { Document, Model, Schema, model, models } from "mongoose";
 import IGeneric from "../interfaces/generic.interface";
 
 export interface IConfiguration extends Document, IGeneric {
@@ -57,7 +57,7 @@ const configurationSchema = new Schema<IConfiguration>(
   { timestamps: true }
 );
 
-const Configuration = model<IConfiguration, IModelConfiguration>(
+const Configuration = (models.Configuration as IModelConfiguration) || model<IConfiguration, IModelConfiguration>(
   "Configuration",
   configurationSchema,
   "configuration"

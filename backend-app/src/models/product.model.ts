@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Document, Model, Schema, model } from 'mongoose'
+import { Document, Model, Schema, model, models } from 'mongoose'
 import IGeneric from '@/interfaces/generic.interface'
 
 export enum ProductTypeEnum {
@@ -118,7 +118,7 @@ const productSchema = new Schema<IProduct>(
   { timestamps: true }
 )
 
-const Product = model<IProduct, IModelProduct>(
+const Product = (models.Product as IModelProduct) || model<IProduct, IModelProduct>(
   'Product',
   productSchema,
   'product'

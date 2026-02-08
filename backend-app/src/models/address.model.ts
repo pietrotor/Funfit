@@ -1,5 +1,5 @@
 import IGeneric from '../interfaces/generic.interface'
-import { Document, Model, Schema, model } from 'mongoose'
+import { Document, Model, Schema, model, models } from 'mongoose'
 
 interface IAddress extends Document, IGeneric {
   id: objectId
@@ -42,7 +42,7 @@ const addressSchema = new Schema<IAddress>(
   { timestamps: true }
 )
 
-const Address = model<IAddress, IModelAddress>(
+const Address = (models.Address as IModelAddress) || model<IAddress, IModelAddress>(
   'Address',
   addressSchema,
   'address'

@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import IGeneric from '@/interfaces/generic.interface'
-import { Schema, Model, model, Document } from 'mongoose'
+import { Schema, Model, model, Document, models } from 'mongoose'
 
 export enum DistributorSalePaymentMethod {
   CREDIT = 'CREDIT',
@@ -150,7 +150,7 @@ const distributorSaleSchema = new Schema<IDistributorSale>(
   { timestamps: true }
 )
 
-export const DistributorSale = model<IDistributorSale, IModelDistributorSale>(
+export const DistributorSale = (models.DistributorSale as IModelDistributorSale) || model<IDistributorSale, IModelDistributorSale>(
   'DistributorSale',
   distributorSaleSchema,
   'distributorSale'

@@ -1,5 +1,5 @@
 import IGeneric from '@/interfaces/generic.interface'
-import { Document, Model, Schema, model } from 'mongoose'
+import { Document, Model, Schema, model, models } from 'mongoose'
 
 export interface ICategory extends Document, IGeneric {
   id: objectId
@@ -32,7 +32,7 @@ const categorySchema = new Schema<ICategory>(
   { timestamps: true }
 )
 
-export const Category = model<ICategory, IModelCategory>(
+export const Category = (models.Category as IModelCategory) || model<ICategory, IModelCategory>(
   'Category',
   categorySchema,
   'category'

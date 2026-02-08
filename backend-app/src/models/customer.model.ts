@@ -1,5 +1,5 @@
 import IGeneric from '../interfaces/generic.interface'
-import { Document, Model, Schema, model } from 'mongoose'
+import { Document, Model, Schema, model, models } from 'mongoose'
 
 interface ICustomer extends Document, IGeneric {
   id: objectId
@@ -69,7 +69,7 @@ const customerSchema = new Schema<ICustomer>(
   { timestamps: true }
 )
 
-const Customer = model<ICustomer, IModelCustomer>(
+const Customer = (models.Customer as IModelCustomer) || model<ICustomer, IModelCustomer>(
   'Customer',
   customerSchema,
   'customer'

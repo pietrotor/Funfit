@@ -29,7 +29,7 @@ export async function startServer() {
     if (process.env.NODE_ENV === 'PRODUCTION') {
       app.use(
         cors({
-          origin: ['https://funfitbo.shop'],
+          origin: ['https://funfitbo.shop', 'https://funfit-shop.vercel.app'],
           credentials: true,
           allowedHeaders: [
             'Content-Type',

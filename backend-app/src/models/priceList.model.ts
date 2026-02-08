@@ -1,5 +1,5 @@
 import IGeneric from '../interfaces/generic.interface'
-import { Document, Model, Schema, model } from 'mongoose'
+import { Document, Model, Schema, model, models } from 'mongoose'
 
 interface IPriceList extends Document, IGeneric {
   id: objectId
@@ -45,7 +45,7 @@ const priceListSchema = new Schema<IPriceList>(
   { timestamps: true }
 )
 
-const PriceList = model<IPriceList, IModelPriceList>(
+const PriceList = (models.PriceList as IModelPriceList) || model<IPriceList, IModelPriceList>(
   'PriceList',
   priceListSchema,
   'priceList'

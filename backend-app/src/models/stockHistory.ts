@@ -1,5 +1,5 @@
 /* eslint-disable no-unused-vars */
-import { Document, Model, Schema, model } from 'mongoose'
+import { Document, Model, Schema, model, models } from 'mongoose'
 import IGeneric from '@/interfaces/generic.interface'
 
 enum StockMovementTypeEnum {
@@ -64,6 +64,6 @@ const stockSchema = new Schema<IStockHistory>(
   { timestamps: true }
 )
 
-const StockHistory = model<IStockHistory, IModelStockHistory>('StockHistory', stockSchema, 'stocksHistory')
+const StockHistory = (models.StockHistory as IModelStockHistory) || model<IStockHistory, IModelStockHistory>('StockHistory', stockSchema, 'stocksHistory')
 
 export default StockHistory
