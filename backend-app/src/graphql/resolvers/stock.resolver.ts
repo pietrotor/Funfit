@@ -112,6 +112,28 @@ const creatStockMovement = async (
   }
 }
 
+const deleteStock = async (
+  _: any,
+  args: { id: objectId },
+  context: ContextGraphQl
+): Promise<StockResponse> => {
+  try {
+    const { id } = args
+    const stockInstance = await stockCore.deleteStock(
+      id,
+      context.req.currentUser?.id
+    )
+    return {
+      status: StatusEnum.OK,
+      message: 'Stock eliminado correctamente',
+      data: stockInstance
+    }
+  } catch (error) {
+    console.log(error)
+    return errorHandler(error)
+  }
+}
+
 export const stockQuery = {
   getStocksPaginated,
   getStockById,
@@ -120,7 +142,8 @@ export const stockQuery = {
 }
 export const stockMutation = {
   createStock,
-  creatStockMovement
+  creatStockMovement,
+  deleteStock
 }
 
 export const stockType = {

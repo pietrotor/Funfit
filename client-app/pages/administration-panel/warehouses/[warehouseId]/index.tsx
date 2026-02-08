@@ -8,7 +8,13 @@ import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { MoveStockModal } from '@/components/atoms/modals/MoveStockModal'
-import { useGetWarehouseStockQuery } from '@/graphql/graphql-types'
+import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
+import {
+  StatusEnum,
+  useDeleteStockMutation,
+  useGetWarehouseStockQuery
+} from '@/graphql/graphql-types'
+import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import Table from '@/components/organisms/tableNext/Table'
 import ButtonComponent from '@/components/atoms/Button'
 import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
@@ -30,7 +36,14 @@ function Warehouse({ user }: WarehouseProps) {
   })
   const [filter, setFilter] = useState<string>('')
   const [stock, setStock] = useState<TStockData>()
+  const [stockToDelete, setStockToDelete] = useState<{
+    id: string
+    name: string
+  } | null>(null)
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+  const [isDeleting, setIsDeleting] = useState(false)
   const handleMoveStockModal = useDisclosure()
+  const [deleteStock] = useDeleteStockMutation()
   const filtroDebounced = UseDebouncedValue(filter, 500)
   const router = useRouter()
   const { warehouseId } = router.query
@@ -60,6 +73,35 @@ function Warehouse({ user }: WarehouseProps) {
   const handleCreateMovement = (stockId: TStockData) => {
     handleMoveStockModal.onOpen()
     setStock(stockId)
+  }
+  const handleDeleteStock = (stockId: string, productName: string) => {
+    setStockToDelete({ id: stockId, name: productName })
+    setIsDeleteModalOpen(true)
+  }
+
+  const confirmDeleteStock = () => {
+    if (!stockToDelete) return
+    setIsDeleting(true)
+    deleteStock({
+      variables: { id: stockToDelete.id },
+      onCompleted: data => {
+        setIsDeleting(false)
+        setIsDeleteModalOpen(false)
+        setStockToDelete(null)
+        if (data.deleteStock?.status === StatusEnum.ERROR) {
+          showSuccessToast(
+            data.deleteStock.message || 'Error al eliminar stock',
+            'error'
+          )
+          return
+        }
+        showSuccessToast(
+          data.deleteStock?.message || 'Stock eliminado correctamente',
+          'success'
+        )
+        refetch()
+      }
+    })
   }
   return (
     <AdministrationLayout user={user} showBackButton={true}>
@@ -138,6 +180,19 @@ function Warehouse({ user }: WarehouseProps) {
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() =>
+                    handleDeleteStock(
+                      stock.id,
+                      stock.product?.name || 'este producto'
+                    )
+                  }
+                  type="delete"
+                  showTooltip
+                  tooltipText="Eliminar del almacén"
+                >
+                  <IconSelector name="trash" color="text-danger" width="w-8" />
+                </ButtonComponent>
+                <ButtonComponent
+                  onClick={() =>
                     router.push(
                       `${WarehouseRoute}/${warehouseId}/stock-history/${stock.id}`
                     )
@@ -177,6 +232,20 @@ function Warehouse({ user }: WarehouseProps) {
         stockData={stock as TStockData}
         hideCloseButton={false}
         size="md"
+      />
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false)
+          setStockToDelete(null)
+        }}
+        onConfirm={confirmDeleteStock}
+        title="Eliminar producto del almacén"
+        message={`¿Estás seguro de eliminar "${stockToDelete?.name}" del almacén? Esta acción eliminará el stock y todo su historial de movimientos. Esta acción no se puede deshacer.`}
+        color="error"
+        confirmText="Eliminar"
+        cancelText="Cancelar"
+        loading={isDeleting}
       />
     </AdministrationLayout>
   )

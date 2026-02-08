@@ -37,4 +37,9 @@ export abstract class StockRepository<T> {
     createStockMovementInput: CreateStockMovementInput,
     createdBy?: objectId
   ): Promise<IStock | OutErrorResponse>
+
+  abstract deleteStock(
+    id: objectId,
+    deletedBy?: objectId
+  ): Promise<IStock | OutErrorResponse>
 }

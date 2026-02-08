@@ -10,6 +10,7 @@ import { StockRepository } from '../repositories'
 import { getInstancesPagination } from './generic.service'
 import { IModelStock, IStock } from '../models'
 import Stock from '@/models/stock.model'
+import StockHistory from '@/models/stockHistory'
 import { stockHistoryUseCase, stockUseCase } from 'useCase'
 import { productCore, warehouseCore } from '.'
 import Product from '@/models/product.model'
@@ -164,5 +165,35 @@ export class StocksService extends StockRepository<objectId> {
       createdBy
     )
     return await stockInstance.save()
+  }
+
+  async deleteStock(id: objectId, deletedBy?: objectId) {
+    const stockInstance = await this.getStockById(id)
+    const { productId, warehouseId } = stockInstance
+
+    // Get product and warehouse to remove references
+    const productInstance = await productCore.getProductById(productId)
+    const warehouseInstance = await warehouseCore.getWarehouseById(warehouseId)
+
+    // Remove warehouse from product.warehouses
+    productInstance.warehouses = productInstance.warehouses.filter(
+      (wId: objectId) => wId.toString() !== warehouseId.toString()
+    )
+
+    // Remove product from warehouse.productsIds
+    warehouseInstance.productsIds = warehouseInstance.productsIds.filter(
+      (pId: objectId) => pId.toString() !== productId.toString()
+    )
+
+    // Delete stock history records
+    await StockHistory.deleteMany({ stockId: id })
+
+    // Delete the stock
+    await Stock.deleteOne({ _id: id })
+
+    // Save updated references
+    await Promise.all([productInstance.save(), warehouseInstance.save()])
+
+    return stockInstance
   }
 }

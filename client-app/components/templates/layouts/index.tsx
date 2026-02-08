@@ -248,19 +248,19 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         }
       ]
     },
-    {
-      icon: 'TrunkAndBox',
-      text: 'Produccion',
-      permissions: [RoleTypeEnum.ADMINISTRATOR],
-      subMenu: [
-        {
-          icon: 'Recipe',
-          text: 'Recetas',
-          link: '/administration-panel/recipies',
-          permissions: [RoleTypeEnum.ADMINISTRATOR]
-        }
-      ]
-    },
+    // {
+    //   icon: 'TrunkAndBox',
+    //   text: 'Produccion',
+    //   permissions: [RoleTypeEnum.ADMINISTRATOR],
+    //   subMenu: [
+    //     {
+    //       icon: 'Recipe',
+    //       text: 'Recetas',
+    //       link: '/administration-panel/recipies',
+    //       permissions: [RoleTypeEnum.ADMINISTRATOR]
+    //     }
+    //   ]
+    // },
     {
       icon: 'PointOfSale',
       text: 'Punto de venta',

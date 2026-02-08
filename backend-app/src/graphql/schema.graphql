@@ -201,6 +201,7 @@ type Mutation {
   creatStockMovement(
     createStockMovementInput: CreateStockMovementInput!
   ): StockResponse
+  deleteStock(id: ObjectId!): StockResponse
   # BRANCHES ===============================
   createBranch(createBranchInput: CreateBranchInput!): BranchResponse
   updateBranch(updateBranchInput: UpdateBranchInput!): BranchResponse

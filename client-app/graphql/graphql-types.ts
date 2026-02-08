@@ -769,6 +769,7 @@ export type Mutation = {
   deletePrice?: Maybe<PriceResponse>;
   deletePriceList?: Maybe<PriceListResponse>;
   deleteProduct?: Maybe<ProductResponse>;
+  deleteStock?: Maybe<StockResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
   deliverOrder?: Maybe<OrderResponse>;
   openCash?: Maybe<CashResponse>;
@@ -927,6 +928,11 @@ export type MutationDeletePriceListArgs = {
 
 
 export type MutationDeleteProductArgs = {
+  id: Scalars['ObjectId'];
+};
+
+
+export type MutationDeleteStockArgs = {
   id: Scalars['ObjectId'];
 };
 
@@ -2094,6 +2100,13 @@ export type CreatStockMovementMutationVariables = Exact<{
 
 export type CreatStockMovementMutation = { __typename?: 'Mutation', creatStockMovement?: { __typename?: 'StockResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
+export type DeleteStockMutationVariables = Exact<{
+  id: Scalars['ObjectId'];
+}>;
+
+
+export type DeleteStockMutation = { __typename?: 'Mutation', deleteStock?: { __typename?: 'StockResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
+
 export type CreateBranchMutationVariables = Exact<{
   createBranchInput: CreateBranchInput;
 }>;
@@ -3018,6 +3031,44 @@ export function useCreatStockMovementMutation(baseOptions?: Apollo.MutationHookO
 export type CreatStockMovementMutationHookResult = ReturnType<typeof useCreatStockMovementMutation>;
 export type CreatStockMovementMutationResult = Apollo.MutationResult<CreatStockMovementMutation>;
 export type CreatStockMovementMutationOptions = Apollo.BaseMutationOptions<CreatStockMovementMutation, CreatStockMovementMutationVariables>;
+export const DeleteStockDocument = gql`
+    mutation DeleteStock($id: ObjectId!) {
+  deleteStock(id: $id) {
+    errorInput {
+      message
+      field
+    }
+    status
+    message
+  }
+}
+    `;
+export type DeleteStockMutationFn = Apollo.MutationFunction<DeleteStockMutation, DeleteStockMutationVariables>;
+
+/**
+ * __useDeleteStockMutation__
+ *
+ * To run a mutation, you first call `useDeleteStockMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteStockMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteStockMutation, { data, loading, error }] = useDeleteStockMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useDeleteStockMutation(baseOptions?: Apollo.MutationHookOptions<DeleteStockMutation, DeleteStockMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteStockMutation, DeleteStockMutationVariables>(DeleteStockDocument, options);
+      }
+export type DeleteStockMutationHookResult = ReturnType<typeof useDeleteStockMutation>;
+export type DeleteStockMutationResult = Apollo.MutationResult<DeleteStockMutation>;
+export type DeleteStockMutationOptions = Apollo.BaseMutationOptions<DeleteStockMutation, DeleteStockMutationVariables>;
 export const CreateBranchDocument = gql`
     mutation CreateBranch($createBranchInput: CreateBranchInput!) {
   createBranch(createBranchInput: $createBranchInput) {
