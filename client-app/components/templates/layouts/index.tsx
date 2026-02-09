@@ -219,7 +219,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
           icon: 'Admin',
           text: 'Gastos',
           link: '/administration-panel/bill',
-          permissions: [RoleTypeEnum.ADMINISTRATOR]
+          permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
         }
       ]
     },
