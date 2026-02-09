@@ -4,11 +4,11 @@
   "description": "",
   "main": "index.ts",
   "scripts": {
-    "dev": "ts-node-dev -r tsconfig-paths/register --no-notify --respawn --transpile-only src/index",
+    "dev": "node init && ts-node-dev -r tsconfig-paths/register --no-notify --respawn --transpile-only src/index",
     "seed": "ts-node -r tsconfig-paths/register seeder/index.ts",
     "codegen": "graphql-codegen --config codegen.yml",
-    "build": "tsc && graphql-codegen --config codegen.yml && shx cp src/graphql/schema.graphql build/graphql/",
-    "start": "node -r tsconfig-paths/register -r ts-node/register/transpile-only build/index.js",
+    "build": "node init && tsc && graphql-codegen --config codegen.yml && shx cp src/graphql/schema.graphql build/graphql/",
+    "start": "node init && node -r tsconfig-paths/register -r ts-node/register/transpile-only build/index.js",
     "compile": "tsc"
   },
   "author": "Pietro Torrico Es",
