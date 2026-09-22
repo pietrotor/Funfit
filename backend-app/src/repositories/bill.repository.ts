@@ -24,4 +24,8 @@ export abstract class BillRepository<T> {
   abstract getTotalBills(
     businessBalanceDto: BusinessBalanceDto
   ): Promise<number>
+
+  abstract getBillsByBranch(
+    businessBalanceDto: BusinessBalanceDto
+  ): Promise<{ branchId: T | null; total: number }[]>
 }

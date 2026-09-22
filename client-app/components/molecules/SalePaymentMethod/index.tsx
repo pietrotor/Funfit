@@ -16,7 +16,7 @@ function SalePaymentMethod({ setPayment }: SalePaymentMethodProps) {
         <hr className="flex-grow border-b-1 border-gray-200" />
       </div>
 
-      <div className="grid grid-cols-3 gap-14 p-6 px-10">
+      <div className="grid grid-cols-3 gap-6 p-6 px-10 md:gap-10">
         <span
           className=" border-gray flex cursor-pointer flex-col items-center justify-center border-2 p-3 text-secondary/80 hover:border-secondary/40 hover:text-secondary"
           onClick={() =>
@@ -47,15 +47,38 @@ function SalePaymentMethod({ setPayment }: SalePaymentMethodProps) {
             QR o transferencia
           </h3>
         </span>
-        {/*
-          <span
-            className="border-gray hover:border-secondary/40 flex cursor-pointer flex-col items-center justify-center border-2 p-3 text-secondary/80 hover:text-secondary col-start-2"
-            onClick={() => setPayment({ paymentMethod: 'combined', cash: 0, change: 0 })}
-          >
-            <IconSelector name="Payment" width="w-8" />
-            <h3 className="text-gray-500 font-semibold text-lg">Combinado</h3>
-          </span>
-        */}
+        <span
+          className="border-gray flex cursor-pointer flex-col items-center justify-center border-2 p-3 text-secondary/80 hover:border-secondary/40 hover:text-secondary"
+          onClick={() =>
+            setPayment({
+              paymentMethod: 'pedidosya',
+              cash: 0,
+              change: 0,
+              entersCash: false
+            })
+          }
+        >
+          <IconSelector name="Truck" width="w-8" />
+          <h3 className="text-center md:text-lg text-xs font-semibold text-gray-500">
+            PedidosYa
+          </h3>
+        </span>
+        <span
+          className="border-gray flex cursor-pointer flex-col items-center justify-center border-2 p-3 text-secondary/80 hover:border-secondary/40 hover:text-secondary"
+          onClick={() =>
+            setPayment({
+              paymentMethod: 'other',
+              cash: 0,
+              change: 0,
+              entersCash: false
+            })
+          }
+        >
+          <IconSelector name="Payment" width="w-8" />
+          <h3 className="text-center md:text-lg text-xs font-semibold text-gray-500">
+            Otros
+          </h3>
+        </span>
       </div>
     </section>
   )

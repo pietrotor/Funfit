@@ -311,6 +311,7 @@ export class SalesService extends SalesRepository<objectId> {
       client,
       subTotal,
       observations,
+      entersCash,
       orderId
     } = createSaleInput
     if (total < 0) throw new BadRequestError('El total no puede ser negativo')
@@ -409,7 +410,10 @@ export class SalesService extends SalesRepository<objectId> {
     }
     const code = generateCode()
 
-    if (paymentMethod === PaymentMethodEnum.CASH) {
+    const shouldEnterCash =
+      paymentMethod === PaymentMethodEnum.CASH || !!entersCash
+
+    if (shouldEnterCash) {
       await turnMovementCore.createMovement(
         {
           amount: total,
@@ -467,6 +471,7 @@ export class SalesService extends SalesRepository<objectId> {
       amountRecibed,
       change,
       observations,
+      entersCash: shouldEnterCash,
       canceled: false,
       createdBy
     })

@@ -27,6 +27,7 @@ import { useGetSalesSummary } from '@/services/useGetSalesSummary'
 import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
 import ProductListModal from '@/components/atoms/modals/ProductListModal'
 import ExportModal from '@/components/atoms/modals/ExportModal'
+import { getSalePaymentMethod } from '@/utils/getSalePaymentMethod'
 
 interface SalesProps {
   user: any
@@ -221,26 +222,6 @@ function Sales({ user }: SalesProps) {
     exportModal.onClose()
     if (exportStatus === 'error') {
       setExportStatus('idle')
-    }
-  }
-
-  const getSalePaymentMethod = (paymentMethod: PaymentMethodEnum) => {
-    switch (paymentMethod) {
-      case PaymentMethodEnum.CARD:
-        return {
-          icon: <IconSelector name="CreditCard" />,
-          text: 'Tarjeta'
-        }
-      case PaymentMethodEnum.QR_TRANSFER:
-        return {
-          icon: <IconSelector name="QrCode" />,
-          text: 'QR'
-        }
-      case PaymentMethodEnum.CASH:
-        return {
-          icon: <IconSelector name="Cash" />,
-          text: 'Efectivo'
-        }
     }
   }
 
@@ -464,7 +445,7 @@ function Sales({ user }: SalesProps) {
           </button>
         </div>
 
-        <section className="my-4 mb-8  grid gap-3 pt-6 md:gap-4 lg:grid-cols-2 xl:grid-cols-4">
+        <section className="my-4 mb-8  grid gap-3 pt-6 md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
           <InformationCard className="h-full bg-slate-200 px-3 py-6">
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
@@ -539,6 +520,45 @@ function Sales({ user }: SalesProps) {
               </span>
             </div>
           </InformationCard>
+          <InformationCard className="h-full bg-slate-200 px-3 py-6">
+            <div className="flex items-center justify-between">
+              <div className="text-lg font-bold">
+                <div className="text-xl">Ventas PedidosYa</div>
+                <div className="text-center">
+                  {getTotalByPaymentMethod(PaymentMethodEnum.PEDIDOS_YA)
+                    ?.total || 0}{' '}
+                  Bs
+                </div>
+              </div>
+              <span className="rounded-full bg-secondary p-3 ">
+                <IconSelector
+                  name="Truck"
+                  className=" rounded-md text-white"
+                  height="h-6"
+                  width="w-6"
+                />
+              </span>
+            </div>
+          </InformationCard>
+          <InformationCard className="h-full bg-slate-200 px-3 py-6">
+            <div className="flex items-center justify-between">
+              <div className="text-lg font-bold">
+                <div className="text-xl">Ventas otros</div>
+                <div className="text-center">
+                  {getTotalByPaymentMethod(PaymentMethodEnum.OTHER)?.total || 0}{' '}
+                  Bs
+                </div>
+              </div>
+              <span className="rounded-full bg-secondary p-3 ">
+                <IconSelector
+                  name="Payment"
+                  className=" rounded-md text-white"
+                  height="h-6"
+                  width="w-6"
+                />
+              </span>
+            </div>
+          </InformationCard>
         </section>
         <Table
           onChangeRow={row => handleChangeRow(row)}
@@ -580,10 +600,16 @@ function Sales({ user }: SalesProps) {
               </div>,
               <div
                 key={idx}
-                className=" flex items-center justify-center gap-1 rounded-sm border border-primary p-1 text-primary"
+                className=" flex flex-col items-center justify-center gap-1 rounded-sm border border-primary p-1 text-primary"
               >
-                {getSalePaymentMethod(sale.paymentMethod).icon}
-                <p>{getSalePaymentMethod(sale.paymentMethod).text}</p>
+                <div className="flex items-center gap-1">
+                  {getSalePaymentMethod(sale.paymentMethod).icon}
+                  <p>{getSalePaymentMethod(sale.paymentMethod).text}</p>
+                </div>
+                {(sale as Sale).entersCash &&
+                  sale.paymentMethod !== PaymentMethodEnum.CASH && (
+                    <p className="text-tiny text-secondary">Ingresó a caja</p>
+                  )}
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm ">
@@ -619,16 +645,12 @@ function Sales({ user }: SalesProps) {
                   {sale.createdByInfo?.name} {sale.createdByInfo?.lastName}
                 </div>
               </div>,
-              <div key={idx}>
+              <div key={idx} className="max-w-[12rem] text-sm">
+                <p>{(sale as Sale).observations || '—'}</p>
                 {sale.canceled && (
-                  <div className="flex h-full flex-col items-center justify-center gap-3">
-                    <p className="m-auto w-fit bg-red-600 px-4 py-1 font-bold text-white">
-                      Venta Anulada
-                    </p>
-                    <div>
-                      <DateConverter dateString={sale.canceledAt} showTime />
-                    </div>
-                  </div>
+                  <p className="mt-1 w-fit bg-red-600 px-2 py-0.5 text-tiny font-bold text-white">
+                    Anulada
+                  </p>
                 )}
               </div>,
               <div key={idx}>

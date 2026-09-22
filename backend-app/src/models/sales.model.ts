@@ -5,7 +5,9 @@ import { Schema, Model, model, Document, models } from 'mongoose'
 export enum PaymentMethodEnum {
   QR_TRANSFER = 'QR_TRANSFER',
   CARD = 'CARD',
-  CASH = 'CASH'
+  CASH = 'CASH',
+  PEDIDOS_YA = 'PEDIDOS_YA',
+  OTHER = 'OTHER'
 }
 
 export interface ISale extends Document, IGeneric {
@@ -29,6 +31,7 @@ export interface ISale extends Document, IGeneric {
   amountRecibed: number
   change: number
   observations: string | null
+  entersCash: boolean
   canceled: boolean
   reason: string | null
   canceledAt: Date | null
@@ -104,6 +107,10 @@ const saleSchema = new Schema<ISale>(
     },
     observations: {
       type: String
+    },
+    entersCash: {
+      type: Boolean,
+      default: false
     },
     canceled: {
       type: Boolean,

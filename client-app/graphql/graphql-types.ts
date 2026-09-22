@@ -40,6 +40,7 @@ export type AddressResponse = ResponseBase & {
 export type Bill = {
   __typename?: 'Bill';
   amount: Scalars['Float'];
+  branchId?: Maybe<Scalars['ObjectId']>;
   createdBy?: Maybe<Scalars['ObjectId']>;
   createdByInfo?: Maybe<User>;
   date: Scalars['Date'];
@@ -49,6 +50,7 @@ export type Bill = {
 };
 
 export type BillPaginationInput = {
+  branchId?: InputMaybe<Scalars['ObjectId']>;
   endDate?: InputMaybe<Scalars['Date']>;
   filter?: InputMaybe<Scalars['String']>;
   initialDate?: InputMaybe<Scalars['Date']>;
@@ -65,6 +67,7 @@ export type BillResponse = ResponseBase & {
 };
 
 export type BillSummaryInput = {
+  branchId?: InputMaybe<Scalars['ObjectId']>;
   endDate: Scalars['Date'];
   initialDate: Scalars['Date'];
 };
@@ -192,6 +195,7 @@ export type BusinessBalance = {
   __typename?: 'BusinessBalance';
   balance: Scalars['Float'];
   bills: Scalars['Float'];
+  billsByBranch: Array<BranchSales>;
   result: Scalars['Float'];
   salesByBranch: Array<BranchSales>;
   totalEarnings: Scalars['Float'];
@@ -330,6 +334,7 @@ export type CreateAddressInput = {
 
 export type CreateBillInput = {
   amount: Scalars['Float'];
+  branchId: Scalars['ObjectId'];
   date: Scalars['Date'];
   detail?: InputMaybe<Scalars['String']>;
   title: Scalars['String'];
@@ -470,6 +475,7 @@ export type CreateSaleInput = {
   client?: InputMaybe<Scalars['String']>;
   date: Scalars['Date'];
   discount: Scalars['Float'];
+  entersCash?: InputMaybe<Scalars['Boolean']>;
   observations?: InputMaybe<Scalars['String']>;
   orderId?: InputMaybe<Scalars['ObjectId']>;
   paymentMethod: PaymentMethodEnum;
@@ -1137,7 +1143,9 @@ export type Payment = {
 export enum PaymentMethodEnum {
   CARD = 'CARD',
   CASH = 'CASH',
-  QR_TRANSFER = 'QR_TRANSFER'
+  QR_TRANSFER = 'QR_TRANSFER',
+  PEDIDOS_YA = 'PEDIDOS_YA',
+  OTHER = 'OTHER'
 }
 
 export type PaymentPaginationInput = {
@@ -1380,6 +1388,7 @@ export type QueryGetBranchesPaginatedArgs = {
 
 
 export type QueryGetBusinessBalanceArgs = {
+  branchId?: InputMaybe<Scalars['ObjectId']>;
   endDate: Scalars['Date'];
   initialDate: Scalars['Date'];
 };
@@ -1485,6 +1494,7 @@ export type QueryGetProductStockArgs = {
 
 
 export type QueryGetProductsArgs = {
+  branchId?: InputMaybe<Scalars['ObjectId']>;
   paginationInput: PaginationInput;
   type?: InputMaybe<ProductTypeEnum>;
 };
@@ -1640,6 +1650,7 @@ export type Sale = {
   createdByInfo?: Maybe<User>;
   date: Scalars['Date'];
   discount: Scalars['Float'];
+  entersCash?: Maybe<Scalars['Boolean']>;
   id: Scalars['ObjectId'];
   observations?: Maybe<Scalars['String']>;
   orderId?: Maybe<Scalars['ObjectId']>;
@@ -2379,6 +2390,7 @@ export type GetUsersQuery = { __typename?: 'Query', getUsers?: { __typename?: 'U
 export type GetProductsQueryVariables = Exact<{
   paginationInput: PaginationInput;
   type?: InputMaybe<ProductTypeEnum>;
+  branchId?: InputMaybe<Scalars['ObjectId']>;
 }>;
 
 
@@ -2535,7 +2547,7 @@ export type GetSaleByIdQueryVariables = Exact<{
 }>;
 
 
-export type GetSaleByIdQuery = { __typename?: 'Query', getSaleById?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, canceled?: boolean | null, canceledAt?: any | null, code: string, total: number, products: Array<{ __typename?: 'SaleItem', productId: any, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, code: string, image?: string | null } | null }>, createdByInfo?: { __typename?: 'User', name: string, lastName: string } | null, canceledByInfo?: { __typename?: 'User', name: string, lastName: string } | null } | null } | null };
+export type GetSaleByIdQuery = { __typename?: 'Query', getSaleById?: { __typename?: 'SaleResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: { __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, canceled?: boolean | null, canceledAt?: any | null, observations?: string | null, entersCash?: boolean | null, code: string, total: number, products: Array<{ __typename?: 'SaleItem', productId: any, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string, code: string, image?: string | null } | null }>, createdByInfo?: { __typename?: 'User', name: string, lastName: string } | null, canceledByInfo?: { __typename?: 'User', name: string, lastName: string } | null } | null } | null };
 
 export type GetCategoriesQueryVariables = Exact<{
   paginationInput: PaginationInput;
@@ -2663,10 +2675,11 @@ export type GetDistributorSalePaymentsQuery = { __typename?: 'Query', getDistrib
 export type GetBusinessBalanceQueryVariables = Exact<{
   endDate: Scalars['Date'];
   initialDate: Scalars['Date'];
+  branchId?: InputMaybe<Scalars['ObjectId']>;
 }>;
 
 
-export type GetBusinessBalanceQuery = { __typename?: 'Query', getBusinessBalance?: { __typename?: 'BusinessBalanceResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'BusinessBalance', totalPaid: number, balance: number, bills: number, result: number, totalExpenses: number, totalEarnings: number, salesByBranch: Array<{ __typename?: 'BranchSales', id: any, name: string, total: number }> } | null } | null };
+export type GetBusinessBalanceQuery = { __typename?: 'Query', getBusinessBalance?: { __typename?: 'BusinessBalanceResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', field?: string | null, message: string }> | null, data?: { __typename?: 'BusinessBalance', totalPaid: number, balance: number, bills: number, result: number, totalExpenses: number, totalEarnings: number, salesByBranch: Array<{ __typename?: 'BranchSales', id: any, name: string, total: number }>, billsByBranch: Array<{ __typename?: 'BranchSales', id: any, name: string, total: number }> } | null } | null };
 
 export type GetPublicCategoriesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -4631,8 +4644,8 @@ export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
 export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
 export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
 export const GetProductsDocument = gql`
-    query GetProducts($paginationInput: PaginationInput!, $type: ProductTypeEnum) {
-  getProducts(paginationInput: $paginationInput, type: $type) {
+    query GetProducts($paginationInput: PaginationInput!, $type: ProductTypeEnum, $branchId: ObjectId) {
+  getProducts(paginationInput: $paginationInput, type: $type, branchId: $branchId) {
     errorInput {
       message
       field
@@ -5809,6 +5822,8 @@ export const GetSalesPaginatedDocument = gql`
       canceled
       reason
       canceledAt
+      observations
+      entersCash
       createdBy
       branch {
         id
@@ -5942,6 +5957,8 @@ export const GetSaleByIdDocument = gql`
         name
         lastName
       }
+      observations
+      entersCash
       code
       total
     }
@@ -7034,8 +7051,8 @@ export type GetDistributorSalePaymentsQueryHookResult = ReturnType<typeof useGet
 export type GetDistributorSalePaymentsLazyQueryHookResult = ReturnType<typeof useGetDistributorSalePaymentsLazyQuery>;
 export type GetDistributorSalePaymentsQueryResult = Apollo.QueryResult<GetDistributorSalePaymentsQuery, GetDistributorSalePaymentsQueryVariables>;
 export const GetBusinessBalanceDocument = gql`
-    query GetBusinessBalance($endDate: Date!, $initialDate: Date!) {
-  getBusinessBalance(endDate: $endDate, initialDate: $initialDate) {
+    query GetBusinessBalance($endDate: Date!, $initialDate: Date!, $branchId: ObjectId) {
+  getBusinessBalance(endDate: $endDate, initialDate: $initialDate, branchId: $branchId) {
     errorInput {
       field
       message
@@ -7044,6 +7061,11 @@ export const GetBusinessBalanceDocument = gql`
     message
     data {
       salesByBranch {
+        id
+        name
+        total
+      }
+      billsByBranch {
         id
         name
         total

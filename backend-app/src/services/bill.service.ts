@@ -8,7 +8,7 @@ import { BusinessBalanceDto } from 'dtos'
 
 export class BillService extends BillRepository<objectId> {
   async getBills(billPaginationInput: BillPaginationInput) {
-    const { filter, endDate, initialDate, ...paginationInput } =
+    const { filter, endDate, initialDate, branchId, ...paginationInput } =
       billPaginationInput
     const initialDateQuery = initialDate ? new Date(initialDate) : null
     if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
@@ -21,6 +21,7 @@ export class BillService extends BillRepository<objectId> {
             }
           }
         : {}
+    const branchFilter = branchId ? { branchId } : {}
     if (filter) {
       const filterArgs = {
         $or: [{ title: { $regex: filter, $options: 'i' } }]
@@ -28,13 +29,13 @@ export class BillService extends BillRepository<objectId> {
       return await getInstancesPagination<IBill, IModelBill>(
         Bill,
         paginationInput,
-        { ...filterArgs, ...dateFilter }
+        { ...filterArgs, ...dateFilter, ...branchFilter }
       )
     }
     return await getInstancesPagination<IBill, IModelBill>(
       Bill,
       paginationInput,
-      { ...dateFilter }
+      { ...dateFilter, ...branchFilter }
     )
   }
 
@@ -57,7 +58,8 @@ export class BillService extends BillRepository<objectId> {
   }
 
   async createBill(createBillInput: CreateBillInput, createdBy?: objectId) {
-    const { amount, date } = createBillInput
+    const { amount, date, branchId } = createBillInput
+    if (!branchId) throw new BadRequestError('Debe seleccionar una sucursal')
     if (amount < 0) throw new BadRequestError('El monto no puede ser negativo')
     const billInstance = new Bill({
       ...createBillInput,
@@ -77,7 +79,7 @@ export class BillService extends BillRepository<objectId> {
   }
 
   async getTotalBills(businessBalanceDto: BusinessBalanceDto) {
-    const { endDate, initialDate } = businessBalanceDto
+    const { endDate, initialDate, branchId } = businessBalanceDto
     const initialDateQuery = initialDate ? new Date(initialDate) : null
     if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
     const dateFilter =
@@ -94,8 +96,9 @@ export class BillService extends BillRepository<objectId> {
       {
         $match: {
           deleted: false,
-          ...dateFilter
-        } // Aplica los a la consulta
+          ...dateFilter,
+          ...(branchId ? { branchId } : {})
+        }
       },
       {
         $group: {
@@ -110,5 +113,41 @@ export class BillService extends BillRepository<objectId> {
     }
 
     return result[0].total
+  }
+
+  async getBillsByBranch(businessBalanceDto: BusinessBalanceDto) {
+    const { endDate, initialDate, branchId } = businessBalanceDto
+    const initialDateQuery = initialDate ? new Date(initialDate) : null
+    if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
+    const dateFilter =
+      initialDateQuery && endDate
+        ? {
+            date: {
+              $gte: initialDateQuery,
+              $lt: addDays(new Date(endDate), 1)
+            }
+          }
+        : {}
+
+    const result = await Bill.aggregate([
+      {
+        $match: {
+          deleted: false,
+          ...dateFilter,
+          ...(branchId ? { branchId } : {})
+        }
+      },
+      {
+        $group: {
+          _id: '$branchId',
+          total: { $sum: '$amount' }
+        }
+      }
+    ])
+
+    return result.map(item => ({
+      branchId: item._id || null,
+      total: item.total
+    }))
   }
 }

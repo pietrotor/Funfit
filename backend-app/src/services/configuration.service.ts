@@ -38,9 +38,10 @@ export class ConfigurationService extends ConfigurationRepository<objectId> {
   }
 
   async businessBalance(balanceDto: BusinessBalanceDto) {
-    const { endDate, initialDate } = balanceDto
+    const { endDate, initialDate, branchId } = balanceDto
     const branches = await Branch.find({
-      deleted: false
+      deleted: false,
+      ...(branchId ? { _id: branchId } : {})
     })
 
     const salesByBranch = await Promise.all(
@@ -70,10 +71,37 @@ export class ConfigurationService extends ConfigurationRepository<objectId> {
       0
     )
 
-    const bills = await billCore.getTotalBills({
+    const billsGrouped = await billCore.getBillsByBranch({
       endDate,
-      initialDate
+      initialDate,
+      branchId
     })
+
+    const billsByBranch = billsGrouped
+      .map(item => {
+        if (!item.branchId) {
+          if (branchId) return null
+          return {
+            id: '000000000000000000000000',
+            name: 'Sin sucursal',
+            total: parseFloat(item.total.toFixed(2))
+          }
+        }
+        const branch = branches.find(
+          b => b._id.toString() === item.branchId?.toString()
+        )
+        return {
+          id: item.branchId,
+          name: branch?.name || 'Sucursal eliminada',
+          total: parseFloat(item.total.toFixed(2))
+        }
+      })
+      .filter((item): item is NonNullable<typeof item> => item !== null)
+
+    const bills = billsByBranch.reduce(
+      (prevValue, branch) => prevValue + branch.total,
+      0
+    )
 
     const totalEarnings = totalSales + totalPaid
     const totalExpenses = balance + bills
@@ -85,9 +113,10 @@ export class ConfigurationService extends ConfigurationRepository<objectId> {
       bills: parseFloat(bills.toFixed(2)),
       totalPaid: parseFloat(totalPaid.toFixed(2)),
       salesByBranch,
+      billsByBranch,
       result: parseFloat(result.toFixed(2)),
       totalExpenses: parseFloat(totalExpenses.toFixed(2)),
-      totalEarnings: totalEarnings.toFixed(2)
+      totalEarnings: parseFloat(totalEarnings.toFixed(2))
     }
   }
 }
