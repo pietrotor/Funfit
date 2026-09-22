@@ -256,7 +256,7 @@ function DailySale({ user }: DailySaleProps) {
                 {(sale as Sale).entersCash &&
                   sale.paymentMethod !== PaymentMethodEnum.CASH && (
                     <p className="text-tiny text-secondary">Ingresó a caja</p>
-                  )}
+                )}
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm">

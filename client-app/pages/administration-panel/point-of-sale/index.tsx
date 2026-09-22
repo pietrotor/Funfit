@@ -13,6 +13,7 @@ import { authUserHeader } from '@/utils/verificationUser'
 
 import Search from '@/components/molecules/Search'
 import { useGetBranchProductPOSQuery } from '@/hooks/UseBranchQuery'
+import { addProductQuantity } from '@/utils/pointOfSale'
 
 export type TPointOfSaleData = {
   products: TProductBranchData[]
@@ -39,52 +40,14 @@ function PointOfSale({ user }: PointOfSaleProps) {
   const handleResponsiveSaleModal = useDisclosure()
 
   const handleSelected = (id: string) => {
-    const existingProduct = selectedProducts?.products?.find(
+    const branchProduct = data?.getBranchProductsPaginated?.data?.find(
       item => item.productId === id
     )
+    if (!branchProduct) return
 
-    if (existingProduct) {
-      setSelectedProducts(prevProducts => {
-        return {
-          ...prevProducts,
-          products: [
-            ...(prevProducts?.products ?? []).filter(
-              item => item.productId !== id
-            ),
-            {
-              ...existingProduct,
-              quantity: (existingProduct.quantity || 1) + 1,
-              total:
-                ((existingProduct.quantity || 1) + 1) * existingProduct.price
-            }
-          ],
-          subTotal: (prevProducts?.subTotal || 0) + existingProduct.price,
-          total: (prevProducts?.total || 0) + existingProduct.price
-        }
-      })
-    } else {
-      const newProduct = data?.getBranchProductsPaginated?.data?.find(
-        item => item.productId === id
-      )
-
-      if (newProduct) {
-        setSelectedProducts(prevProducts => {
-          return {
-            ...prevProducts,
-            products: [
-              ...(prevProducts?.products ?? []),
-              {
-                ...(newProduct as TProductBranchData),
-                quantity: 1,
-                total: newProduct.price
-              }
-            ],
-            subTotal: (prevProducts?.subTotal || 0) + newProduct.price,
-            total: (prevProducts?.total || 0) + newProduct.price
-          }
-        })
-      }
-    }
+    setSelectedProducts(prevProducts =>
+      addProductQuantity(prevProducts, branchProduct as TProductBranchData)
+    )
   }
 
   useEffect(() => {
@@ -102,14 +65,27 @@ function PointOfSale({ user }: PointOfSaleProps) {
   }, [router.query])
 
   useEffect(() => {
-    if (selectedProducts && selectedProducts.products.length > 0) {
-      selectedProducts.products.forEach(product => {
-        product.stock = data?.getBranchProductsPaginated?.data?.find(
+    const branchProducts = data?.getBranchProductsPaginated?.data
+    if (!branchProducts?.length) return
+
+    setSelectedProducts(prevProducts => {
+      if (!prevProducts?.products?.length) return prevProducts
+
+      let hasChanges = false
+      const products = prevProducts.products.map(product => {
+        const branchProduct = branchProducts.find(
           item => item.productId === product.productId
-        )?.stock
+        )
+        if (!branchProduct || branchProduct.stock === product.stock) {
+          return product
+        }
+        hasChanges = true
+        return { ...product, stock: branchProduct.stock }
       })
-    }
-  }, [selectedProducts])
+
+      return hasChanges ? { ...prevProducts, products } : prevProducts
+    })
+  }, [data])
 
   return (
     <AdministrationLayout

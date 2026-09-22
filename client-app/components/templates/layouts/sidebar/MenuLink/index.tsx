@@ -1,12 +1,13 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 import React, { useState } from 'react'
-import IconSelector, { TSvgNames } from '@/components/atoms/IconSelector'
+import { ChevronDown } from 'lucide-react'
+import { getMenuIcon, TMenuIconName } from '../menuIcons'
 
 type TMenuLinkProps = {
   isSidebarOpen: boolean
   text: string
-  icon?: TSvgNames
+  icon?: TMenuIconName
   detailView?: boolean
   link?: string
   subMenuIsOpen?: boolean | null
@@ -26,6 +27,7 @@ const MenuLink: React.FC<TMenuLinkProps> = ({
   const [isCurrent] = useState(
     link ? link === '/' ? link === router.asPath : router.asPath.includes(link) : false
   )
+  const Icon = getMenuIcon(icon)
   if (!link) {
     return (
       <button
@@ -38,7 +40,7 @@ const MenuLink: React.FC<TMenuLinkProps> = ({
         }`}
       >
         <div className="flex items-center gap-2">
-          {icon && <IconSelector name={icon} className="" width='w-4' />}
+          {Icon && <Icon className="h-5 w-5 shrink-0" strokeWidth={1.75} />}
           {detailView && (
             <p className={'flex-1 text-left font-semibold leading-normal'}>
               {text}
@@ -46,13 +48,11 @@ const MenuLink: React.FC<TMenuLinkProps> = ({
           )}
         </div>
         {typeof subMenuIsOpen === 'boolean' && detailView && (
-          <IconSelector
-            name="down-arrow"
-            width="w-5"
-            stroke={3}
-            className={`${
-              subMenuIsOpen ? 'rotate-90' : '-rotate-90'
-            } transition-all duration-500`}
+          <ChevronDown
+            className={`h-5 w-5 shrink-0 ${
+              subMenuIsOpen ? 'rotate-0' : '-rotate-90'
+            } transition-transform duration-300`}
+            strokeWidth={2}
           />
         )}
       </button>
@@ -67,20 +67,18 @@ const MenuLink: React.FC<TMenuLinkProps> = ({
         detailView ? 'justify-between' : 'justify-center'
       }`}
     >
-      <div className={'flex gap-2 '}>
-        {icon && <IconSelector name={icon} className=''/>}
+      <div className={'flex items-center gap-2'}>
+        {Icon && <Icon className="h-5 w-5 shrink-0" strokeWidth={1.75} />}
         {detailView && (
           <p className={'flex-1 text-left font-semibold'}>{text}</p>
         )}
       </div>
       {typeof subMenuIsOpen === 'boolean' && detailView && (
-        <IconSelector
-          name="down-arrow"
-          width="w-5"
-          stroke={3}
-          className={`${
-            subMenuIsOpen ? '-rotate-90' : '-rotate-[270deg]'
-          } transition-all duration-300`}
+        <ChevronDown
+          className={`h-5 w-5 shrink-0 ${
+            subMenuIsOpen ? 'rotate-0' : '-rotate-90'
+          } transition-transform duration-300`}
+          strokeWidth={2}
         />
       )}
     </Link>

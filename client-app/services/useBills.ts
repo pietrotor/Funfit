@@ -44,7 +44,7 @@ const useBills = () => {
     getSales({
       variables: {
         billPaginationInput: {
-          filter: variables?.filter,
+          filter: filtroDebounced,
           page: variables?.currentPage,
           rows: variables?.rows,
           endDate: variables?.endDate,
@@ -53,7 +53,7 @@ const useBills = () => {
         }
       }
     })
-  }, [variables, getSales])
+  }, [variables, filtroDebounced, getSales])
 
   return {
     data,

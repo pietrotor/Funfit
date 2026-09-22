@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
 import MenuLink from '../MenuLink'
+import { TMenuIconName } from '../menuIcons'
 // import Accordion from '@/components/molecules/Accordion'
-import { TSvgNames } from '@/components/atoms/IconSelector'
 import Accordion from '@/components/molecules/Accordion'
 
 type TSubMenuLinkProps = {
   isSidebarOpen: boolean
   text: string
-  icon?: TSvgNames
+  icon?: TMenuIconName
   detailView?: boolean
   link?: string
   subMenu: {
     text: string
-    icon?: TSvgNames
+    icon?: TMenuIconName
     detailView?: boolean
     link?: string
   }[]

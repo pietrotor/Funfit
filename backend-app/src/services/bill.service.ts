@@ -12,10 +12,12 @@ export class BillService extends BillRepository<objectId> {
       billPaginationInput
     const initialDateQuery = initialDate ? new Date(initialDate) : null
     if (initialDateQuery) initialDateQuery.setHours(4, 0, 0, 0)
+    // The range applies to the accounting date of the bill, same as the
+    // expenses summary, not to the date it was registered.
     const dateFilter =
       initialDateQuery && endDate
         ? {
-            createdAt: {
+            date: {
               $gte: initialDateQuery,
               $lt: addDays(new Date(endDate), 1)
             }

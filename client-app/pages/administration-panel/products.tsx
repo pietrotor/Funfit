@@ -35,6 +35,7 @@ interface IProduct {
 }
 
 const Productos = ({ user }: IProduct) => {
+  const { currentBranch } = useAppSelector(state => state.branchReducer)
   const [editProduct, setEditProduct] = useState<TValueProductData>()
   const [variables, setVariables] = useState<PaginationInterfaceState>({
     rows: 5,

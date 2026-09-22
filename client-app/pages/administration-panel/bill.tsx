@@ -40,20 +40,25 @@ const BillPage = ({ user }: { user: any }) => {
     handleDelete,
     deleteDisclosure
   } = useBillController()
+  const initialDate = watch('initialDate')
+  const endDate = watch('endDate')
+
   useEffect(() => {
+    if (!currentBranch.id) return
     setVariables(prevVariables => ({
       ...prevVariables,
-      initialDate: watch('initialDate'),
-      endDate: watch('endDate'),
-      branchId: currentBranch.id
+      initialDate,
+      endDate,
+      branchId: currentBranch.id,
+      currentPage: 1
     }))
     setSummaryVariables(prevVariables => ({
       ...prevVariables,
-      initialDate: watch('initialDate'),
-      endDate: watch('endDate'),
+      initialDate,
+      endDate,
       branchId: currentBranch.id
     }))
-  }, [currentBranch.id])
+  }, [currentBranch.id, initialDate, endDate])
   return (
     <>
       <AdministrationLayout user={user}>
@@ -95,21 +100,15 @@ const BillPage = ({ user }: { user: any }) => {
                   .toISOString()
                   .split('T')[0]
               }
-              onValueChange={e => {
-                setVariables({ ...variables, initialDate: e })
-              }}
             />
             <InputComponent
               isRequired={false}
-              name="finalDate"
+              name="endDate"
               label="Fecha final"
               type="date"
               defaultValue={new Date().toISOString().split('T')[0]}
               className="rounded-md bg-white"
               control={control}
-              onValueChange={e => {
-                setVariables({ ...variables, endDate: e })
-              }}
             />
           </div>
           <div className="flex justify-end">

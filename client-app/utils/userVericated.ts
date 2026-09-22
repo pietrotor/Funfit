@@ -37,7 +37,7 @@ export const userVerificated = async (
         return {
           redirect: {
             permanent: false,
-            destination: '/administration-panel/users'
+            destination: '/administration-panel/dailySale'
           }
         }
       }

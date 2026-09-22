@@ -3,10 +3,10 @@ import React, { SetStateAction } from 'react'
 import Counter from '../Counter'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
 import { TProductBranchData } from '@/interfaces/TData'
-import { ProductTypeEnum } from '@/graphql/graphql-types'
 import { DEFAULT_IMAGE } from '@/lib/constants'
 import IconSelector from '@/components/atoms/IconSelector'
 import { useProductHandler } from '@/hooks/useProductsHandler'
+import { canIncrementQuantity, getQuantityLimit } from '@/utils/pointOfSale'
 
 export type TPointOfSaleCardProps = {
   product: TProductBranchData
@@ -30,11 +30,10 @@ function PointOfSaleCard({
     selectedProducts,
     setSelectedProducts
   })
+  const canAdd = canIncrementQuantity(product, quantity)
   const handleClick = () => {
-    if (quantity) return
-    ;((product?.stock && quantity < product?.stock && quantity + 1 >= 1) ||
-      product.product?.type === ProductTypeEnum.COMBO) &&
-      handleSelected(product.id)
+    if (quantity || !canAdd) return
+    handleSelected(product.id)
   }
   return (
     <Badge
@@ -75,24 +74,29 @@ function PointOfSaleCard({
             </h5>
           </div>
           {quantity ? (
-            <Counter
-              productId={product.productId}
-              quantity={quantity || 0}
-              stock={product?.stock}
-              decrement={() => {
-                quantity && quantity > 1 && decrement(product.productId)
-              }}
-              increment={() => {
-                quantity < (product?.stock || 0) && increment(product.productId)
-              }}
-            />
+            <div onClick={event => event.stopPropagation()}>
+              <Counter
+                productId={product.productId}
+                quantity={quantity || 0}
+                stock={getQuantityLimit(product)}
+                decrement={() => {
+                  quantity > 1 && decrement(product.productId)
+                }}
+                increment={() => {
+                  canAdd && increment(product.productId)
+                }}
+              />
+            </div>
           ) : (
             <Button
               variant="solid"
               color="primary"
               size="sm"
-              onClick={handleClick}
-              isDisabled={!product.stock}
+              onClick={event => {
+                event.stopPropagation()
+                handleClick()
+              }}
+              isDisabled={!canAdd}
             >
               <IconSelector name="Plus" width="w-3" />
               <span className="font-bold">Agregar</span>

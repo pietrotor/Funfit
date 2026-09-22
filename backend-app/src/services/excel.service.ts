@@ -202,6 +202,7 @@ export class ExcelService {
     let totalGeneral = 0
     let totalCash = 0
     let totalCard = 0
+    let totalQR = 0
     let totalPedidosYa = 0
     let totalOther = 0
     let index = 0

@@ -4,23 +4,25 @@ FROM node:16-alpine
 
 WORKDIR /usr/app
 
+RUN npm install -g pnpm@8.15.4
+
 # Instalación de dependencias
-COPY package*.json ./
-RUN npm install
-RUN npm install ts-node tsconfig-paths
-RUN npm i -D typescript
+COPY package.json pnpm-lock.yaml .npmrc ./
+RUN pnpm install --frozen-lockfile
+RUN pnpm add ts-node tsconfig-paths
+RUN pnpm add -D typescript
 
 # Copiar archivos de la aplicación
 COPY . .
 
 # Generar código si es necesario
-RUN npm run codegen
+RUN pnpm codegen
 
 # Compilar la aplicación
-RUN npm run build
+RUN pnpm build
 
 # Eliminar dependencias de desarrollo
-RUN npm prune --production
+RUN pnpm prune --prod
 
 # Copiar el archivo schema.graphql
 COPY ./src/graphql/schema.graphql ./build/graphql/schema.graphql

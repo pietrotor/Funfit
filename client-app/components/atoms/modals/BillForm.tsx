@@ -27,10 +27,15 @@ const BillForm = ({ isOpen, onClose, onSubmit, isLoading }: BillFormProps) => {
       color="success"
       loading={isLoading}
       isOpen={isOpen}
+      isDimissable={!isLoading}
+      successButtonDisabled={isLoading}
       onClose={onClose}
       control={control}
       handleSubmit={handleSubmit}
-      onSubmit={onSubmit}
+      onSubmit={(data: any) => {
+        if (isLoading) return
+        onSubmit(data)
+      }}
       reset={reset}
     >
       <div className="space-y-3 px-6 py-2">
