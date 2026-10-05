@@ -10,6 +10,7 @@ import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 import { TDataBranch, TSaleProduct } from '@/interfaces/TData'
+import { filterPaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseGetCustomSalesPaginated from '@/services/UseGetCustomSalesPaginated'
 import { useAppSelector } from '@/store/index'
 import InformationCard from '@/components/molecules/Card/InformationCard'
@@ -27,6 +28,7 @@ import { useGetSalesSummary } from '@/services/useGetSalesSummary'
 import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
 import ProductListModal from '@/components/atoms/modals/ProductListModal'
 import ExportModal from '@/components/atoms/modals/ExportModal'
+import { getSalePaymentMethod } from '@/utils/getSalePaymentMethod'
 
 interface SalesProps {
   user: any
@@ -73,9 +75,41 @@ function Sales({ user }: SalesProps) {
       ...prevVariables,
       branchIds: [currentBranch.id],
       initialDate: watch('initialDate'),
-      endDate: watch('endDate')
+      endDate: watch('endDate'),
+      currentPage: 1
     }))
   }, [currentBranch])
+
+  // Every report filter applies to the branch shown in the selector, not to
+  // the global branch from the sidebar.
+  const applyFilters = (changes: filterPaginationInterfaceState) => {
+    setVariables(prevVariables => ({
+      ...prevVariables,
+      ...changes,
+      branchIds: [branchSelected.id],
+      currentPage: 1
+    }))
+    setSummaryVariables(prevVariables => ({
+      ...prevVariables,
+      ...changes,
+      branchIds: [branchSelected.id]
+    }))
+  }
+
+  const handleChangeBranch = (name: string) => {
+    const branch = branches.find(branch => branch.name === name)
+    if (!branch) return
+    setSelected(branch as TDataBranch)
+    setVariables(prevVariables => ({
+      ...prevVariables,
+      branchIds: [branch.id],
+      currentPage: 1
+    }))
+    setSummaryVariables(prevVariables => ({
+      ...prevVariables,
+      branchIds: [branch.id]
+    }))
+  }
 
   const [getUsers, { data: users }] = useGetUsersLazyQuery({
     fetchPolicy: 'cache-first',
@@ -96,7 +130,11 @@ function Sales({ user }: SalesProps) {
   })
 
   const handleChangeRow = (row: number) => {
-    setVariables({ ...variables, rows: row, currentPage: 1 })
+    setVariables(prevVariables => ({
+      ...prevVariables,
+      rows: row,
+      currentPage: 1
+    }))
   }
 
   function getTotalByPaymentMethod(method: PaymentMethodEnum) {
@@ -119,13 +157,7 @@ function Sales({ user }: SalesProps) {
     // Si ambas están vacías, no hay filtro (válido)
     if (!initialHour && !endHour) {
       setHourFilterError('')
-      setVariables({ ...variables, initialHour: undefined, endHour: undefined })
-      setSummaryVariables(prev => ({
-        ...prev,
-        branchIds: [currentBranch.id],
-        initialHour: undefined,
-        endHour: undefined
-      }))
+      applyFilters({ initialHour: undefined, endHour: undefined })
       return
     }
 
@@ -133,13 +165,7 @@ function Sales({ user }: SalesProps) {
     if ((initialHour && !endHour) || (!initialHour && endHour)) {
       setHourFilterError('Debes completar ambas horas para filtrar')
       // No aplicar filtro parcial
-      setVariables({ ...variables, initialHour: undefined, endHour: undefined })
-      setSummaryVariables(prev => ({
-        ...prev,
-        branchIds: [currentBranch.id],
-        initialHour: undefined,
-        endHour: undefined
-      }))
+      applyFilters({ initialHour: undefined, endHour: undefined })
       return
     }
 
@@ -147,25 +173,13 @@ function Sales({ user }: SalesProps) {
     if (initialHour >= endHour) {
       setHourFilterError('La hora inicial debe ser menor que la hora final')
       // No aplicar filtro inválido
-      setVariables({ ...variables, initialHour: undefined, endHour: undefined })
-      setSummaryVariables(prev => ({
-        ...prev,
-        branchIds: [currentBranch.id],
-        initialHour: undefined,
-        endHour: undefined
-      }))
+      applyFilters({ initialHour: undefined, endHour: undefined })
       return
     }
 
     // Todo válido, aplicar filtro
     setHourFilterError('')
-    setVariables({ ...variables, initialHour, endHour })
-    setSummaryVariables(prev => ({
-      ...prev,
-      branchIds: [currentBranch.id],
-      initialHour,
-      endHour
-    }))
+    applyFilters({ initialHour, endHour })
   }
 
   const handleExportToExcel = async () => {
@@ -224,26 +238,6 @@ function Sales({ user }: SalesProps) {
     }
   }
 
-  const getSalePaymentMethod = (paymentMethod: PaymentMethodEnum) => {
-    switch (paymentMethod) {
-      case PaymentMethodEnum.CARD:
-        return {
-          icon: <IconSelector name="CreditCard" />,
-          text: 'Tarjeta'
-        }
-      case PaymentMethodEnum.QR_TRANSFER:
-        return {
-          icon: <IconSelector name="QrCode" />,
-          text: 'QR'
-        }
-      case PaymentMethodEnum.CASH:
-        return {
-          icon: <IconSelector name="Cash" />,
-          text: 'Efectivo'
-        }
-    }
-  }
-
   return (
     <AdministrationLayout user={user}>
       <div className="m-auto mt-7 w-5/6 ">
@@ -254,15 +248,7 @@ function Sales({ user }: SalesProps) {
           <h3>Sucursales</h3>
           <RadioGroup
             value={branchSelected.name}
-            onValueChange={value => {
-              setSelected(
-                branches.find(branch => branch.name === value) as TDataBranch
-              )
-              setSummaryVariables(prevVariables => ({
-                ...prevVariables,
-                branchIds: [branches.find(branch => branch.name === value)!.id]
-              }))
-            }}
+            onValueChange={handleChangeBranch}
             className="mt-2"
           >
             <div className="grid grid-cols-5 gap-x-4 gap-y-2 ">
@@ -288,14 +274,7 @@ function Sales({ user }: SalesProps) {
                 .toISOString()
                 .split('T')[0]
             }
-            onValueChange={e => {
-              setVariables({ ...variables, initialDate: e })
-              setSummaryVariables(prevVariables => ({
-                ...prevVariables,
-                branchIds: [currentBranch.id],
-                initialDate: e
-              }))
-            }}
+            onValueChange={e => applyFilters({ initialDate: e })}
           />
           <InputComponent
             isRequired={false}
@@ -305,14 +284,7 @@ function Sales({ user }: SalesProps) {
             defaultValue={new Date().toISOString().split('T')[0]}
             className="rounded-md bg-white"
             control={control}
-            onValueChange={e => {
-              setVariables({ ...variables, endDate: e })
-              setSummaryVariables(prevVariables => ({
-                ...prevVariables,
-                branchIds: [currentBranch.id],
-                endDate: e
-              }))
-            }}
+            onValueChange={e => applyFilters({ endDate: e })}
           />
           <InputComponent
             isRequired={false}
@@ -343,14 +315,7 @@ function Sales({ user }: SalesProps) {
               label="Producto"
               name="productId"
               control={control}
-              onSelectionChange={e => {
-                setVariables({ ...variables, productId: e })
-                setSummaryVariables(prevVariables => ({
-                  ...prevVariables,
-                  branchIds: [currentBranch.id],
-                  productId: e
-                }))
-              }}
+              onSelectionChange={e => applyFilters({ productId: e })}
               onClick={() => getProducts()}
               options={
                 products?.getProducts?.data?.map(product => ({
@@ -370,14 +335,7 @@ function Sales({ user }: SalesProps) {
               label="Vendedor"
               name="seller"
               control={control}
-              onSelectionChange={e => {
-                setVariables({ ...variables, saleBy: e })
-                setSummaryVariables(prevVariables => ({
-                  ...prevVariables,
-                  branchIds: [currentBranch.id],
-                  saleBy: e
-                }))
-              }}
+              onSelectionChange={e => applyFilters({ saleBy: e })}
               onClick={() => getUsers()}
               options={
                 users?.getUsers?.data?.map(user => ({
@@ -464,7 +422,7 @@ function Sales({ user }: SalesProps) {
           </button>
         </div>
 
-        <section className="my-4 mb-8  grid gap-3 pt-6 md:gap-4 lg:grid-cols-2 xl:grid-cols-4">
+        <section className="my-4 mb-8  grid gap-3 pt-6 md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
           <InformationCard className="h-full bg-slate-200 px-3 py-6">
             <div className="flex items-center justify-between">
               <div className="text-lg font-bold">
@@ -539,6 +497,45 @@ function Sales({ user }: SalesProps) {
               </span>
             </div>
           </InformationCard>
+          <InformationCard className="h-full bg-slate-200 px-3 py-6">
+            <div className="flex items-center justify-between">
+              <div className="text-lg font-bold">
+                <div className="text-xl">Ventas PedidosYa</div>
+                <div className="text-center">
+                  {getTotalByPaymentMethod(PaymentMethodEnum.PEDIDOS_YA)
+                    ?.total || 0}{' '}
+                  Bs
+                </div>
+              </div>
+              <span className="rounded-full bg-secondary p-3 ">
+                <IconSelector
+                  name="Truck"
+                  className=" rounded-md text-white"
+                  height="h-6"
+                  width="w-6"
+                />
+              </span>
+            </div>
+          </InformationCard>
+          <InformationCard className="h-full bg-slate-200 px-3 py-6">
+            <div className="flex items-center justify-between">
+              <div className="text-lg font-bold">
+                <div className="text-xl">Ventas otros</div>
+                <div className="text-center">
+                  {getTotalByPaymentMethod(PaymentMethodEnum.OTHER)?.total || 0}{' '}
+                  Bs
+                </div>
+              </div>
+              <span className="rounded-full bg-secondary p-3 ">
+                <IconSelector
+                  name="Payment"
+                  className=" rounded-md text-white"
+                  height="h-6"
+                  width="w-6"
+                />
+              </span>
+            </div>
+          </InformationCard>
         </section>
         <Table
           onChangeRow={row => handleChangeRow(row)}
@@ -580,10 +577,16 @@ function Sales({ user }: SalesProps) {
               </div>,
               <div
                 key={idx}
-                className=" flex items-center justify-center gap-1 rounded-sm border border-primary p-1 text-primary"
+                className=" flex flex-col items-center justify-center gap-1 rounded-sm border border-primary p-1 text-primary"
               >
-                {getSalePaymentMethod(sale.paymentMethod).icon}
-                <p>{getSalePaymentMethod(sale.paymentMethod).text}</p>
+                <div className="flex items-center gap-1">
+                  {getSalePaymentMethod(sale.paymentMethod).icon}
+                  <p>{getSalePaymentMethod(sale.paymentMethod).text}</p>
+                </div>
+                {(sale as Sale).entersCash &&
+                  sale.paymentMethod !== PaymentMethodEnum.CASH && (
+                    <p className="text-tiny text-secondary">Ingresó a caja</p>
+                )}
               </div>,
               <div key={idx} className=" flex justify-center  ">
                 <div className="text-sm ">
@@ -619,16 +622,12 @@ function Sales({ user }: SalesProps) {
                   {sale.createdByInfo?.name} {sale.createdByInfo?.lastName}
                 </div>
               </div>,
-              <div key={idx}>
+              <div key={idx} className="max-w-[12rem] text-sm">
+                <p>{(sale as Sale).observations || '—'}</p>
                 {sale.canceled && (
-                  <div className="flex h-full flex-col items-center justify-center gap-3">
-                    <p className="m-auto w-fit bg-red-600 px-4 py-1 font-bold text-white">
-                      Venta Anulada
-                    </p>
-                    <div>
-                      <DateConverter dateString={sale.canceledAt} showTime />
-                    </div>
-                  </div>
+                  <p className="mt-1 w-fit bg-red-600 px-2 py-0.5 text-tiny font-bold text-white">
+                    Anulada
+                  </p>
                 )}
               </div>,
               <div key={idx}>

@@ -6,6 +6,7 @@ import { ParsedUrlQuery } from 'querystring'
 import { CURRENT_USER } from './queries'
 import apolloClientSSR from '@/graphql/apollo-ssr'
 import { CurrentUserQuery, StatusEnum } from '@/graphql/graphql-types'
+import { canAccessPanelPath, DAILY_SALE_PATH } from './panelRoutes'
 
 // import client from '@/graphql/apollo-client'
 
@@ -58,7 +59,18 @@ export const authUserHeader = async (
       }
     }
     // If there is a user, return the current session
-    return { props: { user: data.currentUser.data } }
+    const user = data.currentUser.data
+    const role = user.roleInfo?.type
+    const path = ctx.resolvedUrl || ctx.req.url || ''
+    if (!canAccessPanelPath(path, role)) {
+      return {
+        redirect: {
+          permanent: false,
+          destination: DAILY_SALE_PATH
+        }
+      }
+    }
+    return { props: { user } }
   } catch (error) {
     console.log(error)
     return {

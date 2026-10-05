@@ -4,8 +4,8 @@ import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-s
 import IconSelector from '@/components/atoms/IconSelector'
 import Counter from '@/components/molecules/Counter'
 import { TProductBranchData } from '@/interfaces/TData'
-import { ProductTypeEnum } from '@/graphql/graphql-types'
 import { useProductHandler } from '@/hooks/useProductsHandler'
+import { canIncrementQuantity, getQuantityLimit } from '@/utils/pointOfSale'
 
 type SelectedProductItemProps = {
   item: TProductBranchData
@@ -17,21 +17,14 @@ function SelectedProductItem({
   selectedProducts,
   setSelectedProducts
 }: SelectedProductItemProps) {
-  const { decrement, increment } = useProductHandler({
+  const { decrement, increment, remove } = useProductHandler({
     item,
     selectedProducts,
     setSelectedProducts
   })
 
-  const handleDelete = (id: string) => {
-    setSelectedProducts(prevValue => ({
-      ...prevValue,
-      products: selectedProducts.products.filter(item => item.productId !== id),
-      subTotal: selectedProducts.subTotal - item.price * (item.quantity || 0),
-      total: selectedProducts.total - item.price * (item.quantity || 0),
-      discount: selectedProducts.discount
-    }))
-  }
+  const quantity = item.quantity || 0
+  const canAdd = canIncrementQuantity(item, quantity)
 
   return (
     <div
@@ -45,25 +38,23 @@ function SelectedProductItem({
       <div className="flex w-2/3 justify-center">
         <Counter
           productId={item.productId}
-          quantity={item.quantity || 0}
-          stock={item.product?.type === ProductTypeEnum.COMBO ? undefined : item.stock}
+          quantity={quantity}
+          stock={getQuantityLimit(item)}
           decrement={() => {
-            item.quantity && item.quantity > 1 && decrement(item.productId)
+            quantity > 1 && decrement(item.productId)
           }}
           increment={() => {
-            ;((item.quantity && item.stock && item?.stock > item?.quantity) ||
-              item.product?.type === ProductTypeEnum.COMBO) &&
-              increment(item.productId)
+            canAdd && increment(item.productId)
           }}
         />
       </div>
       <div className="flex h-full w-1/6 flex-col items-center justify-between">
         <p className="font-semibold">
-          Bs. {new Decimal(item.price).mul(item.quantity || 0).toNumber()}
+          Bs. {new Decimal(item.price).mul(quantity).toNumber()}
         </p>
         <span
           className=" rounded-full px-1 transition hover:bg-gray-200 hover:text-danger hover:duration-300"
-          onClick={() => handleDelete(item.productId)}
+          onClick={() => remove(item.productId)}
         >
           <IconSelector name="trash" width="w-4" />
         </span>

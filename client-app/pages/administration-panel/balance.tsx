@@ -1,19 +1,22 @@
 import { GetServerSideProps } from 'next'
 
 import { useForm } from 'react-hook-form'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
 import InformationCard from '@/components/molecules/Card/InformationCard'
 import InputComponent from '@/components/atoms/Input'
 import { useGetBusinessBalanceQuery } from '@/graphql/graphql-types'
+import { useAppSelector } from '@/store/index'
 
 interface SalesProps {
   user: any
 }
 
 function BalancePage({ user }: SalesProps) {
+  const { currentBranch } = useAppSelector(state => state.branchReducer)
+  const [scope, setScope] = useState<'all' | 'branch'>('all')
   const { control, watch } = useForm({
     defaultValues: {
       initialDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
@@ -23,11 +26,14 @@ function BalancePage({ user }: SalesProps) {
     }
   })
 
+  const isBranchScope = scope === 'branch'
   const { data } = useGetBusinessBalanceQuery({
     variables: {
       endDate: watch('endDate'),
-      initialDate: watch('initialDate')
+      initialDate: watch('initialDate'),
+      branchId: isBranchScope ? currentBranch.id : null
     },
+    skip: isBranchScope && !currentBranch.id,
     fetchPolicy: 'network-only'
   })
 
@@ -73,15 +79,32 @@ function BalancePage({ user }: SalesProps) {
             defaultValue={new Date().toISOString().split('T')[0]}
             className="rounded-md bg-white"
             control={control}
-            // onValueChange={e => {
-            //   setVariables({ ...variables, endDate: e })
-            //   setSummaryVariables(prevVariables => ({
-            //     ...prevVariables,
-            //     branchIds: [currentBranch.id],
-            //     endDate: e
-            //   }))
-            // }}
           />
+        </div>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <button
+            type="button"
+            className={`rounded-lg px-4 py-2 text-sm font-semibold ${
+              !isBranchScope
+                ? 'bg-secondary text-white'
+                : 'border border-gray-300 bg-white text-gray-500'
+            }`}
+            onClick={() => setScope('all')}
+          >
+            Todas las sucursales
+          </button>
+          <button
+            type="button"
+            className={`rounded-lg px-4 py-2 text-sm font-semibold ${
+              isBranchScope
+                ? 'bg-secondary text-white'
+                : 'border border-gray-300 bg-white text-gray-500'
+            }`}
+            onClick={() => setScope('branch')}
+          >
+            Sucursal activa
+            {currentBranch.name ? ` (${currentBranch.name})` : ''}
+          </button>
         </div>
 
         <section className="my-4 mb-8  grid gap-3 pt-6 md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
@@ -191,6 +214,11 @@ function BalancePage({ user }: SalesProps) {
                   Bs
                 </p>
               </div>
+              {isBranchScope && (
+                <p className="ml-6 text-xs text-gray-400">
+                  Global (no depende de sucursal)
+                </p>
+              )}
             </div>
             <div className="mt-4">
               <h4 className="text-lg uppercase">Egresos</h4>
@@ -206,6 +234,11 @@ function BalancePage({ user }: SalesProps) {
                   </p>
                   <p className="text-base font-bold"></p>
                 </div>
+                {isBranchScope && (
+                  <p className="text-xs text-gray-400">
+                    Global (no depende de sucursal)
+                  </p>
+                )}
               </div>
               <div className="mt-3 space-y-1">
                 <div className="grid w-full grid-cols-4">
@@ -218,6 +251,25 @@ function BalancePage({ user }: SalesProps) {
                   </p>
                   <p className="text-base font-bold"></p>
                 </div>
+                {(data?.getBusinessBalance?.data?.billsByBranch || []).map(
+                  branchBill => (
+                    <div
+                      className="grid w-full grid-cols-2"
+                      key={branchBill.id}
+                    >
+                      <p className="ml-6 flex items-center gap-2 text-sm font-semibold">
+                        <span className="h-1 w-1 rounded-full bg-black"></span>
+                        {branchBill.name}
+                      </p>
+                      <div className="grid w-full grid-cols-2">
+                        <p></p>
+                        <p className="mr-6 text-right text-sm font-semibold text-gray-400">
+                          {branchBill.total} Bs
+                        </p>
+                      </div>
+                    </div>
+                  )
+                )}
               </div>
             </div>
             <div className="mt-5">

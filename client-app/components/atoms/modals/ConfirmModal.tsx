@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react'
+import { createPortal } from 'react-dom'
 import IconSelector, { TSvgNames } from '../IconSelector'
 import ButtonComponent from '../Button'
 
@@ -26,13 +28,23 @@ export const ConfirmModal = ({
   onConfirm,
   loading
 }: ModalProps) => {
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => setIsMounted(true), [])
+
   const handleConrfirm = () => {
     onClose()
     onConfirm()
   }
-  return (
+
+  if (!isMounted || !isOpen) return null
+
+  // Rendered in a portal on the body so it always stays above NextUI modals
+  // and below the error toasts.
+  return createPortal(
     <div
-      className={`${isOpen ? 'fixed' : 'hidden'} inset-0 z-50 overflow-y-auto`}
+      className="fixed inset-0 overflow-y-auto"
+      style={{ zIndex: 9000 }}
     >
       <div className="flex min-h-screen items-center justify-center px-4 pb-20 pt-4 text-center sm:block sm:p-0">
         <div className="fixed inset-0 transition-opacity" aria-hidden="true">
@@ -108,6 +120,7 @@ export const ConfirmModal = ({
           </div>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   )
 }

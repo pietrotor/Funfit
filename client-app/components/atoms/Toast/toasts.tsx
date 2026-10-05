@@ -25,8 +25,10 @@ const ToastComponent: React.FC = () => {
   return (
     <Toaster
       position="bottom-right"
+      // Above NextUI modals (z-index 50) and confirmations, so errors are
+      // never rendered behind them.
       containerStyle={{
-        zIndex: '99999 !important'
+        zIndex: 99999
       }}
       toastOptions={{
         style: {
@@ -35,7 +37,7 @@ const ToastComponent: React.FC = () => {
           height: '70px',
           fontWeight: 600,
           border: '2px solid #CCE266',
-          zIndex: '99999 !important'
+          zIndex: 99999
         },
         error: {
           style: {

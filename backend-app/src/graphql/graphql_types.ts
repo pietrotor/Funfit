@@ -42,6 +42,7 @@ export type AddressResponse = ResponseBase & {
 export type Bill = {
   __typename?: 'Bill';
   amount: Scalars['Float']['output'];
+  branchId?: Maybe<Scalars['ObjectId']['output']>;
   createdBy?: Maybe<Scalars['ObjectId']['output']>;
   createdByInfo?: Maybe<User>;
   date: Scalars['Date']['output'];
@@ -51,6 +52,7 @@ export type Bill = {
 };
 
 export type BillPaginationInput = {
+  branchId?: InputMaybe<Scalars['ObjectId']['input']>;
   endDate?: InputMaybe<Scalars['Date']['input']>;
   filter?: InputMaybe<Scalars['String']['input']>;
   initialDate?: InputMaybe<Scalars['Date']['input']>;
@@ -67,6 +69,7 @@ export type BillResponse = ResponseBase & {
 };
 
 export type BillSummaryInput = {
+  branchId?: InputMaybe<Scalars['ObjectId']['input']>;
   endDate: Scalars['Date']['input'];
   initialDate: Scalars['Date']['input'];
 };
@@ -194,6 +197,7 @@ export type BusinessBalance = {
   __typename?: 'BusinessBalance';
   balance: Scalars['Float']['output'];
   bills: Scalars['Float']['output'];
+  billsByBranch: Array<BranchSales>;
   result: Scalars['Float']['output'];
   salesByBranch: Array<BranchSales>;
   totalEarnings: Scalars['Float']['output'];
@@ -332,6 +336,7 @@ export type CreateAddressInput = {
 
 export type CreateBillInput = {
   amount: Scalars['Float']['input'];
+  branchId: Scalars['ObjectId']['input'];
   date: Scalars['Date']['input'];
   detail?: InputMaybe<Scalars['String']['input']>;
   title: Scalars['String']['input'];
@@ -472,6 +477,7 @@ export type CreateSaleInput = {
   client?: InputMaybe<Scalars['String']['input']>;
   date: Scalars['Date']['input'];
   discount: Scalars['Float']['input'];
+  entersCash?: InputMaybe<Scalars['Boolean']['input']>;
   observations?: InputMaybe<Scalars['String']['input']>;
   orderId?: InputMaybe<Scalars['ObjectId']['input']>;
   paymentMethod: PaymentMethodEnum;
@@ -771,6 +777,7 @@ export type Mutation = {
   deletePrice?: Maybe<PriceResponse>;
   deletePriceList?: Maybe<PriceListResponse>;
   deleteProduct?: Maybe<ProductResponse>;
+  deleteStock?: Maybe<StockResponse>;
   deleteWarehouse?: Maybe<WarehouseResponse>;
   deliverOrder?: Maybe<OrderResponse>;
   openCash?: Maybe<CashResponse>;
@@ -929,6 +936,11 @@ export type MutationDeletePriceListArgs = {
 
 
 export type MutationDeleteProductArgs = {
+  id: Scalars['ObjectId']['input'];
+};
+
+
+export type MutationDeleteStockArgs = {
   id: Scalars['ObjectId']['input'];
 };
 
@@ -1133,6 +1145,8 @@ export type Payment = {
 export enum PaymentMethodEnum {
   CARD = 'CARD',
   CASH = 'CASH',
+  OTHER = 'OTHER',
+  PEDIDOS_YA = 'PEDIDOS_YA',
   QR_TRANSFER = 'QR_TRANSFER'
 }
 
@@ -1376,6 +1390,7 @@ export type QueryGetBranchesPaginatedArgs = {
 
 
 export type QueryGetBusinessBalanceArgs = {
+  branchId?: InputMaybe<Scalars['ObjectId']['input']>;
   endDate: Scalars['Date']['input'];
   initialDate: Scalars['Date']['input'];
 };
@@ -1481,6 +1496,7 @@ export type QueryGetProductStockArgs = {
 
 
 export type QueryGetProductsArgs = {
+  branchId?: InputMaybe<Scalars['ObjectId']['input']>;
   paginationInput: PaginationInput;
   type?: InputMaybe<ProductTypeEnum>;
 };
@@ -1636,6 +1652,7 @@ export type Sale = {
   createdByInfo?: Maybe<User>;
   date: Scalars['Date']['output'];
   discount: Scalars['Float']['output'];
+  entersCash?: Maybe<Scalars['Boolean']['output']>;
   id: Scalars['ObjectId']['output'];
   observations?: Maybe<Scalars['String']['output']>;
   orderId?: Maybe<Scalars['ObjectId']['output']>;
@@ -2444,6 +2461,7 @@ export type AddressResponseResolvers<ContextType = any, ParentType extends Resol
 
 export type BillResolvers<ContextType = any, ParentType extends ResolversParentTypes['Bill'] = ResolversParentTypes['Bill']> = {
   amount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  branchId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   createdBy?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;
   createdByInfo?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   date?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
@@ -2583,6 +2601,7 @@ export type BranchsResponseResolvers<ContextType = any, ParentType extends Resol
 export type BusinessBalanceResolvers<ContextType = any, ParentType extends ResolversParentTypes['BusinessBalance'] = ResolversParentTypes['BusinessBalance']> = {
   balance?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   bills?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  billsByBranch?: Resolver<Array<ResolversTypes['BranchSales']>, ParentType, ContextType>;
   result?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
   salesByBranch?: Resolver<Array<ResolversTypes['BranchSales']>, ParentType, ContextType>;
   totalEarnings?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
@@ -2911,6 +2930,7 @@ export type MutationResolvers<ContextType = any, ParentType extends ResolversPar
   deletePrice?: Resolver<Maybe<ResolversTypes['PriceResponse']>, ParentType, ContextType, RequireFields<MutationDeletePriceArgs, 'id'>>;
   deletePriceList?: Resolver<Maybe<ResolversTypes['PriceListResponse']>, ParentType, ContextType, RequireFields<MutationDeletePriceListArgs, 'id'>>;
   deleteProduct?: Resolver<Maybe<ResolversTypes['ProductResponse']>, ParentType, ContextType, RequireFields<MutationDeleteProductArgs, 'id'>>;
+  deleteStock?: Resolver<Maybe<ResolversTypes['StockResponse']>, ParentType, ContextType, RequireFields<MutationDeleteStockArgs, 'id'>>;
   deleteWarehouse?: Resolver<Maybe<ResolversTypes['WarehouseResponse']>, ParentType, ContextType, RequireFields<MutationDeleteWarehouseArgs, 'id'>>;
   deliverOrder?: Resolver<Maybe<ResolversTypes['OrderResponse']>, ParentType, ContextType, RequireFields<MutationDeliverOrderArgs, 'orderId'>>;
   openCash?: Resolver<Maybe<ResolversTypes['CashResponse']>, ParentType, ContextType, RequireFields<MutationOpenCashArgs, 'createTurnInput'>>;
@@ -3234,6 +3254,7 @@ export type SaleResolvers<ContextType = any, ParentType extends ResolversParentT
   createdByInfo?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   date?: Resolver<ResolversTypes['Date'], ParentType, ContextType>;
   discount?: Resolver<ResolversTypes['Float'], ParentType, ContextType>;
+  entersCash?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['ObjectId'], ParentType, ContextType>;
   observations?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   orderId?: Resolver<Maybe<ResolversTypes['ObjectId']>, ParentType, ContextType>;

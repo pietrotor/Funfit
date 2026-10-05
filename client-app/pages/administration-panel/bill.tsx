@@ -13,8 +13,10 @@ import InputComponent from '@/components/atoms/Input'
 import InformationCard from '@/components/molecules/Card/InformationCard'
 import IconSelector from '@/components/atoms/IconSelector'
 import { useBillsSummary } from '@/services/useBillsSummary'
+import { useAppSelector } from '@/store/index'
 
 const BillPage = ({ user }: { user: any }) => {
+  const { currentBranch } = useAppSelector(state => state.branchReducer)
   const { control, watch } = useForm({
     defaultValues: {
       initialDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1)
@@ -38,18 +40,25 @@ const BillPage = ({ user }: { user: any }) => {
     handleDelete,
     deleteDisclosure
   } = useBillController()
+  const initialDate = watch('initialDate')
+  const endDate = watch('endDate')
+
   useEffect(() => {
+    if (!currentBranch.id) return
     setVariables(prevVariables => ({
       ...prevVariables,
-      initialDate: watch('initialDate'),
-      endDate: watch('endDate')
+      initialDate,
+      endDate,
+      branchId: currentBranch.id,
+      currentPage: 1
     }))
     setSummaryVariables(prevVariables => ({
       ...prevVariables,
-      initialDate: watch('initialDate'),
-      endDate: watch('endDate')
+      initialDate,
+      endDate,
+      branchId: currentBranch.id
     }))
-  }, [])
+  }, [currentBranch.id, initialDate, endDate])
   return (
     <>
       <AdministrationLayout user={user}>
@@ -91,21 +100,15 @@ const BillPage = ({ user }: { user: any }) => {
                   .toISOString()
                   .split('T')[0]
               }
-              onValueChange={e => {
-                setVariables({ ...variables, initialDate: e })
-              }}
             />
             <InputComponent
               isRequired={false}
-              name="finalDate"
+              name="endDate"
               label="Fecha final"
               type="date"
               defaultValue={new Date().toISOString().split('T')[0]}
               className="rounded-md bg-white"
               control={control}
-              onValueChange={e => {
-                setVariables({ ...variables, endDate: e })
-              }}
             />
           </div>
           <div className="flex justify-end">
@@ -136,10 +139,13 @@ const BillPage = ({ user }: { user: any }) => {
         onClose={disclosure.onClose}
         isLoading={isMutating}
         onSubmit={data =>
-          onSubmit(data, () => {
-            refetch()
-            refetchSummary()
-          })
+          onSubmit(
+            { ...data, branchId: currentBranch.id },
+            () => {
+              refetch()
+              refetchSummary()
+            }
+          )
         }
       />
       <ConfirmModal

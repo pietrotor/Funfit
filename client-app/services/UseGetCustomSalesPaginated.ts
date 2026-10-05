@@ -47,14 +47,17 @@ const UseGetCustomSalesPaginated = (branchId: string) => {
 
   // Use useEffect to handle changes in variables
   useEffect(() => {
-    if (!variables?.branchIds || !variables?.branchIds?.[0]) return
+    // The branch travels inside the variables: when it changes the query runs
+    // again even if the rest of the filters stay the same.
+    const branchIds = variables?.branchIds
+    if (!branchIds?.[0]) return
     getSales({
       variables: {
         salesPaginationInput: {
-          filter: variables?.filter,
+          filter: filtroDebounced,
           page: variables?.currentPage,
           rows: variables?.rows,
-          branchIds: [branchId],
+          branchIds,
           endDate: variables?.endDate,
           initialDate: variables?.initialDate,
           saleBy: variables?.saleBy,
@@ -64,7 +67,7 @@ const UseGetCustomSalesPaginated = (branchId: string) => {
         }
       }
     })
-  }, [variables, getSales])
+  }, [variables, branchId, filtroDebounced, getSales])
 
   return {
     data,

@@ -59,7 +59,8 @@ const SaleCancelModal = ({
     defaultValues: {
       id: sale?.id,
       stockReturn: true,
-      cashBack: sale?.paymentMethod === PaymentMethodEnum.CASH
+      cashBack:
+        sale?.paymentMethod === PaymentMethodEnum.CASH || !!sale?.entersCash
     }
   })
 

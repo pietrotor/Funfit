@@ -123,8 +123,13 @@ export const GET_PRODUCTS = gql`
   query GetProducts(
     $paginationInput: PaginationInput!
     $type: ProductTypeEnum
+    $branchId: ObjectId
   ) {
-    getProducts(paginationInput: $paginationInput, type: $type) {
+    getProducts(
+      paginationInput: $paginationInput
+      type: $type
+      branchId: $branchId
+    ) {
       errorInput {
         message
         field
@@ -793,6 +798,8 @@ export const GET_SALES_PAGINATED = gql`
         canceled
         reason
         canceledAt
+        observations
+        entersCash
         createdBy
         branch {
           id
@@ -870,6 +877,8 @@ export const GET_SALES_BY_ID = gql`
           name
           lastName
         }
+        observations
+        entersCash
         code
         total
       }
@@ -1480,8 +1489,16 @@ export const GET_DISTRIBUTOR_SALE_PAYMENTS = gql`
   }
 `
 export const GET_BUSINESS_BALANCE = gql`
-  query GetBusinessBalance($endDate: Date!, $initialDate: Date!) {
-    getBusinessBalance(endDate: $endDate, initialDate: $initialDate) {
+  query GetBusinessBalance(
+    $endDate: Date!
+    $initialDate: Date!
+    $branchId: ObjectId
+  ) {
+    getBusinessBalance(
+      endDate: $endDate
+      initialDate: $initialDate
+      branchId: $branchId
+    ) {
       errorInput {
         field
         message
@@ -1490,6 +1507,11 @@ export const GET_BUSINESS_BALANCE = gql`
       message
       data {
         salesByBranch {
+          id
+          name
+          total
+        }
+        billsByBranch {
           id
           name
           total

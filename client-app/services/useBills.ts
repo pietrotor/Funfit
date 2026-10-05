@@ -21,7 +21,8 @@ const useBills = () => {
           variables?.initialDate ||
           new Date(new Date().getFullYear(), new Date().getMonth(), 1)
             .toISOString()
-            .split('T')[0]
+            .split('T')[0],
+        branchId: variables?.branchId
       }
     },
     onCompleted: result => {
@@ -39,18 +40,20 @@ const useBills = () => {
 
   // Use useEffect to handle changes in variables
   useEffect(() => {
+    if (!variables?.branchId) return
     getSales({
       variables: {
         billPaginationInput: {
-          filter: variables?.filter,
+          filter: filtroDebounced,
           page: variables?.currentPage,
           rows: variables?.rows,
           endDate: variables?.endDate,
-          initialDate: variables?.initialDate
+          initialDate: variables?.initialDate,
+          branchId: variables?.branchId
         }
       }
     })
-  }, [variables, getSales])
+  }, [variables, filtroDebounced, getSales])
 
   return {
     data,

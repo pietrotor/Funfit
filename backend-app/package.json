@@ -1,6 +1,7 @@
 {
   "name": "inquilino-digital-backend",
   "version": "1.0.0",
+  "packageManager": "pnpm@8.15.4",
   "description": "",
   "main": "index.ts",
   "scripts": {

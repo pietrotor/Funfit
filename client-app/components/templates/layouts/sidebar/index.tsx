@@ -2,9 +2,15 @@
 import { useDisclosure } from '@nextui-org/react'
 import React from 'react'
 import Image from 'next/image'
+import {
+  PanelLeftClose,
+  PanelLeftOpen,
+  Store,
+  UserRound
+} from 'lucide-react'
 import MenuLink from './MenuLink'
 import SubMenu from './SubMenu'
-import IconSelector, { TSvgNames } from '@/components/atoms/IconSelector'
+import { TMenuIconName } from './menuIcons'
 import { ICurrentUser } from '@/interfaces/currentUser.interface'
 import { SelectBranchModal } from '@/components/atoms/modals/SelectBranchModal'
 import {
@@ -17,13 +23,13 @@ import { setBranch, setBranches } from '@/store/slices/branches/branchSlice'
 export type TMenuStructure = {
   text: string
   link?: string
-  icon: TSvgNames
+  icon: TMenuIconName
   onClick?: () => void
   permissions: RoleTypeEnum[]
   subMenu?: {
     text: string
     link?: string
-    icon: TSvgNames
+    icon: TMenuIconName
     permissions: RoleTypeEnum[]
   }[]
 }[]
@@ -46,6 +52,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
   user
 }) => {
   const handleChangeBranch = useDisclosure()
+  const PanelIcon = isSidebarOpen ? PanelLeftClose : PanelLeftOpen
   const dispatch = useAppDispatch()
   const currentBranch = useAppSelector(
     state => state.branchReducer.currentBranch
@@ -130,10 +137,10 @@ const Sidebar: React.FC<TSidebarProps> = ({
           </div>
           <div>
             <div className=" flex w-full justify-center bg-secondary pt-5  text-white">
-              <IconSelector name="Store" width="w-6" height="h-6" />
+              <Store className="h-6 w-6" strokeWidth={1.75} />
             </div>
             <div className="flex w-full justify-center bg-secondary py-5  text-white">
-              <IconSelector name="user" width="w-8" height="h-8" />
+              <UserRound className="h-7 w-7" strokeWidth={1.75} />
             </div>
           </div>
         </div>
@@ -150,7 +157,7 @@ const Sidebar: React.FC<TSidebarProps> = ({
               isSidebarOpen ? '-right-3 top-10' : '-right-12 top-10 md:-right-3'
             } top-10  aspect-square rounded-full bg-primary p-1 md:-right-3`}
           >
-            <IconSelector name="menu" stroke={3} />
+            <PanelIcon className="h-6 w-6" strokeWidth={2} />
           </button>
           <div>
             <div className="mb-4 me-auto ms-auto mt-10 flex h-32 transform cursor-pointer items-center rounded-xl transition-transform duration-300 hover:scale-110 md:h-20 md:w-36">
@@ -192,23 +199,13 @@ const Sidebar: React.FC<TSidebarProps> = ({
               }}
               className="flex w-full cursor-pointer items-center gap-3 overflow-hidden bg-secondary px-10 pt-5 text-tertiary"
             >
-              <IconSelector
-                name="Store"
-                width="w-6"
-                height="h-6"
-                className="text-white"
-              />
+              <Store className="h-6 w-6 text-white" strokeWidth={1.75} />
               <p className="font-semibold capitalize text-white">
                 {currentBranch.name}
               </p>
             </div>
             <div className="flex w-full items-center gap-3 overflow-hidden bg-secondary px-10 py-5 text-tertiary">
-              <IconSelector
-                name="user"
-                width="w-8"
-                height="h-8"
-                className="text-white"
-              />
+              <UserRound className="h-7 w-7 text-white" strokeWidth={1.75} />
               <p className="font-semibold capitalize text-white">
                 {user?.name}
               </p>

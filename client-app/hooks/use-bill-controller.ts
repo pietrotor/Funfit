@@ -40,8 +40,10 @@ const useBillController = () => {
       },
       onError(error) {
         console.log('🚀 ~ onError ~ error:', error)
-        showSuccessToast('No se pudo crear', 'error')
-        disclosure.onClose()
+        showSuccessToast(
+          'No se pudo registrar el gasto, vuelve a intentarlo',
+          'error'
+        )
       }
     })
   }
@@ -60,13 +62,12 @@ const useBillController = () => {
           data?.deleteBill?.message || 'Se elimino correctamente',
           'success'
         )
-        disclosure.onClose()
+        deleteDisclosure.onClose()
         callBack?.()
       },
       onError(error) {
         console.log('🚀 ~ onError ~ error:', error)
         showSuccessToast('No se pudo eliminar', 'error')
-        disclosure.onClose()
       }
     })
   }

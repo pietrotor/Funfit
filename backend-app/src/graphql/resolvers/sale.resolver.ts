@@ -82,13 +82,14 @@ const getSalesPaginated = async (
 }
 const getBusinessBalance = async (
   _: any,
-  args: { endDate: Date; initialDate: Date }
+  args: { endDate: Date; initialDate: Date; branchId?: objectId | null }
 ): Promise<BusinessBalanceResponse> => {
   try {
-    const { endDate, initialDate } = args
+    const { endDate, initialDate, branchId } = args
     const resopnse = await configurationCore.businessBalance({
       endDate,
-      initialDate
+      initialDate,
+      branchId
     })
     return {
       status: StatusEnum.OK,
