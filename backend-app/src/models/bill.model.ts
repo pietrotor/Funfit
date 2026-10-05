@@ -3,6 +3,7 @@ import { Document, Model, Schema, model, models } from 'mongoose'
 
 export interface IBill extends Document, IGeneric {
   id: objectId
+  branchId?: objectId
   title: string
   date: Date
   amount: number
@@ -12,6 +13,11 @@ export interface IModelBill extends Model<IBill> {}
 
 const billSchema = new Schema<IBill>(
   {
+    branchId: {
+      type: Schema.Types.ObjectId,
+      ref: 'Branch',
+      default: null
+    },
     title: {
       type: String
     },

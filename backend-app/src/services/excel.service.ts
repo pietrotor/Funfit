@@ -11,8 +11,10 @@ export class ExcelService {
         return 'Efectivo'
       case 'CARD':
         return 'Tarjeta'
-      case 'QR_TRANSFER':
-        return 'QR / Transferencia'
+      case 'PEDIDOS_YA':
+        return 'PedidosYa'
+      case 'OTHER':
+        return 'Otros'
       default:
         return method
     }
@@ -109,14 +111,14 @@ export class ExcelService {
     // ========== ENCABEZADO Y RESUMEN (filas 1-10) ==========
 
     // Fila 1: Título
-    worksheet.mergeCells('A1:K1')
+    worksheet.mergeCells('A1:M1')
     const titleCell = worksheet.getCell('A1')
     titleCell.value = `📊 Reporte de Ventas - ${branchName}`
     titleCell.style = titleStyle
     worksheet.getRow(1).height = 30
 
     // Fila 2: Período
-    worksheet.mergeCells('A2:K2')
+    worksheet.mergeCells('A2:M2')
     const dateRangeCell = worksheet.getCell('A2')
     dateRangeCell.value = `Período: ${initialDate} al ${endDate}`
     dateRangeCell.font = { italic: true, size: 11, color: { argb: 'FF666666' } }
@@ -128,11 +130,13 @@ export class ExcelService {
     // Filas 4-8: Resumen (se llenará después con los totales)
     // Estructura: etiqueta en columna B, valor en columna C
     const summaryLabels = [
-      { row: 4, label: '💰 Total General:', valueCell: 'C4' },
-      { row: 5, label: '💵 Total Efectivo:', valueCell: 'C5' },
-      { row: 6, label: '💳 Total Tarjeta:', valueCell: 'C6' },
-      { row: 7, label: '📱 Total QR/Transferencia:', valueCell: 'C7' },
-      { row: 8, label: '📋 Total Registros:', valueCell: 'C8' }
+      { row: 4, label: 'Total General:', valueCell: 'C4' },
+      { row: 5, label: 'Total Efectivo:', valueCell: 'C5' },
+      { row: 6, label: 'Total Tarjeta:', valueCell: 'C6' },
+      { row: 7, label: 'Total QR/Transferencia:', valueCell: 'C7' },
+      { row: 8, label: 'Total PedidosYa:', valueCell: 'C8' },
+      { row: 9, label: 'Total Otros:', valueCell: 'C9' },
+      { row: 10, label: 'Total Registros:', valueCell: 'C10' }
     ]
 
     summaryLabels.forEach(({ row, label }) => {
@@ -146,14 +150,12 @@ export class ExcelService {
     })
 
     // Ajustar anchos de columnas B y C para el resumen
-    worksheet.getColumn('B').width = 25
+    worksheet.getColumn('B').width = 28
     worksheet.getColumn('C').width = 18
 
-    // Fila 9: Espacio
-    worksheet.getRow(9).height = 15
+    worksheet.getRow(11).height = 15
 
-    // ========== ENCABEZADOS DE DATOS (fila 10) ==========
-    const DATA_HEADER_ROW = 10
+    const DATA_HEADER_ROW = 12
 
     // Definir columnas
     worksheet.columns = [
@@ -165,7 +167,9 @@ export class ExcelService {
       { header: 'Subtotal', key: 'subTotal', width: 12, style: { numFmt: '#,##0.00' } },
       { header: 'Descuento', key: 'discount', width: 12, style: { numFmt: '#,##0.00' } },
       { header: 'Total (Bs)', key: 'total', width: 12, style: { numFmt: '#,##0.00' } },
-      { header: 'Método de Pago', key: 'paymentMethod', width: 18 },
+      { header: 'Método de Pago', key: 'paymentMethod', width: 22 },
+      { header: 'Ingresó a caja', key: 'entersCash', width: 16 },
+      { header: 'Observaciones', key: 'observations', width: 30 },
       { header: 'Vendedor', key: 'seller', width: 25 },
       { header: 'Estado', key: 'status', width: 12 }
     ]
@@ -182,11 +186,13 @@ export class ExcelService {
       'Descuento',
       'Total (Bs)',
       'Método de Pago',
+      'Ingresó a caja',
+      'Observaciones',
       'Vendedor',
       'Estado'
     ]
     headerRow.eachCell((cell, colNumber) => {
-      if (colNumber <= 11) {
+      if (colNumber <= 13) {
         cell.style = headerStyle
       }
     })
@@ -197,6 +203,8 @@ export class ExcelService {
     let totalCash = 0
     let totalCard = 0
     let totalQR = 0
+    let totalPedidosYa = 0
+    let totalOther = 0
     let index = 0
 
     // ========== PROCESAR DATOS (streaming) ==========
@@ -241,6 +249,8 @@ export class ExcelService {
         discount: saleObj.discount || 0,
         total: saleObj.total,
         paymentMethod: this.getPaymentMethodText(saleObj.paymentMethod),
+        entersCash: saleObj.entersCash || saleObj.paymentMethod === 'CASH' ? 'Sí' : 'No',
+        observations: saleObj.observations || '-',
         seller: saleObj.createdBy
           ? `${(saleObj.createdBy as any).name || ''} ${(saleObj.createdBy as any).lastName || ''}`.trim()
           : '-',
@@ -259,7 +269,7 @@ export class ExcelService {
 
       // Bordes para celdas de datos
       row.eachCell((cell, colNumber) => {
-        if (colNumber <= 11) {
+        if (colNumber <= 13) {
           cell.border = {
             top: { style: 'thin', color: { argb: 'FFD9D9D9' } },
             left: { style: 'thin', color: { argb: 'FFD9D9D9' } },
@@ -275,6 +285,8 @@ export class ExcelService {
         if (saleObj.paymentMethod === 'CASH') totalCash += saleObj.total
         if (saleObj.paymentMethod === 'CARD') totalCard += saleObj.total
         if (saleObj.paymentMethod === 'QR_TRANSFER') totalQR += saleObj.total
+        if (saleObj.paymentMethod === 'PEDIDOS_YA') totalPedidosYa += saleObj.total
+        if (saleObj.paymentMethod === 'OTHER') totalOther += saleObj.total
       }
     }
 
@@ -286,10 +298,11 @@ export class ExcelService {
     worksheet.getCell('C5').value = `${totalCash.toFixed(2)} Bs`
     worksheet.getCell('C6').value = `${totalCard.toFixed(2)} Bs`
     worksheet.getCell('C7').value = `${totalQR.toFixed(2)} Bs`
-    worksheet.getCell('C8').value = index
+    worksheet.getCell('C8').value = `${totalPedidosYa.toFixed(2)} Bs`
+    worksheet.getCell('C9').value = `${totalOther.toFixed(2)} Bs`
+    worksheet.getCell('C10').value = index
 
-    // Re-aplicar estilos a las celdas de valor después de actualizar
-    for (let row = 4; row <= 8; row++) {
+    for (let row = 4; row <= 10; row++) {
       worksheet.getCell(`C${row}`).style = summaryValueStyle
     }
 
@@ -297,8 +310,8 @@ export class ExcelService {
     // Solo en columnas estandarizadas: Método de Pago (I=9), Vendedor (J=10), Estado (K=11)
     const lastDataRow = DATA_HEADER_ROW + index
     worksheet.autoFilter = {
-      from: { row: DATA_HEADER_ROW, column: 9 },  // Columna I: Método de Pago
-      to: { row: lastDataRow, column: 11 }         // Columna K: Estado
+      from: { row: DATA_HEADER_ROW, column: 9 },
+      to: { row: lastDataRow, column: 13 }
     }
 
     // ========== CONGELAR PANELES ==========
@@ -308,8 +321,8 @@ export class ExcelService {
         state: 'frozen',
         xSplit: 0,
         ySplit: DATA_HEADER_ROW,
-        topLeftCell: 'A11',
-        activeCell: 'A11'
+        topLeftCell: 'A13',
+        activeCell: 'A13'
       }
     ]
 

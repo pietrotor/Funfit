@@ -45,11 +45,16 @@ const getProducts = async (
   args: {
     paginationInput: PaginationInput
     type?: ProductTypeEnum | undefined | null
+    branchId?: objectId | null
   }
 ): Promise<ProductsResponse> => {
   try {
-    const { paginationInput, type } = args
-    return await productCore.getProductsPaginated(paginationInput, type)
+    const { paginationInput, type, branchId } = args
+    return await productCore.getProductsPaginated(
+      paginationInput,
+      type,
+      branchId
+    )
   } catch (error) {
     console.log(error)
     return errorHandler(error)

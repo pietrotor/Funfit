@@ -29,6 +29,8 @@ enum PaymentMethodEnum {
   QR_TRANSFER
   CARD
   CASH
+  PEDIDOS_YA
+  OTHER
 }
 enum DeliveryMethodEnum {
   DELIVERY
@@ -62,6 +64,7 @@ type Query {
   getProducts(
     paginationInput: PaginationInput!
     type: ProductTypeEnum
+    branchId: ObjectId
   ): ProductsResponse
   getProductById(id: ObjectId!): ProductResponse
   getProductsOutOfWarehouse(
@@ -156,6 +159,7 @@ type Query {
   getBusinessBalance(
     endDate: Date!
     initialDate: Date!
+    branchId: ObjectId
   ): BusinessBalanceResponse
   # BILLS ===================================
   getBills(billPaginationInput: BillPaginationInput!): BillsResponse
@@ -460,6 +464,7 @@ type Sale {
   amountRecibed: Float!
   change: Float!
   observations: String
+  entersCash: Boolean
   orderId: ObjectId
   canceled: Boolean
   reason: String
@@ -636,6 +641,7 @@ type BranchSales {
 }
 type BusinessBalance {
   salesByBranch: [BranchSales!]!
+  billsByBranch: [BranchSales!]!
   totalPaid: Float!
   balance: Float!
   bills: Float!
@@ -651,6 +657,7 @@ type BranchProductCategorized {
 }
 type Bill {
   id: ObjectId!
+  branchId: ObjectId
   title: String!
   date: Date!
   amount: Float!
@@ -1254,6 +1261,7 @@ input CreateSaleInput {
   amountRecibed: Float!
   change: Float!
   observations: String
+  entersCash: Boolean
   # if sale comes from order send this fild
   orderId: ObjectId
 }
@@ -1425,14 +1433,17 @@ input BillPaginationInput {
   filter: String
   initialDate: Date
   endDate: Date
+  branchId: ObjectId
 }
 input CreateBillInput {
   title: String!
   date: Date!
   amount: Float!
   detail: String
+  branchId: ObjectId!
 }
 input BillSummaryInput {
   initialDate: Date!
   endDate: Date!
+  branchId: ObjectId
 }

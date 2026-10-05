@@ -4,6 +4,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import clsx from 'clsx'
+import { Bell, ClipboardList, LogOut } from 'lucide-react'
 import Sidebar, { TMenuStructure } from './sidebar'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
@@ -150,73 +151,36 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
 
   const menu: TMenuStructure = [
     {
-      icon: 'home',
-      text: 'Inicio',
-      link: '/',
-      permissions: [RoleTypeEnum.ADMINISTRATOR]
+      icon: 'pos',
+      text: 'Punto de venta',
+      link: '/administration-panel/point-of-sale',
+      permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
     },
     {
-      icon: 'Admin',
-      text: 'Administrar',
-      permissions: [RoleTypeEnum.ADMINISTRATOR],
-      subMenu: [
-        {
-          icon: 'users',
-          text: 'Usuarios',
-          link: '/administration-panel/users',
-          permissions: [RoleTypeEnum.ADMINISTRATOR]
-        },
-        {
-          icon: 'Box',
-          text: 'Productos',
-          link: '/administration-panel/products',
-          permissions: [RoleTypeEnum.ADMINISTRATOR]
-        }
-      ]
-    },
-    {
-      icon: 'Configuration',
-      text: 'Configuración',
+      icon: 'operation',
+      text: 'Operación',
       permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN],
       subMenu: [
         {
-          icon: 'Branch',
-          text: 'Sucursales',
-          link: '/administration-panel/branches',
+          icon: 'orders',
+          text: 'Pedidos',
+          link: '/administration-panel/order',
           permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
         },
         {
-          icon: 'Bussines',
-          text: 'Almacenes',
-          link: '/administration-panel/warehouses',
-          permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
-        },
-        {
-          icon: 'Cash',
+          icon: 'cashRegister',
           text: 'Caja',
           link: '/administration-panel/cash',
           permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
         },
         {
-          icon: 'Admin',
-          text: 'Categorías',
-          link: '/administration-panel/categories',
-          permissions: [RoleTypeEnum.ADMINISTRATOR]
+          icon: 'dailySales',
+          text: 'Ventas del día',
+          link: '/administration-panel/dailySale',
+          permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
         },
         {
-          icon: 'Dealer',
-          text: 'Distribuidores',
-          link: '/administration-panel/dealers',
-          permissions: [RoleTypeEnum.ADMINISTRATOR]
-        },
-        {
-          icon: 'Admin',
-          text: 'Lista de precios',
-          link: '/administration-panel/price-list',
-          permissions: [RoleTypeEnum.ADMINISTRATOR]
-        },
-        {
-          icon: 'Admin',
+          icon: 'expenses',
           text: 'Gastos',
           link: '/administration-panel/bill',
           permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
@@ -224,66 +188,105 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       ]
     },
     {
-      icon: 'Store',
-      text: 'Ventas',
+      icon: 'inventory',
+      text: 'Inventario',
       permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN],
       subMenu: [
         {
-          icon: 'Admin',
-          text: 'Reportes',
-          link: '/administration-panel/sales',
-          permissions: [RoleTypeEnum.ADMINISTRATOR]
-        },
-        {
-          icon: 'Admin',
-          text: 'Ventas diarias',
-          link: '/administration-panel/dailySale',
+          icon: 'branches',
+          text: 'Sucursales',
+          link: '/administration-panel/branches',
           permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
         },
         {
-          icon: 'Truck',
+          icon: 'warehouses',
+          text: 'Almacenes',
+          link: '/administration-panel/warehouses',
+          permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
+        }
+      ]
+    },
+    {
+      icon: 'catalog',
+      text: 'Catálogo',
+      permissions: [RoleTypeEnum.ADMINISTRATOR],
+      subMenu: [
+        {
+          icon: 'products',
+          text: 'Productos',
+          link: '/administration-panel/products',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
+        },
+        {
+          icon: 'categories',
+          text: 'Categorías',
+          link: '/administration-panel/categories',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
+        }
+      ]
+    },
+    {
+      icon: 'distributors',
+      text: 'Distribuidores',
+      permissions: [RoleTypeEnum.ADMINISTRATOR],
+      subMenu: [
+        {
+          icon: 'distributorsList',
+          text: 'Distribuidores',
+          link: '/administration-panel/dealers',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
+        },
+        {
+          icon: 'priceList',
+          text: 'Lista de precios',
+          link: '/administration-panel/price-list',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
+        },
+        {
+          icon: 'distributorsPos',
+          text: 'Vender a distribuidores',
+          link: '/administration-panel/pos-distributors',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
+        },
+        {
+          icon: 'distributorsSales',
           text: 'Ventas a distribuidores',
           link: '/administration-panel/sales/distributors',
           permissions: [RoleTypeEnum.ADMINISTRATOR]
         }
       ]
     },
-    // {
-    //   icon: 'TrunkAndBox',
-    //   text: 'Produccion',
-    //   permissions: [RoleTypeEnum.ADMINISTRATOR],
-    //   subMenu: [
-    //     {
-    //       icon: 'Recipe',
-    //       text: 'Recetas',
-    //       link: '/administration-panel/recipies',
-    //       permissions: [RoleTypeEnum.ADMINISTRATOR]
-    //     }
-    //   ]
-    // },
     {
-      icon: 'PointOfSale',
-      text: 'Punto de venta',
-      link: '/administration-panel/point-of-sale',
-      permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
+      icon: 'reports',
+      text: 'Reportes',
+      permissions: [RoleTypeEnum.ADMINISTRATOR],
+      subMenu: [
+        {
+          icon: 'salesReport',
+          text: 'Reporte de ventas',
+          link: '/administration-panel/sales',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
+        },
+        {
+          icon: 'balance',
+          text: 'Balance',
+          link: '/administration-panel/balance',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
+        }
+      ]
     },
     {
-      icon: 'Basket-shopping',
-      text: 'Pedidos',
-      link: '/administration-panel/order',
-      permissions: [RoleTypeEnum.ADMINISTRATOR, RoleTypeEnum.SALESMAN]
-    },
-    {
-      icon: 'Dealer',
-      text: 'Punto de venta a distribuidores',
-      link: '/administration-panel/pos-distributors',
-      permissions: [RoleTypeEnum.ADMINISTRATOR]
-    },
-    {
-      icon: 'Balance',
-      text: 'Balance',
-      link: '/administration-panel/balance',
-      permissions: [RoleTypeEnum.ADMINISTRATOR]
+      icon: 'team',
+      text: 'Equipo',
+      permissions: [RoleTypeEnum.ADMINISTRATOR],
+      subMenu: [
+        {
+          icon: 'users',
+          text: 'Usuarios',
+          link: '/administration-panel/users',
+          permissions: [RoleTypeEnum.ADMINISTRATOR]
+        }
+      ]
     }
   ]
 
@@ -293,11 +296,13 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     if (!roleType) return []
     menu.forEach(page => {
       if (page.permissions.includes(roleType)) {
+        const subMenu = page.subMenu?.filter(item =>
+          item.permissions.includes(roleType)
+        )
+        if (page.subMenu && (!subMenu || subMenu.length === 0)) return
         menuBuilded.push({
           ...page,
-          subMenu: page.subMenu?.filter(item =>
-            item.permissions.includes(roleType)
-          )
+          subMenu
         })
       }
     })
@@ -362,14 +367,15 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
             <div className={` fixed right-5 z-30 ${sidebarOpen ? '' : ''} `}>
               <div className="flex items-center">
                 <DropDown
-                  IconButtonName="Notifications"
+                  IconButton={Bell}
+                  iconButtonLabel="Notificaciones"
                   onClick={() => refetch()}
                   values={
                     data?.getOrdersPaginated?.data?.map((order, idx) => {
                       return {
                         label: `Nueva orden - ${order.total} Bs`,
                         value: order.id,
-                        icon: 'Recipe',
+                        icon: ClipboardList,
                         handleClick: () => {
                           router.push({
                             pathname: '/administration-panel/order'
@@ -384,21 +390,20 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
                 />
                 <DropDown
                   fill
-                  IconButtonName="user"
                   label={user.name}
                   user="https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png"
                   values={[
                     {
                       label: 'Notificaciones',
                       value: 'notifications',
-                      icon: 'Notifications',
+                      icon: Bell,
                       handleClick: () => console.log('profile'),
                       counter: 2
                     },
                     {
                       label: 'Cerrar sesión',
                       value: 'logout',
-                      icon: 'Logout',
+                      icon: LogOut,
                       handleClick: () => handleLogOut(),
                       counter: 0
                     }

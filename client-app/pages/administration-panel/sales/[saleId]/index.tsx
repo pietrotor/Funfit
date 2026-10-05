@@ -14,6 +14,7 @@ import { useAppSelector } from '@/store/index'
 import { authUserHeader } from '@/utils/verificationUser'
 import { PaymentMethodEnum } from '@/graphql/graphql-types'
 import DateConverter from '@/components/atoms/DateConverter'
+import { getSalePaymentMethod } from '@/utils/getSalePaymentMethod'
 
 interface SaleDetailProps {
   user: any
@@ -23,33 +24,7 @@ function SaleDetail({ user }: SaleDetailProps) {
   const router = useRouter()
   const { data } = useCustomGetSaleById(router.query.saleId as string)
   const { currentBranch } = useAppSelector(state => state.branchReducer)
-
-  const getSalePaymentMethod = (paymentMethod: PaymentMethodEnum) => {
-    switch (paymentMethod) {
-      case PaymentMethodEnum.CARD:
-        return {
-          icon: (
-            <IconSelector
-              className=" rounded-md text-white"
-              name="CreditCard"
-            />
-          ),
-          text: 'Tarjeta'
-        }
-      case PaymentMethodEnum.QR_TRANSFER:
-        return {
-          icon: (
-            <IconSelector className=" rounded-md text-white" name="QrCode" />
-          ),
-          text: 'QR'
-        }
-      case PaymentMethodEnum.CASH:
-        return {
-          icon: <IconSelector className=" rounded-md text-white" name="Cash" />,
-          text: 'Efectivo'
-        }
-    }
-  }
+  const sale = data?.getSaleById?.data
 
   return (
     <AdministrationLayout user={user} showBackButton={true}>
@@ -115,17 +90,14 @@ function SaleDetail({ user }: SaleDetailProps) {
               <div className="text-lg font-bold">
                 <div className="text-xl">Método de pago:</div>
                 <div className="text-center">
-                  {data?.getSaleById?.data?.paymentMethod
-                    ? getSalePaymentMethod(
-                        data?.getSaleById?.data?.paymentMethod!
-                      ).text
+                  {sale?.paymentMethod
+                    ? getSalePaymentMethod(sale.paymentMethod).text
                     : ''}
                 </div>
               </div>
               <span className="rounded-full bg-secondary p-3 ">
-                {data?.getSaleById?.data?.paymentMethod ? (
-                  getSalePaymentMethod(data?.getSaleById?.data?.paymentMethod!)
-                    .icon
+                {sale?.paymentMethod ? (
+                  getSalePaymentMethod(sale.paymentMethod).icon
                 ) : (
                   <></>
                 )}
@@ -151,6 +123,25 @@ function SaleDetail({ user }: SaleDetailProps) {
               </span>
             </div>
           </InformationCard>
+          {!!sale?.observations && (
+            <InformationCard className="h-full bg-slate-200 px-3 py-6">
+              <div className="text-lg font-bold">
+                <div className="text-xl">Observaciones:</div>
+                <div className="mt-1 text-base font-normal">
+                  {sale.observations}
+                </div>
+              </div>
+            </InformationCard>
+          )}
+          {sale?.entersCash &&
+            sale.paymentMethod !== PaymentMethodEnum.CASH && (
+              <InformationCard className="h-full bg-slate-200 px-3 py-6">
+                <div className="text-lg font-bold">
+                  <div className="text-xl">Caja:</div>
+                  <div className="text-center text-base">El dinero ingresó a caja</div>
+                </div>
+              </InformationCard>
+            )}
         </section>
         {data?.getSaleById?.data?.canceled && (
           <section className="mb-4 w-fit rounded-md bg-red-600 p-4 px-10 text-white">

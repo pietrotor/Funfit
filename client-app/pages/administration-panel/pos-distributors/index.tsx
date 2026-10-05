@@ -2,7 +2,6 @@ import { GetServerSideProps } from 'next'
 import { useEffect, useMemo, useState } from 'react'
 import { Spinner, useDisclosure } from '@nextui-org/react'
 import { useRouter } from 'next/router'
-import Decimal from 'decimal.js'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 import AdministrationLayout from '@/components/templates/layouts'
@@ -15,6 +14,7 @@ import {
   DistributorSaleProduct,
   useGetDistributorSaleProductsLazyQuery
 } from '@/graphql/graphql-types'
+import { addProductQuantity } from '@/utils/pointOfSale'
 
 interface PointOfSaleProps {
   user: any
@@ -63,61 +63,15 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
   }, [data?.getDistributorSaleProducts?.data, filter])
 
   const handleSelected = (id: string) => {
-    const existingProduct = selectedProducts?.products?.find(
+    const saleProduct = data?.getDistributorSaleProducts?.data?.find(
       item => item.productId === id
     )
+    if (!saleProduct) return
 
-    if (existingProduct) {
-      setSelectedProducts((prevProducts: TPointOfSaleData | undefined) => {
-        return {
-          products: [
-            ...(prevProducts?.products ?? []).filter(
-              item => item.productId !== id
-            ),
-            {
-              ...existingProduct,
-              quantity: (existingProduct.quantity || 1) + 1,
-              total: new Decimal(existingProduct.price)
-                .mul((existingProduct.quantity || 1) + 1)
-                .toNumber()
-            }
-          ],
-          subTotal: new Decimal(existingProduct.price)
-            .plus(prevProducts?.subTotal || 0)
-            .toNumber(),
-          total: new Decimal(existingProduct.price)
-            .plus(prevProducts?.total || 0)
-            .toNumber(),
-          discount: 0
-        }
-      })
-    } else {
-      const newProduct = data?.getDistributorSaleProducts?.data?.find(
-        item => item.productId === id
-      )
-
-      if (newProduct) {
-        setSelectedProducts((prevProducts: TPointOfSaleData | undefined) => {
-          return {
-            products: [
-              ...(prevProducts?.products ?? []),
-              {
-                ...(newProduct as DistributorSaleProduct),
-                quantity: 1,
-                total: newProduct.price
-              }
-            ],
-            subTotal: new Decimal(newProduct.price)
-              .plus(prevProducts?.subTotal || 0)
-              .toNumber(),
-            total: new Decimal(newProduct.price)
-              .plus(prevProducts?.total || 0)
-              .toNumber(),
-            discount: 0
-          }
-        })
-      }
-    }
+    setSelectedProducts(
+      prevProducts =>
+        addProductQuantity(prevProducts as any, saleProduct as any) as any
+    )
   }
 
   useEffect(() => {

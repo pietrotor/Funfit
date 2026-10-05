@@ -28,12 +28,14 @@ import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import { AddProductImageModal } from '@/components/atoms/modals/AddProductImageModal'
 import { CombosTable } from '@/components/molecules/CombosTable'
 import { ProductLabel } from '@/components/molecules'
+import { useAppSelector } from '@/store/index'
 
 interface IProduct {
   user: any
 }
 
 const Productos = ({ user }: IProduct) => {
+  const { currentBranch } = useAppSelector(state => state.branchReducer)
   const [editProduct, setEditProduct] = useState<TValueProductData>()
   const [variables, setVariables] = useState<PaginationInterfaceState>({
     rows: 5,
@@ -66,9 +68,11 @@ const Productos = ({ user }: IProduct) => {
         rows: variables?.rows,
         filter: filterProductDebounced
       },
-      type: ProductTypeEnum.SIMPLE
+      type: ProductTypeEnum.SIMPLE,
+      branchId: currentBranch.id
     },
     fetchPolicy: 'network-only',
+    skip: !currentBranch.id,
     onCompleted: data => {
       setVariables({
         totalPages: data.getProducts?.totalPages || 1,
@@ -91,9 +95,11 @@ const Productos = ({ user }: IProduct) => {
         rows: variablesCombo?.rows,
         filter: filterComboDebounced
       },
-      type: ProductTypeEnum.COMBO
+      type: ProductTypeEnum.COMBO,
+      branchId: currentBranch.id
     },
     fetchPolicy: 'network-only',
+    skip: !currentBranch.id,
     onCompleted: data => {
       setVariablesCombo({
         totalPages: data.getProducts?.totalPages || 1,

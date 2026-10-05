@@ -10,6 +10,7 @@ import CashPaymentMethod from '@/components/molecules/CashPaymentMethod'
 import CardPaymentMethod from '@/components/molecules/CardPaymentMethod'
 import CombinedPaymentMethod from '@/components/molecules/CombinedPaymentMethod'
 import QrPaymentMethod from '@/components/molecules/QrPaymentMethod'
+import PlatformPaymentMethod from '@/components/molecules/PlatformPaymentMethod'
 import { useCreateSaleQuery } from '@/hooks/UseSaleQuery'
 import { useAppSelector } from '@/store/index'
 import { PaymentMethodEnum } from '@/graphql/graphql-types'
@@ -26,6 +27,22 @@ export type TSalePaymentMethodData = {
   paymentMethod: string
   cash: number
   change: number
+  entersCash?: boolean
+}
+
+const mapSalePaymentMethod = (method: string): PaymentMethodEnum => {
+  switch (method) {
+    case 'cash':
+      return PaymentMethodEnum.CASH
+    case 'card':
+      return PaymentMethodEnum.CARD
+    case 'pedidosya':
+      return PaymentMethodEnum.PEDIDOS_YA
+    case 'other':
+      return PaymentMethodEnum.OTHER
+    default:
+      return PaymentMethodEnum.QR_TRANSFER
+  }
 }
 
 function SaleModal({
@@ -49,14 +66,25 @@ function SaleModal({
   })
 
   const onSubmit = () => {
+    const isPlatform =
+      payment.paymentMethod === 'pedidosya' || payment.paymentMethod === 'other'
+    const saleTotal =
+      payment.paymentMethod === 'card'
+        ? selectedProducts.total -
+          new Decimal(selectedProducts.total).mul(0.02).toNumber()
+        : selectedProducts.total
+    const amountRecibed = isPlatform
+      ? saleTotal
+      : payment.paymentMethod === 'card'
+        ? parseFloat(watch('cardAmountRecibed'))
+        : payment.cash || parseFloat(watch('amountRecibed'))
+    const change = isPlatform ? 0 : payment.change
+
     handleCreateSale(
       {
-        amountRecibed:
-          payment.paymentMethod === 'card'
-            ? parseFloat(watch('cardAmountRecibed'))
-            : payment.cash || parseFloat(watch('amountRecibed')),
+        amountRecibed,
         branchId: branchIdSelected,
-        change: payment.change,
+        change,
         client: watch('client'),
         date: new Date().toISOString(),
         discount:
@@ -65,6 +93,8 @@ function SaleModal({
               selectedProducts.discount
             : selectedProducts.discount,
         observations: watch('observations') || '',
+        entersCash:
+          payment.paymentMethod === 'cash' ? true : !!payment.entersCash,
         products: selectedProducts.products.map(item => ({
           branchProductId: item.id || '',
           productId: item?.productId || '',
@@ -72,17 +102,8 @@ function SaleModal({
           price: item?.price || 0,
           total: item.total || 0
         })),
-        paymentMethod:
-          payment.paymentMethod === 'cash'
-            ? PaymentMethodEnum.CASH
-            : payment.paymentMethod === 'card'
-              ? PaymentMethodEnum.CARD
-              : PaymentMethodEnum.QR_TRANSFER,
-        total:
-          payment.paymentMethod === 'card'
-            ? selectedProducts.total -
-              new Decimal(selectedProducts.total).mul(0.02).toNumber()
-            : selectedProducts.total,
+        paymentMethod: mapSalePaymentMethod(payment.paymentMethod),
+        total: saleTotal,
         subTotal: selectedProducts.subTotal,
         orderId: selectedProducts.orderId
       },
@@ -224,6 +245,24 @@ function SaleModal({
                 reset={reset}
                 qrPayment={qrPayment}
                 setQrPayment={setQrPayment}
+              />
+            ) : payment.paymentMethod === 'pedidosya' ? (
+              <PlatformPaymentMethod
+                total={selectedProducts.total}
+                payment={payment}
+                setPayment={setPayment}
+                control={control}
+                watch={watch}
+                label="PedidosYa"
+              />
+            ) : payment.paymentMethod === 'other' ? (
+              <PlatformPaymentMethod
+                total={selectedProducts.total}
+                payment={payment}
+                setPayment={setPayment}
+                control={control}
+                watch={watch}
+                label="Otros"
               />
             ) : (
               <CombinedPaymentMethod

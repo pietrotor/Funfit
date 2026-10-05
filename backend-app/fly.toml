@@ -4,7 +4,7 @@
 #
 
 app = 'funfit-backend-production'
-primary_region = 'scl'
+primary_region = 'gru'
 
 
 [build]
@@ -20,4 +20,4 @@ primary_region = 'scl'
 [[vm]]
   cpu_kind = 'shared'
   cpus = 1
-  memory_mb = 2048
+  memory_mb = 512

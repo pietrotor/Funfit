@@ -32,4 +32,5 @@ export interface DistributorPagination extends PaginationInterfaceState {
 export interface BillPaginationInterface extends PaginationInterfaceState {
   endDate?: string
   initialDate?: string
+  branchId?: string
 }

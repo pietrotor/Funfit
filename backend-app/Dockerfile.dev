@@ -3,11 +3,12 @@ FROM node:16-alpine
 # RUN apk add --no-cache tzdata
 # ENV TZ America/La_Paz
 WORKDIR /usr/app
-COPY package*.json ./
-RUN npm install
+RUN npm install -g pnpm@8.15.4
+COPY package.json pnpm-lock.yaml .npmrc ./
+RUN pnpm install --frozen-lockfile
 COPY . .
 
-RUN npm run codegen
+RUN pnpm codegen
 EXPOSE 4000
 
-CMD ["npm", "run", "dev"]
+CMD ["pnpm", "dev"]

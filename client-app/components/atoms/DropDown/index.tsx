@@ -6,14 +6,14 @@ import {
   DropdownTrigger,
   User
 } from '@nextui-org/react'
-import IconSelector, { TSvgNames } from '../IconSelector'
 import { useEffect } from 'react'
+import { LucideIcon } from 'lucide-react'
 
 type TValuesDropDown = {
   label: string
   value: string
   handleClick: () => void
-  icon: TSvgNames
+  icon: LucideIcon
   counter?: number
   avatar?: string
   user?: string
@@ -22,24 +22,26 @@ type TValuesDropDown = {
 type DropDownProps = {
   label?: string
   values: TValuesDropDown[]
-  IconButtonName: TSvgNames
+  IconButton?: LucideIcon
   avatar?: string
   user?: string
   counter?: number
   className?: string
   fill?: boolean
   onClick?: () => void
+  iconButtonLabel?: string
 }
 export const DropDown = ({
   label,
   values,
-  IconButtonName,
+  IconButton,
   avatar,
   user,
   counter = 0,
   className,
   fill,
-  onClick
+  onClick,
+  iconButtonLabel = 'Abrir menú'
 }: DropDownProps) => {
   useEffect(() => {
     const makeSound = () => {
@@ -60,29 +62,35 @@ export const DropDown = ({
     return () => clearInterval(interval)
   }, [counter])
 
+  const iconTrigger = IconButton ? (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={iconButtonLabel}
+      className="cursor-pointer rounded-full bg-gray-200 p-2 text-gray-700 transition-colors hover:bg-gray-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary"
+    >
+      <IconButton className="h-6 w-6" strokeWidth={1.75} />
+    </button>
+  ) : null
+
   return (
     <div className={` mt-8 md:me-4 ${className}`}>
       <Dropdown placement="bottom-end">
         <DropdownTrigger>
           <div>
             {avatar ? (
-              <>
-                {(counter || 0) > 0 && (
-                  <Badge
-                    content={counter}
-                    color="primary"
-                    size="lg"
-                    className="-right-2 -top-2 animate-bounce"
-                  >
-                    <div
-                      onClick={onClick}
-                      className="p-white cursor-pointer rounded-full border-double border-gray-300 bg-gray-300 p-2"
-                    >
-                      <IconSelector name={IconButtonName} />
-                    </div>
-                  </Badge>
-                )}
-              </>
+              (counter || 0) > 0 ? (
+                <Badge
+                  content={counter}
+                  color="primary"
+                  size="lg"
+                  className="-right-2 -top-2"
+                >
+                  {iconTrigger}
+                </Badge>
+              ) : (
+                iconTrigger
+              )
             ) : (
               user && (
                 <div
@@ -121,10 +129,10 @@ export const DropDown = ({
                     size="lg"
                     shape="circle"
                   >
-                    <IconSelector name={value.icon} width="w-5" height="h-5" />
+                    <value.icon className="h-5 w-5" strokeWidth={1.75} />
                   </Badge>
                 ) : (
-                  <IconSelector name={value.icon} width="w-5" height="h-5" />
+                  <value.icon className="h-5 w-5" strokeWidth={1.75} />
                 )}
                 <p className="text-sm">{value.label}</p>
               </div>

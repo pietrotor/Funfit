@@ -15,7 +15,8 @@ const useBillsSummary = () => {
           variables?.initialDate ||
           new Date(new Date().getFullYear(), new Date().getMonth(), 1)
             .toISOString()
-            .split('T')[0]
+            .split('T')[0],
+        branchId: variables?.branchId
       }
     },
     onCompleted: result => {
@@ -33,11 +34,13 @@ const useBillsSummary = () => {
 
   // Use useEffect to handle changes in variables
   useEffect(() => {
+    if (!variables?.branchId) return
     getSales({
       variables: {
         billSummaryInput: {
           endDate: variables?.endDate,
-          initialDate: variables?.initialDate
+          initialDate: variables?.initialDate,
+          branchId: variables?.branchId
         }
       }
     })

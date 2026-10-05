@@ -19,17 +19,20 @@ import Warehouse from '@/models/warehouse.model'
 export class ProductService extends ProductRepository<objectId> {
   async getProductsPaginated(
     paginationInput: PaginationInput,
-    type?: ProductTypeEnum | null | undefined
+    type?: ProductTypeEnum | null | undefined,
+    branchId?: objectId | null
   ) {
     const { filter } = paginationInput
     const typeFilter = type ? { type } : {}
+    const branchFilter = branchId ? { branchesIds: branchId } : {}
     if (filter) {
       const filterArgs = {
         $or: [
           { name: { $regex: filter, $options: 'i' } },
           { code: { $regex: filter, $options: 'i' } }
         ],
-        ...typeFilter
+        ...typeFilter,
+        ...branchFilter
       }
       return await getInstancesPagination<IProduct, IModelProduct>(
         Product,
@@ -40,7 +43,7 @@ export class ProductService extends ProductRepository<objectId> {
     return await getInstancesPagination<IProduct, IModelProduct>(
       Product,
       paginationInput,
-      typeFilter
+      { ...typeFilter, ...branchFilter }
     )
   }
 
