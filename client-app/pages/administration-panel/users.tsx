@@ -1,6 +1,6 @@
 import { GetServerSideProps } from 'next'
 import { useState } from 'react'
-import { useDisclosure } from '@nextui-org/react'
+import { Chip, useDisclosure } from '@nextui-org/react'
 
 import AdministrationLayout from '@/components/templates/layouts'
 import { AddUserModal } from '@/components/atoms/modals/AddUserModal'
@@ -19,6 +19,7 @@ import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import PageHeader from '@/components/molecules/PageHeader'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 interface ICreateUserForm {
@@ -79,13 +80,11 @@ function CreateUserForm({ user }: ICreateUserForm) {
           refetch()
           handleEditModal.onClose()
         },
-        onError: error => {
+        onError: () => {
           showSuccessToast('ocurrió un error', 'error')
-          console.log(error)
         }
       })
-    } catch (error) {
-      console.log(error)
+    } catch {
       showSuccessToast('ocurrió un error', 'error')
     }
   }
@@ -93,7 +92,6 @@ function CreateUserForm({ user }: ICreateUserForm) {
   const handleUpdateUser = (id: string) => {
     const user = data?.getUsers?.data?.find(user => user.id === id)
     setEdit(user as TValueUserData)
-    console.log(edit)
     handleEditModal.onOpen()
   }
 
@@ -131,24 +129,25 @@ function CreateUserForm({ user }: ICreateUserForm) {
           handleDeleteModal.onClose()
         }
       },
-      onError: error => {
+      onError: () => {
         showSuccessToast('ocurrio un error', 'error')
-        console.log(error)
       }
     })
   }
 
   return (
     <AdministrationLayout user={user}>
-      <div className="m-auto mt-6 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Administración de usuarios
-        </h3>
-        <AdminButton
-          onClick={handleAddUser.onOpen}
-          color="secondary"
-          iconName="addUser"
-          text="Agregar nuevo usuario"
+      <div className="m-auto w-full">
+        <PageHeader
+          title="Usuarios"
+          actions={
+            <AdminButton
+              onClick={handleAddUser.onOpen}
+              color="secondary"
+              iconName="addUser"
+              text="Agregar nuevo usuario"
+            />
+          }
         />
         <Table
           titles={[
@@ -176,9 +175,14 @@ function CreateUserForm({ user }: ICreateUserForm) {
                 {user.phone}
               </div>,
               <div key={idx}>
-                <p className="m-auto w-fit rounded-full bg-secondary px-3 py-1 font-bold text-white">
+                <Chip
+                  className="m-auto"
+                  color="secondary"
+                  variant="flat"
+                  radius="full"
+                >
                   {user.roleInfo?.name}
-                </p>
+                </Chip>
               </div>,
               <div key={idx} className="flex justify-center space-x-1">
                 <ButtonComponent

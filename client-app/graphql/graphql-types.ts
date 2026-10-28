@@ -1143,9 +1143,10 @@ export type Payment = {
 export enum PaymentMethodEnum {
   CARD = 'CARD',
   CASH = 'CASH',
-  QR_TRANSFER = 'QR_TRANSFER',
+  OTHER = 'OTHER',
   PEDIDOS_YA = 'PEDIDOS_YA',
-  OTHER = 'OTHER'
+  QR_TRANSFER = 'QR_TRANSFER',
+  VENDIS = 'VENDIS'
 }
 
 export type PaymentPaginationInput = {
@@ -2111,13 +2112,6 @@ export type CreatStockMovementMutationVariables = Exact<{
 
 export type CreatStockMovementMutation = { __typename?: 'Mutation', creatStockMovement?: { __typename?: 'StockResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
 
-export type DeleteStockMutationVariables = Exact<{
-  id: Scalars['ObjectId'];
-}>;
-
-
-export type DeleteStockMutation = { __typename?: 'Mutation', deleteStock?: { __typename?: 'StockResponse', status: StatusEnum, message?: string | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null } | null };
-
 export type CreateBranchMutationVariables = Exact<{
   createBranchInput: CreateBranchInput;
 }>;
@@ -2533,7 +2527,7 @@ export type GetSalesPaginatedQueryVariables = Exact<{
 }>;
 
 
-export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, total: number, discount: number, date: any, code: string, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string } | null }> | null } | null };
+export type GetSalesPaginatedQuery = { __typename?: 'Query', getSalesPaginated?: { __typename?: 'SalesResponse', status: StatusEnum, message?: string | null, totalRecords?: number | null, totalPages?: number | null, rows?: number | null, currentPage?: number | null, errorInput?: Array<{ __typename?: 'ErrorInput', message: string, field?: string | null }> | null, data?: Array<{ __typename?: 'Sale', id: any, branchId: any, paymentMethod: PaymentMethodEnum, total: number, discount: number, date: any, code: string, canceled?: boolean | null, reason?: string | null, canceledAt?: any | null, observations?: string | null, entersCash?: boolean | null, createdBy?: any | null, products: Array<{ __typename?: 'SaleItem', productId: any, qty: number, total: number, product?: { __typename?: 'Product', id: any, name: string } | null }>, branch?: { __typename?: 'Branch', id: any, name: string, code: string, city: string, direction: string, phone?: string | null, nit?: string | null, cashId: any } | null, createdByInfo?: { __typename?: 'User', id: any, name: string, lastName: string } | null }> | null } | null };
 
 export type GetSalesSummaryQueryVariables = Exact<{
   salesSummaryInput: SalesSummaryInput;
@@ -3044,44 +3038,6 @@ export function useCreatStockMovementMutation(baseOptions?: Apollo.MutationHookO
 export type CreatStockMovementMutationHookResult = ReturnType<typeof useCreatStockMovementMutation>;
 export type CreatStockMovementMutationResult = Apollo.MutationResult<CreatStockMovementMutation>;
 export type CreatStockMovementMutationOptions = Apollo.BaseMutationOptions<CreatStockMovementMutation, CreatStockMovementMutationVariables>;
-export const DeleteStockDocument = gql`
-    mutation DeleteStock($id: ObjectId!) {
-  deleteStock(id: $id) {
-    errorInput {
-      message
-      field
-    }
-    status
-    message
-  }
-}
-    `;
-export type DeleteStockMutationFn = Apollo.MutationFunction<DeleteStockMutation, DeleteStockMutationVariables>;
-
-/**
- * __useDeleteStockMutation__
- *
- * To run a mutation, you first call `useDeleteStockMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useDeleteStockMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [deleteStockMutation, { data, loading, error }] = useDeleteStockMutation({
- *   variables: {
- *      id: // value for 'id'
- *   },
- * });
- */
-export function useDeleteStockMutation(baseOptions?: Apollo.MutationHookOptions<DeleteStockMutation, DeleteStockMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<DeleteStockMutation, DeleteStockMutationVariables>(DeleteStockDocument, options);
-      }
-export type DeleteStockMutationHookResult = ReturnType<typeof useDeleteStockMutation>;
-export type DeleteStockMutationResult = Apollo.MutationResult<DeleteStockMutation>;
-export type DeleteStockMutationOptions = Apollo.BaseMutationOptions<DeleteStockMutation, DeleteStockMutationVariables>;
 export const CreateBranchDocument = gql`
     mutation CreateBranch($createBranchInput: CreateBranchInput!) {
   createBranch(createBranchInput: $createBranchInput) {
@@ -4701,6 +4657,7 @@ export const GetProductsDocument = gql`
  *   variables: {
  *      paginationInput: // value for 'paginationInput'
  *      type: // value for 'type'
+ *      branchId: // value for 'branchId'
  *   },
  * });
  */
@@ -7052,7 +7009,11 @@ export type GetDistributorSalePaymentsLazyQueryHookResult = ReturnType<typeof us
 export type GetDistributorSalePaymentsQueryResult = Apollo.QueryResult<GetDistributorSalePaymentsQuery, GetDistributorSalePaymentsQueryVariables>;
 export const GetBusinessBalanceDocument = gql`
     query GetBusinessBalance($endDate: Date!, $initialDate: Date!, $branchId: ObjectId) {
-  getBusinessBalance(endDate: $endDate, initialDate: $initialDate, branchId: $branchId) {
+  getBusinessBalance(
+    endDate: $endDate
+    initialDate: $initialDate
+    branchId: $branchId
+  ) {
     errorInput {
       field
       message
@@ -7095,6 +7056,7 @@ export const GetBusinessBalanceDocument = gql`
  *   variables: {
  *      endDate: // value for 'endDate'
  *      initialDate: // value for 'initialDate'
+ *      branchId: // value for 'branchId'
  *   },
  * });
  */

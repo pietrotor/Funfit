@@ -4,9 +4,24 @@ import React, { useEffect, useMemo, useState } from 'react'
 import Cookies from 'js-cookie'
 import { useRouter } from 'next/router'
 import clsx from 'clsx'
-import { Bell, ClipboardList, LogOut } from 'lucide-react'
+import Image from 'next/image'
+import {
+  ArrowLeft,
+  Bell,
+  ClipboardList,
+  LogOut,
+  Menu
+} from 'lucide-react'
+import {
+  Avatar,
+  Badge,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu,
+  DropdownTrigger,
+  Spinner as NextSpinner
+} from '@nextui-org/react'
 import Sidebar, { TMenuStructure } from './sidebar'
-import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import {
   OrderStatusEnum,
@@ -19,9 +34,7 @@ import {
 
 import { useAppDispatch, useAppSelector } from '@/store/index'
 import { setBusiness, setOrder } from '@/store/slices'
-import BackButton from '@/components/atoms/BackButton/intex'
 import { setBranch, setBranches } from '@/store/slices/branches/branchSlice'
-import { DropDown } from '@/components/atoms/DropDown'
 import { ICurrentUser } from '@/interfaces/currentUser.interface'
 
 type TAdministrationLayoutProps = {
@@ -41,13 +54,16 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
   user,
   containerClassName
 }) => {
-  const [orderData, setOrderData] = useState<TPointOfSaleData[]>()
   const { business } = useAppSelector(state => state.configuration)
   const { branches, currentBranch } = useAppSelector(
     state => state.branchReducer
   )
   const dispatch = useAppDispatch()
   const [currentId, setCurrentId] = useState<string>('')
+  const [sidebarOpen, setSidebarOpen] = useState(false)
+  const [collapsed, setCollapsed] = useState(false)
+  const router = useRouter()
+
   const [getBranchesPaginated] = useGetBranchesPaginatedLazyQuery({
     fetchPolicy: 'network-only',
     variables: {
@@ -87,8 +103,7 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
       getConfiguration()
     }
   })
-  const [sidebarOpen, setsidebarOpen] = useState(false)
-  const router = useRouter()
+
   const handleLogOut = () => {
     Cookies.remove('sao-sess')
     router.push('/administration-panel/login')
@@ -110,7 +125,6 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
         )
         return
       }
-      handleOrder()
       dispatch(setOrder(data.getOrdersPaginated?.data))
     },
     onError(error) {
@@ -118,36 +132,8 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     }
   })
 
-  const handleOrder = () => {
-    const datosTransformados = data?.getOrdersPaginated?.data?.map(order => {
-      return {
-        products: order.products.map(product => {
-          return {
-            id: product.product?.id,
-            branchId: product.branchProductId,
-            productId: product.productId,
-            price: product.price,
-            isVisibleOnWeb: true,
-            isVisibleOnMenu: true,
-            quantity: product.qty,
-            product: {
-              id: product.product?.id || '',
-              name: product.product?.name || '',
-              description: product.product?.description || ''
-            },
-            stock: product.qty,
-            total: product.total
-          }
-        }),
-        subTotal: order.subTotal,
-        total: order.total,
-        discount: order.discount
-      }
-    })
-
-    setOrderData(datosTransformados as TPointOfSaleData[])
-  }
-  useEffect(() => {}, [])
+  const pendingOrders = data?.getOrdersPaginated?.data || []
+  const pendingCount = pendingOrders.length
 
   const menu: TMenuStructure = [
     {
@@ -338,100 +324,185 @@ const AdministrationLayout: React.FC<TAdministrationLayoutProps> = ({
     }
   }, [business, branches])
 
+  const initials = (user?.name || 'U')
+    .split(' ')
+    .map(w => w[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase()
+
   return (
     <>
       <Head>
-        <title>FunFit | Punto de Venta</title>
+        <title>FunFit | Administración</title>
       </Head>
       {business && branches.length !== 0 && currentBranch.id !== '' ? (
-        <main
-          className={` min-h-screen flex-row  transition-colors duration-200 md:flex ${
-            sidebarOpen ? 'overflow-hidden bg-white' : 'bg-secondary/5 '
-          }`}
-        >
+        <div className="flex min-h-[100dvh] bg-surface">
           <Sidebar
             onSubmit={onSubmit}
             user={user}
             menu={buildMenu}
             isSidebarOpen={sidebarOpen}
-            setSidebar={setsidebarOpen}
+            setSidebar={setSidebarOpen}
+            onLogout={handleLogOut}
+            collapsed={collapsed}
+            onToggleCollapse={() => setCollapsed(prev => !prev)}
           />
-          <div className="w-full">
-            <div
-              className={` fixed  z-10 ${
-                sidebarOpen ? 'left-64' : 'left-10 lg:left-24'
-              } `}
-            >
-              {showBackButton && <BackButton />}
-            </div>
-            <div className={` fixed right-5 z-30 ${sidebarOpen ? '' : ''} `}>
-              <div className="flex items-center">
-                <DropDown
-                  IconButton={Bell}
-                  iconButtonLabel="Notificaciones"
-                  onClick={() => refetch()}
-                  values={
-                    data?.getOrdersPaginated?.data?.map((order, idx) => {
-                      return {
-                        label: `Nueva orden - ${order.total} Bs`,
-                        value: order.id,
-                        icon: ClipboardList,
-                        handleClick: () => {
-                          router.push({
-                            pathname: '/administration-panel/order'
-                          })
-                        },
-                        counter: 0
-                      }
-                    }) || []
-                  }
-                  counter={data?.getOrdersPaginated?.data?.length || 0}
-                  avatar="https://static.vecteezy.com/system/resources/previews/000/376/699/original/notification-vector-icon.jpg"
-                />
-                <DropDown
-                  fill
-                  label={user.name}
-                  user="https://www.icmetl.org/wp-content/uploads/2020/11/user-icon-human-person-sign-vector-10206693.png"
-                  values={[
-                    {
-                      label: 'Notificaciones',
-                      value: 'notifications',
-                      icon: Bell,
-                      handleClick: () => console.log('profile'),
-                      counter: 2
-                    },
-                    {
-                      label: 'Cerrar sesión',
-                      value: 'logout',
-                      icon: LogOut,
-                      handleClick: () => handleLogOut(),
-                      counter: 0
-                    }
-                  ]}
-                />
+
+          <div className="flex min-w-0 flex-1 flex-col">
+            {(profileButton || showBackButton) && (
+              <div className="px-4 pt-4 md:px-6">
+                <div className="flex items-center justify-between gap-3 rounded-2xl border border-secondary/25 bg-gradient-to-r from-white via-[#FFFCF6] to-secondary/20 px-3 py-2 shadow-[0_8px_24px_-16px_rgba(122,148,32,0.45)]">
+                  <div className="flex min-w-0 items-center gap-2">
+                    <button
+                      type="button"
+                      aria-label="Abrir menú"
+                      onClick={() => setSidebarOpen(true)}
+                      className="inline-flex rounded-xl bg-white p-2 text-stone-600 ring-1 ring-stone-200 transition-colors hover:bg-secondary/10 lg:hidden"
+                    >
+                      <Menu className="h-5 w-5" strokeWidth={1.75} />
+                    </button>
+                    {showBackButton && (
+                      <button
+                        type="button"
+                        onClick={() => router.back()}
+                        className="inline-flex items-center gap-1.5 rounded-xl border border-stone-200 bg-white px-3 py-1.5 text-sm font-medium text-stone-600 transition-colors hover:bg-stone-50"
+                      >
+                        <ArrowLeft className="h-4 w-4" strokeWidth={1.75} />
+                        Atrás
+                      </button>
+                    )}
+                    <div className="hidden min-w-0 items-center gap-2 sm:flex">
+                      <span className="h-2 w-2 shrink-0 rounded-full bg-secondary" />
+                      <p className="truncate text-sm text-stone-500">
+                        <span className="font-medium text-tertiary">
+                          {currentBranch.name}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+
+                  {profileButton && (
+                    <div className="flex items-center gap-2">
+                      <Dropdown placement="bottom-end">
+                        <DropdownTrigger>
+                          <button
+                            type="button"
+                            aria-label="Notificaciones"
+                            onClick={() => refetch()}
+                            className="relative rounded-xl bg-white p-2 text-stone-500 ring-1 ring-stone-200 transition-colors hover:text-primary-600"
+                          >
+                            {(pendingCount || 0) > 0 ? (
+                              <Badge
+                                content={pendingCount}
+                                color="primary"
+                                size="sm"
+                              >
+                                <Bell className="h-5 w-5" strokeWidth={1.75} />
+                              </Badge>
+                            ) : (
+                              <Bell className="h-5 w-5" strokeWidth={1.75} />
+                            )}
+                          </button>
+                        </DropdownTrigger>
+                        <DropdownMenu
+                          aria-label="Pedidos pendientes"
+                          emptyContent="No hay pedidos pendientes"
+                          onAction={() => {
+                            router.push('/administration-panel/order')
+                          }}
+                        >
+                          {pendingOrders.map(order => (
+                            <DropdownItem
+                              key={order.id}
+                              startContent={
+                                <ClipboardList
+                                  className="h-4 w-4 text-primary-600"
+                                  strokeWidth={1.75}
+                                />
+                              }
+                            >
+                              Nueva orden · {order.total} Bs
+                            </DropdownItem>
+                          ))}
+                        </DropdownMenu>
+                      </Dropdown>
+
+                      <Dropdown placement="bottom-end">
+                        <DropdownTrigger>
+                          <button
+                            type="button"
+                            className="flex items-center gap-2.5 rounded-2xl bg-white py-1 pl-1 pr-3 ring-1 ring-secondary/40 transition-colors hover:bg-secondary/10"
+                          >
+                            <Avatar
+                              name={initials}
+                              size="sm"
+                              classNames={{
+                                base: 'bg-secondary text-tertiary font-semibold',
+                                name: 'text-tertiary text-xs'
+                              }}
+                            />
+                            <span className="hidden text-left leading-tight sm:block">
+                              <span className="block text-sm font-semibold text-tertiary">
+                                {user.name}
+                              </span>
+                              <span className="block max-w-[140px] truncate text-[11px] text-stone-400">
+                                {user.email}
+                              </span>
+                            </span>
+                          </button>
+                        </DropdownTrigger>
+                        <DropdownMenu aria-label="Menú de usuario">
+                          <DropdownItem
+                            key="logout"
+                            color="danger"
+                            startContent={
+                              <LogOut className="h-4 w-4" strokeWidth={1.75} />
+                            }
+                            onClick={handleLogOut}
+                          >
+                            Cerrar sesión
+                          </DropdownItem>
+                        </DropdownMenu>
+                      </Dropdown>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-            <div
+            )}
+
+            {!profileButton && !showBackButton && (
+              <button
+                type="button"
+                aria-label="Abrir menú"
+                onClick={() => setSidebarOpen(true)}
+                className="fixed left-3 top-3 z-30 inline-flex rounded-xl bg-white p-2 text-stone-700 shadow-md ring-1 ring-secondary/30 lg:hidden"
+              >
+                <Menu className="h-5 w-5" strokeWidth={1.75} />
+              </button>
+            )}
+
+            <main
               className={clsx(
-                'h-full w-full ps-5 md:pt-16 lg:pt-5',
+                'mx-auto w-full max-w-[1400px] flex-1 px-4 py-5 md:px-6',
                 containerClassName
               )}
             >
               {children}
-            </div>
+            </main>
           </div>
-        </main>
+        </div>
       ) : (
-        <div className="relative flex h-screen w-full flex-col items-center justify-center bg-secondary/20">
-          <img src="/common/logo.png" className="md:w-48" />
-          <div
-            className="inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
-            role="status"
-          >
-            <span className="!absolute !-m-px !h-px !w-px !overflow-hidden !whitespace-nowrap !border-0 !p-0 ![clip:rect(0,0,0,0)]">
-              Loading...
-            </span>
-          </div>
+        <div className="relative flex h-[100dvh] w-full flex-col items-center justify-center gap-6 bg-surface">
+          <Image
+            src="/common/logo.png"
+            alt="FunFit"
+            width={160}
+            height={80}
+            className="h-auto w-40 object-contain"
+            priority
+          />
+          <NextSpinner color="primary" size="lg" />
         </div>
       )}
     </>

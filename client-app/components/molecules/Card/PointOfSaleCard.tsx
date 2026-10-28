@@ -1,12 +1,14 @@
-import { Badge, Button, Image } from '@nextui-org/react'
+import { Button, Image } from '@nextui-org/react'
 import React, { SetStateAction } from 'react'
+import { Plus } from 'lucide-react'
+import clsx from 'clsx'
 import Counter from '../Counter'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
 import { TProductBranchData } from '@/interfaces/TData'
 import { DEFAULT_IMAGE } from '@/lib/constants'
-import IconSelector from '@/components/atoms/IconSelector'
 import { useProductHandler } from '@/hooks/useProductsHandler'
 import { canIncrementQuantity, getQuantityLimit } from '@/utils/pointOfSale'
+import { formatBs } from '@/utils/formatBs'
 
 export type TPointOfSaleCardProps = {
   product: TProductBranchData
@@ -20,7 +22,6 @@ export type TPointOfSaleCardProps = {
 function PointOfSaleCard({
   product,
   quantity,
-  isLoading = false,
   handleSelected,
   selectedProducts,
   setSelectedProducts
@@ -35,44 +36,45 @@ function PointOfSaleCard({
     if (quantity || !canAdd) return
     handleSelected(product.id)
   }
+
   return (
-    <Badge
-      content={quantity}
-      color="secondary"
-      size="lg"
-      variant="shadow"
-      className="hidden"
+    <article
+      className={clsx(
+        'flex h-full flex-col overflow-hidden rounded-2xl border bg-white shadow-[0_8px_20px_-16px_rgba(53,56,56,0.35)] transition-shadow hover:shadow-md',
+        quantity ? 'border-secondary' : 'border-stone-200',
+        canAdd || quantity ? 'cursor-pointer' : 'opacity-70'
+      )}
+      onClick={handleClick}
     >
-      <div
-        className=" flex w-full flex-col justify-between rounded-lg bg-white p-2 shadow transition-all duration-300 hover:cursor-pointer hover:shadow-xl"
-        onClick={handleClick}
-      >
-        <div className="flex flex-col gap-2 lg:flex-row">
-          <div className="m-auto w-full lg:m-0 lg:w-[100px]">
-            <Image
-              alt="Product image"
-              removeWrapper
-              src={product.product?.image || DEFAULT_IMAGE}
-              className="m-auto aspect-square w-full rounded border-b object-cover object-center"
-            />
-          </div>
-          <div className="flex-1 ">
-            <h4 className="text-secondary">{product.product?.name}</h4>
-            <p className="text-clamp-2  mt-1 text-xs text-gray-400 ">
-              {product.product?.description}
-            </p>
-            <p className="pt-3 text-sm font-semibold text-gray-400">
-              {product?.stock} Disponible
-            </p>
-          </div>
+      <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-100 sm:aspect-square lg:aspect-[5/4]">
+        <Image
+          alt={product.product?.name || 'Producto'}
+          removeWrapper
+          src={product.product?.image || DEFAULT_IMAGE}
+          className="absolute inset-0 h-full w-full object-cover object-center"
+        />
+        {quantity > 0 && (
+          <span className="absolute right-2 top-2 z-10 flex h-7 min-w-7 items-center justify-center rounded-full bg-secondary px-2 text-xs font-bold text-tertiary shadow">
+            {quantity}
+          </span>
+        )}
+      </div>
+      <div className="flex flex-1 flex-col gap-2 p-3">
+        <div className="min-w-0">
+          <h4 className="line-clamp-2 font-amsipro text-base font-bold leading-tight text-tertiary">
+            {product.product?.name}
+          </h4>
+          <p className="mt-1 line-clamp-2 text-xs text-stone-400">
+            {product.product?.description}
+          </p>
         </div>
-        <div className="flex flex-col gap-1 pt-4 lg:flex-row lg:items-center lg:justify-between">
-          <div>
-            <h5 className="text-xl font-bold text-primary">
-              {product?.price?.toFixed(2)?.toLocaleString()}{' '}
-              <span className="text-sm ">Bs.</span>
-            </h5>
-          </div>
+        <p className="text-xs font-medium text-secondary-darken">
+          {product?.stock} disponibles
+        </p>
+        <div className="mt-auto flex flex-col gap-2 pt-1 sm:flex-row sm:items-center sm:justify-between">
+          <p className="num text-lg font-semibold text-primary-600">
+            {formatBs(product?.price)}
+          </p>
           {quantity ? (
             <div onClick={event => event.stopPropagation()}>
               <Counter
@@ -89,22 +91,22 @@ function PointOfSaleCard({
             </div>
           ) : (
             <Button
-              variant="solid"
-              color="primary"
               size="sm"
+              isDisabled={!canAdd}
+              className="h-8 bg-primary-600 font-semibold text-white data-[hover=true]:bg-primary-darken data-[hover=true]:opacity-100"
               onClick={event => {
                 event.stopPropagation()
                 handleClick()
               }}
-              isDisabled={!canAdd}
+              startContent={<Plus className="h-3.5 w-3.5" strokeWidth={2.5} />}
             >
-              <IconSelector name="Plus" width="w-3" />
-              <span className="font-bold">Agregar</span>
+              Agregar
             </Button>
           )}
         </div>
       </div>
-    </Badge>
+    </article>
   )
 }
+
 export default PointOfSaleCard

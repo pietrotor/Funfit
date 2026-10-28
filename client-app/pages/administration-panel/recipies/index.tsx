@@ -22,6 +22,7 @@ import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 // import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import PageHeader from '@/components/molecules/PageHeader'
 import { ShowRecipeListModal } from '@/components/atoms/modals/ShowRecipeListModal'
 import { EditRecipeModal } from '@/components/atoms/modals/EditRecipeModal'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
@@ -190,10 +191,8 @@ function Recipe({ user } : RecipeProps) {
   //     },
   //     onError: error => {
   //       showSuccessToast('ocurrio un error', 'error')
-  //       console.log(error)
   //     }
   //   })
-  //   console.log(values)
   // }
 
   const handleUpdateWarehouse = (idWarehouse: number) => {
@@ -219,7 +218,6 @@ function Recipe({ user } : RecipeProps) {
   // }
 
   const handleConfirmDelete = () => {
-    console.log('delete')
     handleConfirmModal.onClose()
   }
   // const handleConfirmDelete = () => {
@@ -251,18 +249,20 @@ function Recipe({ user } : RecipeProps) {
 
   return (
     <AdministrationLayout user={user}>
-      <div className="m-auto mt-7 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Administración de recetas
-        </h3>
-        <AdminButton
-          pathname="/administration-panel/recipies/AddRecipe"
-          color="secondary"
-          text="Crear nueva receta"
-          iconName="Recipe"
+      <div className="m-auto w-full">
+        <PageHeader
+          title="Recetas"
+          actions={
+            <AdminButton
+              pathname="/administration-panel/recipies/AddRecipe"
+              color="secondary"
+              text="Crear nueva receta"
+              iconName="Recipe"
+            />
+          }
         />
         <Table
-          onChangeRow={row => console.log(row)}
+          onChangeRow={() => {}}
           tableName="RECETAS"
           onChangePage={page =>
             setVariables({ ...variables, currentPage: page })
@@ -271,7 +271,7 @@ function Recipe({ user } : RecipeProps) {
           currentPage={variables?.currentPage}
           totalPages={variables?.totalPages}
           enablePagination={true}
-          onSearch={(value /** setFilter(value) */) => console.log(value)}
+          onSearch={() => {}}
           totalItems={variables?.totalRecords}
           titles={[
             { name: '#' },
@@ -289,11 +289,11 @@ function Recipe({ user } : RecipeProps) {
                 {warehouse.name}
               </div>,
               <div key={idx} className="flex justify-between  ">
-                <p className="flex space-x-3">
+                <div className="flex flex-wrap gap-x-3 text-sm text-stone-700">
                   {warehouse.ingredients.map(ingredient => (
-                    <div key={ingredient.id}>{ingredient.name + '  '}</div>
+                    <div key={ingredient.id}>{ingredient.name}</div>
                   ))}
-                </p>
+                </div>
               </div>,
               <div key={idx}>
                 <div className="space-x-1 flex">

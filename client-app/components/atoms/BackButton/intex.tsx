@@ -8,10 +8,9 @@ function BackButton() {
   return (
     <Button
       variant="bordered"
-      color="primary"
-      className="mt-8 bg-white md:ms-4"
+      className="border-stone-200 bg-white text-stone-600 data-[hover=true]:bg-stone-50"
       onClick={() => router.back()}
-      startContent={<ArrowLeft className="h-5 w-5" strokeWidth={1.75} />}
+      startContent={<ArrowLeft className="h-4 w-4" strokeWidth={1.75} />}
     >
       Atrás
     </Button>

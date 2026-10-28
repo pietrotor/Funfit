@@ -5,6 +5,8 @@ import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
 import Table from '@/components/organisms/tableNext/Table'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import PageHeader from '@/components/molecules/PageHeader'
+import { formatBs } from '@/utils/formatBs'
 import { authUserHeader } from '@/utils/verificationUser'
 import { AddListProductModal } from '@/components/atoms/modals/AddListProductModal'
 import { useCustomGetPricePaginatedQuery } from '@/hooks/usePriceQuery'
@@ -43,8 +45,7 @@ function PriceList({ user }: WarehouseProps) {
       showSuccessToast(data.deletePrice?.message!, 'success')
       refetch()
     },
-    onError(error) {
-      console.log('🚀 ~ onError ~ error:', error)
+    onError() {
       showSuccessToast('No se pudo borrar el precio', 'error')
     }
   })
@@ -62,22 +63,24 @@ function PriceList({ user }: WarehouseProps) {
   }
   return (
     <AdministrationLayout user={user} showBackButton={true}>
-      <div className="m-auto mt-8 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Administración de Lista de Precios
-        </h3>
-        <AdminButton
-          onClick={handleAddModal.onOpen}
-          color="secondary"
-          text="Agregar nuevo producto"
-          iconName="Bussines"
+      <div className="m-auto w-full">
+        <PageHeader
+          title="Productos de la lista de precios"
+          actions={
+            <AdminButton
+              onClick={handleAddModal.onOpen}
+              color="secondary"
+              text="Agregar nuevo producto"
+              iconName="Bussines"
+            />
+          }
         />
         <Table
           titles={[
             { name: '#' },
             { name: 'Producto' },
             { name: 'Precio' },
-            { name: 'Accciones' }
+            { name: 'Acciones' }
           ]}
           isLoading={loading}
           items={(data?.getPricesPaginated?.data || []).map((price, idx) => ({
@@ -90,8 +93,8 @@ function PriceList({ user }: WarehouseProps) {
               <div key={idx} className="text-center">
                 {price?.product?.name}
               </div>,
-              <div key={idx} className="mx-auto w-16 text-sm">
-                {price?.price || 0}
+              <div key={idx} className="mx-auto text-sm">
+                {formatBs(price?.price || 0)}
               </div>,
               <div key={idx} className="flex justify-center space-x-1">
                 <ButtonComponent
@@ -146,7 +149,7 @@ function PriceList({ user }: WarehouseProps) {
       <ConfirmModal
         isOpen={handleConfirmModal.isOpen}
         onClose={handleConfirmModal.onClose}
-        title="Eliminar almacén"
+        title="Eliminar producto"
         message={`¿Esta seguro de eliminar a ${currentItem?.product?.name}?`}
         onConfirm={handleDelete}
         cancelText="Cancelar"

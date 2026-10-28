@@ -11,10 +11,14 @@ export class ExcelService {
         return 'Efectivo'
       case 'CARD':
         return 'Tarjeta'
+      case 'QR_TRANSFER':
+        return 'QR/Transferencia'
       case 'PEDIDOS_YA':
         return 'PedidosYa'
       case 'OTHER':
         return 'Otros'
+      case 'VENDIS':
+        return 'Vendis'
       default:
         return method
     }
@@ -127,7 +131,7 @@ export class ExcelService {
     // Fila 3: Espacio
     worksheet.getRow(3).height = 10
 
-    // Filas 4-8: Resumen (se llenará después con los totales)
+    // Filas 4-11: Resumen (se llenará después con los totales)
     // Estructura: etiqueta en columna B, valor en columna C
     const summaryLabels = [
       { row: 4, label: 'Total General:', valueCell: 'C4' },
@@ -135,8 +139,9 @@ export class ExcelService {
       { row: 6, label: 'Total Tarjeta:', valueCell: 'C6' },
       { row: 7, label: 'Total QR/Transferencia:', valueCell: 'C7' },
       { row: 8, label: 'Total PedidosYa:', valueCell: 'C8' },
-      { row: 9, label: 'Total Otros:', valueCell: 'C9' },
-      { row: 10, label: 'Total Registros:', valueCell: 'C10' }
+      { row: 9, label: 'Total Vendis:', valueCell: 'C9' },
+      { row: 10, label: 'Total Otros:', valueCell: 'C10' },
+      { row: 11, label: 'Total Registros:', valueCell: 'C11' }
     ]
 
     summaryLabels.forEach(({ row, label }) => {
@@ -153,9 +158,9 @@ export class ExcelService {
     worksheet.getColumn('B').width = 28
     worksheet.getColumn('C').width = 18
 
-    worksheet.getRow(11).height = 15
+    worksheet.getRow(12).height = 15
 
-    const DATA_HEADER_ROW = 12
+    const DATA_HEADER_ROW = 13
 
     // Definir columnas
     worksheet.columns = [
@@ -204,6 +209,7 @@ export class ExcelService {
     let totalCard = 0
     let totalQR = 0
     let totalPedidosYa = 0
+    let totalVendis = 0
     let totalOther = 0
     let index = 0
 
@@ -286,6 +292,7 @@ export class ExcelService {
         if (saleObj.paymentMethod === 'CARD') totalCard += saleObj.total
         if (saleObj.paymentMethod === 'QR_TRANSFER') totalQR += saleObj.total
         if (saleObj.paymentMethod === 'PEDIDOS_YA') totalPedidosYa += saleObj.total
+        if (saleObj.paymentMethod === 'VENDIS') totalVendis += saleObj.total
         if (saleObj.paymentMethod === 'OTHER') totalOther += saleObj.total
       }
     }
@@ -299,10 +306,11 @@ export class ExcelService {
     worksheet.getCell('C6').value = `${totalCard.toFixed(2)} Bs`
     worksheet.getCell('C7').value = `${totalQR.toFixed(2)} Bs`
     worksheet.getCell('C8').value = `${totalPedidosYa.toFixed(2)} Bs`
-    worksheet.getCell('C9').value = `${totalOther.toFixed(2)} Bs`
-    worksheet.getCell('C10').value = index
+    worksheet.getCell('C9').value = `${totalVendis.toFixed(2)} Bs`
+    worksheet.getCell('C10').value = `${totalOther.toFixed(2)} Bs`
+    worksheet.getCell('C11').value = index
 
-    for (let row = 4; row <= 10; row++) {
+    for (let row = 4; row <= 11; row++) {
       worksheet.getCell(`C${row}`).style = summaryValueStyle
     }
 
@@ -321,8 +329,8 @@ export class ExcelService {
         state: 'frozen',
         xSplit: 0,
         ySplit: DATA_HEADER_ROW,
-        topLeftCell: 'A13',
-        activeCell: 'A13'
+        topLeftCell: 'A14',
+        activeCell: 'A14'
       }
     ]
 

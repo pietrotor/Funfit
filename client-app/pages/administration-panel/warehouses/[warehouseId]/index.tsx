@@ -5,6 +5,7 @@ import 'react-circular-progressbar/dist/styles.css'
 import { useDisclosure } from '@nextui-org/use-disclosure'
 
 import { GetServerSideProps } from 'next'
+import { Image } from '@nextui-org/react'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import { MoveStockModal } from '@/components/atoms/modals/MoveStockModal'
@@ -21,9 +22,9 @@ import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import { TStockData } from '@/interfaces/TData'
 import { WarehouseRoute } from '@/utils/routes'
+import PageHeader from '@/components/molecules/PageHeader'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { authUserHeader } from '@/utils/verificationUser'
-import { Image } from '@nextui-org/react'
 
 interface WarehouseProps {
   user: any
@@ -105,26 +106,28 @@ function Warehouse({ user }: WarehouseProps) {
   }
   return (
     <AdministrationLayout user={user} showBackButton={true}>
-      <div className="m-auto mt-8 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Administración de Stocks
-        </h3>
-        <div className="flex justify-end space-x-3">
-          <AdminButton
-            pathname={`${WarehouseRoute}/${warehouseId}/warehouse-history`}
-            color="primary"
-            text="Historial del almacén"
-            iconName="Warehouse"
-            showMinIcon={true}
-            addPlusIcon={false}
-          />
-          <AdminButton
-            color="secondary"
-            pathname={`/administration-panel/warehouses/${warehouseId}/create-stock`}
-            iconName="Box"
-            text="Agregar nuevo Stock"
-          />
-        </div>
+      <div className="m-auto w-full">
+        <PageHeader
+          title="Stock del almacén"
+          actions={
+            <>
+              <AdminButton
+                pathname={`${WarehouseRoute}/${warehouseId}/warehouse-history`}
+                color="primary"
+                text="Historial del almacén"
+                iconName="Warehouse"
+                showMinIcon={true}
+                addPlusIcon={false}
+              />
+              <AdminButton
+                color="secondary"
+                pathname={`/administration-panel/warehouses/${warehouseId}/create-stock`}
+                iconName="Box"
+                text="Agregar nuevo stock"
+              />
+            </>
+          }
+        />
         <Table
           titles={[
             { name: '#' },
@@ -141,11 +144,11 @@ function Warehouse({ user }: WarehouseProps) {
               </h3>,
               <div key={idx} className="flex gap-2">
                 <Image
-                  alt="image"
+                  alt={stock.product?.name || 'Producto'}
                   width={80}
                   src={
                     stock.product?.image === 'null' || !stock.product?.image
-                      ? 'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg'
+                      ? '/common/missing_image.png'
                       : stock.product?.image
                   }
                 />
@@ -153,11 +156,10 @@ function Warehouse({ user }: WarehouseProps) {
                   <p className="text-left text-base font-semibold">
                     {stock.product?.name}
                   </p>
-                  <p className="text-left font-normal text-gray-500">
+                  <p className="text-left font-normal text-stone-500">
                     Código:{' '}
                     <span className="font-bold">{stock.product?.code}</span>
                   </p>
-                  ,
                 </div>
               </div>,
               <div key={idx} className="mx-auto w-16 text-sm">
@@ -176,7 +178,7 @@ function Warehouse({ user }: WarehouseProps) {
                   tooltipText="Mover Stock"
                   className="px-3"
                 >
-                  <IconSelector name="edit" color="text-primary" width="w-8" />
+                  <IconSelector name="edit" color="text-primary" width="w-6" />
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() =>
@@ -189,7 +191,7 @@ function Warehouse({ user }: WarehouseProps) {
                   showTooltip
                   tooltipText="Eliminar del almacén"
                 >
-                  <IconSelector name="trash" color="text-danger" width="w-8" />
+                  <IconSelector name="trash" color="text-danger" width="w-6" />
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() =>
@@ -203,8 +205,8 @@ function Warehouse({ user }: WarehouseProps) {
                 >
                   <IconSelector
                     name="Boxes"
-                    color="text-blue-500"
-                    width="w-8"
+                    color="text-primary-600"
+                    width="w-6"
                   />
                 </ButtonComponent>
               </div>

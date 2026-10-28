@@ -1,60 +1,91 @@
 import React, { useState } from 'react'
 import { useRouter } from 'next/router'
+import clsx from 'clsx'
 import MenuLink from '../MenuLink'
 import { TMenuIconName } from '../menuIcons'
-// import Accordion from '@/components/molecules/Accordion'
-import Accordion from '@/components/molecules/Accordion'
 
 type TSubMenuLinkProps = {
   isSidebarOpen: boolean
   text: string
   icon?: TMenuIconName
   detailView?: boolean
-  link?: string
   subMenu: {
     text: string
     icon?: TMenuIconName
     detailView?: boolean
     link?: string
   }[]
+  collapsed?: boolean
+  onNavigate?: () => void
 }
 
 const SubMenu: React.FC<TSubMenuLinkProps> = ({
   isSidebarOpen,
   text,
   icon,
-  detailView,
-  subMenu
+  subMenu,
+  collapsed = false,
+  onNavigate
 }) => {
   const router = useRouter()
-  const [isOpen, setIsOpen] = useState(
-    subMenu.map(sub => sub.link).includes(router.asPath)
+  const hasActiveChild = subMenu.some(item =>
+    item.link ? router.asPath === item.link || router.asPath.startsWith(`${item.link}/`) : false
   )
+  const [isOpen, setIsOpen] = useState(hasActiveChild)
+  const showLabel = isSidebarOpen && !collapsed
+
+  if (!showLabel) {
+    return (
+      <div className="flex flex-col gap-0.5">
+        <div className="mx-auto my-2 h-px w-6 bg-secondary/40" aria-hidden />
+        {subMenu.map((item, idx) => (
+          <MenuLink
+            key={item.link || idx}
+            isSidebarOpen={false}
+            text={item.text}
+            icon={item.icon}
+            link={item.link}
+            collapsed
+            onClick={onNavigate}
+          />
+        ))}
+      </div>
+    )
+  }
+
   return (
-    <>
+    <div className="mb-1">
       <MenuLink
-        onClick={() => setIsOpen(!isOpen)}
-        subMenuIsOpen={isOpen}
-        isSidebarOpen={isSidebarOpen}
+        isSidebarOpen
         text={text}
         icon={icon}
-        detailView={detailView}
+        link={undefined}
+        subMenuIsOpen={isOpen}
+        onClick={() => setIsOpen(prev => !prev)}
       />
-      <Accordion isOpen={isOpen} setIsOpen={setIsOpen}>
-        <div className="ml-1 bg-secondary/30">
-          {isSidebarOpen && subMenu.map((item, idx) => (
-            <MenuLink
-              key={idx}
-              isSidebarOpen={isSidebarOpen}
-              text={item.text}
-              icon={item.icon}
-              detailView={item.detailView}
-              link={item.link}
-            />
-          ))}
+      <div
+        className={clsx(
+          'grid transition-[grid-template-rows] duration-300 ease-out',
+          isOpen ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+        )}
+      >
+        <div className="overflow-hidden">
+          <div className="ml-4 border-l-2 border-secondary/50 py-1 pl-1">
+            {subMenu.map((item, idx) => (
+              <MenuLink
+                key={item.link || idx}
+                isSidebarOpen
+                text={item.text}
+                icon={item.icon}
+                link={item.link}
+                nested
+                onClick={onNavigate}
+              />
+            ))}
+          </div>
         </div>
-      </Accordion>
-    </>
+      </div>
+    </div>
   )
 }
 

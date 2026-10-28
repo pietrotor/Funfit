@@ -5,6 +5,7 @@ import { authUserHeader } from '@/utils/verificationUser'
 import Orders from '@/components/molecules/Orders'
 import { OrderStatusEnum } from '@/graphql/graphql-types'
 import IconSelector from '@/components/atoms/IconSelector'
+import PageHeader from '@/components/molecules/PageHeader'
 
 interface OrderProps {
   user: any
@@ -13,11 +14,9 @@ interface OrderProps {
 function Order({ user }: OrderProps) {
   return (
     <AdministrationLayout user={user} profileButton={false}>
-      <div className="m-auto mt-8 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Administración de pedidos
-        </h3>
-        <Tabs className="mt-16" color="primary" variant="solid">
+      <div className="m-auto w-full">
+        <PageHeader title="Pedidos" />
+        <Tabs className="mt-2" color="primary" variant="solid">
           <Tab
             title={
               <div className="flex items-center gap-1">

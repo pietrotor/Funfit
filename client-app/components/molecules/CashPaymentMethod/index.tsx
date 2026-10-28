@@ -10,6 +10,7 @@ import {
 import InputComponent from '@/components/atoms/Input'
 import { TSalePaymentMethodData } from '@/components/atoms/modals/SaleModal'
 import ClientObservationPayment from '@/components/atoms/ClientObservationsPayment'
+import { formatBs } from '@/utils/formatBs'
 
 type CashPaymentMethodProps = {
   total: number
@@ -52,20 +53,19 @@ function CashPaymentMethod({
   }
 
   return (
-    <section className="h-full p-4">
-      <div className="flex items-center justify-between ">
-        <p className="text-lg text-gray-500 ">
+    <section className="px-4 pb-4 md:p-4">
+      <div className="mb-3 flex items-center justify-between rounded-xl bg-stone-50 px-3 py-2">
+        <p className="text-sm font-medium text-stone-500">
           {payment.cash > total ? 'Cambio' : 'Por pagar'}
         </p>
-        <hr className="mx-4  flex-grow border-1 border-gray-200" />
-        <p className="text-lg text-primary">
-          Bs. {payment.cash > 0 ? payment.change : total - payment.cash}
+        <p className="num text-base font-semibold text-primary-600">
+          {formatBs(payment.cash > 0 ? payment.change : total - payment.cash)}
         </p>
       </div>
-      <div className="flex h-full w-full flex-col pt-2 md:flex-row">
-        <div className="md:border-r-gray flex flex-col px-2 md:w-1/2 md:border-r-1">
+      <div className="flex w-full flex-col gap-4 md:flex-row">
+        <div className="flex w-full flex-col md:w-1/2 md:border-r md:border-stone-200 md:pr-4">
           <div className="flex flex-col">
-            <p className="font-thin text-gray-500">Efectivo</p>
+            <p className="text-sm font-medium text-stone-500">Efectivo</p>
             <InputComponent
               control={control}
               name="amountRecibed"
@@ -89,40 +89,39 @@ function CashPaymentMethod({
               onValueChange={value => handleCash(value)}
             />
 
-            <p className="font-thin text-gray-500">Opciones rápidas</p>
-            <div className="ga grid grid-cols-3 gap-3">
+            <p className="mt-3 text-sm font-medium text-stone-500">Opciones rápidas</p>
+            <div className="mt-2 grid grid-cols-3 gap-2">
               <Button
                 variant="flat"
-                color="secondary"
-                className="border-2 text-lg text-gray-500 hover:border-secondary"
+                className="h-auto min-h-[2.5rem] border border-stone-200 bg-white px-1 text-xs font-semibold text-tertiary hover:border-secondary sm:text-sm"
                 onClick={() => handleCash(total.toString())}
               >
-                {total}
+                {formatBs(total)}
               </Button>
               <Button
                 variant="flat"
                 color="secondary"
-                className="border-2 text-lg text-gray-500 hover:border-secondary"
+                className="h-auto min-h-[2.5rem] border border-stone-200 bg-white px-1 text-xs font-semibold text-tertiary hover:border-secondary sm:text-sm"
                 onClick={() =>
                   handleCash(handleMultipleOfFive(total).toString())
                 }
               >
-                {handleMultipleOfFive(total)}
+                {formatBs(handleMultipleOfFive(total))}
               </Button>
               <Button
                 variant="flat"
                 color="secondary"
-                className="border-2 text-lg text-gray-500 hover:border-secondary"
+                className="h-auto min-h-[2.5rem] border border-stone-200 bg-white px-1 text-xs font-semibold text-tertiary hover:border-secondary sm:text-sm"
                 onClick={() =>
                   handleCash((handleMultipleOfFive(total) + 5).toString())
                 }
               >
-                {handleMultipleOfFive(total) + 5}
+                {formatBs(handleMultipleOfFive(total) + 5)}
               </Button>
             </div>
           </div>
         </div>
-        <div className="mt-4 border-t-2 px-2 md:mt-0 md:w-1/2 md:border-t-0">
+        <div className="w-full border-t border-stone-100 pt-3 md:w-1/2 md:border-t-0 md:pt-0">
           <ClientObservationPayment control={control} />
         </div>
       </div>

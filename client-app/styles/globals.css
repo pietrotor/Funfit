@@ -35,34 +35,36 @@
     font-family: 'amatemora';
     src: local(''), url('/fonts/amatemora/AMATEMORA.OTF');
   }
-  /* @font-face {
-    font-family: 'amatemora';
-    font-weight: 600;
-    font-style: italic;
-    src: local(''), url('/fonts/amatemora/ITALIC.ttf');
-  } */
+
+  body {
+    font-family: var(--font-body), system-ui, sans-serif;
+    @apply bg-surface text-tertiary antialiased;
+  }
 }
 
 @layer components {
   h1 {
-    @apply text-4xl font-bold;
+    @apply font-amsipro text-4xl font-bold tracking-tight;
   }
   h2 {
-    @apply text-3xl font-bold;
+    @apply font-amsipro text-3xl font-bold tracking-tight;
   }
   h3 {
-    @apply text-2xl font-bold;
+    @apply font-amsipro text-2xl font-bold tracking-tight;
   }
   h4 {
-    @apply text-xl font-bold;
+    @apply font-amsipro text-xl font-bold tracking-tight;
   }
+}
+
+.num {
+  font-variant-numeric: tabular-nums;
 }
 
 .text-clamp-2 {
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-
 
   @supports (-webkit-line-clamp: 2) {
     overflow: hidden;
@@ -73,20 +75,3 @@
     -webkit-box-orient: vertical;
   }
 }
-
-/* @keyframes smoothscroll1 {
-  from, to { scroll-behavior: smooth; }
-}
-
-@keyframes smoothscroll2 {
-  from, to { scroll-behavior: smooth; }
-}
-
-html {
-  animation: smoothscroll1 1s;
-}
-
-html:focus-within {
-  animation-name: smoothscroll2;
-  scroll-behavior: smooth;
-} */

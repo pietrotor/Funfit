@@ -14,19 +14,29 @@ const Label = ({
   label,
   children,
   required,
-  labelColor = 'text-white'
+  labelColor = 'text-tertiary'
 }: TLabelProps) => {
   if (!label) {
     return <>{children}</>
   }
   return (
     <label className="mt-2 w-full">
-      <p className={`mb-2 font-bold ${labelColor}`}>
+      <p className={`mb-2 text-sm font-medium ${labelColor}`}>
         {label} {required ? '*' : ''}
       </p>
       {children}
     </label>
   )
+}
+
+const inputClassNames = {
+  label: 'text-sm font-medium text-tertiary',
+  inputWrapper: [
+    'bg-white shadow-none border-1 border-stone-300',
+    'data-[hover=true]:border-stone-400',
+    'group-data-[focus=true]:border-primary group-data-[focus=true]:ring-4 group-data-[focus=true]:ring-primary/15'
+  ].join(' '),
+  input: 'text-[15px] text-tertiary placeholder:text-stone-400'
 }
 
 type TInputProps = InputProps & {
@@ -67,7 +77,7 @@ const InputComponent: React.FC<TInputProps> = ({
   value,
   rules,
   customeClassName,
-  labelColor = 'text-black',
+  labelColor = 'text-tertiary',
   disabled = false,
   defaultValue,
   ...props
@@ -92,7 +102,7 @@ const InputComponent: React.FC<TInputProps> = ({
         }
         rules={rules}
         render={({ field, formState: { errors } }) => (
-          <div className="w-full ">
+          <div className="w-full">
             {type !== 'textArea' ? (
               <>
                 <Input
@@ -100,10 +110,11 @@ const InputComponent: React.FC<TInputProps> = ({
                   defaultValue={defaultValue}
                   type={type}
                   variant={variant}
-                  radius="sm"
+                  radius="md"
                   label={label + (isRequired ? '*' : '')}
                   onChange={event => field.onChange(getTypeOfValue(event))}
-                  className={`w-full appearance-none rounded-md bg-gray-100/30 text-black placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+                  className={`w-full ${customeClassName || ''}`}
+                  classNames={inputClassNames}
                   placeholder={placeholder}
                   value={field.value || ''}
                   {...props}
@@ -112,7 +123,7 @@ const InputComponent: React.FC<TInputProps> = ({
                   errors={errors}
                   name={name}
                   render={({ message }) => (
-                    <p className="ml-2 text-sm font-semibold text-red-500 text-left">
+                    <p className="ml-2 text-left text-sm font-medium text-red-600">
                       {message || 'Este campo es obligatorio'}
                     </p>
                   )}
@@ -123,19 +134,20 @@ const InputComponent: React.FC<TInputProps> = ({
                 <Textarea
                   {...field}
                   type={type}
-                  variant={'bordered'}
+                  variant="bordered"
                   label={`${label} ${required ? '*' : ''}`}
                   placeholder={placeholder}
-                  size='sm'
-                  radius="sm"
+                  size="sm"
+                  radius="md"
                   onChange={event => field.onChange(getTypeOfValue(event))}
-                  className={`w-full appearance-none rounded-md bg-gray-100/30 text-black placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+                  className={`w-full ${customeClassName || ''}`}
+                  classNames={inputClassNames}
                 />
                 <ErrorMessage
                   errors={errors}
                   name={name}
                   render={({ message }) => (
-                    <p className="ml-2 text-sm font-semibold text-red-500">
+                    <p className="ml-2 text-sm font-medium text-red-600">
                       {message || 'Este campo es obligatorio'}
                     </p>
                   )}
@@ -148,16 +160,17 @@ const InputComponent: React.FC<TInputProps> = ({
     )
   }
   return (
-    <Label required={required} label={label}>
+    <Label required={required} label={label} labelColor={labelColor}>
       {type !== 'textArea' ? (
         <Input
           disabled={disabled}
           type={type}
           variant={variant}
-          radius="sm"
+          radius="md"
           label={label}
           size={size}
-          className={`w-full appearance-none rounded-md bg-white/40 text-gray placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}`}
+          className={`w-full ${customeClassName || ''}`}
+          classNames={inputClassNames}
           value={value}
           placeholder={placeholder}
           {...props}
@@ -168,9 +181,10 @@ const InputComponent: React.FC<TInputProps> = ({
           variant={variant}
           label={`${label} ${required ? '*' : ''}`}
           placeholder={placeholder}
-          radius="sm"
-          size='sm'
-          className={`w-full appearance-none rounded-md bg-white/40 text-gray placeholder-gray-700 outline-none transition-all focus:bg-teal-50 focus:shadow-xl disabled:bg-gray-300 disabled:text-gray-600 ${customeClassName}` }
+          radius="md"
+          size="sm"
+          className={`w-full ${customeClassName || ''}`}
+          classNames={inputClassNames}
           value={value}
         />
       )}

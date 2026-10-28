@@ -5,9 +5,19 @@ import 'react-circular-progressbar/dist/styles.css'
 
 import { GetServerSideProps } from 'next'
 import AdministrationLayout from '@/components/templates/layouts'
-import IconSelector from '@/components/atoms/IconSelector'
+import {
+  Coins,
+  CreditCard,
+  Landmark,
+  MessageSquareText,
+  QrCode,
+  Store,
+  UserRound
+} from 'lucide-react'
 import Table from '@/components/organisms/tableNext/Table'
-import InformationCard from '@/components/molecules/Card/InformationCard'
+import PageHeader from '@/components/molecules/PageHeader'
+import StatCard from '@/components/molecules/StatCard'
+import { formatBs } from '@/utils/formatBs'
 import Images from '@/components/atoms/Image/Image'
 import useCustomGetSaleById from '@/services/UseGetCustomSaleById'
 import { useAppSelector } from '@/store/index'
@@ -15,6 +25,7 @@ import { authUserHeader } from '@/utils/verificationUser'
 import { PaymentMethodEnum } from '@/graphql/graphql-types'
 import DateConverter from '@/components/atoms/DateConverter'
 import { getSalePaymentMethod } from '@/utils/getSalePaymentMethod'
+import VendisLogo from '@/components/atoms/VendisLogo'
 
 interface SaleDetailProps {
   user: any
@@ -28,134 +39,72 @@ function SaleDetail({ user }: SaleDetailProps) {
 
   return (
     <AdministrationLayout user={user} showBackButton={true}>
-      <div className="m-auto mt-8 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Detalle de venta
-        </h3>
-        <section className="my-4 mb-12  grid gap-3 pt-6 md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Total:</div>
-                <div className="text-center">
-                  {data?.getSaleById?.data?.total} Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Coins"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Codigo de venta:</div>
-                <div className="text-center">
-                  {data?.getSaleById?.data?.code}
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="QrCode"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Sucursal:</div>
-                <div className="text-center">{currentBranch.name}</div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Branch"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Método de pago:</div>
-                <div className="text-center">
-                  {sale?.paymentMethod
-                    ? getSalePaymentMethod(sale.paymentMethod).text
-                    : ''}
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                {sale?.paymentMethod ? (
-                  getSalePaymentMethod(sale.paymentMethod).icon
-                ) : (
-                  <></>
-                )}
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Vendedor:</div>
-                <div className="text-center">
-                  {data?.getSaleById?.data?.createdByInfo?.name}{' '}
-                  {data?.getSaleById?.data?.createdByInfo?.lastName}
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="user"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
+      <div className="m-auto w-full">
+        <PageHeader title="Detalle de venta" />
+        <section className="mb-6 grid gap-3 sm:grid-cols-2 md:gap-4 xl:grid-cols-3">
+          <StatCard
+            label="Total"
+            value={formatBs(sale?.total)}
+            icon={Coins}
+            tone="primary"
+          />
+          <StatCard label="Código de venta" value={sale?.code} icon={QrCode} />
+          <StatCard label="Sucursal" value={currentBranch.name} icon={Store} />
+          <StatCard
+            label="Método de pago"
+            value={
+              sale?.paymentMethod
+                ? getSalePaymentMethod(sale.paymentMethod).text
+                : ''
+            }
+            icon={CreditCard}
+            iconNode={
+              sale?.paymentMethod === PaymentMethodEnum.VENDIS ? (
+                <VendisLogo className="h-5" />
+              ) : undefined
+            }
+          />
+          <StatCard
+            label="Vendedor"
+            value={`${sale?.createdByInfo?.name ?? ''} ${
+              sale?.createdByInfo?.lastName ?? ''
+            }`.trim()}
+            icon={UserRound}
+          />
           {!!sale?.observations && (
-            <InformationCard className="h-full bg-slate-200 px-3 py-6">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Observaciones:</div>
-                <div className="mt-1 text-base font-normal">
+            <StatCard
+              label="Observaciones"
+              value={
+                <span className="block whitespace-normal text-base font-normal">
                   {sale.observations}
-                </div>
-              </div>
-            </InformationCard>
+                </span>
+              }
+              icon={MessageSquareText}
+            />
           )}
           {sale?.entersCash &&
             sale.paymentMethod !== PaymentMethodEnum.CASH && (
-              <InformationCard className="h-full bg-slate-200 px-3 py-6">
-                <div className="text-lg font-bold">
-                  <div className="text-xl">Caja:</div>
-                  <div className="text-center text-base">El dinero ingresó a caja</div>
-                </div>
-              </InformationCard>
+              <StatCard
+                label="Caja"
+                value={
+                  <span className="block whitespace-normal text-base font-normal">
+                    El dinero ingresó a caja
+                  </span>
+                }
+                icon={Landmark}
+                tone="success"
+              />
             )}
         </section>
-        {data?.getSaleById?.data?.canceled && (
-          <section className="mb-4 w-fit rounded-md bg-red-600 p-4 px-10 text-white">
-            <h4>Venta anulada</h4>
+        {sale?.canceled && (
+          <section className="mb-6 w-fit max-w-full rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-700">
+            <h4 className="font-amsipro text-lg font-semibold">Venta anulada</h4>
             <div className="flex flex-col justify-center text-sm">
-              <p className="mt-2 font-bold">Anulado en fecha: </p>
-              <DateConverter
-                dateString={data?.getSaleById?.data?.canceledAt}
-                showTime
-              />
-              <p className="mt-2 font-bold">Anulado por: </p>
+              <p className="mt-2 font-semibold">Anulado en fecha:</p>
+              <DateConverter dateString={sale.canceledAt} showTime />
+              <p className="mt-2 font-semibold">Anulado por:</p>
               <p>
-                {data?.getSaleById?.data?.canceledByInfo?.name}{' '}
-                {data?.getSaleById?.data?.canceledByInfo?.lastName}
+                {sale.canceledByInfo?.name} {sale.canceledByInfo?.lastName}
               </p>
             </div>
           </section>
@@ -177,10 +126,7 @@ function SaleDetail({ user }: SaleDetailProps) {
               <div key={idx} className=" flex justify-center ">
                 <Images
                   alt="imagen"
-                  src={
-                    sale.product?.image ||
-                    'https://st4.depositphotos.com/14953852/24787/v/450/depositphotos_247872612-stock-illustration-no-image-available-icon-vector.jpg'
-                  }
+                  src={sale.product?.image || '/common/missing_image.png'}
                   className="h-14  w-16 rounded-md md:h-28 md:w-28"
                 />
               </div>,
@@ -194,11 +140,11 @@ function SaleDetail({ user }: SaleDetailProps) {
                 {sale.qty}
               </div>,
               <div key={idx} className="flex justify-center space-x-3 text-sm">
-                {sale.total} Bs
+                {formatBs(sale.total)}
               </div>
             ]
           }))}
-          tableName="VENTA"
+          tableName="Venta"
           enablePagination={false}
         />
       </div>

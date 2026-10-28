@@ -23,6 +23,7 @@ import { PaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import PageHeader from '@/components/molecules/PageHeader'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 
 interface WarehousesProps {
@@ -65,7 +66,6 @@ function Warehouses({ user }: WarehousesProps) {
       })
     }
   })
-  console.log(data)
 
   const handleSendUpdateWarehouse = async (values: TValuesWarehouses) => {
     await UpdateWarehousesMutationVariables({
@@ -78,16 +78,14 @@ function Warehouses({ user }: WarehousesProps) {
         }
       },
       onCompleted: data => {
-        showSuccessToast('Usuario actualizado', 'success')
+        showSuccessToast('Almacén actualizado', 'success')
         refetch()
         handleEditModal.onClose()
       },
-      onError: error => {
-        showSuccessToast('ocurrio un error', 'error')
-        console.log(error)
+      onError: () => {
+        showSuccessToast('Ocurrió un error', 'error')
       }
     })
-    console.log(values)
   }
 
   const handleUpdateWarehouse = (idWarehouse: number) => {
@@ -127,7 +125,7 @@ function Warehouses({ user }: WarehousesProps) {
         } else {
           showSuccessToast(
             data.deleteWarehouse?.message ||
-              'El Warehouse ha sido eliminado correctamente',
+              'El almacén ha sido eliminado correctamente',
             'success'
           )
           refetch()
@@ -141,15 +139,17 @@ function Warehouses({ user }: WarehousesProps) {
 
   return (
     <AdministrationLayout user={user}>
-      <div className="m-auto mt-8 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Administración de Almacenes
-        </h3>
-        <AdminButton
-          onClick={handleAddWarehouse.onOpen}
-          color="secondary"
-          text="Agregar nuevo Almacén"
-          iconName="Bussines"
+      <div className="m-auto w-full">
+        <PageHeader
+          title="Almacenes"
+          actions={
+            <AdminButton
+              onClick={handleAddWarehouse.onOpen}
+              color="secondary"
+              text="Agregar nuevo almacén"
+              iconName="Bussines"
+            />
+          }
         />
         <Table
           onChangeRow={row => handleChangeRow(row)}
@@ -201,7 +201,7 @@ function Warehouses({ user }: WarehousesProps) {
                   showTooltip
                   tooltipText="Ver Almacén"
                 >
-                  <IconSelector name="eye" color="text-secondary" width="w-8" />
+                  <IconSelector name="eye" color="text-secondary" width="w-6" />
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() => handleUpdateWarehouse(warehouse.id)}
@@ -209,7 +209,7 @@ function Warehouses({ user }: WarehousesProps) {
                   showTooltip
                   tooltipText="Editar"
                 >
-                  <IconSelector name="edit" color="text-primary" width="w-8" />
+                  <IconSelector name="edit" color="text-primary" width="w-6" />
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() => handleDeleteWarehouse(warehouse.id)}
@@ -217,7 +217,7 @@ function Warehouses({ user }: WarehousesProps) {
                   showTooltip
                   tooltipText="Eliminar"
                 >
-                  <IconSelector name="trash" color="text-danger" width="w-8" />
+                  <IconSelector name="trash" color="text-danger" width="w-6" />
                 </ButtonComponent>
               </div>
             ]

@@ -1147,7 +1147,8 @@ export enum PaymentMethodEnum {
   CASH = 'CASH',
   OTHER = 'OTHER',
   PEDIDOS_YA = 'PEDIDOS_YA',
-  QR_TRANSFER = 'QR_TRANSFER'
+  QR_TRANSFER = 'QR_TRANSFER',
+  VENDIS = 'VENDIS'
 }
 
 export type PaymentPaginationInput = {

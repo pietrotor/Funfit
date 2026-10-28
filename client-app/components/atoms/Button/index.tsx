@@ -1,6 +1,6 @@
 import React from 'react'
-
 import { Button, Tooltip } from '@nextui-org/react'
+import clsx from 'clsx'
 
 type typeButtons = 'edit' | 'delete' | 'submit' | 'history' | 'eye' | 'default'
 
@@ -17,6 +17,15 @@ type TButtonProps = {
   typeOf?: 'button' | 'submit' | 'reset' | undefined
 }
 
+const tooltipColor: Record<typeButtons, string> = {
+  edit: 'text-primary-600',
+  delete: 'text-red-600',
+  submit: 'text-emerald-700',
+  history: 'text-stone-600',
+  eye: 'text-secondary-darken',
+  default: 'text-primary-600'
+}
+
 const ButtonComponent = ({
   children,
   onClick,
@@ -29,53 +38,39 @@ const ButtonComponent = ({
   isIconOnly = false,
   tooltipText = ''
 }: TButtonProps) => {
-  const getTooltipId = () => {
-    return tooltipText ? `tooltip-${type}` : ''
-  }
+  const ghostClass = clsx(
+    'rounded-lg bg-stone-100 p-1.5 text-stone-600 transition-colors hover:bg-stone-200 hover:text-tertiary',
+    disabled && 'cursor-not-allowed opacity-50',
+    className
+  )
 
-  const getColor = (type: typeButtons) => {
-    switch (type) {
-      case 'edit':
-        return 'primary'
-      case 'delete':
-        return 'danger'
-      case 'submit':
-        return 'success'
-      case 'history':
-        return 'blue-500'
-      case 'eye':
-        return 'secondary'
-      default:
-        return 'primary'
-    }
-  }
-  return (
-    <>
-      {showTooltip ? (
-        <Tooltip content={tooltipText} className={`text-${getColor(type)}`}>
-          <button
-            id={getTooltipId()}
-            className={`rounded bg-gray-100 p-1 ${className}  ${disabled && 'cursor-not-allowed'}`}
-            onClick={onClick}
-            disabled={disabled}
-          >
-            {children}
-          </button>
-        </Tooltip>
-      ) : (
-        < Button
-          type={typeOf}
-          isLoading={isLoading}
-          id={getTooltipId()}
-          className={`rounded bg-gray-100 p-1 ${className} ${disabled && 'cursor-not-allowed'} `}
+  if (showTooltip) {
+    return (
+      <Tooltip content={tooltipText} className={tooltipColor[type]}>
+        <button
+          type="button"
+          className={ghostClass}
           onClick={onClick}
           disabled={disabled}
-          isIconOnly={isIconOnly}
         >
           {children}
-        </Button>
-      )}
-    </>
+        </button>
+      </Tooltip>
+    )
+  }
+
+  return (
+    <Button
+      type={typeOf}
+      isLoading={isLoading}
+      className={ghostClass}
+      onClick={onClick}
+      disabled={disabled}
+      isIconOnly={isIconOnly}
+    >
+      {children}
+    </Button>
   )
 }
+
 export default ButtonComponent

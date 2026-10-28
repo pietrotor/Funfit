@@ -1,7 +1,8 @@
 import Link from 'next/link'
 import { useRouter } from 'next/router'
-import React, { useState } from 'react'
+import React from 'react'
 import { ChevronDown } from 'lucide-react'
+import clsx from 'clsx'
 import { getMenuIcon, TMenuIconName } from '../menuIcons'
 
 type TMenuLinkProps = {
@@ -12,6 +13,8 @@ type TMenuLinkProps = {
   link?: string
   subMenuIsOpen?: boolean | null
   onClick?: () => void
+  collapsed?: boolean
+  nested?: boolean
 }
 
 const MenuLink: React.FC<TMenuLinkProps> = ({
@@ -21,66 +24,83 @@ const MenuLink: React.FC<TMenuLinkProps> = ({
   link,
   text,
   subMenuIsOpen,
-  onClick = () => {}
+  onClick = () => {},
+  collapsed = false,
+  nested = false
 }) => {
   const router = useRouter()
-  const [isCurrent] = useState(
-    link ? link === '/' ? link === router.asPath : router.asPath.includes(link) : false
-  )
+  const isCurrent = link
+    ? link === '/'
+      ? link === router.asPath
+      : router.asPath === link || router.asPath.startsWith(`${link}/`)
+    : false
   const Icon = getMenuIcon(icon)
-  if (!link) {
-    return (
-      <button
-        onClick={onClick}
-        type="button"
-        className={`flex w-full gap-3 overflow-hidden py-4 text-base text-tertiary transition-all duration-200 hover:hover:rounded-md hover:bg-secondary-transparent ${
-          isCurrent ? 'bg-secondary' : 'bg-transparent'
-        } ${isSidebarOpen ? 'px-10' : 'px-0'} ${
-          detailView ? 'justify-between' : 'justify-center'
-        }`}
-      >
-        <div className="flex items-center gap-2">
-          {Icon && <Icon className="h-5 w-5 shrink-0" strokeWidth={1.75} />}
-          {detailView && (
-            <p className={'flex-1 text-left font-semibold leading-normal'}>
-              {text}
-            </p>
+  const showLabel = detailView && isSidebarOpen && !collapsed
+
+  const baseClass = clsx(
+    'group relative flex w-full items-center gap-3 overflow-hidden rounded-xl text-sm font-medium transition-colors duration-200',
+    collapsed || !isSidebarOpen ? 'justify-center px-0 py-3' : 'px-3 py-2.5',
+    nested && showLabel && 'py-2 pl-3 text-[13px]',
+    isCurrent
+      ? 'bg-secondary/25 text-tertiary'
+      : 'text-stone-600 hover:bg-secondary/10 hover:text-tertiary'
+  )
+
+  const content = (
+    <>
+      {isCurrent && (
+        <span
+          aria-hidden
+          className="absolute left-0 top-1/2 h-5 w-1 -translate-y-1/2 rounded-r-full bg-secondary-darken"
+        />
+      )}
+      {Icon && (
+        <Icon
+          className={clsx(
+            'h-[18px] w-[18px] shrink-0',
+            isCurrent
+              ? 'text-primary-600'
+              : 'text-stone-500 group-hover:text-secondary-darken'
           )}
-        </div>
-        {typeof subMenuIsOpen === 'boolean' && detailView && (
-          <ChevronDown
-            className={`h-5 w-5 shrink-0 ${
-              subMenuIsOpen ? 'rotate-0' : '-rotate-90'
-            } transition-transform duration-300`}
-            strokeWidth={2}
-          />
-        )}
-      </button>
-    )
-  }
-  return (
-    <Link
-      href={link}
-      className={`flex w-full items-center justify-center gap-3 overflow-hidden py-4 text-tertiary transition-all duration-200 hover:rounded-md hover:bg-secondary-transparent ${
-        isCurrent ? 'bg-secondary' : 'bg-transparent'
-      } ${isSidebarOpen ? 'px-10' : 'px-0'} ${
-        detailView ? 'justify-between' : 'justify-center'
-      }`}
-    >
-      <div className={'flex items-center gap-2'}>
-        {Icon && <Icon className="h-5 w-5 shrink-0" strokeWidth={1.75} />}
-        {detailView && (
-          <p className={'flex-1 text-left font-semibold'}>{text}</p>
-        )}
-      </div>
-      {typeof subMenuIsOpen === 'boolean' && detailView && (
+          strokeWidth={1.75}
+        />
+      )}
+      {showLabel && (
+        <span className="flex-1 truncate text-left leading-snug">{text}</span>
+      )}
+      {typeof subMenuIsOpen === 'boolean' && showLabel && (
         <ChevronDown
-          className={`h-5 w-5 shrink-0 ${
+          className={clsx(
+            'h-4 w-4 shrink-0 text-stone-400 transition-transform duration-200',
             subMenuIsOpen ? 'rotate-0' : '-rotate-90'
-          } transition-transform duration-300`}
+          )}
           strokeWidth={2}
         />
       )}
+    </>
+  )
+
+  if (!link) {
+    return (
+      <button
+        type="button"
+        onClick={onClick}
+        title={!showLabel ? text : undefined}
+        className={baseClass}
+      >
+        {content}
+      </button>
+    )
+  }
+
+  return (
+    <Link
+      href={link}
+      title={!showLabel ? text : undefined}
+      onClick={onClick}
+      className={baseClass}
+    >
+      {content}
     </Link>
   )
 }

@@ -93,7 +93,7 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
       containerClassName="!p-0 !pl-2"
     >
       <section className="flex h-full w-full flex-col md:flex-row">
-        <div className="w-full border-1 border-secondary/30 bg-secondary/10  p-4 md:w-2/3">
+        <div className="w-full border-1 border-stone-200 bg-stone-50 p-4 md:w-2/3">
           <div className="flex w-full">
             <Search setFilter={value => setFilter(value)} />
           </div>
@@ -121,7 +121,7 @@ function PointOfSaleDistributors({ user }: PointOfSaleProps) {
               ))}
           </div>
           <ButtonComponent
-            className="mt-4 block w-full bg-secondary font-extrabold text-white md:hidden"
+            className="mt-4 block w-full bg-primary-600 font-extrabold text-white md:hidden"
             onClick={handleResponsiveSaleModal.onOpen}
           >
             Finalizar venta

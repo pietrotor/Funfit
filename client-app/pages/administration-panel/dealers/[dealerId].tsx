@@ -13,7 +13,11 @@ import { useCustomGetDistributorById } from '@/hooks/UseDistributorsQuery'
 import { UseGetCustomDistributorsSalesPaginated } from '@/services/UseGetCustomDistributorsSalesPaginated'
 import { useGetDistributorsSalesSummary } from '@/services/useGetDistributorsSalesSummary'
 import DateConverter from '@/components/atoms/DateConverter'
-import InformationCard from '@/components/molecules/Card/InformationCard'
+import PageHeader from '@/components/molecules/PageHeader'
+import StatCard from '@/components/molecules/StatCard'
+import { formatBs } from '@/utils/formatBs'
+import { Chip } from '@nextui-org/react'
+import { Banknote, Coins, ReceiptText } from 'lucide-react'
 import ComboInput from '@/components/atoms/ComboInput'
 import InputComponent from '@/components/atoms/Input'
 import {
@@ -99,15 +103,13 @@ function DealersDetailPage({ user }: BranchesProps) {
 
   return (
     <AdministrationLayout user={user} showBackButton>
-      <div className="m-auto mt-7 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Compras del distribuidor:{' '}
-          <span className="text-primary">
-            {data?.getDistributorById?.data?.name}
-          </span>
-        </h3>
+      <div className="m-auto w-full">
+        <PageHeader
+          title="Compras del distribuidor"
+          description={data?.getDistributorById?.data?.name}
+        />
 
-        <div className="mb-5 mt-10 grid grid-cols-2 gap-2 md:grid-cols-5 md:gap-4 md:space-y-0">
+        <div className="mb-5 grid grid-cols-2 gap-2 md:grid-cols-5 md:gap-4 md:space-y-0">
           <InputComponent
             isRequired={false}
             name="initialDate"
@@ -163,60 +165,25 @@ function DealersDetailPage({ user }: BranchesProps) {
           </div>
         </div>
 
-        <section className="mb-8  grid gap-3 pt-6 md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Total en ventas</div>
-                <div className="text-center">{summaryData?.total || 0} Bs</div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Coins"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full !bg-blue-500 px-3 py-6 text-white">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Al Contado</div>
-                <div className="text-center">
-                  {summaryData?.totalPaid || 0}
-                  Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Cash"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full !bg-red-500 px-3 py-6 text-white">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Créditos Pendientes</div>
-                <div className="text-center">
-                  {summaryData?.balance || 0} Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Recipe"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
+        <section className="mb-6 grid gap-3 md:gap-4 sm:grid-cols-2 xl:grid-cols-3">
+          <StatCard
+            label="Total en ventas"
+            value={formatBs(summaryData?.total)}
+            icon={Coins}
+            tone="primary"
+          />
+          <StatCard
+            label="Al contado"
+            value={formatBs(summaryData?.totalPaid)}
+            icon={Banknote}
+            tone="success"
+          />
+          <StatCard
+            label="Créditos pendientes"
+            value={formatBs(summaryData?.balance)}
+            icon={ReceiptText}
+            tone="danger"
+          />
         </section>
         <Table
           onChangeRow={row => handleChangeRow(row)}
@@ -262,20 +229,20 @@ function DealersDetailPage({ user }: BranchesProps) {
                   className=" flex min-w-[100px] flex-col justify-center gap-2"
                 >
                   <p className="text-sm font-bold">
-                    Total: <span>{sale.total} Bs</span>
+                    Total: <span>{formatBs(sale.total)}</span>
                   </p>
-                  <p className="text-xs font-semibold text-blue-500">
-                    Total pagado: <span>{sale.totalPaid} Bs</span>
+                  <p className="text-xs font-semibold text-emerald-700">
+                    Total pagado: <span>{formatBs(sale.totalPaid)}</span>
                   </p>
                   {!!sale.balance && (
-                    <p className="text-xs font-semibold text-red-500">
-                      Saldo: <span>{sale.balance} Bs</span>
+                    <p className="text-xs font-semibold text-red-600">
+                      Saldo: <span>{formatBs(sale.balance)}</span>
                     </p>
                   )}
                 </div>,
                 <div
                   key={idx}
-                  className=" flex items-center justify-center gap-1 rounded-sm border border-primary p-1 text-primary"
+                  className="flex items-center justify-center gap-1 rounded-lg border border-stone-200 bg-stone-50 px-2 py-1 text-sm text-stone-700"
                 >
                   {getSalePaymentMethod(sale.paymentMethod).icon}
                   <p>{getSalePaymentMethod(sale.paymentMethod).text}</p>
@@ -288,9 +255,9 @@ function DealersDetailPage({ user }: BranchesProps) {
                 <div key={idx}>
                   {sale.canceled && (
                     <div className="flex h-full flex-col items-center justify-center gap-3">
-                      <p className="m-auto w-fit bg-red-600 px-4 py-1 font-bold text-white">
-                        Venta Anulada
-                      </p>
+                      <Chip color="danger" variant="flat" radius="full">
+                        Venta anulada
+                      </Chip>
                       <div>
                         <DateConverter dateString={sale.canceledAt} showTime />
                       </div>

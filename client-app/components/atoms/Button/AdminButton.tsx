@@ -1,9 +1,13 @@
+import { Button } from '@nextui-org/react'
 import { useRouter } from 'next/router'
+import clsx from 'clsx'
 import IconSelector, { TSvgNames } from '../IconSelector'
+
 type TPropsAdminButton = {
   pathname?: string
   addPlusIcon?: boolean
   showMinIcon?: boolean
+  className?: string
   textColor?: string
   text: string
   disabled?: boolean
@@ -18,31 +22,77 @@ type TPropsAdminButton = {
     | 'danger'
     | undefined
 }
+
+const colorMap: Record<
+  NonNullable<TPropsAdminButton['color']>,
+  { bg: string; hover: string; text: string }
+> = {
+  primary: {
+    bg: 'bg-primary-600',
+    hover: 'data-[hover=true]:bg-primary-darken',
+    text: 'text-white'
+  },
+  success: {
+    bg: 'bg-success',
+    hover: 'data-[hover=true]:bg-emerald-700',
+    text: 'text-white'
+  },
+  warning: {
+    bg: 'bg-amber-500',
+    hover: 'data-[hover=true]:bg-amber-600',
+    text: 'text-white'
+  },
+  secondary: {
+    bg: 'bg-secondary',
+    hover: 'data-[hover=true]:bg-secondary-darken',
+    text: 'text-tertiary'
+  },
+  default: {
+    bg: 'bg-stone-600',
+    hover: 'data-[hover=true]:bg-stone-700',
+    text: 'text-white'
+  },
+  danger: {
+    bg: 'bg-red-600',
+    hover: 'data-[hover=true]:bg-red-700',
+    text: 'text-white'
+  }
+}
+
 export const AdminButton = ({
   pathname,
   addPlusIcon = true,
   showMinIcon = false,
+  className = '',
   iconName,
-  color,
+  color = 'primary',
   text,
   disabled = false,
-  textColor = 'text-white',
+  textColor,
   onClick
 }: TPropsAdminButton) => {
   const router = useRouter()
+  const colors = colorMap[color || 'primary']
+
   return (
-    <button
+    <Button
       disabled={disabled}
-      color={color}
-      className={`float-right my-4 flex items-end font-extrabold bg-${color} flex rounded-lg px-3 py-2 ${textColor} ${disabled ? 'cursor-not-allowed' : ''} `}
+      className={clsx(
+        'h-11 min-h-11 gap-1.5 font-semibold shadow-[0_6px_16px_-8px_rgba(224,108,0,0.45)]',
+        colors.bg,
+        colors.hover,
+        textColor || colors.text,
+        'data-[hover=true]:opacity-100',
+        className
+      )}
       onClick={pathname ? () => router.push({ pathname }) : onClick}
     >
-      {addPlusIcon && <IconSelector name={'Plus'} />}
+      {addPlusIcon && <IconSelector name="Plus" />}
       <IconSelector
         name={iconName}
-        className={`me-2 px-0 ${showMinIcon ? '' : 'md:hidden'} mx-0`}
+        className={clsx(showMinIcon ? '' : 'md:hidden')}
       />
-      <p className="hidden md:block">{text}</p>
-    </button>
+      <span className="text-sm">{text}</span>
+    </Button>
   )
 }

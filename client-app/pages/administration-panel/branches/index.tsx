@@ -16,6 +16,7 @@ import { EditBranchModal } from '@/components/atoms/modals/EditBranchModal'
 import { TDataBranch } from '@/interfaces/TData'
 import useCustomGetBranchesQuery from '@/services/UseBranches'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import PageHeader from '@/components/molecules/PageHeader'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 interface BranchesProps {
   user: any
@@ -50,7 +51,6 @@ function Branches({ user }: BranchesProps) {
     const branch = data?.getBranchesPaginated?.data?.find(
       branch => branch.id === BranchId
     )
-    console.log(branch)
     setEdit(branch as TDataBranch)
 
     handleConfirmModal.onOpen()
@@ -85,18 +85,18 @@ function Branches({ user }: BranchesProps) {
 
   return (
     <AdministrationLayout user={user}>
-      <div className="m-auto mt-7 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Administración de Sucursales
-        </h3>
-        <div className="space-x-3 text-end">
-          <AdminButton
-            onClick={handleAddBranch.onOpen}
-            color="secondary"
-            text="Agregar nueva sucursal"
-            iconName="Branch"
-          />
-        </div>
+      <div className="m-auto w-full">
+        <PageHeader
+          title="Sucursales"
+          actions={
+            <AdminButton
+              onClick={handleAddBranch.onOpen}
+              color="secondary"
+              text="Agregar nueva sucursal"
+              iconName="Branch"
+            />
+          }
+        />
         <Table
           onChangeRow={row => handleChangeRow(row)}
           tableName="SUCURSALES"
@@ -160,7 +160,7 @@ function Branches({ user }: BranchesProps) {
                     <IconSelector
                       name="Branch"
                       color="text-secondary"
-                      width="w-5"
+                      width="w-6"
                     />
                   </ButtonComponent>
                   <ButtonComponent
@@ -172,7 +172,7 @@ function Branches({ user }: BranchesProps) {
                     <IconSelector
                       name="edit"
                       color="text-primary"
-                      width="w-8"
+                      width="w-6"
                     />
                   </ButtonComponent>
                   <ButtonComponent
@@ -184,7 +184,7 @@ function Branches({ user }: BranchesProps) {
                     <IconSelector
                       name="trash"
                       color="text-danger"
-                      width="w-8"
+                      width="w-6"
                     />
                   </ButtonComponent>
                 </div>

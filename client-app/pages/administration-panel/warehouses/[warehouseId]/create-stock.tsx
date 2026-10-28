@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react'
 import { GetServerSideProps } from 'next'
 import { useAppSelector } from '@/store/index'
 
+import PageHeader from '@/components/molecules/PageHeader'
 import Input from '@/components/atoms/Input'
 import AdministrationLayout from '@/components/templates/layouts'
 import {
@@ -39,8 +40,8 @@ function CreateStock({ user }: ICreateStock) {
   const { warehouseId } = router.query
 
   const [getProductById, { data: productInfo }] = useGetProductByIdLazyQuery({
-    onError(error) {
-      console.log('🚀 ~ onError ~ error:', error)
+    onError() {
+      showSuccessToast('Error al obtener el producto', 'error')
     }
   })
 
@@ -52,11 +53,7 @@ function CreateStock({ user }: ICreateStock) {
       },
       warehouseId
     },
-    onCompleted: data => {
-      console.log(data, 'data')
-    },
-    onError: error => {
-      console.log(error, 'error')
+    onError: () => {
       showSuccessToast('Error al obtener los productos', 'error')
     }
   })
@@ -85,7 +82,7 @@ function CreateStock({ user }: ICreateStock) {
       onCompleted: data => {
         if (data.createStock?.status === StatusEnum.ERROR) {
           showSuccessToast(
-            data.createStock.message || 'Error al crear un usuario',
+            data.createStock.message || 'Error al registrar el stock',
             'error'
           )
           return
@@ -93,43 +90,39 @@ function CreateStock({ user }: ICreateStock) {
         setProductsData(undefined)
         reset()
         showSuccessToast(
-          data.createStock?.message || 'Usuario creado correctamente',
+          data.createStock?.message || 'Stock registrado correctamente',
           'success'
         )
         router.back()
       },
-      onError(error) {
-        console.log('🚀 ~ onError ~ error:', error)
+      onError() {
         showSuccessToast('No se pudo crear el stock de este producto', 'error')
       }
     })
-    console.log('send')
   }
   return (
     <AdministrationLayout user={user} showBackButton={true}>
-      <div className="w-full"></div>
-      <div className="flex h-screen w-full transform justify-center bg-[url(https://bakeandlow.cl/cdn/shop/files/Bake_Low_Banners_1_2048x.jpg?v=1613796261)] bg-cover bg-center lg:right-0">
-        <div
-          className={`${
-            productsData
-              ? 'absolute h-full  w-[60%] bg-gray-700 opacity-60 md:right-0'
-              : ''
-          }`}
+      <div className="m-auto w-full">
+        <PageHeader
+          title="Registrar producto"
+          description="Agrega un producto con su stock inicial a este almacén"
         />
+        <div
+          className={`grid gap-6 ${
+            productsData ? 'lg:grid-cols-2' : 'lg:max-w-xl'
+          }`}
+        >
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className={
-            'relative z-30 flex h-full w-full flex-1 flex-col items-center justify-center border bg-slate-50/100  px-16 py-9  transition-all duration-700  '
-          }
+          className="flex w-full flex-col rounded-2xl border border-stone-200 bg-white p-4 shadow-[0_1px_3px_rgba(28,25,23,0.04)] sm:p-6"
         >
-          <h3 className="mb-7"> Registrar producto </h3>
           <div className="w-full space-y-3">
             <Autocomplete
               variant={'bordered'}
               label={'Producto'}
               value={productsData}
               className={`${
-                productsData ? 'border-gray-900' : 'border-gray-300'
+                productsData ? 'border-stone-900' : 'border-stone-300'
               } w-full`}
               radius="sm"
               onSelectionChange={e => {
@@ -201,64 +194,61 @@ function CreateStock({ user }: ICreateStock) {
           </div>
           <Button
             isLoading={loading}
-            className="my-6 h-12 w-full rounded-md bg-secondary/80 px-5 text-xl text-white transition duration-300 hover:bg-secondary"
+            className="mt-6 h-12 w-full rounded-md bg-primary-600 px-5 text-base font-semibold text-white transition duration-300 hover:bg-primary-darken"
             type="submit"
             onClick={() => {}}
           >
             Completar
           </Button>
         </form>
-        <div
-          className={`hidden w-full flex-1 grid-cols-1 gap-x-2 py-6 ps-4 transition-all duration-300 lg:grid lg:grid-cols-2 lg:place-items-center ${
-            !productsData
-              ? 'invisible md:left-1 '
-              : 'md:left-unit-7xl lg:left-unit-9xl xl:right-0'
-          }`}
-        >
-          <div className="">
-            <Input
-              required={false}
-              value={productInfo?.getProductById?.data?.description || ''}
-              variant="bordered"
-              type="textArea"
-              name="description"
-              label="Descripción del producto"
-              disabled={true}
-              customeClassName=" mb-2"
-            />
-            <div className="grid gap-2 xl:grid-cols-2 ">
+        {productsData && (
+          <div className="grid w-full gap-4 rounded-2xl border border-stone-200 bg-white p-4 shadow-[0_1px_3px_rgba(28,25,23,0.04)] sm:p-6 md:grid-cols-[1fr_auto]">
+            <div>
               <Input
                 required={false}
-                name="code"
-                label="Código"
-                value={productInfo?.getProductById?.data?.code}
+                value={productInfo?.getProductById?.data?.description || ''}
+                variant="bordered"
+                type="textArea"
+                name="description"
+                label="Descripción del producto"
                 disabled={true}
-                customeClassName="cursor-not-allowed"
+                customeClassName=" mb-2"
               />
-              <Input
-                required={false}
-                value={
-                  productInfo?.getProductById?.data?.suggetedPrice?.toString() ||
-                  ''
+              <div className="grid gap-2 xl:grid-cols-2 ">
+                <Input
+                  required={false}
+                  name="code"
+                  label="Código"
+                  value={productInfo?.getProductById?.data?.code}
+                  disabled={true}
+                  customeClassName="cursor-not-allowed"
+                />
+                <Input
+                  required={false}
+                  value={
+                    productInfo?.getProductById?.data?.suggetedPrice?.toString() ||
+                    ''
+                  }
+                  name="sudgestedPrice"
+                  label="Precio sugerido (Bs)"
+                  disabled={true}
+                  customeClassName="cursor-not-allowed"
+                />
+              </div>
+            </div>
+            <div>
+              <Image
+                className="rounded-md border-2 border-stone-200"
+                src={
+                  productInfo?.getProductById?.data?.image ||
+                  '/common/missing_image.png'
                 }
-                name="sudgestedPrice"
-                label="precio sugerido (Bs)"
-                disabled={true}
-                customeClassName="cursor-not-allowed"
+                alt={productInfo?.getProductById?.data?.name || 'Producto'}
+                width={200}
               />
             </div>
           </div>
-          <div className="">
-            <Image
-              className="mt-3 rounded-md border-2 border-gray-300"
-              src={
-                productInfo?.getProductById?.data?.image ||
-                'https://st.depositphotos.com/2934765/53192/v/600/depositphotos_531920820-stock-illustration-photo-available-vector-icon-default.jpg'
-              }
-              alt="image product"
-              width={200}
-            />
-          </div>
+        )}
         </div>
       </div>
     </AdministrationLayout>

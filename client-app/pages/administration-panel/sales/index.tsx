@@ -1,4 +1,13 @@
-import { Radio, RadioGroup, useDisclosure } from '@nextui-org/react'
+import { Chip, Radio, RadioGroup, useDisclosure } from '@nextui-org/react'
+import {
+  Banknote,
+  Coins,
+  CreditCard,
+  Download,
+  QrCode,
+  Truck,
+  Wallet
+} from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { GetServerSideProps } from 'next'
 
@@ -13,7 +22,9 @@ import { TDataBranch, TSaleProduct } from '@/interfaces/TData'
 import { filterPaginationInterfaceState } from '@/interfaces/paginationInterfaces'
 import UseGetCustomSalesPaginated from '@/services/UseGetCustomSalesPaginated'
 import { useAppSelector } from '@/store/index'
-import InformationCard from '@/components/molecules/Card/InformationCard'
+import PageHeader from '@/components/molecules/PageHeader'
+import StatCard from '@/components/molecules/StatCard'
+import { formatBs } from '@/utils/formatBs'
 import InputComponent from '@/components/atoms/Input'
 import ComboInput from '@/components/atoms/ComboInput'
 // import { useGetUsersLazyQuery } from '@/graphql/graphql-types'
@@ -29,6 +40,7 @@ import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
 import ProductListModal from '@/components/atoms/modals/ProductListModal'
 import ExportModal from '@/components/atoms/modals/ExportModal'
 import { getSalePaymentMethod } from '@/utils/getSalePaymentMethod'
+import VendisLogo from '@/components/atoms/VendisLogo'
 
 interface SalesProps {
   user: any
@@ -240,28 +252,42 @@ function Sales({ user }: SalesProps) {
 
   return (
     <AdministrationLayout user={user}>
-      <div className="m-auto mt-7 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Reporte de ventas
-        </h3>
-        <InformationCard className="mt-4 p-4 ">
-          <h3>Sucursales</h3>
+      <div className="m-auto w-full">
+        <PageHeader
+          title="Reporte de ventas"
+          actions={
+            <button
+              type="button"
+              onClick={handleExportToExcel}
+              disabled={exportStatus === 'loading'}
+              className="flex h-11 items-center justify-center gap-2 rounded-xl bg-primary-600 px-5 text-sm font-semibold text-white transition-colors hover:bg-primary-darken focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary-600 disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              <Download className="h-4 w-4" aria-hidden />
+              Exportar a Excel
+            </button>
+          }
+        />
+        <div className="w-full rounded-2xl border border-stone-200 bg-white p-4">
+          <h3 className="font-amsipro text-lg font-semibold text-tertiary">
+            Sucursales
+          </h3>
           <RadioGroup
             value={branchSelected.name}
             onValueChange={handleChangeBranch}
-            className="mt-2"
+            color="primary"
+            className="mt-3"
           >
-            <div className="grid grid-cols-5 gap-x-4 gap-y-2 ">
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-5">
               {branches.map(branch => (
-                <Radio key={branch.id} value={branch.name}>
+                <Radio key={branch.id} value={branch.name} className="max-w-full">
                   {branch.name}
                 </Radio>
               ))}
             </div>
           </RadioGroup>
-        </InformationCard>
+        </div>
 
-        <div className="mt-10 grid grid-cols-2 gap-2 md:gap-4 md:space-y-0 lg:grid-cols-6">
+        <div className="mt-4 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-6">
           <InputComponent
             isRequired={false}
             name="initialDate"
@@ -310,7 +336,7 @@ function Sales({ user }: SalesProps) {
               validateAndApplyHourFilter(initialHour, e)
             }}
           />
-          <div className="col-start-1 col-end-3 bg-white lg:col-start-5 lg:col-end-6">
+          <div className="bg-white sm:col-span-2 lg:col-span-1">
             <ComboInput
               label="Producto"
               name="productId"
@@ -330,7 +356,7 @@ function Sales({ user }: SalesProps) {
               }
             />
           </div>
-          <div className="col-start-1 col-end-3 rounded-md bg-white lg:col-start-6 lg:col-end-7 ">
+          <div className="rounded-md bg-white sm:col-span-2 lg:col-span-1">
             <ComboInput
               label="Vendedor"
               name="seller"
@@ -393,149 +419,49 @@ function Sales({ user }: SalesProps) {
           </div>
         )}
 
-        <div className="mt-6 flex justify-end">
-          <button
-            onClick={handleExportToExcel}
-            disabled={exportStatus === 'loading'}
-            className="group relative flex items-center gap-3 overflow-hidden rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 px-6 py-3 font-semibold text-white shadow-lg transition-all duration-300 hover:from-emerald-600 hover:to-teal-600 hover:shadow-xl hover:shadow-emerald-500/25 disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            {/* Efecto de brillo */}
-            <div className="absolute inset-0 -translate-x-full bg-gradient-to-r from-transparent via-white/20 to-transparent transition-transform duration-700 group-hover:translate-x-full" />
-
-            {/* Icono */}
-            <div className="relative flex h-8 w-8 items-center justify-center rounded-lg bg-white/20 backdrop-blur-sm">
-              <IconSelector name="Download" width="w-5" height="h-5" className="text-white" />
-            </div>
-
-            {/* Texto */}
-            <div className="relative flex flex-col items-start">
-              <span className="text-sm font-bold tracking-wide">Exportar a Excel</span>
-              <span className="text-xs font-normal opacity-80">Descargar reporte</span>
-            </div>
-
-            {/* Icono de Excel */}
-            <div className="relative ml-2 flex h-8 w-8 items-center justify-center rounded bg-white/20">
-              <svg viewBox="0 0 24 24" className="h-5 w-5 fill-current">
-                <path d="M14,2H6A2,2,0,0,0,4,4V20a2,2,0,0,0,2,2H18a2,2,0,0,0,2-2V8ZM15.2,17,12,12.2,8.8,17H6.5l4.3-6L6.8,5H9.1l3,4.7L15,5h2.3l-4.2,6,4.3,6Z" />
-              </svg>
-            </div>
-          </button>
-        </div>
-
-        <section className="my-4 mb-8  grid gap-3 pt-6 md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Total en ventas</div>
-                <div className="text-center">{summaryData?.total || 0} Bs</div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Coins"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Ventas en efectivo</div>
-                <div className="text-center">
-                  {getTotalByPaymentMethod(PaymentMethodEnum.CASH)?.total || 0}{' '}
-                  Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Cash"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl"> Ventas por QR</div>
-                <div className="text-center">
-                  {getTotalByPaymentMethod(PaymentMethodEnum.QR_TRANSFER)
-                    ?.total || 0}{' '}
-                  Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="QrCode"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Ventas por tarjeta</div>
-                <div className="text-center">
-                  {getTotalByPaymentMethod(PaymentMethodEnum.CARD)?.total || 0}{' '}
-                  Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="CreditCard"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Ventas PedidosYa</div>
-                <div className="text-center">
-                  {getTotalByPaymentMethod(PaymentMethodEnum.PEDIDOS_YA)
-                    ?.total || 0}{' '}
-                  Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Truck"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Ventas otros</div>
-                <div className="text-center">
-                  {getTotalByPaymentMethod(PaymentMethodEnum.OTHER)?.total || 0}{' '}
-                  Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Payment"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
+        <section className="mb-6 mt-4 grid gap-3 sm:grid-cols-2 md:gap-4 xl:grid-cols-3">
+          <StatCard
+            label="Total en ventas"
+            value={formatBs(summaryData?.total)}
+            icon={Coins}
+            tone="primary"
+          />
+          <StatCard
+            label="Ventas en efectivo"
+            value={formatBs(getTotalByPaymentMethod(PaymentMethodEnum.CASH)?.total)}
+            icon={Banknote}
+            tone="success"
+          />
+          <StatCard
+            label="Ventas por QR"
+            value={formatBs(getTotalByPaymentMethod(PaymentMethodEnum.QR_TRANSFER)?.total)}
+            icon={QrCode}
+            tone="neutral"
+          />
+          <StatCard
+            label="Ventas por tarjeta"
+            value={formatBs(getTotalByPaymentMethod(PaymentMethodEnum.CARD)?.total)}
+            icon={CreditCard}
+            tone="neutral"
+          />
+          <StatCard
+            label="Ventas PedidosYa"
+            value={formatBs(getTotalByPaymentMethod(PaymentMethodEnum.PEDIDOS_YA)?.total)}
+            icon={Truck}
+            tone="neutral"
+          />
+          <StatCard
+            label="Ventas por Vendis"
+            value={formatBs(getTotalByPaymentMethod(PaymentMethodEnum.VENDIS)?.total)}
+            iconNode={<VendisLogo className="h-5" />}
+            tone="neutral"
+          />
+          <StatCard
+            label="Ventas otros"
+            value={formatBs(getTotalByPaymentMethod(PaymentMethodEnum.OTHER)?.total)}
+            icon={Wallet}
+            tone="neutral"
+          />
         </section>
         <Table
           onChangeRow={row => handleChangeRow(row)}
@@ -566,18 +492,18 @@ function Sales({ user }: SalesProps) {
                 {' '}
                 {idx + 1}
               </h3>,
-              <div key={idx} className="w-[10rem] text-sm md:w-full">
+              <div key={idx} className="min-w-0 text-sm">
                 <DateConverter dateString={sale.date} showTime />
               </div>,
-              <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm font-bold">{sale.total} Bs</div>
+              <div key={idx} className="text-sm font-bold">
+                {formatBs(sale.total)}
               </div>,
-              <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm">{sale.discount || 'S/D'}</div>
+              <div key={idx} className="text-sm">
+                {sale.discount || 'S/D'}
               </div>,
               <div
                 key={idx}
-                className=" flex flex-col items-center justify-center gap-1 rounded-sm border border-primary p-1 text-primary"
+                className="flex w-fit max-w-full flex-col gap-1 rounded-lg border border-stone-200 bg-stone-50 px-2 py-1 text-stone-700"
               >
                 <div className="flex items-center gap-1">
                   {getSalePaymentMethod(sale.paymentMethod).icon}
@@ -588,16 +514,13 @@ function Sales({ user }: SalesProps) {
                     <p className="text-tiny text-secondary">Ingresó a caja</p>
                 )}
               </div>,
-              <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm ">
+              <div key={idx}>
+                <div className="flex flex-wrap gap-1 text-sm">
                   {sale.products.length <= 3 ? (
                     sale.products.map((product, idx) => (
-                      <p
-                        key={idx}
-                        className="m-auto mt-1 w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
-                      >
+                      <Chip key={idx} variant="flat" color="primary" size="sm">
                         {product.product?.name}
-                      </p>
+                      </Chip>
                     ))
                   ) : (
                     <ButtonComponent
@@ -610,28 +533,32 @@ function Sales({ user }: SalesProps) {
                     >
                       <IconSelector
                         name="eye"
-                        color="text-blue-600"
+                        color="text-secondary"
                         width="w-8"
                       />
                     </ButtonComponent>
                   )}
                 </div>
               </div>,
-              <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm">
-                  {sale.createdByInfo?.name} {sale.createdByInfo?.lastName}
-                </div>
+              <div key={idx} className="min-w-0 break-words text-sm">
+                {sale.createdByInfo?.name} {sale.createdByInfo?.lastName}
               </div>,
-              <div key={idx} className="max-w-[12rem] text-sm">
+              <div key={idx} className="min-w-0 break-words text-sm">
                 <p>{(sale as Sale).observations || '—'}</p>
                 {sale.canceled && (
-                  <p className="mt-1 w-fit bg-red-600 px-2 py-0.5 text-tiny font-bold text-white">
+                  <Chip
+                    className="mt-1"
+                    color="danger"
+                    variant="flat"
+                    radius="full"
+                    size="sm"
+                  >
                     Anulada
-                  </p>
+                  </Chip>
                 )}
               </div>,
               <div key={idx}>
-                <div className="space-x-1">
+                <div className="flex flex-wrap gap-2">
                   <ButtonComponent
                     onClick={() =>
                       router.push(`/administration-panel/sales/${sale.id}`)

@@ -9,6 +9,7 @@ import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import PageHeader from '@/components/molecules/PageHeader'
 import { AddListModal } from '@/components/atoms/modals/AddListModal'
 import {
   useCustomDeletePriceList,
@@ -43,7 +44,7 @@ function PriceList({ user }: PriceListProps) {
     setVariables({ ...variables, rows: row, currentPage: 1 })
   }
 
-  const handleDeleteWarehouse = (priceListId: number) => {
+  const handleDeletePriceListClick = (priceListId: number) => {
     const priceList = data?.getPriceListsPaginated?.data?.find(
       priceList => priceList.id === priceListId
     )
@@ -59,15 +60,17 @@ function PriceList({ user }: PriceListProps) {
 
   return (
     <AdministrationLayout user={user}>
-      <div className="m-auto mt-8 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Administración de listas de precios
-        </h3>
-        <AdminButton
-          onClick={handleAddModal.onOpen}
-          color="secondary"
-          text="Agregar nueva lista de precios"
-          iconName="Bussines"
+      <div className="m-auto w-full">
+        <PageHeader
+          title="Listas de precios"
+          actions={
+            <AdminButton
+              onClick={handleAddModal.onOpen}
+              color="secondary"
+              text="Agregar nueva lista de precios"
+              iconName="Bussines"
+            />
+          }
         />
         <Table
           onChangeRow={row => handleChangeRow(row)}
@@ -134,7 +137,7 @@ function PriceList({ user }: PriceListProps) {
                     />
                   </ButtonComponent>
                   <ButtonComponent
-                    onClick={() => handleDeleteWarehouse(list.id)}
+                    onClick={() => handleDeletePriceListClick(list.id)}
                     type="delete"
                     showTooltip
                     tooltipText="Eliminar"
@@ -167,7 +170,7 @@ function PriceList({ user }: PriceListProps) {
         <ConfirmModal
           isOpen={handleConfirmModal.isOpen}
           onClose={handleConfirmModal.onClose}
-          title="Eliminar almacén"
+          title="Eliminar lista de precios"
           message={`¿Esta seguro de eliminar a ${edit?.name}?`}
           onConfirm={handleConfirmDelete}
           cancelText="Cancelar"

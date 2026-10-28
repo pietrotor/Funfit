@@ -14,17 +14,16 @@ function ClientObservationPayment({
     <div className="flex h-full w-full flex-col">
       {!hideClient && (
         <>
-          <p className="font-thin text-gray-500">Cliente</p>
+          <p className="text-sm font-medium text-stone-500">Cliente</p>
           <InputComponent
             control={control}
             name="client"
-            size="sm"
             placeholder="Nombre completo"
             isRequired={false}
           />
         </>
       )}
-      <p className="font-thin text-gray-500">Observaciones</p>
+      <p className="text-sm font-medium text-stone-500">Observaciones</p>
       <InputComponent
         control={control}
         name="observations"

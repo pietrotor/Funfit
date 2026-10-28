@@ -7,7 +7,8 @@ export enum PaymentMethodEnum {
   CARD = 'CARD',
   CASH = 'CASH',
   PEDIDOS_YA = 'PEDIDOS_YA',
-  OTHER = 'OTHER'
+  OTHER = 'OTHER',
+  VENDIS = 'VENDIS'
 }
 
 export interface ISale extends Document, IGeneric {

@@ -28,14 +28,14 @@ import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import { AddProductImageModal } from '@/components/atoms/modals/AddProductImageModal'
 import { CombosTable } from '@/components/molecules/CombosTable'
 import { ProductLabel } from '@/components/molecules'
-import { useAppSelector } from '@/store/index'
+import PageHeader from '@/components/molecules/PageHeader'
+import { formatBs } from '@/utils/formatBs'
 
 interface IProduct {
   user: any
 }
 
 const Productos = ({ user }: IProduct) => {
-  const { currentBranch } = useAppSelector(state => state.branchReducer)
   const [editProduct, setEditProduct] = useState<TValueProductData>()
   const [variables, setVariables] = useState<PaginationInterfaceState>({
     rows: 5,
@@ -68,11 +68,9 @@ const Productos = ({ user }: IProduct) => {
         rows: variables?.rows,
         filter: filterProductDebounced
       },
-      type: ProductTypeEnum.SIMPLE,
-      branchId: currentBranch.id
+      type: ProductTypeEnum.SIMPLE
     },
     fetchPolicy: 'network-only',
-    skip: !currentBranch.id,
     onCompleted: data => {
       setVariables({
         totalPages: data.getProducts?.totalPages || 1,
@@ -95,11 +93,9 @@ const Productos = ({ user }: IProduct) => {
         rows: variablesCombo?.rows,
         filter: filterComboDebounced
       },
-      type: ProductTypeEnum.COMBO,
-      branchId: currentBranch.id
+      type: ProductTypeEnum.COMBO
     },
     fetchPolicy: 'network-only',
-    skip: !currentBranch.id,
     onCompleted: data => {
       setVariablesCombo({
         totalPages: data.getProducts?.totalPages || 1,
@@ -117,7 +113,6 @@ const Productos = ({ user }: IProduct) => {
     const product =
       data?.getProducts?.data?.find(product => product.id === productId) ||
       comboData?.getProducts?.data?.find(product => product.id === productId)
-    console.log(product)
     setEditProduct(product as TValueProductData)
     handleEditProduct.onOpen()
   }
@@ -146,7 +141,7 @@ const Productos = ({ user }: IProduct) => {
           return
         }
         showSuccessToast(
-          data.updateCombo?.message || 'Usuario actualizado correctamente',
+          data.updateCombo?.message || 'Producto actualizado correctamente',
           'success'
         )
         refetchCombo()
@@ -178,7 +173,7 @@ const Productos = ({ user }: IProduct) => {
           return
         }
         showSuccessToast(
-          data.updateProduct?.message || 'Usuario actualizado correctamente',
+          data.updateProduct?.message || 'Producto actualizado correctamente',
           'success'
         )
         refetch()
@@ -251,39 +246,48 @@ const Productos = ({ user }: IProduct) => {
 
   return (
     <AdministrationLayout user={user}>
-      <div className="m-auto mt-7  w-5/6 ">
-        <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Administración de productos
-        </h2>
-        <Tabs
-          color="primary"
-          size="lg"
-          variant={'underlined'}
-          selectedKey={selectedTab}
-          onSelectionChange={tab => setSelectedTab(tab as string)}
-          className="relative z-20"
-        >
-          <Tab
-            key="simple"
-            title={<p className="text-lg font-bold">Productos</p>}
-          />
-          <Tab
-            key="combo"
-            title={<p className="text-lg font-bold">Combos</p>}
-          />
-        </Tabs>
-
-        <div className="relative -z-10 -mt-[6px] h-[2px] w-full bg-gray-200"></div>
-
-        {selectedTab === 'simple' && (
-          <>
+      <div className="m-auto w-full">
+        <PageHeader
+          title="Productos"
+          actions={
             <AdminButton
               onClick={handleAddProduct.onOpen}
               color="secondary"
-              text="Agregar nuevo producto"
+              text={
+                selectedTab === 'combo'
+                  ? 'Agregar nuevo combo'
+                  : 'Agregar nuevo producto'
+              }
               iconName="Box"
             />
+          }
+        />
+        <Tabs
+          color="primary"
+          size="lg"
+          variant="underlined"
+          selectedKey={selectedTab}
+          onSelectionChange={tab => setSelectedTab(tab as string)}
+          classNames={{
+            base: 'mb-2 w-full',
+            tabList: 'w-full gap-6 border-b border-stone-200 p-0',
+            cursor: 'w-full bg-primary-600',
+            tab: 'h-12 max-w-fit px-0',
+            tabContent: 'group-data-[selected=true]:text-primary-600'
+          }}
+        >
+          <Tab
+            key="simple"
+            title={<p className="text-base font-semibold">Productos</p>}
+          />
+          <Tab
+            key="combo"
+            title={<p className="text-base font-semibold">Combos</p>}
+          />
+        </Tabs>
 
+        {selectedTab === 'simple' && (
+          <>
             <Table
               tableName="Productos Simples"
               isLoading={loading}
@@ -335,8 +339,8 @@ const Productos = ({ user }: IProduct) => {
                   >
                     {product.category?.name || 'Sin categoría'}
                   </Chip>,
-                  product.suggetedPrice + ' Bs.',
-                  product.cost + ' Bs.',
+                  formatBs(product.suggetedPrice),
+                  formatBs(product.cost),
                   <div key={idx} className="text-left text-sm">
                     {product.description}
                   </div>,
@@ -350,7 +354,7 @@ const Productos = ({ user }: IProduct) => {
                       <IconSelector
                         name="edit"
                         color="text-primary"
-                        width="w-8"
+                        width="w-6"
                       />
                     </ButtonComponent>
                     <ButtonComponent
@@ -362,7 +366,7 @@ const Productos = ({ user }: IProduct) => {
                       <IconSelector
                         name="trash"
                         color="text-danger"
-                        width="w-8"
+                        width="w-6"
                       />
                     </ButtonComponent>
                     <ButtonComponent
@@ -374,7 +378,7 @@ const Productos = ({ user }: IProduct) => {
                       <IconSelector
                         name="Upload"
                         color="text-secondary"
-                        width="w-8"
+                        width="w-6"
                       />
                     </ButtonComponent>
                   </div>
@@ -385,18 +389,11 @@ const Productos = ({ user }: IProduct) => {
         )}
         {isCombo && (
           <>
-            <AdminButton
-              onClick={handleAddProduct.onOpen}
-              color="secondary"
-              text="Agregar nuevo combo"
-              iconName="Box"
-            />
             <CombosTable
               combos={comboData?.getProducts?.data || []}
               changeRow={handleChangeComboRow}
               isLoading={loadingCombos}
               changePage={page => {
-                console.log(page)
                 setVariablesCombo(prevState => ({
                   ...prevState,
                   currentPage: page

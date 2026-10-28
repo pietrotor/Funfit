@@ -1,27 +1,23 @@
 import React from 'react'
-import IconSelector from '@/components/atoms/IconSelector'
-import Input from '@/components/atoms/Input'
+import { Search } from 'lucide-react'
 
 type SearchProps = {
   setFilter: (e: string) => void
 }
 
-const Search: React.FC<SearchProps> = ({ setFilter }: SearchProps) => {
+const SearchBar: React.FC<SearchProps> = ({ setFilter }: SearchProps) => {
   return (
-    <div className="flex w-full items-center justify-center rounded border-1 border-secondary">
-      <div className="flex h-full items-center justify-center bg-secondary px-4">
-        <IconSelector name="Search" color="text-gray-500" />
-      </div>
-      <Input
+    <label className="flex w-full items-center gap-2 rounded-2xl border border-stone-200 bg-white px-3 py-2.5 shadow-sm focus-within:border-primary focus-within:ring-4 focus-within:ring-primary/15">
+      <Search className="h-4 w-4 shrink-0 text-secondary-darken" strokeWidth={2} />
+      <input
         name="text"
         type="text"
-        size="sm"
         placeholder="Buscar producto"
-        variant="flat"
-        onValueChange={(e) => setFilter(e) }
+        onChange={event => setFilter(event.target.value)}
+        className="w-full bg-transparent text-sm text-tertiary outline-none placeholder:text-stone-400"
       />
-    </div>
+    </label>
   )
 }
 
-export default Search
+export default SearchBar

@@ -5,11 +5,24 @@ type TPaginationRowSelectorProps = {
   onChangeRows: (value: number) => void
 }
 
-const PaginationRowSelector: React.FC<TPaginationRowSelectorProps> = ({ rows, onChangeRows }) => {
+const PaginationRowSelector: React.FC<TPaginationRowSelectorProps> = ({
+  rows,
+  onChangeRows
+}) => {
   return (
-    <label htmlFor="rowsPagination" className="flex gap-3 items-center mb-2 text-sm font-medium text-gray-900">
-      <p className='text-sm font-medium text-gray-900'>Registros Por Página</p>
-      <select value={rows} id="rowsPagination" onChange={(event: React.ChangeEvent<HTMLSelectElement>) => onChangeRows(parseInt(event.target.value)) } className="w-fit bg-gray-50 border transition-all border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block p-2.5 outline-none">
+    <label
+      htmlFor="rowsPagination"
+      className="mb-2 flex items-center gap-3 text-sm font-medium text-stone-600"
+    >
+      <span>Registros por página</span>
+      <select
+        value={rows}
+        id="rowsPagination"
+        onChange={(event: React.ChangeEvent<HTMLSelectElement>) =>
+          onChangeRows(parseInt(event.target.value))
+        }
+        className="block w-fit rounded-xl border border-stone-200 bg-white p-2 text-sm text-tertiary outline-none transition-all focus:border-primary focus:ring-4 focus:ring-primary/15"
+      >
         <option value={5}>5</option>
         <option value={10}>10</option>
         <option value={20}>20</option>

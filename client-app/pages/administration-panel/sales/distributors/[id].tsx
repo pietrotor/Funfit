@@ -13,10 +13,23 @@ import {
   useDisclosure
 } from '@nextui-org/react'
 import { Controller, get, useForm } from 'react-hook-form'
+import {
+  Banknote,
+  Coins,
+  CreditCard,
+  ListChecks,
+  QrCode,
+  ReceiptText,
+  UserRound,
+  Warehouse
+} from 'lucide-react'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
 import Table from '@/components/organisms/tableNext/Table'
-import InformationCard from '@/components/molecules/Card/InformationCard'
+import PageHeader from '@/components/molecules/PageHeader'
+import StatCard from '@/components/molecules/StatCard'
+import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import { formatBs } from '@/utils/formatBs'
 import Images from '@/components/atoms/Image/Image'
 import { authUserHeader } from '@/utils/verificationUser'
 import {
@@ -125,176 +138,75 @@ function SaleDistributorDetail({ user }: SaleDetailProps) {
 
   return (
     <AdministrationLayout user={user} showBackButton={true}>
-      <div className="m-auto mt-8 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Detalle de venta
-        </h3>
-        <section className="my-4 mb-12  grid gap-3 pt-6 md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
-          <InformationCard className="h-full px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Total:</div>
-                <div className="text-center">
-                  {data?.getDistributorSale?.data?.total} Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Coins"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
+      <div className="m-auto w-full">
+        <PageHeader title="Detalle de venta" />
+        <section className="mb-8 grid gap-3 sm:grid-cols-2 md:gap-4 xl:grid-cols-3">
+          <StatCard
+            label="Total"
+            value={formatBs(data?.getDistributorSale?.data?.total)}
+            icon={Coins}
+            tone="primary"
+          />
           {!!data?.getDistributorSale?.data?.balance && !loading && (
             <>
-              <InformationCard className="h-full !bg-blue-500 px-3 py-6 text-white">
-                <div className="flex items-center justify-between">
-                  <div className="text-lg font-bold">
-                    <div className="text-xl">Total pagado:</div>
-                    <div className="text-center">
-                      {data?.getDistributorSale?.data?.totalPaid} Bs
-                    </div>
-                  </div>
-                  <span className="rounded-full bg-secondary p-3 ">
-                    <IconSelector
-                      name="Cash"
-                      className=" rounded-md text-white"
-                      height="h-6"
-                      width="w-6"
-                    />
-                  </span>
-                </div>
-              </InformationCard>
-              <InformationCard className="h-full !bg-red-500 px-3 py-6 text-white">
-                <div className="flex items-center justify-between">
-                  <div className="text-lg font-bold">
-                    <div className="text-xl">Saldo pendiente:</div>
-                    <div className="text-center">
-                      {data?.getDistributorSale?.data?.balance} Bs
-                    </div>
-                  </div>
-                  <span className="rounded-full bg-secondary p-3 ">
-                    <IconSelector
-                      name="Recipe"
-                      className=" rounded-md text-white"
-                      height="h-6"
-                      width="w-6"
-                    />
-                  </span>
-                </div>
-              </InformationCard>
+              <StatCard
+                label="Total pagado"
+                value={formatBs(data?.getDistributorSale?.data?.totalPaid)}
+                icon={Banknote}
+                tone="success"
+              />
+              <StatCard
+                label="Saldo pendiente"
+                value={formatBs(data?.getDistributorSale?.data?.balance)}
+                icon={ReceiptText}
+                tone="danger"
+              />
             </>
           )}
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Codigo de venta:</div>
-                <div className="text-center">
-                  {data?.getDistributorSale?.data?.code}
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="QrCode"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Método de pago:</div>
-                <div className="text-center">
-                  {data?.getDistributorSale?.data?.paymentMethod
-                    ? getSalePaymentMethod(
-                        data?.getDistributorSale?.data?.paymentMethod!
-                      ).text
-                    : ''}
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                {data?.getDistributorSale?.data?.paymentMethod ? (
-                  getSalePaymentMethod(
+          <StatCard
+            label="Código de venta"
+            value={data?.getDistributorSale?.data?.code}
+            icon={QrCode}
+          />
+          <StatCard
+            label="Método de pago"
+            value={
+              data?.getDistributorSale?.data?.paymentMethod
+                ? getSalePaymentMethod(
                     data?.getDistributorSale?.data?.paymentMethod!
-                  ).icon
-                ) : (
-                  <></>
-                )}
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Vendedor:</div>
-                <div className="text-center">
-                  {data?.getDistributorSale?.data?.createdByInfo?.name}{' '}
-                  {data?.getDistributorSale?.data?.createdByInfo?.lastName}
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="user"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Almacen:</div>
-                <div className="text-center">
-                  {data?.getDistributorSale?.data?.warehouse?.name}
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Warehouse"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Lista de precios:</div>
-                <div className="text-center">
-                  {data?.getDistributorSale?.data?.priceList?.name}
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Configuration"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
+                  ).text
+                : ''
+            }
+            icon={CreditCard}
+          />
+          <StatCard
+            label="Vendedor"
+            value={`${data?.getDistributorSale?.data?.createdByInfo?.name ?? ''} ${
+              data?.getDistributorSale?.data?.createdByInfo?.lastName ?? ''
+            }`.trim()}
+            icon={UserRound}
+          />
+          <StatCard
+            label="Almacén"
+            value={data?.getDistributorSale?.data?.warehouse?.name}
+            icon={Warehouse}
+          />
+          <StatCard
+            label="Lista de precios"
+            value={data?.getDistributorSale?.data?.priceList?.name}
+            icon={ListChecks}
+          />
         </section>
         {data?.getDistributorSale?.data?.canceled && (
-          <section className="mb-4 w-fit rounded-md bg-red-600 p-4 px-10 text-white">
-            <h4>Venta anulada</h4>
+          <section className="mb-6 w-fit max-w-full rounded-2xl border border-red-200 bg-red-50 px-5 py-4 text-red-700">
+            <h4 className="font-amsipro text-lg font-semibold">Venta anulada</h4>
             <div className="flex flex-col justify-center text-sm">
-              <p className="mt-2 font-bold">Anulado en fecha: </p>
+              <p className="mt-2 font-semibold">Anulado en fecha:</p>
               <DateConverter
                 dateString={data?.getDistributorSale?.data?.canceledAt}
                 showTime
               />
-              <p className="mt-2 font-bold">Anulado por: </p>
+              <p className="mt-2 font-semibold">Anulado por:</p>
               <p>
                 {data?.getDistributorSale?.data?.canceledByInfo?.name}{' '}
                 {data?.getDistributorSale?.data?.canceledByInfo?.lastName}
@@ -302,7 +214,9 @@ function SaleDistributorDetail({ user }: SaleDetailProps) {
             </div>
           </section>
         )}
-        <h2 className="mb-4">Productos</h2>
+        <h2 className="mb-4 font-amsipro text-xl font-bold text-tertiary">
+          Productos
+        </h2>
         <Table
           titles={[
             { name: '#' },
@@ -321,7 +235,7 @@ function SaleDistributorDetail({ user }: SaleDetailProps) {
                 <div key={idx} className=" flex justify-center ">
                   <Images
                     alt="imagen"
-                    src={sale.product?.image || 'asdf'}
+                    src={sale.product?.image || '/common/missing_image.png'}
                     className="h-14  w-16 rounded-md object-cover md:h-20 md:w-20"
                   />
                 </div>,
@@ -344,7 +258,7 @@ function SaleDistributorDetail({ user }: SaleDetailProps) {
                   key={idx}
                   className="flex justify-center space-x-3 text-sm"
                 >
-                  {sale.total} Bs
+                  {formatBs(sale.total)}
                 </div>
               ]
             })
@@ -352,22 +266,15 @@ function SaleDistributorDetail({ user }: SaleDetailProps) {
           tableName="Productos vendidos"
           enablePagination={false}
         />
-        <div className="flex w-full flex-col justify-between md:flex-row md:items-center">
-          <h2 className="mb-4 mt-8">Pagos</h2>
+        <div className="mb-4 mt-8 flex w-full flex-col justify-between gap-3 md:flex-row md:items-center">
+          <h2 className="font-amsipro text-xl font-bold text-tertiary">Pagos</h2>
           {data?.getDistributorSale?.data?.balance !== 0 && (
-            <Button
-              color="secondary"
-              className="flex flex-row-reverse items-center"
+            <AdminButton
               onClick={() => addPaymentDisclosure.onOpen()}
-            >
-              <IconSelector
-                name="Plus"
-                className=" rounded-md text-white"
-                height="h-4"
-                width="w-4"
-              />
-              <p className="text-base font-semibold">Agregar Pagos</p>
-            </Button>
+              color="primary"
+              text="Agregar pago"
+              iconName="Coins"
+            />
           )}
         </div>
         <Table
@@ -388,19 +295,19 @@ function SaleDistributorDetail({ user }: SaleDetailProps) {
                   {idx + 1}
                 </h3>,
                 <div key={idx} className=" flex justify-center text-sm ">
-                  <p>{payment.amount} Bs</p>
+                  <p>{formatBs(payment.amount)}</p>
                 </div>,
                 <div
                   key={idx}
                   className="flex justify-center space-x-3 text-sm"
                 >
-                  {payment.balance} Bs
+                  {formatBs(payment.balance)}
                 </div>,
                 <div
                   key={idx}
                   className="flex justify-center space-x-3 text-sm"
                 >
-                  {payment.totalPaid} Bs
+                  {formatBs(payment.totalPaid)}
                 </div>,
                 <div
                   key={idx}
@@ -426,7 +333,7 @@ function SaleDistributorDetail({ user }: SaleDetailProps) {
               ]
             })
           )}
-          tableName="Productos vendidos"
+          tableName="Pagos"
           enablePagination={false}
         />
       </div>
@@ -469,7 +376,7 @@ function SaleDistributorDetail({ user }: SaleDetailProps) {
               )}
             />
             <p className="mt-2 text-xs">
-              Saldo pendiente: {data?.getDistributorSale?.data?.balance} Bs
+              Saldo pendiente: {formatBs(data?.getDistributorSale?.data?.balance)}
             </p>
             <Controller
               control={control}

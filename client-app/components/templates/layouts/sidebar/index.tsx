@@ -1,13 +1,13 @@
-// import Link from 'next/link'
 import { useDisclosure } from '@nextui-org/react'
 import React from 'react'
 import Image from 'next/image'
 import {
-  PanelLeftClose,
-  PanelLeftOpen,
-  Store,
-  UserRound
+  ChevronsLeft,
+  ChevronsRight,
+  LogOut,
+  Store
 } from 'lucide-react'
+import clsx from 'clsx'
 import MenuLink from './MenuLink'
 import SubMenu from './SubMenu'
 import { TMenuIconName } from './menuIcons'
@@ -41,6 +41,9 @@ type TSidebarProps = {
   menu: TMenuStructure
   user: ICurrentUser
   onClick?: () => void
+  onLogout?: () => void
+  collapsed?: boolean
+  onToggleCollapse?: () => void
 }
 
 const Sidebar: React.FC<TSidebarProps> = ({
@@ -49,10 +52,12 @@ const Sidebar: React.FC<TSidebarProps> = ({
   isSidebarOpen,
   menu,
   onClick,
-  user
+  user,
+  onLogout,
+  collapsed = false,
+  onToggleCollapse
 }) => {
   const handleChangeBranch = useDisclosure()
-  const PanelIcon = isSidebarOpen ? PanelLeftClose : PanelLeftOpen
   const dispatch = useAppDispatch()
   const currentBranch = useAppSelector(
     state => state.branchReducer.currentBranch
@@ -79,146 +84,204 @@ const Sidebar: React.FC<TSidebarProps> = ({
     }
   })
 
-  return (
-    <div className={`${isSidebarOpen ? 'relative w-60' : 'md:w-16'}`}>
-      {/* backdrop (mobile) */}
+  const isAdmin = user.roleInfo?.type === RoleTypeEnum.ADMINISTRATOR
+  // Desktop icon-only mode
+  const desktopCollapsed = collapsed
+
+  const renderMenu = (forceCollapsed: boolean) =>
+    menu.map((menuItem, idx) =>
+      !menuItem.subMenu ? (
+        <MenuLink
+          key={menuItem.link || idx}
+          onClick={() => {
+            onClick?.()
+            setSidebar(false)
+          }}
+          detailView={!forceCollapsed}
+          isSidebarOpen={!forceCollapsed}
+          text={menuItem.text}
+          icon={menuItem.icon}
+          link={menuItem.link}
+          collapsed={forceCollapsed}
+        />
+      ) : (
+        <SubMenu
+          key={menuItem.text + idx}
+          detailView={!forceCollapsed}
+          isSidebarOpen={!forceCollapsed}
+          text={menuItem.text}
+          icon={menuItem.icon}
+          subMenu={menuItem.subMenu}
+          collapsed={forceCollapsed}
+          onNavigate={() => setSidebar(false)}
+        />
+      )
+    )
+
+  const panel = (forceCollapsed: boolean, isMobileDrawer = false) => (
+    <div
+      className={clsx(
+        'flex h-full flex-col border-r border-secondary/25 bg-[linear-gradient(180deg,#FFF8EC_0%,#FFFFFF_38%,#F4F8E4_100%)]',
+        forceCollapsed ? 'w-[72px]' : 'w-64',
+        isMobileDrawer && 'shadow-xl'
+      )}
+    >
       <div
-        onClick={() => setSidebar(false)}
-        className={`fixed inset-0 z-50 bg-white  bg-opacity-50 transition-opacity duration-200 lg:z-auto lg:hidden ${
-          isSidebarOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
-        }`}
-        aria-hidden="true"
-      ></div>
-      <div
-        className={`fixed left-0 top-0 z-50 flex h-screen max-h-screen text-white transition-all duration-700 ${
-          isSidebarOpen
-            ? 'w-80 -translate-x-20 '
-            : 'w-16 -translate-x-20 md:-translate-x-0 xl:w-[70px]'
-        }`}
+        className={clsx(
+          'flex h-16 shrink-0 items-center border-b border-secondary/20',
+          forceCollapsed ? 'justify-center px-2' : 'justify-between px-4'
+        )}
       >
-        {/* Simple sidebar */}
-        <div
-          className={`flex h-full w-24 min-w-[64px] flex-col justify-between bg-red-600 bg-secondary/20 shadow-2xl  ${
-            !isSidebarOpen ? 'rounded-br-2xl rounded-tr-2xl' : ''
-          }`}
-        >
-          <div>
-            <Image
-              alt="100"
-              width={50}
-              height={20}
-              src="/common/logo_1.png"
-              className="m-auto mb-4 mt-20 h-16 w-16 transform cursor-pointer rounded-full object-contain px-1 transition-transform duration-300 hover:scale-110"
-            />
-            <div>
-              {menu.map((menuItem, idx) => {
-                return !menuItem.subMenu ? (
-                  <MenuLink
-                    onClick={onClick}
-                    detailView={false}
-                    isSidebarOpen={isSidebarOpen}
-                    text={menuItem.text}
-                    icon={menuItem.icon}
-                    link={menuItem.link}
-                  />
-                ) : (
-                  <div onClick={() => setSidebar(true)}>
-                    <SubMenu
-                      detailView={false}
-                      isSidebarOpen={isSidebarOpen}
-                      text={menuItem.text}
-                      icon={menuItem.icon}
-                      subMenu={menuItem.subMenu}
-                    />
-                  </div>
-                )
-              })}
-            </div>
-          </div>
-          <div>
-            <div className=" flex w-full justify-center bg-secondary pt-5  text-white">
-              <Store className="h-6 w-6" strokeWidth={1.75} />
-            </div>
-            <div className="flex w-full justify-center bg-secondary py-5  text-white">
-              <UserRound className="h-7 w-7" strokeWidth={1.75} />
-            </div>
-          </div>
-        </div>
-        {/* Detail sidebar */}
-        <div
-          className={`scrollbar-thumb-gray-500 z-50 flex h-full flex-col justify-between overflow-hidden overflow-y-auto bg-white shadow-2xl transition-all duration-300 scrollbar-hide ${
-            isSidebarOpen ? 'w-80' : 'w-0'
-          }`}
-        >
+        {!forceCollapsed ? (
+          <Image
+            alt="FunFit"
+            width={110}
+            height={40}
+            src="/common/logo.png"
+            className="h-9 w-auto object-contain"
+            priority
+          />
+        ) : (
+          <Image
+            alt="FunFit"
+            width={36}
+            height={36}
+            src="/common/logo_1.png"
+            className="h-9 w-9 object-contain"
+            priority
+          />
+        )}
+        {onToggleCollapse && !isMobileDrawer && (
           <button
-            onClick={() => setSidebar(!isSidebarOpen)}
             type="button"
-            className={`absolute ${
-              isSidebarOpen ? '-right-3 top-10' : '-right-12 top-10 md:-right-3'
-            } top-10  aspect-square rounded-full bg-primary p-1 md:-right-3`}
+            onClick={onToggleCollapse}
+            aria-label={forceCollapsed ? 'Expandir menú' : 'Colapsar menú'}
+            className="hidden rounded-lg p-1.5 text-stone-400 transition-colors hover:bg-stone-100 hover:text-tertiary lg:inline-flex"
           >
-            <PanelIcon className="h-6 w-6" strokeWidth={2} />
+            {forceCollapsed ? (
+              <ChevronsRight className="h-4 w-4" strokeWidth={2} />
+            ) : (
+              <ChevronsLeft className="h-4 w-4" strokeWidth={2} />
+            )}
           </button>
-          <div>
-            <div className="mb-4 me-auto ms-auto mt-10 flex h-32 transform cursor-pointer items-center rounded-xl transition-transform duration-300 hover:scale-110 md:h-20 md:w-36">
-              <Image
-                alt="s"
-                width={100}
-                height={100}
-                src="/common/logo.png"
-                className="m-auto h-[80%] object-contain"
-              />
-            </div>
-            <div>
-              {menu.map((menuItem, idx) => {
-                return !menuItem.subMenu ? (
-                  <MenuLink
-                    isSidebarOpen={isSidebarOpen}
-                    text={menuItem.text}
-                    icon={menuItem.icon}
-                    link={menuItem.link}
-                  />
-                ) : (
-                  <SubMenu
-                    isSidebarOpen={isSidebarOpen}
-                    text={menuItem.text}
-                    icon={menuItem.icon}
-                    subMenu={menuItem.subMenu}
-                  />
-                )
-              })}
-            </div>
+        )}
+        {isMobileDrawer && (
+          <button
+            type="button"
+            onClick={() => setSidebar(false)}
+            aria-label="Cerrar menú"
+            className="rounded-lg p-1.5 text-stone-400 transition-colors hover:bg-stone-100 hover:text-tertiary"
+          >
+            <ChevronsLeft className="h-4 w-4" strokeWidth={2} />
+          </button>
+        )}
+      </div>
+
+      <button
+        type="button"
+        disabled={!isAdmin}
+        onClick={() => {
+          if (isAdmin) {
+            getBranch()
+            handleChangeBranch.onOpen()
+          }
+        }}
+        className={clsx(
+          'mx-3 mt-3 flex items-center gap-2.5 rounded-2xl border border-secondary/30 bg-white/80 px-3 py-2.5 text-left shadow-sm transition-colors',
+          isAdmin && 'hover:border-secondary hover:bg-secondary/10',
+          forceCollapsed && 'mx-2 justify-center px-2'
+        )}
+        title={currentBranch?.name || 'Sucursal'}
+      >
+        <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl bg-secondary/30 text-secondary-darken">
+          <Store className="h-4 w-4" strokeWidth={1.75} />
+        </span>
+        {!forceCollapsed && (
+          <div className="min-w-0 flex-1">
+            <p className="text-[10px] font-semibold uppercase tracking-wide text-secondary-darken">
+              Sucursal
+            </p>
+            <p className="truncate text-sm font-semibold text-tertiary">
+              {currentBranch?.name || '—'}
+            </p>
           </div>
-          <div>
-            <div
-              onClick={() => {
-                if (user.roleInfo?.type === RoleTypeEnum.ADMINISTRATOR) {
-                  getBranch()
-                  handleChangeBranch.onOpen()
-                }
-              }}
-              className="flex w-full cursor-pointer items-center gap-3 overflow-hidden bg-secondary px-10 pt-5 text-tertiary"
-            >
-              <Store className="h-6 w-6 text-white" strokeWidth={1.75} />
-              <p className="font-semibold capitalize text-white">
-                {currentBranch.name}
-              </p>
-            </div>
-            <div className="flex w-full items-center gap-3 overflow-hidden bg-secondary px-10 py-5 text-tertiary">
-              <UserRound className="h-7 w-7 text-white" strokeWidth={1.75} />
-              <p className="font-semibold capitalize text-white">
-                {user?.name}
-              </p>
-            </div>
+        )}
+      </button>
+
+      <nav className="mt-3 flex-1 overflow-y-auto px-2 pb-4">
+        <div className="flex flex-col gap-0.5">{renderMenu(forceCollapsed)}</div>
+      </nav>
+
+      <div className="shrink-0 border-t border-secondary/20 p-3">
+        <div
+          className={clsx(
+            'flex items-center gap-2.5 rounded-2xl bg-white/70 p-2 ring-1 ring-secondary/25',
+            forceCollapsed && 'justify-center bg-transparent p-0 ring-0'
+          )}
+        >
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary text-sm font-semibold text-tertiary">
+            {(user?.name || 'U').charAt(0).toUpperCase()}
           </div>
+          {!forceCollapsed && (
+            <>
+              <div className="min-w-0 flex-1">
+                <p className="truncate text-sm font-semibold text-tertiary">
+                  {user?.name}
+                </p>
+                <p className="truncate text-xs text-stone-400">
+                  {user?.email || ''}
+                </p>
+              </div>
+              {onLogout && (
+                <button
+                  type="button"
+                  onClick={onLogout}
+                  aria-label="Cerrar sesión"
+                  className="rounded-lg p-1.5 text-stone-400 transition-colors hover:bg-red-50 hover:text-red-600"
+                >
+                  <LogOut className="h-4 w-4" strokeWidth={1.75} />
+                </button>
+              )}
+            </>
+          )}
         </div>
       </div>
+    </div>
+  )
+
+  return (
+    <>
+      {/* Mobile backdrop */}
+      <div
+        onClick={() => setSidebar(false)}
+        className={clsx(
+          'fixed inset-0 z-40 bg-stone-900/40 transition-opacity duration-200 lg:hidden',
+          isSidebarOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
+        )}
+        aria-hidden="true"
+      />
+
+      {/* Mobile drawer */}
+      <aside
+        className={clsx(
+          'fixed left-0 top-0 z-50 h-[100dvh] transition-transform duration-300 lg:hidden',
+          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        )}
+      >
+        {panel(false, true)}
+      </aside>
+
+      {/* Desktop sidebar */}
+      <aside className="sticky top-0 z-30 hidden h-[100dvh] shrink-0 lg:block">
+        {panel(desktopCollapsed)}
+      </aside>
+
       <SelectBranchModal
         onSubmit={onSubmit}
         isOpen={handleChangeBranch.isOpen}
         onClose={handleChangeBranch.onClose}
       />
-    </div>
+    </>
   )
 }
 

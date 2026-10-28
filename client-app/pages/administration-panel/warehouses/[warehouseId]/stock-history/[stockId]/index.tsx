@@ -12,6 +12,8 @@ import AdministrationLayout from '@/components/templates/layouts'
 import Table from '@/components/organisms/tableNext/Table'
 import DateConverter from '@/components/atoms/DateConverter'
 import { authUserHeader } from '@/utils/verificationUser'
+import PageHeader from '@/components/molecules/PageHeader'
+import { formatBs } from '@/utils/formatBs'
 import InformationCard from '@/components/molecules/Card/InformationCard'
 
 interface StockHistoryProps {
@@ -56,45 +58,42 @@ function StockHistory({ user }: StockHistoryProps) {
 
   return (
     <AdministrationLayout user={user} showBackButton={true}>
-      <div className="m-auto w-5/6 space-y-10">
-        <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Historial del stock
-        </h2>
-        <div className="flex w-full">
-          <div className="h-36 w-1/5">
+      <div className="m-auto w-full space-y-6">
+        <PageHeader title="Historial del stock" />
+        <div className="flex w-full flex-col gap-4 md:flex-row">
+          <div className="h-36 w-full shrink-0 md:w-48">
             <Image
               className="h-full w-full rounded-lg object-cover"
+              classNames={{ wrapper: 'h-full w-full' }}
               src={
                 product?.stock?.product?.image ||
-                'https://phantom-marca.unidadeditorial.es/813d16708dc72860fd3cf319c9a245b5/resize/828/f/jpg/assets/multimedia/imagenes/2023/08/04/16911461030527.jpg'
+                '/common/missing_image.png'
               }
-              alt={product?.stock?.product?.description || ''}
+              alt={product?.stock?.product?.name || 'Producto'}
               width={210}
             />
           </div>
-          <div className="h-36 w-3/5">
-            <InformationCard className="h-full rounded-3xl border-2 border-primary/60">
-              <section className="flex flex-col space-y-3 p-2 px-6">
-                <div className="flex items-center justify-between">
-                  <h2 className="text-left text-4xl font-extrabold text-primary">
+          <div className="min-w-0 flex-1">
+            <InformationCard className="h-full w-full !max-w-none rounded-2xl border border-stone-200">
+              <section className="flex flex-col gap-3 p-4 sm:px-6">
+                <div className="flex items-start justify-between gap-3">
+                  <h2 className="text-balance text-left text-xl font-bold text-tertiary md:text-2xl">
                     {product?.stock?.product?.name}
                   </h2>
-                  <Chip color="primary" variant="flat">
+                  <Chip color="primary" variant="flat" className="shrink-0">
                     {product?.stock?.product?.code}
                   </Chip>
                 </div>
-                <div className="flex justify-between">
-                  <p>{product?.stock?.product?.description}</p>
-                  <div className="flex flex-col space-y-3">
-                    <p className="font text-xl font-extrabold text-primary">
-                      Costo:
-                      <sup> Bs. </sup>
-                      {product?.stock?.product?.cost}{' '}
+                <div className="flex flex-col justify-between gap-3 sm:flex-row">
+                  <p className="text-sm text-stone-600">
+                    {product?.stock?.product?.description}
+                  </p>
+                  <div className="flex shrink-0 flex-col gap-1">
+                    <p className="text-lg font-bold text-primary-600">
+                      Costo: {formatBs(product?.stock?.product?.cost)}
                     </p>
-                    <p className="text-xl font-extrabold text-primary">
-                      Precio:
-                      <sup> Bs. </sup>
-                      {product?.stock?.product?.suggetedPrice}{' '}
+                    <p className="text-lg font-bold text-primary-600">
+                      Precio: {formatBs(product?.stock?.product?.suggetedPrice)}
                     </p>
                   </div>
                 </div>

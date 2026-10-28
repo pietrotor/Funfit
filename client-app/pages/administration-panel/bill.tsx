@@ -1,6 +1,7 @@
 import { GetServerSideProps } from 'next'
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import { TrendingDown } from 'lucide-react'
 import AdministrationLayout from '@/components/templates/layouts'
 import { authUserHeader } from '@/utils/verificationUser'
 import { useBills } from '@/services/useBills'
@@ -10,8 +11,9 @@ import { useBillController } from '@/hooks/use-bill-controller'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
 import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
 import InputComponent from '@/components/atoms/Input'
-import InformationCard from '@/components/molecules/Card/InformationCard'
-import IconSelector from '@/components/atoms/IconSelector'
+import PageHeader from '@/components/molecules/PageHeader'
+import StatCard from '@/components/molecules/StatCard'
+import { formatBs } from '@/utils/formatBs'
 import { useBillsSummary } from '@/services/useBillsSummary'
 import { useAppSelector } from '@/store/index'
 
@@ -62,61 +64,48 @@ const BillPage = ({ user }: { user: any }) => {
   return (
     <>
       <AdministrationLayout user={user}>
-        <div className="m-auto mt-7 w-5/6 ">
-          <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-            Registro de gastos
-          </h3>
-          <div className="flex justify-end pt-2">
-            <InformationCard className="h-full w-full !max-w-sm bg-slate-200 px-3 py-6">
-              <div className="flex items-center justify-between">
-                <div className="text-lg font-bold">
-                  <div className="text-xl">Egresos</div>
-                  <div className="text-center">
-                    {dataSummary?.getBillSummary?.data || 0} Bs
-                  </div>
-                </div>
-                <span className="rounded-full bg-secondary p-3 ">
-                  <IconSelector
-                    name="Minus"
-                    className=" rounded-md text-white"
-                    height="h-6"
-                    width="w-6"
-                  />
-                </span>
-              </div>
-            </InformationCard>
-          </div>
-
-          <div className="mt-10 grid grid-cols-2 gap-2 md:grid-cols-5 md:gap-4 md:space-y-0">
-            <InputComponent
-              isRequired={false}
-              name="initialDate"
-              label="Fecha inicial"
-              type="date"
-              className=" rounded-md bg-white"
-              control={control}
-              defaultValue={
-                new Date(new Date().getFullYear(), new Date().getMonth(), 1)
-                  .toISOString()
-                  .split('T')[0]
-              }
-            />
-            <InputComponent
-              isRequired={false}
-              name="endDate"
-              label="Fecha final"
-              type="date"
-              defaultValue={new Date().toISOString().split('T')[0]}
-              className="rounded-md bg-white"
-              control={control}
-            />
-          </div>
-          <div className="flex justify-end">
-            <AdminButton
-              onClick={disclosure.onOpen}
-              color="secondary"
-              text="Agregar nuevo gasto"
-              iconName="Box"
+        <div className="m-auto w-full">
+          <PageHeader
+            title="Gastos"
+            actions={
+              <AdminButton
+                onClick={disclosure.onOpen}
+                color="secondary"
+                text="Agregar nuevo gasto"
+                iconName="Box"
+              />
+            }
+          />
+          <div className="mb-4 grid gap-4 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-end">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-4 lg:max-w-xl">
+              <InputComponent
+                isRequired={false}
+                name="initialDate"
+                label="Fecha inicial"
+                type="date"
+                className="rounded-md bg-white"
+                control={control}
+                defaultValue={
+                  new Date(new Date().getFullYear(), new Date().getMonth(), 1)
+                    .toISOString()
+                    .split('T')[0]
+                }
+              />
+              <InputComponent
+                isRequired={false}
+                name="endDate"
+                label="Fecha final"
+                type="date"
+                defaultValue={new Date().toISOString().split('T')[0]}
+                className="rounded-md bg-white"
+                control={control}
+              />
+            </div>
+            <StatCard
+              label="Egresos"
+              value={formatBs(dataSummary?.getBillSummary?.data || 0)}
+              icon={TrendingDown}
+              tone="danger"
             />
           </div>
           <div className="py-3">

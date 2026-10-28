@@ -17,6 +17,7 @@ interface SaleModalProps {
   selectedProducts: TPointOfSaleData
   setSelectedProducts: (products: TPointOfSaleData) => void
   refetch?: () => void
+  onSuccess?: () => void
   selectedDistributors?: TpointOfSaleDistributor
 }
 
@@ -32,6 +33,7 @@ function SaleDistributorModal({
   selectedProducts,
   setSelectedProducts,
   refetch,
+  onSuccess,
   selectedDistributors
 }: SaleModalProps) {
   const form = useForm()
@@ -81,6 +83,7 @@ function SaleDistributorModal({
         })
         setPayment({ paymentMethod: 'options', cash: 0, balance: 0 })
         refetch?.()
+        onSuccess?.()
       }
     )
   }
@@ -121,14 +124,14 @@ function SaleDistributorModal({
       reset={reset}
       loading={loading}
       color="secondary"
-      textBackButton="Atrás"
+      sheet
+      textBackButton={payment.paymentMethod === 'options' ? undefined : 'Atrás'}
       textCancelButton="Cancelar"
       textSuccessButton="Generar recibo"
       handleBack={handleBack}
-      backButtonDisabled={payment.paymentMethod === 'options'}
       successButtonDisabled={payment.paymentMethod === 'options'}
     >
-      <div className="flex h-[30rem] flex-col">
+      <div className="flex flex-col md:h-[30rem]">
         <div className={'flex-grow overflow-hidden'}>
           <div className="flex h-1/6 items-center justify-around space-x-3 py-3">
             <div className="flex items-center space-x-3">

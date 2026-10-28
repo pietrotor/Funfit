@@ -9,6 +9,7 @@ import {
 import InputComponent from '@/components/atoms/Input'
 import { TSalePaymentMethodData } from '@/components/atoms/modals/SaleModal'
 import ClientObservationPayment from '@/components/atoms/ClientObservationsPayment'
+import { formatBs } from '@/utils/formatBs'
 
 type CombinedPaymentMethodProps = {
   total: number
@@ -45,18 +46,17 @@ function CombinedPaymentMethod({
   }
 
   return (
-    <section className="h-full p-4">
-      <div className="flex items-center justify-between ">
-        <p className="text-lg text-gray-500 ">
+    <section className="px-4 pb-4 md:p-4">
+      <div className="mb-3 flex items-center justify-between rounded-xl bg-stone-50 px-3 py-2">
+        <p className="text-sm font-medium text-stone-500">
           {payment.cash > total ? 'Cambio' : 'Por pagar'}
         </p>
-        <hr className="mx-4  flex-grow border-1 border-gray-200" />
-        <p className="text-lg text-primary">
-          Bs. {payment.cash > 0 ? payment.change : total - payment.cash}
+        <p className="num text-base font-semibold text-primary-600">
+          {formatBs(payment.cash > 0 ? payment.change : total - payment.cash)}
         </p>
       </div>
-      <div className="flex h-full w-full pt-2">
-        <div className="border-r-gray flex w-1/2 flex-col border-r-1 px-2">
+      <div className="flex w-full flex-col gap-4 md:flex-row">
+        <div className="flex w-full flex-col md:w-1/2 md:border-r md:border-stone-200 md:pr-4">
           <div className="flex w-full flex-col space-y-2">
             <div className="space-y-1">
               <Checkbox className="w-full">
@@ -139,7 +139,7 @@ function CombinedPaymentMethod({
             </div>
           </div>
         </div>
-        <div className="w-1/2 px-2">
+        <div className="w-full md:w-1/2">
           <ClientObservationPayment control={control} />
         </div>
       </div>

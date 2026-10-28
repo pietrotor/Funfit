@@ -14,6 +14,7 @@ import UseDebouncedValue from '@/hooks/UseDebouncedValue'
 import DateConverter from '@/components/atoms/DateConverter'
 import { authUserHeader } from '@/utils/verificationUser'
 import InformationCard from '@/components/molecules/Card/InformationCard'
+import PageHeader from '@/components/molecules/PageHeader'
 import IconSelector from '@/components/atoms/IconSelector'
 
 interface WarehouseHsitoryProps {
@@ -59,18 +60,16 @@ const WarehouseHsitory = ({ user }:WarehouseHsitoryProps) => {
     data?.getWarehouseHistory?.data && data.getWarehouseHistory.data.length > 0 ? data.getWarehouseHistory.data[0] : null
   return (
     <AdministrationLayout user={user} showBackButton>
-      <div className="m-auto w-5/6 space-y-5">
-        <h2 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Historial de almacén
-        </h2>
-        <InformationCard className="w-3/5 rounded-3xl border-2 border-primary/60">
-          <section className="flex flex-col space-y-3 p-3">
-            <h2 className="text-left text-4xl font-extrabold text-primary">
+      <div className="m-auto w-full space-y-5">
+        <PageHeader title="Historial de almacén" />
+        <InformationCard className="w-full !max-w-none rounded-2xl border border-stone-200 md:max-w-2xl">
+          <section className="flex flex-col space-y-3 p-4">
+            <h2 className="text-balance text-left text-xl font-bold text-tertiary md:text-2xl">
               {warehouse?.stock?.warehouse?.name}
             </h2>
-            <div className="flex space-x-5 justify-between">
+            <div className="flex flex-col justify-between gap-2 text-sm text-stone-600 sm:flex-row sm:gap-5">
               <p>{warehouse?.stock?.warehouse?.description}</p>
-              <div className='flex space-x-2'>
+              <div className="flex shrink-0 items-center gap-2">
                 <IconSelector name="Map-pin" />
                 <p>{warehouse?.stock?.warehouse?.address}</p>
               </div>

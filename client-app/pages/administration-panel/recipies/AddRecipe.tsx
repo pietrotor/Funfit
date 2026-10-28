@@ -4,6 +4,7 @@ import { Button } from '@nextui-org/react'
 import { GetServerSideProps } from 'next'
 import ComboInput from '@/components/atoms/ComboInput'
 import AdministrationLayout from '@/components/templates/layouts'
+import PageHeader from '@/components/molecules/PageHeader'
 import InputComponent from '@/components/atoms/Input'
 import Selector from '@/components/atoms/InputSelector'
 import ButtonComponent from '@/components/atoms/Button'
@@ -29,11 +30,9 @@ function Recipe({ user }: RecipeProps) {
   ])
 
   const onSubmit = () => {
-    console.log('submit', rows)
   }
 
   const getProducts = () => {
-    console.log('getProducts')
   }
 
   const handleAddRow = () => {
@@ -42,13 +41,11 @@ function Recipe({ user }: RecipeProps) {
 
   return (
     <AdministrationLayout user={user} showBackButton>
-      <div className="m-auto mt-16 w-5/6">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500">
-          Crea una nueva receta
-        </h3>
+      <div className="m-auto w-full">
+        <PageHeader title="Crear nueva receta" />
         <form
           onSubmit={handleSubmit(onSubmit)}
-          className="mt-8 grid grid-cols-3 gap-5"
+          className="grid grid-cols-1 gap-5 lg:grid-cols-3"
         >
           <div className="flex flex-col space-y-2">
             <InputComponent
@@ -68,10 +65,10 @@ function Recipe({ user }: RecipeProps) {
             />
             <Button color="secondary">Agregar a la lista</Button>
           </div>
-          <div className="col-span-2">
-            <div className="h-full rounded-md border-2 p-3 shadow-lg">
+          <div className="lg:col-span-2">
+            <div className="h-full rounded-2xl border border-stone-200 bg-white p-4">
               <div className="flex justify-between items-center">
-                <h4 className="text-2xl font-bold text-gray-500">
+                <h4 className="font-amsipro text-xl font-bold text-tertiary">
                   Lista de insumos
                 </h4>
                 <ButtonComponent
@@ -87,16 +84,16 @@ function Recipe({ user }: RecipeProps) {
                 <table className="w-full">
                   <thead>
                     <tr>
-                      <th className="text-left font-semibold text-gray-500">
+                      <th className="text-left text-sm font-semibold text-stone-500">
                         Insumo
                       </th>
-                      <th className="text-left font-semibold text-gray-500">
+                      <th className="text-left text-sm font-semibold text-stone-500">
                         Cantidad
                       </th>
-                      <th className="text-left font-semibold text-gray-500">
+                      <th className="text-left text-sm font-semibold text-stone-500">
                         Unidad de medida
                       </th>
-                      <th className="text-left font-semibold text-gray-500">
+                      <th className="text-left text-sm font-semibold text-stone-500">
                         Acciones
                       </th>
                     </tr>
@@ -140,7 +137,7 @@ function Recipe({ user }: RecipeProps) {
                             }
                             }
                           >
-                            <IconSelector name="trash" className='text-red-500' width="w-5" height="h-5" />
+                            <IconSelector name="trash" className="text-danger" width="w-5" height="h-5" />
                           </ButtonComponent>
                         </td>
                       </tr>

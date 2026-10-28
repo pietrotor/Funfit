@@ -8,7 +8,7 @@ import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
-// import { ConfirmModal } from '@/components/atoms/modals/ConfirmModal'
+import PageHeader from '@/components/molecules/PageHeader'
 import { AddCategoryModal } from '@/components/atoms/modals/AddCategoryModal'
 import {
   TCategories,
@@ -63,15 +63,17 @@ function Categories({ user }: CategoriesProps) {
 
   return (
     <AdministrationLayout user={user}>
-      <div className="m-auto mt-16 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Administración de Categorías
-        </h3>
-        <AdminButton
-          onClick={handleAddCategoryModal.onOpen}
-          color="secondary"
-          text="Agregar nueva categoría"
-          iconName="Bussines"
+      <div className="m-auto w-full">
+        <PageHeader
+          title="Categorías"
+          actions={
+            <AdminButton
+              onClick={handleAddCategoryModal.onOpen}
+              color="secondary"
+              text="Agregar nueva categoría"
+              iconName="Bussines"
+            />
+          }
         />
         <Table
           onChangeRow={row => handleChangeRow(row)}
@@ -103,7 +105,7 @@ function Categories({ user }: CategoriesProps) {
                   showTooltip
                   tooltipText="Editar"
                 >
-                  <IconSelector name="edit" color="text-primary" width="w-8" />
+                  <IconSelector name="edit" color="text-primary" width="w-6" />
                 </ButtonComponent>
                 <ButtonComponent
                   onClick={() => handleDeleteCategory(category.id)}
@@ -111,7 +113,7 @@ function Categories({ user }: CategoriesProps) {
                   showTooltip
                   tooltipText="Eliminar"
                 >
-                  <IconSelector name="trash" color="text-danger" width="w-8" />
+                  <IconSelector name="trash" color="text-danger" width="w-6" />
                 </ButtonComponent>
               </div>
             ]

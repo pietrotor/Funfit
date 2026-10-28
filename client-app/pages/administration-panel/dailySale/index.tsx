@@ -2,7 +2,15 @@ import { GetServerSideProps } from 'next'
 
 import { useRouter } from 'next/router'
 import { useEffect, useState } from 'react'
-import { useDisclosure } from '@nextui-org/react'
+import { Chip, useDisclosure } from '@nextui-org/react'
+import {
+  Banknote,
+  Coins,
+  CreditCard,
+  QrCode,
+  Receipt,
+  Truck
+} from 'lucide-react'
 import Table from '@/components/organisms/tableNext/Table'
 import AdministrationLayout from '@/components/templates/layouts'
 import IconSelector from '@/components/atoms/IconSelector'
@@ -10,7 +18,9 @@ import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 import UseGetCustomSalesPaginated from '@/services/UseGetCustomSalesPaginated'
 import { useAppSelector } from '@/store/index'
-import InformationCard from '@/components/molecules/Card/InformationCard'
+import PageHeader from '@/components/molecules/PageHeader'
+import StatCard from '@/components/molecules/StatCard'
+import { formatBs } from '@/utils/formatBs'
 import DateConverter from '@/components/atoms/DateConverter'
 import { useGetSalesSummary } from '@/services/index'
 import { TSaleProduct } from '@/interfaces/TData'
@@ -19,6 +29,7 @@ import { SaleCancelModal } from '@/components/molecules/SaleCancelModal'
 import { getCurrentDate } from '@/helpers/date.helper'
 import ProductListModal from '@/components/atoms/modals/ProductListModal'
 import { getSalePaymentMethod } from '@/utils/getSalePaymentMethod'
+import VendisLogo from '@/components/atoms/VendisLogo'
 
 interface DailySaleProps {
   user: any
@@ -85,124 +96,58 @@ function DailySale({ user }: DailySaleProps) {
 
   return (
     <AdministrationLayout user={user}>
-      <div className="m-auto mt-7 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Ventas del día
-        </h3>
-        <section className="my-4 mb-8  grid gap-3 pt-6 md:gap-4 lg:grid-cols-2 xl:grid-cols-3">
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Total en ventas</div>
-                <div className="text-center">{`${summary?.total || 0} Bs`}</div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Coins"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Ventas en efectivo</div>
-                <div className="text-center">
-                  {getTotalByPaymentMethod(PaymentMethodEnum.CASH)?.total || 0}{' '}
-                  Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Cash"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl"> Ventas por QR</div>
-                <div className="text-center">
-                  {getTotalByPaymentMethod(PaymentMethodEnum.QR_TRANSFER)
-                    ?.total || 0}{' '}
-                  Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="QrCode"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Ventas por tarjeta</div>
-                <div className="text-center">
-                  {getTotalByPaymentMethod(PaymentMethodEnum.CARD)?.total || 0}{' '}
-                  Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="CreditCard"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Ventas PedidosYa</div>
-                <div className="text-center">
-                  {getTotalByPaymentMethod(PaymentMethodEnum.PEDIDOS_YA)
-                    ?.total || 0}{' '}
-                  Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Truck"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
-          <InformationCard className="h-full bg-slate-200 px-3 py-6">
-            <div className="flex items-center justify-between">
-              <div className="text-lg font-bold">
-                <div className="text-xl">Ventas otros</div>
-                <div className="text-center">
-                  {getTotalByPaymentMethod(PaymentMethodEnum.OTHER)?.total || 0}{' '}
-                  Bs
-                </div>
-              </div>
-              <span className="rounded-full bg-secondary p-3 ">
-                <IconSelector
-                  name="Payment"
-                  className=" rounded-md text-white"
-                  height="h-6"
-                  width="w-6"
-                />
-              </span>
-            </div>
-          </InformationCard>
+      <div className="m-auto w-full">
+        <PageHeader title="Ventas del día" />
+        <section className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2 md:gap-4 xl:grid-cols-3">
+          <StatCard
+            label="Total en ventas"
+            value={formatBs(summary?.total || 0)}
+            icon={Coins}
+            tone="primary"
+          />
+          <StatCard
+            label="Ventas en efectivo"
+            value={formatBs(
+              getTotalByPaymentMethod(PaymentMethodEnum.CASH)?.total || 0
+            )}
+            icon={Banknote}
+            tone="success"
+          />
+          <StatCard
+            label="Ventas por QR"
+            value={formatBs(
+              getTotalByPaymentMethod(PaymentMethodEnum.QR_TRANSFER)?.total || 0
+            )}
+            icon={QrCode}
+          />
+          <StatCard
+            label="Ventas por tarjeta"
+            value={formatBs(
+              getTotalByPaymentMethod(PaymentMethodEnum.CARD)?.total || 0
+            )}
+            icon={CreditCard}
+          />
+          <StatCard
+            label="Ventas PedidosYa"
+            value={formatBs(
+              getTotalByPaymentMethod(PaymentMethodEnum.PEDIDOS_YA)?.total || 0
+            )}
+            icon={Truck}
+          />
+          <StatCard
+            label="Ventas por Vendis"
+            value={formatBs(
+              getTotalByPaymentMethod(PaymentMethodEnum.VENDIS)?.total || 0
+            )}
+            iconNode={<VendisLogo className="h-5" />}
+          />
+          <StatCard
+            label="Ventas otros"
+            value={formatBs(
+              getTotalByPaymentMethod(PaymentMethodEnum.OTHER)?.total || 0
+            )}
+            icon={Receipt}
+          />
         </section>
         <Table
           onChangeRow={row => handleChangeRow(row)}
@@ -234,20 +179,18 @@ function DailySale({ user }: DailySaleProps) {
                 {' '}
                 {idx + 1}
               </h3>,
-              <div key={idx} className="w-[10rem] text-sm md:w-full">
+              <div key={idx} className="min-w-0 text-sm">
                 <DateConverter showTime dateString={sale.date} />
               </div>,
-              <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm">{sale.total} Bs</div>
+              <div key={idx} className="text-sm font-bold">
+                {formatBs(sale.total)}
               </div>,
-              <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm">
-                  {sale.discount ? sale.discount + 'Bs' : 'S/D'}
-                </div>
+              <div key={idx} className="text-sm">
+                {sale.discount ? formatBs(sale.discount) : 'S/D'}
               </div>,
               <div
                 key={idx}
-                className=" flex flex-col items-center justify-center gap-1 rounded-sm border border-primary p-1 text-primary"
+                className="flex w-fit max-w-full flex-col gap-1 rounded-md border border-primary px-2 py-1 text-primary"
               >
                 <div className="flex items-center gap-1">
                   {getSalePaymentMethod(sale.paymentMethod).icon}
@@ -258,16 +201,18 @@ function DailySale({ user }: DailySaleProps) {
                     <p className="text-tiny text-secondary">Ingresó a caja</p>
                 )}
               </div>,
-              <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm">
+              <div key={idx}>
+                <div className="flex flex-wrap gap-1 text-sm">
                   {sale.products.length <= 3 ? (
                     sale.products.map((product, idx) => (
-                      <p
+                      <Chip
                         key={idx}
-                        className="m-auto mt-1 w-fit rounded-full bg-blue-100 px-2 py-1 font-semibold text-blue-600"
+                        size="sm"
+                        variant="flat"
+                        color="primary"
                       >
                         {product.product?.name}
-                      </p>
+                      </Chip>
                     ))
                   ) : (
                     <ButtonComponent
@@ -280,28 +225,31 @@ function DailySale({ user }: DailySaleProps) {
                     >
                       <IconSelector
                         name="eye"
-                        color="text-blue-600"
+                        color="text-primary-600"
                         width="w-8"
                       />
                     </ButtonComponent>
                   )}
                 </div>
               </div>,
-              <div key={idx} className=" flex justify-center  ">
-                <div className="text-sm">
-                  {sale.createdByInfo?.name} {sale.createdByInfo?.lastName}
-                </div>
+              <div key={idx} className="min-w-0 break-words text-sm">
+                {sale.createdByInfo?.name} {sale.createdByInfo?.lastName}
               </div>,
-              <div key={idx} className="max-w-[12rem] text-sm">
+              <div key={idx} className="min-w-0 break-words text-sm">
                 <p>{(sale as Sale).observations || '—'}</p>
                 {sale.canceled && (
-                  <p className="mt-1 w-fit bg-red-600 px-2 py-0.5 text-tiny font-bold text-white">
+                  <Chip
+                    className="mt-1"
+                    size="sm"
+                    variant="flat"
+                    color="danger"
+                  >
                     Anulada
-                  </p>
+                  </Chip>
                 )}
               </div>,
               <div key={idx}>
-                <div className="space-x-1">
+                <div className="flex flex-wrap gap-2">
                   <ButtonComponent
                     onClick={() =>
                       router.push(`/administration-panel/sales/${sale.id}`)
@@ -325,7 +273,7 @@ function DailySale({ user }: DailySaleProps) {
                       }}
                       type="delete"
                       showTooltip
-                      tooltipText="Eliminar"
+                      tooltipText="Anular"
                     >
                       <IconSelector
                         name="trash"

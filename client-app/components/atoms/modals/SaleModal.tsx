@@ -1,7 +1,6 @@
 /* eslint-disable multiline-ternary */
 import React, { useState } from 'react'
 import { useForm } from 'react-hook-form'
-import Decimal from 'decimal.js'
 import { useRouter } from 'next/router'
 import { MyModal } from './MyModal'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
@@ -11,9 +10,17 @@ import CardPaymentMethod from '@/components/molecules/CardPaymentMethod'
 import CombinedPaymentMethod from '@/components/molecules/CombinedPaymentMethod'
 import QrPaymentMethod from '@/components/molecules/QrPaymentMethod'
 import PlatformPaymentMethod from '@/components/molecules/PlatformPaymentMethod'
+import VendisLogo from '@/components/atoms/VendisLogo'
+import { CardBrands, PedidosYaLogo } from '@/components/atoms/paymentBrands'
+import { formatBs } from '@/utils/formatBs'
 import { useCreateSaleQuery } from '@/hooks/UseSaleQuery'
 import { useAppSelector } from '@/store/index'
 import { PaymentMethodEnum } from '@/graphql/graphql-types'
+import {
+  getPaymentFee,
+  getTotalAfterFee,
+  hasPaymentFee
+} from '@/utils/paymentFees'
 
 interface SaleModalProps {
   isOpen: boolean
@@ -21,6 +28,7 @@ interface SaleModalProps {
   selectedProducts: TPointOfSaleData
   setSelectedProducts: React.Dispatch<React.SetStateAction<TPointOfSaleData>>
   refetch?: () => void
+  onSuccess?: () => void
 }
 
 export type TSalePaymentMethodData = {
@@ -36,6 +44,8 @@ const mapSalePaymentMethod = (method: string): PaymentMethodEnum => {
       return PaymentMethodEnum.CASH
     case 'card':
       return PaymentMethodEnum.CARD
+    case 'vendis':
+      return PaymentMethodEnum.VENDIS
     case 'pedidosya':
       return PaymentMethodEnum.PEDIDOS_YA
     case 'other':
@@ -50,7 +60,8 @@ function SaleModal({
   onClose,
   selectedProducts,
   setSelectedProducts,
-  refetch
+  refetch,
+  onSuccess
 }: SaleModalProps) {
   const router = useRouter()
   const { handleSubmit, control, watch, reset, setValue } = useForm()
@@ -66,19 +77,19 @@ function SaleModal({
   })
 
   const onSubmit = () => {
-    const isPlatform =
-      payment.paymentMethod === 'pedidosya' || payment.paymentMethod === 'other'
-    const saleTotal =
-      payment.paymentMethod === 'card'
-        ? selectedProducts.total -
-          new Decimal(selectedProducts.total).mul(0.02).toNumber()
-        : selectedProducts.total
-    const amountRecibed = isPlatform
+    const method = payment.paymentMethod
+    const isPlatform = method === 'pedidosya' || method === 'other'
+    const appliesFee = hasPaymentFee(method)
+    const fee = appliesFee
+      ? getPaymentFee(selectedProducts.total, method)
+      : 0
+    const saleTotal = appliesFee
+      ? getTotalAfterFee(selectedProducts.total, method)
+      : selectedProducts.total
+    const amountRecibed = isPlatform || appliesFee
       ? saleTotal
-      : payment.paymentMethod === 'card'
-        ? parseFloat(watch('cardAmountRecibed'))
-        : payment.cash || parseFloat(watch('amountRecibed'))
-    const change = isPlatform ? 0 : payment.change
+      : payment.cash || parseFloat(watch('amountRecibed'))
+    const change = isPlatform || appliesFee ? 0 : payment.change
 
     handleCreateSale(
       {
@@ -87,11 +98,9 @@ function SaleModal({
         change,
         client: watch('client'),
         date: new Date().toISOString(),
-        discount:
-          payment.paymentMethod === 'card'
-            ? new Decimal(selectedProducts.total).mul(0.02).toNumber() +
-              selectedProducts.discount
-            : selectedProducts.discount,
+        discount: appliesFee
+          ? fee + selectedProducts.discount
+          : selectedProducts.discount,
         observations: watch('observations') || '',
         entersCash:
           payment.paymentMethod === 'cash' ? true : !!payment.entersCash,
@@ -125,6 +134,7 @@ function SaleModal({
         })
         setPayment({ paymentMethod: 'options', cash: 0, change: 0 })
         refetch?.()
+        onSuccess?.()
         if (isCommingFromOrders) {
           router.push({
             pathname: '/administration-panel/point-of-sale',
@@ -157,6 +167,8 @@ function SaleModal({
     }
   }
 
+  const appliesFee = hasPaymentFee(payment.paymentMethod)
+
   return (
     <MyModal
       isOpen={isOpen}
@@ -173,47 +185,41 @@ function SaleModal({
       reset={reset}
       loading={loading}
       color="secondary"
-      textBackButton="Atrás"
+      sheet
+      textBackButton={payment.paymentMethod === 'options' ? undefined : 'Atrás'}
       textCancelButton="Cancelar"
       textSuccessButton="Generar recibo"
       handleBack={handleBack}
-      backButtonDisabled={payment.paymentMethod === 'options'}
       successButtonDisabled={payment.paymentMethod === 'options'}
     >
-      <div className="flex h-[30rem] flex-col">
-        {/* <div className="border-b-gray min-h-[1/7] w-full border-b-1">
-          <h1 className="p-4 text-xl text-gray-500">Recibo de venta</h1>
-        </div> */}
-
-        <div
-          className={`flex-grow ${
-            payment.paymentMethod === 'combined'
-              ? 'overflow-y-scroll'
-              : 'overflow-hidden'
-          }`}
-        >
-          <div className="flex h-1/6 items-center justify-around space-x-3 py-3">
-            <div className="flex items-center space-x-3">
-              <h2 className="text-xl text-gray-500">Total:</h2>
-              <h3 className="text-2xl font-thin text-gray-500">
-                Bs. {selectedProducts.total}
-              </h3>
+      <div className="flex flex-col pb-2">
+        <div>
+          <div className="mx-4 mb-3 flex flex-wrap items-end justify-center gap-x-8 gap-y-1 rounded-2xl bg-[#FFF8EE] px-4 py-3 md:mx-6">
+            <div className="text-center">
+              <p className="text-[11px] font-semibold uppercase tracking-wider text-stone-400">
+                Total
+              </p>
+              <p className="num font-amsipro text-2xl font-bold text-tertiary sm:text-3xl">
+                {formatBs(selectedProducts.total)}
+              </p>
             </div>
-            {payment.paymentMethod === 'card' && (
-              <div className="flex items-center space-x-3">
-                <h2 className="text-xl text-gray-500">Total con descuento:</h2>
-                <h3 className="text-2xl font-thin text-gray-500">
-                  Bs.{' '}
-                  {new Decimal(selectedProducts.total)
-                    .minus(
-                      new Decimal(selectedProducts.total).mul(0.02).toNumber()
+            {appliesFee && (
+              <div className="text-center">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-secondary-darken">
+                  Con descuento
+                </p>
+                <p className="num font-amsipro text-2xl font-bold text-primary-600 sm:text-3xl">
+                  {formatBs(
+                    getTotalAfterFee(
+                      selectedProducts.total,
+                      payment.paymentMethod
                     )
-                    .toNumber()}
-                </h3>
+                  )}
+                </p>
               </div>
             )}
           </div>
-          <div className="h-5/6">
+          <div>
             {payment.paymentMethod === 'options' ? (
               <SalePaymentMethod setPayment={setPayment} />
             ) : payment.paymentMethod === 'cash' ? (
@@ -226,7 +232,8 @@ function SaleModal({
                 reset={reset}
                 setValue={setValue}
               />
-            ) : payment.paymentMethod === 'card' ? (
+            ) : payment.paymentMethod === 'card' ||
+              payment.paymentMethod === 'vendis' ? (
               <CardPaymentMethod
                 total={selectedProducts.total}
                 payment={payment}
@@ -234,8 +241,16 @@ function SaleModal({
                 control={control}
                 watch={watch}
                 reset={reset}
+                method={payment.paymentMethod}
+                logo={
+                  payment.paymentMethod === 'vendis' ? (
+                    <VendisLogo className="h-8" />
+                  ) : (
+                    <CardBrands className="h-8" />
+                  )
+                }
               />
-            ) : payment.paymentMethod === 'qr' ? (
+                ) : payment.paymentMethod === 'qr' ? (
               <QrPaymentMethod
                 total={selectedProducts.total}
                 payment={payment}
@@ -246,7 +261,7 @@ function SaleModal({
                 qrPayment={qrPayment}
                 setQrPayment={setQrPayment}
               />
-            ) : payment.paymentMethod === 'pedidosya' ? (
+                ) : payment.paymentMethod === 'pedidosya' ? (
               <PlatformPaymentMethod
                 total={selectedProducts.total}
                 payment={payment}
@@ -254,8 +269,9 @@ function SaleModal({
                 control={control}
                 watch={watch}
                 label="PedidosYa"
+                mark={<PedidosYaLogo className="h-9" />}
               />
-            ) : payment.paymentMethod === 'other' ? (
+                ) : payment.paymentMethod === 'other' ? (
               <PlatformPaymentMethod
                 total={selectedProducts.total}
                 payment={payment}
@@ -264,7 +280,7 @@ function SaleModal({
                 watch={watch}
                 label="Otros"
               />
-            ) : (
+                ) : (
               <CombinedPaymentMethod
                 total={selectedProducts.total}
                 payment={payment}
@@ -273,42 +289,9 @@ function SaleModal({
                 watch={watch}
                 reset={reset}
               />
-            )}
+                )}
           </div>
         </div>
-
-        {/* <div className="border-t-gray mt-3 flex min-h-[1/7] justify-between border-t-1 p-4">
-          <Button
-            variant="flat"
-            color="default"
-            className={`border-2 border-gray-300 text-lg text-gray-500 ${
-              payment.paymentMethod === 'options' ? 'cursor-not-allowed' : 'cursor-pointer'
-            }`}
-            onClick={handleBack}
-            isDisabled={payment.paymentMethod === 'options'}
-          >
-            <IconSelector name="arrow-left" /> Atrás
-          </Button>
-          <div className="space-x-4">
-            <Button
-              variant="flat"
-              color="default"
-              className="border-2 border-gray-300 text-lg text-gray-500"
-              onClick={handleCancel}
-            >
-              Cancelar
-            </Button>
-            <Button
-              className={`bg-secondary text-lg font-bold text-white ${
-                payment.paymentMethod === 'options' ? 'cursor-not-allowed' : 'cursor-pointer'
-              }`}
-              type="submit"
-              isDisabled={payment.paymentMethod === 'options'}
-            >
-              Generar recibo
-            </Button>
-          </div>
-        </div> */}
       </div>
     </MyModal>
   )

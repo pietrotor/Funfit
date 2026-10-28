@@ -1,19 +1,20 @@
 import { Button, useDisclosure } from '@nextui-org/react'
-// import React, { useEffect } from 'react'
 import React, { SetStateAction } from 'react'
 import Decimal from 'decimal.js'
 import SelectedProductItem from '../SelectedProductItem'
 import { TPointOfSaleData } from '../../../pages/administration-panel/point-of-sale'
 import EmptySale from '@/components/atoms/EmptySale'
-// import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import SaleModal from '@/components/atoms/modals/SaleModal'
 import { showSuccessToast } from '@/components/atoms/Toast/toasts'
 import SaleDistributorModal from '@/components/atoms/modals/SaleDistributorModal'
 import { TpointOfSaleDistributor } from '@/interfaces/TData'
+import { formatBs } from '@/utils/formatBs'
+
 type SalesReceiptProps = {
   selectedProducts: TPointOfSaleData
   setSelectedProducts: React.Dispatch<SetStateAction<TPointOfSaleData>>
   refetch?: () => void
+  onSaleComplete?: () => void
   isDistributorSale?: boolean
   selectedDistributors?: TpointOfSaleDistributor
 }
@@ -22,6 +23,7 @@ function SalesReceipt({
   selectedProducts,
   setSelectedProducts,
   refetch,
+  onSaleComplete,
   isDistributorSale,
   selectedDistributors
 }: SalesReceiptProps) {
@@ -52,86 +54,85 @@ function SalesReceipt({
   const handleSale = () => {
     if (selectedProducts.products.length === 0) {
       showSuccessToast('No hay productos seleccionados', 'error')
+    } else if (isDistributorSale) {
+      handleDistrbutorSaleModal.onOpen()
     } else {
-      if (isDistributorSale) {
-        handleDistrbutorSaleModal.onOpen()
-      } else handleSaleModal.onOpen()
+      handleSaleModal.onOpen()
     }
   }
 
   return (
-    <div className="top-0 h-full md:sticky md:max-h-screen">
-      <div className="flex h-full w-full flex-col justify-between">
-        <h3 className=" ms-6 p-4 text-left text-2xl font-bold text-gray-500">
+    <div className="flex h-full min-h-0 w-full min-w-0 flex-col bg-white">
+      <div className="border-b border-secondary/30 bg-gradient-to-r from-secondary/25 to-transparent px-5 py-4">
+        <p className="text-[11px] font-semibold uppercase tracking-wider text-secondary-darken">
+          Ticket
+        </p>
+        <h2 className="font-amsipro text-2xl font-bold tracking-tight text-tertiary">
           Recibo de venta
-        </h3>
-        <div className="max-h-4/5 flex h-4/5 w-full flex-col overflow-y-auto border-y-1 border-y-secondary/30">
-          {selectedProducts.products.length === 0 ? (
-            <EmptySale />
-          ) : (
-            selectedProducts.products?.map(selectedItem => {
-              return (
-                <SelectedProductItem
-                  key={selectedItem.productId}
-                  item={selectedItem}
-                  selectedProducts={selectedProducts}
-                  setSelectedProducts={setSelectedProducts}
-                />
-              )
-            })
-          )}
-        </div>
-        <div className="flex w-full flex-col space-y-3 px-4 py-2">
-          <div className="flex flex-col justify-between space-y-2 text-gray-500">
-            <div className="flex justify-between">
-              <p className="md:text-md text-sm">Subtotal</p>
-              <p className=" md:text-md w-1/6 text-left text-sm">
-                Bs. {selectedProducts.subTotal}
-              </p>
-            </div>
-            <tr className="border-1 border-dashed" />
-            <div className="flex justify-between">
-              <p className="md:text-md text-sm">Descuento</p>
-              <p className="md:text-md flex w-1/6 text-sm">
-                Bs.
-                <input
-                  name="discount"
-                  type="number"
-                  min={'0'}
-                  className="transition-border ms-2 w-full border-b-2 outline-none delay-100 duration-500 focus:border-secondary"
-                  onChange={e => handleChange(e.target.valueAsNumber || 0)}
-                  value={selectedProducts.discount}
-                />
-              </p>
-            </div>
-          </div>
+        </h2>
+      </div>
 
-          <div className="flex w-full">
-            <Button
-              className="flex w-full justify-between "
-              variant="solid"
-              color="secondary"
-              onClick={handleSale}
-            >
-              <p className="text-md font-bold text-white md:text-xl">
-                Finalizar venta
-              </p>
-              <span className="w-1/6 text-sm font-bold text-white md:text-xl">
-                Bs. {selectedProducts.total}
-              </span>
-            </Button>
-          </div>
-          <div className="flex justify-between">
-            <p className="md:text-md text-sm text-gray-500">
-              Productos seleccionados: {selectedProducts.products?.length}
-            </p>
-            <span
-              className="md:text-md cursor-pointer text-sm text-secondary"
-              onClick={handleCancel}
-            >
-              Cancelar
+      <div className="min-h-0 flex-1 overflow-y-auto">
+        {selectedProducts.products.length === 0 ? (
+          <EmptySale />
+        ) : (
+          selectedProducts.products?.map(selectedItem => (
+            <SelectedProductItem
+              key={selectedItem.productId}
+              item={selectedItem}
+              selectedProducts={selectedProducts}
+              setSelectedProducts={setSelectedProducts}
+            />
+          ))
+        )}
+      </div>
+
+      <div className="space-y-3 border-t border-stone-200 bg-[#FFFCF6] px-4 py-4">
+        <div className="space-y-2 text-sm text-stone-600">
+          <div className="flex items-center justify-between">
+            <span>Subtotal</span>
+            <span className="num font-medium text-tertiary">
+              {formatBs(selectedProducts.subTotal)}
             </span>
           </div>
+          <div className="flex items-center justify-between gap-3">
+            <span>Descuento</span>
+            <label className="num flex items-center gap-1 font-medium text-tertiary">
+              Bs
+              <input
+                name="discount"
+                type="number"
+                min={0}
+                aria-label="Descuento"
+                className="w-20 border-b border-secondary bg-transparent text-right outline-none focus:border-primary-600"
+                onChange={e => handleChange(e.target.valueAsNumber || 0)}
+                value={selectedProducts.discount}
+              />
+            </label>
+          </div>
+        </div>
+
+        <Button
+          className="h-12 w-full justify-between bg-primary-600 px-4 text-white data-[hover=true]:bg-primary-darken data-[hover=true]:opacity-100"
+          onClick={handleSale}
+        >
+          <span className="text-base font-semibold">Finalizar venta</span>
+          <span className="num text-base font-semibold">
+            {formatBs(selectedProducts.total)}
+          </span>
+        </Button>
+
+        <div className="flex items-center justify-between text-xs text-stone-500">
+          <span>
+            {selectedProducts.products?.length || 0} productos
+          </span>
+          <button
+            type="button"
+            className="font-medium text-secondary-darken hover:underline"
+            onClick={handleCancel}
+          >
+            Vaciar ticket
+          </button>
         </div>
       </div>
 
@@ -142,6 +143,7 @@ function SalesReceipt({
         setSelectedProducts={setSelectedProducts as any}
         selectedDistributors={selectedDistributors}
         refetch={refetch}
+        onSuccess={onSaleComplete}
       />
       <SaleModal
         isOpen={handleSaleModal.isOpen}
@@ -149,6 +151,7 @@ function SalesReceipt({
         selectedProducts={selectedProducts}
         setSelectedProducts={setSelectedProducts}
         refetch={refetch}
+        onSuccess={onSaleComplete}
       />
     </div>
   )

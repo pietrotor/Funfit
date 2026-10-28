@@ -10,6 +10,7 @@ import IconSelector from '@/components/atoms/IconSelector'
 import { authUserHeader } from '@/utils/verificationUser'
 import ButtonComponent from '@/components/atoms/Button'
 import { AdminButton } from '@/components/atoms/Button/AdminButton'
+import PageHeader from '@/components/molecules/PageHeader'
 import { useCustomGetDistributorsPaginated } from '@/hooks/UseDistributorsQuery'
 import { AddDistributorModal } from '@/components/atoms/modals/AddDistributorModal'
 import { TDistributor } from '@/interfaces/TData'
@@ -43,18 +44,18 @@ function Dealers({ user }: BranchesProps) {
 
   return (
     <AdministrationLayout user={user}>
-      <div className="m-auto mt-7 w-5/6 ">
-        <h3 className="text-center text-4xl font-extrabold text-gray-500 ">
-          Administración de distribuidores
-        </h3>
-        <div className="space-x-3 text-end">
-          <AdminButton
-            onClick={handleAddDistributor.onOpen}
-            color="secondary"
-            text="Agregar nuevo distribuidor"
-            iconName="Branch"
-          />
-        </div>
+      <div className="m-auto w-full">
+        <PageHeader
+          title="Distribuidores"
+          actions={
+            <AdminButton
+              onClick={handleAddDistributor.onOpen}
+              color="secondary"
+              text="Agregar nuevo distribuidor"
+              iconName="Branch"
+            />
+          }
+        />
         <Table
           onChangeRow={row => handleChangeRow(row)}
           tableName="DISTRIBUIDORES"
@@ -91,7 +92,7 @@ function Dealers({ user }: BranchesProps) {
                 <div key={idx} className="text-center text-sm">
                   {distributor.name}
                 </div>,
-                <div key={idx} className="w-[7vw] text-center text-sm">
+                <div key={idx} className="min-w-0 break-words text-left text-sm">
                   {distributor.address}
                 </div>,
                 <div key={idx} className="text-center text-sm">
@@ -108,7 +109,7 @@ function Dealers({ user }: BranchesProps) {
                 </div>,
                 <div
                   key={idx}
-                  className="flex w-[7vw] flex-col text-center text-sm"
+                  className="flex min-w-0 flex-col break-words text-left text-sm"
                 >
                   <p>
                     {distributor.ownerInformation.name}{' '}
@@ -138,7 +139,7 @@ function Dealers({ user }: BranchesProps) {
                   >
                     <IconSelector
                       name="eye"
-                      color="text-blue-600"
+                      color="text-secondary"
                       width="w-8"
                     />
                   </ButtonComponent>
