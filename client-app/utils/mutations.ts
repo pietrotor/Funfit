@@ -98,6 +98,18 @@ export const CREATE_STOCK = gql`
     }
   }
 `
+export const DELETE_STOCK = gql`
+  mutation DeleteStock($id: ObjectId!) {
+    deleteStock(id: $id) {
+      errorInput {
+        message
+        field
+      }
+      status
+      message
+    }
+  }
+`
 export const CREATE_STOCK_MOVEMENT = gql`
   mutation CreatStockMovement(
     $createStockMovementInput: CreateStockMovementInput!
